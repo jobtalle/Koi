@@ -21,10 +21,15 @@ const Koi = function(renderer) {
     }
 
     const pond = new Pond(new Polygon(vectors, true));
-    const fish = new Fish(new Vector(cx, cy), new Vector(1, 0));
 
     this.grid.addPolygon(pond.polygon);
-    this.grid.addFish(fish);
+
+    const fishCount = 6;
+
+    for (let i = 0; i < fishCount; ++i)
+        this.grid.addFish(
+            new Fish(new Vector(cx + (Math.random() - .5), cy + (Math.random() - .5)), new Vector(1, 0))
+        );
 };
 
 Koi.prototype.UPDATE_RATE = 1 / 40;
@@ -51,7 +56,7 @@ Koi.prototype.render = function() {
     this.renderer.transformPush();
     this.renderer.getTransform().scale(64, 64);
 
-    this.grid.render(this.renderer);
+    this.grid.render(this.renderer, this.time / this.UPDATE_RATE);
 
     this.renderer.transformPop();
     this.renderer.flush();

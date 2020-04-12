@@ -25,8 +25,9 @@ Grid.prototype.update = function() {
 /**
  * Render the grid for debugging
  * @param {Renderer} renderer The renderer
+ * @param {Number} time The interpolation factor
  */
-Grid.prototype.render = function(renderer) {
+Grid.prototype.render = function(renderer, time) {
     for (let y = 0; y < this.yCells; ++y) for (let x = 0; x < this.xCells; ++x) {
         renderer.drawLine(
             (x + 1) * this.RESOLUTION, y * this.RESOLUTION, Color.BLACK,
@@ -40,7 +41,7 @@ Grid.prototype.render = function(renderer) {
         polygon.render(renderer);
 
     for (const fish of this.fishes)
-        fish.render(renderer);
+        fish.render(renderer, time);
 };
 
 /**
