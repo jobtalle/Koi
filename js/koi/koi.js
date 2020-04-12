@@ -5,7 +5,7 @@
  */
 const Koi = function(renderer) {
     this.renderer = renderer;
-    this.grid = new Grid(10, 10);
+    this.grid = new Grid(12, 12);
     this.time = 0;
 
     const vectors = [];
@@ -20,10 +20,11 @@ const Koi = function(renderer) {
         vectors.push(new Vector(cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius));
     }
 
-
     const pond = new Pond(new Polygon(vectors, true));
+    const fish = new Fish(new Vector(cx, cy), new Vector(1, 0));
 
     this.grid.addPolygon(pond.polygon);
+    this.grid.addFish(fish);
 };
 
 Koi.prototype.UPDATE_RATE = 1 / 40;

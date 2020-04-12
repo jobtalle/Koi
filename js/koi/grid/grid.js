@@ -10,6 +10,7 @@ const Grid = function(width, height) {
     this.xCells = Math.ceil(width / this.RESOLUTION);
     this.yCells = Math.ceil(height / this.RESOLUTION);
     this.polygons = [];
+    this.fishes = [];
 };
 
 Grid.prototype.RESOLUTION = 2;
@@ -26,8 +27,20 @@ Grid.prototype.update = function() {
  * @param {Renderer} renderer The renderer
  */
 Grid.prototype.render = function(renderer) {
+    for (let y = 0; y < this.yCells; ++y) for (let x = 0; x < this.xCells; ++x) {
+        renderer.drawLine(
+            (x + 1) * this.RESOLUTION, y * this.RESOLUTION, Color.BLACK,
+            (x + 1) * this.RESOLUTION, (y + 1) * this.RESOLUTION, Color.BLACK);
+        renderer.drawLine(
+            x * this.RESOLUTION, (y + 1) * this.RESOLUTION, Color.BLACK,
+            (x + 1) * this.RESOLUTION, (y + 1) * this.RESOLUTION, Color.BLACK);
+    }
+
     for (const polygon of this.polygons)
         polygon.render(renderer);
+
+    for (const fish of this.fishes)
+        fish.render(renderer);
 };
 
 /**
@@ -36,4 +49,12 @@ Grid.prototype.render = function(renderer) {
  */
 Grid.prototype.addPolygon = function(polygon) {
     this.polygons.push(polygon);
+};
+
+/**
+ * Add a fish
+ * @param {Fish} fish A fish
+ */
+Grid.prototype.addFish = function(fish) {
+    this.fishes.push(fish);
 };
