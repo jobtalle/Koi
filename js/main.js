@@ -2,6 +2,7 @@
     const atlas = new Image();
 
     atlas.onload = () => {
+        const TIME_STEP_MAX = 1;
         const renderer = new Renderer(document.getElementById("renderer"), atlas);
         const koi = new Koi(renderer);
 
@@ -24,7 +25,7 @@
         const loop = () => {
             const date = new Date();
 
-            koi.update((date - lastDate) * .001);
+            koi.update(Math.min((date - lastDate) * .001, TIME_STEP_MAX));
             koi.render();
 
             lastDate = date;
