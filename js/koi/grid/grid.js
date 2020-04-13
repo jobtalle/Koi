@@ -48,7 +48,7 @@ Grid.prototype.update = function() {
 
             if (pd < lineWidth) {
                 const acceleration = .002;
-                const force = acceleration * pd / lineWidth;
+                const force = acceleration * (1 - pd / lineWidth);
 
                 magnitude += force;
                 rx += force * pdx / pd;
