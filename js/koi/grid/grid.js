@@ -5,15 +5,18 @@
  * @constructor
  */
 const Grid = function(width, height) {
-    this.width = width;
-    this.height = height;
     this.xCells = Math.ceil(width / this.RESOLUTION);
     this.yCells = Math.ceil(height / this.RESOLUTION);
+    this.cells = new Array(this.xCells * this.yCells);
     this.lines = [];
     this.fishes = [];
+
+    for (let i = 0; i < this.cells.length; ++i)
+        this.cells[i] = new Cell();
 };
 
 Grid.prototype.RESOLUTION = 1.5;
+Grid.prototype.LINE_WIDTH = 1.5;
 
 /**
  * Update the grid and its constituents
@@ -23,12 +26,15 @@ Grid.prototype.update = function() {
         fish.velocityPrevious.set(fish.velocity);
 
     for (const fish of this.fishes) {
+        const xCell = Math.min(this.xCells - 1, Math.max(0, Math.floor(fish.position.x / this.RESOLUTION)));
+        const yCell = Math.min(this.yCells - 1, Math.max(0, Math.floor(fish.position.y / this.RESOLUTION)));
+        const cell = this.cells[xCell + yCell * this.xCells];
         let rx = 0;
         let ry = 0;
         let magnitude = 0;
         let hits = 0;
 
-        for (const line of this.lines) {
+        for (const line of cell.lines) {
             const dx = fish.position.x - line.a.x;
             const dy = fish.position.y - line.a.y;
             let distance = line.direction.x * dx + line.direction.y * dy;
@@ -45,11 +51,9 @@ Grid.prototype.update = function() {
             const pdy = fish.position.y - py;
             const pd = Math.sqrt(pdx * pdx + pdy * pdy);
 
-            const lineWidth = 1.5;
-
-            if (pd < lineWidth) {
-                const acceleration = .015;
-                const force = acceleration * Math.pow(1 - pd / lineWidth, 3);
+            if (pd < this.LINE_WIDTH) {
+                const acceleration = .01;
+                const force = acceleration * Math.pow(1 - pd / this.LINE_WIDTH, 2);
 
                 ++hits;
                 magnitude += force;
@@ -90,12 +94,17 @@ Grid.prototype.update = function() {
  */
 Grid.prototype.render = function(renderer, time) {
     for (let y = 0; y < this.yCells; ++y) for (let x = 0; x < this.xCells; ++x) {
+        let color = Color.BLACK;
+
+        if (this.cells[x + y * this.xCells].lines.length !== 0)
+            color = Color.RED;
+
         renderer.drawLine(
-            (x + 1) * this.RESOLUTION, y * this.RESOLUTION, Color.BLACK,
-            (x + 1) * this.RESOLUTION, (y + 1) * this.RESOLUTION, Color.BLACK);
+            (x + 1) * this.RESOLUTION, y * this.RESOLUTION, color,
+            (x + 1) * this.RESOLUTION, (y + 1) * this.RESOLUTION, color);
         renderer.drawLine(
-            x * this.RESOLUTION, (y + 1) * this.RESOLUTION, Color.BLACK,
-            (x + 1) * this.RESOLUTION, (y + 1) * this.RESOLUTION, Color.BLACK);
+            x * this.RESOLUTION, (y + 1) * this.RESOLUTION, color,
+            (x + 1) * this.RESOLUTION, (y + 1) * this.RESOLUTION, color);
     }
 
     for (const line of this.lines)
@@ -108,17 +117,37 @@ Grid.prototype.render = function(renderer, time) {
 };
 
 /**
- * Add a polygon shape through which
+ * Add a line shape
+ * @param {Line} line A line
+ */
+Grid.prototype.addLine = function(line) {
+    const xMin = Math.max(0,
+        Math.floor((Math.min(line.a.x, line.b.x) - this.LINE_WIDTH) / this.RESOLUTION));
+    const xMax = Math.min(this.xCells - 1,
+        Math.floor((Math.max(line.a.x, line.b.x) + this.LINE_WIDTH) / this.RESOLUTION));
+    const yMin = Math.max(0,
+        Math.floor((Math.min(line.a.y, line.b.y) - this.LINE_WIDTH) / this.RESOLUTION));
+    const yMax = Math.min(this.yCells - 1,
+        Math.floor((Math.max(line.a.y, line.b.y) + this.LINE_WIDTH) / this.RESOLUTION));
+
+    for (let y = yMin; y <= yMax; ++y) for (let x = xMin; x <= xMax; ++x)
+        this.cells[x + y * this.xCells].lines.push(line);
+
+    this.lines.push(line);
+};
+
+/**
+ * Add a polygon shape
  * @param {Polygon} polygon A polygon shape
  */
 Grid.prototype.addPolygon = function(polygon) {
     for (let vector = 0; vector < polygon.vectors.length - 1; ++vector)
-        this.lines.push(new Line(
+        this.addLine(new Line(
             polygon.vectors[vector],
             polygon.vectors[vector + 1]));
 
     if (polygon.closed)
-        this.lines.push(new Line(
+        this.addLine(new Line(
             polygon.vectors[polygon.vectors.length - 1],
             polygon.vectors[0]));
 };

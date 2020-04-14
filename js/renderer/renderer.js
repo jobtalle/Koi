@@ -57,7 +57,8 @@ Renderer.prototype.MODE_SPRITES = 0;
 Renderer.prototype.MODE_MESH = 1;
 Renderer.prototype.MODE_LINES = 2;
 Renderer.prototype.SHADER_POSITION = `
-gl_Position = vec4((position * mat2(transform1.xy, transform2.xy) + vec2(transform1.z, transform2.z)) * vec2(transform1.w, transform2.w) + vec2(-1, 1), 0, 1);
+gl_Position = vec4((position * mat2(transform1.xy, transform2.xy) + vec2(transform1.z, transform2.z)) *
+  vec2(transform1.w, transform2.w) + vec2(-1, 1), 0, 1);
 `;
 Renderer.prototype.SHADER_SPRITES_VERTEX = `
 #version 100
