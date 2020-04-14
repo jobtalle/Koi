@@ -15,7 +15,7 @@ const Koi = function(renderer) {
 
     for (let i = 0; i < polyCount; ++i) {
         const angle = Math.PI * 2 * i / polyCount;
-        const radius = 5 * (.5 + .5 * Math.random());
+        const radius = 5 * (.2 + .8 * Math.random());
 
         vectors.push(new Vector(cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius));
     }
@@ -54,7 +54,8 @@ Koi.prototype.update = function(timeStep) {
 Koi.prototype.render = function() {
     this.renderer.clear();
     this.renderer.transformPush();
-    this.renderer.getTransform().scale(64, 64);
+
+    this.renderer.getTransform().scale(80, 40);
 
     this.grid.render(this.renderer, this.time / this.UPDATE_RATE);
 

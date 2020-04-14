@@ -13,7 +13,7 @@ const Grid = function(width, height) {
     this.fishes = [];
 };
 
-Grid.prototype.RESOLUTION = 2;
+Grid.prototype.RESOLUTION = 1.5;
 
 /**
  * Update the grid and its constituents
@@ -26,6 +26,7 @@ Grid.prototype.update = function() {
         let rx = 0;
         let ry = 0;
         let magnitude = 0;
+        let hits = 0;
 
         for (const line of this.lines) {
             const dx = fish.position.x - line.a.x;
@@ -47,33 +48,33 @@ Grid.prototype.update = function() {
             const lineWidth = 1.5;
 
             if (pd < lineWidth) {
-                const acceleration = .002;
-                const force = acceleration * (1 - pd / lineWidth);
+                const acceleration = .015;
+                const force = acceleration * Math.pow(1 - pd / lineWidth, 3);
 
+                ++hits;
                 magnitude += force;
                 rx += force * pdx / pd;
                 ry += force * pdy / pd;
             }
         }
 
-        if (magnitude !== 0) {
+        if (hits !== 0) {
             if (fish.velocity.x * rx + fish.velocity.y * ry < 0) {
-                const velocityMagnitude = fish.velocity.length();
-                const vxn = fish.velocity.x / velocityMagnitude;
-                const vyn = fish.velocity.y / velocityMagnitude;
+                const vxn = fish.velocity.x / fish.speed;
+                const vyn = fish.velocity.y / fish.speed;
 
                 if (vyn * rx - vxn * ry > 0) {
-                    fish.velocity.x += vyn * magnitude;
-                    fish.velocity.y -= vxn * magnitude;
+                    fish.velocity.x += vyn * magnitude / hits;
+                    fish.velocity.y -= vxn * magnitude / hits;
                 }
                 else {
-                    fish.velocity.x -= vyn * magnitude;
-                    fish.velocity.y += vxn * magnitude;
+                    fish.velocity.x -= vyn * magnitude / hits;
+                    fish.velocity.y += vxn * magnitude / hits;
                 }
             }
             else {
-                fish.velocity.x += rx;
-                fish.velocity.y += ry;
+                fish.velocity.x += rx / hits;
+                fish.velocity.y += ry / hits;
             }
         }
     }
