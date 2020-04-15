@@ -16,6 +16,7 @@ const Grid = function(width, height) {
 };
 
 Grid.prototype.RESOLUTION = 1.5;
+Grid.prototype.FORCE_CONSTRAINT = .05;
 
 /**
  * Update the grid and its constituents
@@ -25,9 +26,29 @@ Grid.prototype.update = function() {
         fish.velocityPrevious.set(fish.velocity);
 
     for (const fish of this.fishes) {
-        const xCell = Math.min(this.xCells - 1, Math.max(0, Math.floor(fish.position.x / this.RESOLUTION)));
-        const yCell = Math.min(this.yCells - 1, Math.max(0, Math.floor(fish.position.y / this.RESOLUTION)));
-        const cell = this.cells[xCell + yCell * this.xCells];
+        const proximity = fish.constraint.sample(fish.position);
+
+        if (proximity !== 0) {
+            const magnitude = .01 * proximity;
+
+            if (fish.velocity.x * fish.constraint.normal.x + fish.velocity.y * fish.constraint.normal.y < 0) {
+                const vxn = fish.velocity.x / fish.speed;
+                const vyn = fish.velocity.y / fish.speed;
+
+                if (vyn * fish.constraint.normal.x - vxn * fish.constraint.normal.y) {
+                    fish.velocity.x += vyn * magnitude;
+                    fish.velocity.y -= vxn * magnitude;
+                }
+                else {
+                    fish.velocity.x -= vyn * magnitude;
+                    fish.velocity.y += vxn * magnitude;
+                }
+            }
+            else {
+                fish.velocity.x += fish.constraint.normal.x * magnitude;
+                fish.velocity.y += fish.constraint.normal.y * magnitude;
+            }
+        }
     }
 
     for (const fish of this.fishes)

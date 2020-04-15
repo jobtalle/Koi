@@ -5,4 +5,5 @@
  */
 const Constraint = function(border) {
     this.border = border;
+    this.normal = new Vector(0, 0);
 };

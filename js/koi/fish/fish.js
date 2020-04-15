@@ -2,13 +2,15 @@
  * A fish
  * @param {Vector} position The initial position
  * @param {Vector} direction The initial direction vector, which must be normalized
+ * @param {Object} constraint The constraint in which this fish lives
  * @constructor
  */
-const Fish = function(position, direction) {
+const Fish = function(position, direction, constraint) {
     this.position = position.copy();
     this.positionPrevious = position.copy();
     this.velocity = direction.copy();
     this.velocityPrevious = direction.copy();
+    this.constraint = constraint;
     this.speed = .03;
 };
 
