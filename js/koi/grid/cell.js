@@ -3,5 +3,5 @@
  * @constructor
  */
 const Cell = function() {
-    this.lines = [];
+
 };

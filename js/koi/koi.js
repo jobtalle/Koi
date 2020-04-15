@@ -7,28 +7,15 @@ const Koi = function(renderer) {
     this.renderer = renderer;
     this.grid = new Grid(12, 12);
     this.time = 0;
+    this.pond = new Pond(new Circle(new Vector(6, 6), 5));
 
-    const vectors = [];
-    const polyCount = 8;
-    const cx = 6;
-    const cy = 6;
-
-    for (let i = 0; i < polyCount; ++i) {
-        const angle = Math.PI * 2 * i / polyCount;
-        const radius = 6 * Math.random();
-
-        vectors.push(new Vector(cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius));
-    }
-
-    const pond = new Pond(new Polygon(vectors, true));
-
-    this.grid.addPolygon(pond.polygon);
+    this.grid.addConstraint(this.pond.constraint);
 
     const fishCount = 6;
 
     for (let i = 0; i < fishCount; ++i)
         this.grid.addFish(
-            new Fish(new Vector(cx + (Math.random() - .5), cy + (Math.random() - .5)), new Vector(1, 0))
+            new Fish(new Vector(6 + (Math.random() - .5), 6 + (Math.random() - .5)), new Vector(1, 0))
         );
 };
 
