@@ -16,40 +16,18 @@ const Grid = function(width, height) {
 };
 
 Grid.prototype.RESOLUTION = 1.5;
-Grid.prototype.FORCE_CONSTRAINT = .05;
 
 /**
  * Update the grid and its constituents
  */
 Grid.prototype.update = function() {
-    for (const fish of this.fishes)
-        fish.velocityPrevious.set(fish.velocity);
-
     for (const fish of this.fishes) {
-        const proximity = fish.constraint.sample(fish.position);
-
-        if (proximity !== 0) {
-            const magnitude = .01 * proximity;
-
-            if (fish.velocity.x * fish.constraint.normal.x + fish.velocity.y * fish.constraint.normal.y < 0) {
-                const vxn = fish.velocity.x / fish.speed;
-                const vyn = fish.velocity.y / fish.speed;
-
-                if (vyn * fish.constraint.normal.x - vxn * fish.constraint.normal.y) {
-                    fish.velocity.x += vyn * magnitude;
-                    fish.velocity.y -= vxn * magnitude;
-                }
-                else {
-                    fish.velocity.x -= vyn * magnitude;
-                    fish.velocity.y += vxn * magnitude;
-                }
-            }
-            else {
-                fish.velocity.x += fish.constraint.normal.x * magnitude;
-                fish.velocity.y += fish.constraint.normal.y * magnitude;
-            }
-        }
+        fish.velocityPrevious.set(fish.velocity);
+        fish.view = false; // TODO: Debug
     }
+
+    for (let fish = 0; fish < this.fishes.length; ++fish) for(let other = fish + 1; other < this.fishes.length; ++other)
+        this.fishes[fish].interact(this.fishes[other]);
 
     for (const fish of this.fishes)
         fish.update();

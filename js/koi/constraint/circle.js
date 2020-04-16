@@ -8,7 +8,7 @@ const Circle = function(position, radius) {
     this.position = position;
     this.radius = radius;
 
-    Constraint.call(this, 1.5);
+    Constraint.call(this, 1);
 };
 
 Circle.prototype = Object.create(Constraint.prototype);
