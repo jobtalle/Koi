@@ -71,7 +71,7 @@ Body.prototype.render = function(renderer, time) {
         dyStart = dyEnd;
         xEnd = this.segmentsPrevious[segment].x + (this.segments[segment].x - this.segmentsPrevious[segment].x) * time;
         yEnd = this.segmentsPrevious[segment].y + (this.segments[segment].y - this.segmentsPrevious[segment].y) * time;
-        wEnd = Math.cos(Math.PI * (segment / (this.segments.length - 1) + .5)) * this.thickness * .5;
+        wEnd = Math.cos(Math.PI * ((segment / (this.segments.length - 1)) ** .7 + .5)) * this.thickness * .5;
         dxEnd = yEnd - yStart;
         dyEnd = xStart - xEnd;
 
