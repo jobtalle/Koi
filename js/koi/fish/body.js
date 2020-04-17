@@ -7,6 +7,7 @@
  * @constructor
  */
 const Body = function(length, thickness, head, direction) {
+    this.thickness = thickness;
     this.segments = new Array(Math.ceil(length / this.RESOLUTION) + 1);
     this.segmentsPrevious = new Array(this.segments.length);
     this.spacing = length / (this.segments.length - 1);
@@ -56,12 +57,37 @@ Body.prototype.update = function(head) {
  * @param {Number} time The interpolation factor
  */
 Body.prototype.render = function(renderer, time) {
-    for (let segment = 0; segment < this.segments.length - 1; ++segment)
+    let xStart, xEnd = this.segmentsPrevious[0].x + (this.segments[0].x - this.segmentsPrevious[0].x) * time;
+    let yStart, yEnd = this.segmentsPrevious[0].y + (this.segments[0].y - this.segmentsPrevious[0].y) * time;
+    let wStart, wEnd = 0;
+    let dxStart, dxEnd = 0;
+    let dyStart, dyEnd = 0;
+
+    for (let segment = 1; segment < this.segments.length; ++segment) {
+        xStart = xEnd;
+        yStart = yEnd;
+        wStart = wEnd;
+        dxStart = dxEnd;
+        dyStart = dyEnd;
+        xEnd = this.segmentsPrevious[segment].x + (this.segments[segment].x - this.segmentsPrevious[segment].x) * time;
+        yEnd = this.segmentsPrevious[segment].y + (this.segments[segment].y - this.segmentsPrevious[segment].y) * time;
+        wEnd = Math.cos(Math.PI * (segment / (this.segments.length - 1) + .5)) * this.thickness * .5;
+        dxEnd = yEnd - yStart;
+        dyEnd = xStart - xEnd;
+
         renderer.drawLine(
-            this.segmentsPrevious[segment].x + (this.segments[segment].x - this.segmentsPrevious[segment].x) * time,
-            this.segmentsPrevious[segment].y + (this.segments[segment].y - this.segmentsPrevious[segment].y) * time,
+            xStart + wStart * dxStart / this.spacing,
+            yStart + wStart * dyStart / this.spacing,
             Color.WHITE,
-            this.segmentsPrevious[segment + 1].x + (this.segments[segment + 1].x - this.segmentsPrevious[segment + 1].x) * time,
-            this.segmentsPrevious[segment + 1].y + (this.segments[segment + 1].y - this.segmentsPrevious[segment + 1].y) * time,
+            xEnd + wEnd * dxEnd / this.spacing,
+            yEnd + wEnd * dyEnd / this.spacing,
             Color.WHITE);
+        renderer.drawLine(
+            xStart - wStart * dxStart / this.spacing,
+            yStart - wStart * dyStart / this.spacing,
+            Color.WHITE,
+            xEnd - wEnd * dxEnd / this.spacing,
+            yEnd - wEnd * dyEnd / this.spacing,
+            Color.WHITE);
+    }
 };

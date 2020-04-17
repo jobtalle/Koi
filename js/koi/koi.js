@@ -43,7 +43,7 @@ Koi.prototype.render = function() {
     this.renderer.clear();
     this.renderer.transformPush();
 
-    this.renderer.getTransform().scale(64, 64);
+    this.renderer.getTransform().scale(75, 75);
 
     this.grid.render(this.renderer, time);
 

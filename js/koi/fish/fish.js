@@ -12,7 +12,7 @@ const Fish = function(position, direction, constraint) {
     this.velocity = direction.copy();
     this.velocityPrevious = direction.copy();
     this.constraint = constraint;
-    this.body = new Body(1, .4, position, direction);
+    this.body = new Body(1, .22, position, direction);
     this.speed = this.SPEED_MIN;
     this.boost = 0;
 };
@@ -26,14 +26,14 @@ Fish.prototype.RADIUS_ALIGNMENT = 1.5;
 Fish.prototype.RADIUS_ATTRACTION = 2;
 Fish.prototype.POWER_REPULSION = 2.5;
 Fish.prototype.FOV = Math.PI * .6;
-Fish.prototype.SPEED_MIN = .01;
-Fish.prototype.SPEED_SLOW = .02;
+Fish.prototype.SPEED_MIN = .015;
+Fish.prototype.SPEED_SLOW = .025;
 Fish.prototype.SPEED_DECAY = .995;
 Fish.prototype.SPEED_CATCH_UP = .005;
 Fish.prototype.BOOST_CHANCE = .003;
 Fish.prototype.BOOST_POWER = .0008;
 Fish.prototype.BOOST_MIN = 15;
-Fish.prototype.BOOST_MAX = 65;
+Fish.prototype.BOOST_MAX = 70;
 
 /**
  * Interact with another fish that may be in range, applying interaction to both fishes
