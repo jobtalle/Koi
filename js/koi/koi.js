@@ -1,12 +1,14 @@
 /**
  * The koi game
  * @param {Renderer} renderer The renderer
+ * @param {Random} random A randomizer
  * @constructor
  */
-const Koi = function(renderer) {
+const Koi = function(renderer, random) {
     this.renderer = renderer;
+    this.random = random;
     this.grid = new Grid(12, 12);
-    this.time = 0;
+    this.lastUpdate = new Date();
     this.pond = new Pond(new Circle(new Vector(6, 6), 5));
 
     this.grid.addConstraint(this.pond.constraint);
@@ -22,32 +24,28 @@ const Koi = function(renderer) {
         );
 };
 
-Koi.prototype.UPDATE_RATE = 1 / 40;
+Koi.prototype.UPDATE_RATE = 1 / 20;
 
 /**
  * Update the scene
- * @param {Number} timeStep The number of seconds passed since the last update
  */
-Koi.prototype.update = function(timeStep) {
-    this.time += timeStep;
-
-    while (this.time > this.UPDATE_RATE) {
-        this.time -= this.UPDATE_RATE;
-
-        this.grid.update();
-    }
+Koi.prototype.update = function() {
+    this.lastUpdate = new Date();
+    this.grid.update(this.random);
 };
 
 /**
  * Render the scene
  */
 Koi.prototype.render = function() {
+    const time = Math.min(.001 * (new Date() - this.lastUpdate) / this.UPDATE_RATE, 1);
+
     this.renderer.clear();
     this.renderer.transformPush();
 
     this.renderer.getTransform().scale(64, 64);
 
-    this.grid.render(this.renderer, this.time / this.UPDATE_RATE);
+    this.grid.render(this.renderer, time);
 
     this.renderer.transformPop();
     this.renderer.flush();

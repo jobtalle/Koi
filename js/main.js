@@ -2,9 +2,9 @@
     const atlas = new Image();
 
     atlas.onload = () => {
-        const TIME_STEP_MAX = 1;
         const renderer = new Renderer(document.getElementById("renderer"), atlas);
-        const koi = new Koi(renderer);
+        const random = new Random();
+        const koi = new Koi(renderer, random);
 
         const resize = () => {
             const canvas = document.getElementById("renderer");
@@ -20,15 +20,10 @@
 
         resize();
 
-        let lastDate = new Date();
+        setInterval(() => koi.update(), Math.round(Koi.prototype.UPDATE_RATE * 1000));
 
         const loop = () => {
-            const date = new Date();
-
-            koi.update(Math.min((date - lastDate) * .001, TIME_STEP_MAX));
             koi.render();
-
-            lastDate = date;
 
             requestAnimationFrame(loop);
         };

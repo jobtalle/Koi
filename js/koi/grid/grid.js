@@ -19,8 +19,9 @@ Grid.prototype.RESOLUTION = 1;
 
 /**
  * Update the grid and its constituents
+ * @param {Random} random A randomizer
  */
-Grid.prototype.update = function() {
+Grid.prototype.update = function(random) {
     for (const fish of this.fishes) {
         fish.velocityPrevious.set(fish.velocity);
         fish.view = false; // TODO: Debug
@@ -30,7 +31,7 @@ Grid.prototype.update = function() {
         this.fishes[fish].interact(this.fishes[other]);
 
     for (const fish of this.fishes)
-        fish.update();
+        fish.update(random);
 };
 
 /**

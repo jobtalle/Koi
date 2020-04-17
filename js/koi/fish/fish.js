@@ -11,25 +11,25 @@ const Fish = function(position, direction, constraint) {
     this.velocity = direction.copy();
     this.velocityPrevious = direction.copy();
     this.constraint = constraint;
-    this.speed = .01;
+    this.speed = this.SPEED_MIN;
     this.boost = 0;
 };
 
 Fish.prototype.FORCE_CONSTRAINT = .5;
-Fish.prototype.FORCE_REPULSION  = .2;
+Fish.prototype.FORCE_REPULSION  = .7;
 Fish.prototype.FORCE_ALIGNMENT = .03;
-Fish.prototype.FORCE_ATTRACTION = .01;
+Fish.prototype.FORCE_ATTRACTION = .015;
 Fish.prototype.RADIUS_REPULSION = 1;
 Fish.prototype.RADIUS_ALIGNMENT = 1.5;
 Fish.prototype.RADIUS_ATTRACTION = 2;
-Fish.prototype.POWER_REPULSION = 2;
+Fish.prototype.POWER_REPULSION = 2.5;
 Fish.prototype.FOV = Math.PI * .6;
-Fish.prototype.SPEED_MIN = .005;
-Fish.prototype.SPEED_SLOW = .01;
+Fish.prototype.SPEED_MIN = .01;
+Fish.prototype.SPEED_SLOW = .02;
 Fish.prototype.SPEED_DECAY = .995;
-Fish.prototype.SPEED_CATCH_UP = .002;
+Fish.prototype.SPEED_CATCH_UP = .005;
 Fish.prototype.BOOST_CHANCE = .003;
-Fish.prototype.BOOST_POWER = .0004;
+Fish.prototype.BOOST_POWER = .0008;
 Fish.prototype.BOOST_MIN = 15;
 Fish.prototype.BOOST_MAX = 65;
 
@@ -126,8 +126,9 @@ Fish.prototype.constrain = function() {
 
 /**
  * Update the fish
+ * @param {Random} random A randomizer
  */
-Fish.prototype.update = function() {
+Fish.prototype.update = function(random) {
     this.constrain();
 
     this.speed *= this.SPEED_DECAY;
@@ -143,8 +144,8 @@ Fish.prototype.update = function() {
     this.velocity.normalize().multiply(this.speed);
 
     if (this.speed < this.SPEED_SLOW) {
-        if (this.boost === 0 && Math.random() < this.BOOST_CHANCE) {
-            this.boost = this.BOOST_MIN + Math.floor(Math.random() * (this.BOOST_MAX - this.BOOST_MIN));
+        if (this.boost === 0 && random.getFloat() < this.BOOST_CHANCE) {
+            this.boost = this.BOOST_MIN + Math.floor(random.getFloat() * (this.BOOST_MAX - this.BOOST_MIN));
         }
     }
 
