@@ -12,7 +12,7 @@ const Fish = function(position, direction, constraint) {
     this.velocity = direction.copy();
     this.velocityPrevious = direction.copy();
     this.constraint = constraint;
-    this.body = new Body(1, .22, position, direction);
+    this.body = new Body(1.1, .22, position, direction);
     this.speed = this.SPEED_MIN;
     this.boost = 0;
 };
@@ -154,7 +154,7 @@ Fish.prototype.update = function(random) {
 
     this.positionPrevious.set(this.position);
     this.position.add(this.velocity);
-    this.body.update(this.position, this.direction);
+    this.body.update(this.position, this.direction, this.speed);
 };
 
 /**

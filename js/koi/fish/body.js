@@ -12,6 +12,7 @@ const Body = function(length, thickness, head, direction) {
     this.spacing = length / (this.segments.length - 1);
     this.inverseSpacing = 1 / this.spacing;
     this.radii = this.makeRadii(thickness, .7);
+    this.phase = 0;
 
     this.segments[0] = head.copy();
 
@@ -24,6 +25,8 @@ const Body = function(length, thickness, head, direction) {
 
 Body.prototype.RESOLUTION = .15;
 Body.prototype.SPRING = .5;
+Body.prototype.SWIM_AMPLITUDE = 5.5;
+Body.prototype.SWIM_SPEED = 8;
 
 /**
  * Calculate body segment radii
@@ -51,13 +54,16 @@ Body.prototype.storePreviousState = function() {
  * Update the body state
  * @param {Vector} head The new head position
  * @param {Vector} direction The normalized head direction
+ * @param {Number} speed The fish speed
  */
-Body.prototype.update = function(head, direction) {
+Body.prototype.update = function(head, direction, speed) {
     this.storePreviousState();
     this.segments[0].set(head);
 
-    let xDir = -direction.x;
-    let yDir = -direction.y;
+    const angle = direction.angle() + Math.PI + Math.cos(this.phase) * speed * this.SWIM_AMPLITUDE;
+
+    let xDir = Math.cos(angle);
+    let yDir = Math.sin(angle);
 
     for (let segment = 1; segment < this.segments.length; ++segment) {
         let dx = this.segments[segment].x - this.segments[segment - 1].x;
@@ -79,6 +85,9 @@ Body.prototype.update = function(head, direction) {
         this.segments[segment].x += this.spacing * dx / distance;
         this.segments[segment].y += this.spacing * dy / distance;
     }
+
+    if ((this.phase += this.SWIM_SPEED * speed) > Math.PI * 2)
+        this.phase -= Math.PI * 2;
 };
 
 /**
