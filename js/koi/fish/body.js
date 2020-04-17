@@ -7,10 +7,11 @@
  * @constructor
  */
 const Body = function(length, thickness, head, direction) {
-    this.thickness = thickness;
     this.segments = new Array(Math.ceil(length / this.RESOLUTION) + 1);
     this.segmentsPrevious = new Array(this.segments.length);
     this.spacing = length / (this.segments.length - 1);
+    this.inverseSpacing = 1 / this.spacing;
+    this.radii = this.makeRadii(thickness, .7);
 
     this.segments[0] = head.copy();
 
@@ -22,6 +23,20 @@ const Body = function(length, thickness, head, direction) {
 };
 
 Body.prototype.RESOLUTION = .15;
+
+/**
+ * Calculate body segment radii
+ * @param {Number} thickness The body thickness at its thickest point
+ * @param {Number} power A power to apply to the position of the widest point of the body
+ */
+Body.prototype.makeRadii = function(thickness, power) {
+    const radii = new Array(this.segments.length);
+
+    for (let segment = 0; segment < this.segments.length; ++segment)
+        radii[segment] = Math.cos(Math.PI * ((segment / (this.segments.length - 1)) ** power + .5)) * thickness * .5;
+
+    return radii;
+};
 
 /**
  * Store the current state into the previous state
@@ -59,35 +74,32 @@ Body.prototype.update = function(head) {
 Body.prototype.render = function(renderer, time) {
     let xStart, xEnd = this.segmentsPrevious[0].x + (this.segments[0].x - this.segmentsPrevious[0].x) * time;
     let yStart, yEnd = this.segmentsPrevious[0].y + (this.segments[0].y - this.segmentsPrevious[0].y) * time;
-    let wStart, wEnd = 0;
     let dxStart, dxEnd = 0;
     let dyStart, dyEnd = 0;
 
     for (let segment = 1; segment < this.segments.length; ++segment) {
         xStart = xEnd;
         yStart = yEnd;
-        wStart = wEnd;
         dxStart = dxEnd;
         dyStart = dyEnd;
         xEnd = this.segmentsPrevious[segment].x + (this.segments[segment].x - this.segmentsPrevious[segment].x) * time;
         yEnd = this.segmentsPrevious[segment].y + (this.segments[segment].y - this.segmentsPrevious[segment].y) * time;
-        wEnd = Math.cos(Math.PI * ((segment / (this.segments.length - 1)) ** .7 + .5)) * this.thickness * .5;
-        dxEnd = yEnd - yStart;
-        dyEnd = xStart - xEnd;
+        dxEnd = xEnd - xStart;
+        dyEnd = yEnd - yStart;
 
         renderer.drawLine(
-            xStart + wStart * dxStart / this.spacing,
-            yStart + wStart * dyStart / this.spacing,
+            xStart + this.radii[segment - 1] * dyStart * this.inverseSpacing,
+            yStart - this.radii[segment - 1] * dxStart * this.inverseSpacing,
             Color.WHITE,
-            xEnd + wEnd * dxEnd / this.spacing,
-            yEnd + wEnd * dyEnd / this.spacing,
+            xEnd + this.radii[segment] * dyEnd * this.inverseSpacing,
+            yEnd - this.radii[segment] * dxEnd * this.inverseSpacing,
             Color.WHITE);
         renderer.drawLine(
-            xStart - wStart * dxStart / this.spacing,
-            yStart - wStart * dyStart / this.spacing,
+            xStart - this.radii[segment - 1] * dyStart * this.inverseSpacing,
+            yStart + this.radii[segment - 1] * dxStart * this.inverseSpacing,
             Color.WHITE,
-            xEnd - wEnd * dxEnd / this.spacing,
-            yEnd - wEnd * dyEnd / this.spacing,
+            xEnd - this.radii[segment] * dyEnd * this.inverseSpacing,
+            yEnd + this.radii[segment] * dxEnd * this.inverseSpacing,
             Color.WHITE);
     }
 };
