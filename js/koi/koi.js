@@ -11,12 +11,12 @@ const Koi = function(renderer) {
 
     this.grid.addConstraint(this.pond.constraint);
 
-    const fishCount = 20;
+    const fishCount = 14;
 
     for (let i = 0; i < fishCount; ++i)
         this.grid.addFish(
             new Fish(
-                new Vector(6 + 4 * (Math.random() - .5), 6 + 4 * (Math.random() - .5)),
+                new Vector(6 + 6 * (Math.random() - .5), 6 + 6 * (Math.random() - .5)),
                 new Vector(-.5 + Math.random(), -.5 + Math.random()),
                 this.pond.constraint)
         );

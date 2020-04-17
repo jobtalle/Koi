@@ -8,7 +8,7 @@ const Circle = function(position, radius) {
     this.position = position;
     this.radius = radius;
 
-    Constraint.call(this, 1);
+    Constraint.call(this, 1.2);
 };
 
 Circle.prototype = Object.create(Constraint.prototype);
@@ -33,10 +33,7 @@ Circle.prototype.sample = function(position) {
         this.normal.y = dy;
         this.normal.divide(-distance);
 
-        if (squaredDistance < this.radius * this.radius)
-            return (distance - innerRadius) / this.border;
-
-        return 1;
+        return (distance - innerRadius) / this.border;
     }
 };
 

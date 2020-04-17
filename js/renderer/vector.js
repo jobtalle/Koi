@@ -120,3 +120,14 @@ Vector.prototype.reflect = function(vector) {
 Vector.prototype.angle = function() {
     return Math.atan2(this.y, this.x);
 };
+
+/**
+ * Make this vector point towards a given angle
+ * @param {Number} angle The angle in radians
+ */
+Vector.prototype.fromAngle = function(angle) {
+    this.x = Math.cos(angle);
+    this.y = Math.sin(angle);
+
+    return this;
+};

@@ -15,7 +15,7 @@ const Grid = function(width, height) {
         this.cells[i] = new Cell();
 };
 
-Grid.prototype.RESOLUTION = 1.5;
+Grid.prototype.RESOLUTION = 1;
 
 /**
  * Update the grid and its constituents
