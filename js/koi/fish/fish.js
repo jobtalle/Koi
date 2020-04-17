@@ -8,9 +8,11 @@
 const Fish = function(position, direction, constraint) {
     this.position = position.copy();
     this.positionPrevious = position.copy();
+    this.direction = direction.copy();
     this.velocity = direction.copy();
     this.velocityPrevious = direction.copy();
     this.constraint = constraint;
+    this.body = new Body(1, .4, position, direction);
     this.speed = this.SPEED_MIN;
     this.boost = 0;
 };
@@ -141,7 +143,8 @@ Fish.prototype.update = function(random) {
         this.speed += this.BOOST_POWER;
     }
 
-    this.velocity.normalize().multiply(this.speed);
+    this.direction.set(this.velocity).normalize();
+    this.velocity.set(this.direction).multiply(this.speed);
 
     if (this.speed < this.SPEED_SLOW) {
         if (this.boost === 0 && random.getFloat() < this.BOOST_CHANCE) {
@@ -151,6 +154,7 @@ Fish.prototype.update = function(random) {
 
     this.positionPrevious.set(this.position);
     this.position.add(this.velocity);
+    this.body.update(this.position);
 };
 
 /**
@@ -165,19 +169,21 @@ Fish.prototype.render = function(renderer, time) {
     const vy = this.velocityPrevious.y + (this.velocity.y - this.velocityPrevious.y) * time;
     const angle = Math.atan2(-vy, vx);
 
-    renderer.transformPush();
+    // renderer.transformPush();
+    //
+    // renderer.getTransform().translate(x, y);
+    // renderer.getTransform().rotate(angle);
+    //
+    // let color = Color.BLACK;
+    //
+    // if (this.view)
+    //     color = Color.WHITE;
+    //
+    // renderer.drawLine(-.25, -.1, color, .25, 0, color);
+    // renderer.drawLine(-.25, .1, color, .25, 0, color);
+    // renderer.drawLine(-.25, -.1, color, -.25, .1, color);
+    //
+    // renderer.transformPop();
 
-    renderer.getTransform().translate(x, y);
-    renderer.getTransform().rotate(angle);
-
-    let color = Color.BLACK;
-
-    if (this.view)
-        color = Color.WHITE;
-
-    renderer.drawLine(-.25, -.1, color, .25, 0, color);
-    renderer.drawLine(-.25, .1, color, .25, 0, color);
-    renderer.drawLine(-.25, -.1, color, -.25, .1, color);
-
-    renderer.transformPop();
+    this.body.render(renderer, time);
 };
