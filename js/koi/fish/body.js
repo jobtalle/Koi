@@ -23,6 +23,7 @@ const Body = function(length, thickness, head, direction) {
 };
 
 Body.prototype.RESOLUTION = .15;
+Body.prototype.SPRING = .5;
 
 /**
  * Calculate body segment radii
@@ -49,16 +50,30 @@ Body.prototype.storePreviousState = function() {
 /**
  * Update the body state
  * @param {Vector} head The new head position
+ * @param {Vector} direction The normalized head direction
  */
-Body.prototype.update = function(head) {
+Body.prototype.update = function(head, direction) {
     this.storePreviousState();
-
     this.segments[0].set(head);
 
+    let xDir = -direction.x;
+    let yDir = -direction.y;
+
     for (let segment = 1; segment < this.segments.length; ++segment) {
-        const dx = this.segments[segment].x - this.segments[segment - 1].x;
-        const dy = this.segments[segment].y - this.segments[segment - 1].y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+        let dx = this.segments[segment].x - this.segments[segment - 1].x;
+        let dy = this.segments[segment].y - this.segments[segment - 1].y;
+        let distance = Math.sqrt(dx * dx + dy * dy);
+
+        const dxc = this.segments[segment - 1].x + xDir * this.spacing - this.segments[segment].x;
+        const dyc = this.segments[segment - 1].y + yDir * this.spacing - this.segments[segment].y;
+
+        xDir = dx / distance;
+        yDir = dy / distance;
+
+        dx += dxc * this.SPRING;
+        dy += dyc * this.SPRING;
+
+        distance = Math.sqrt(dx * dx + dy * dy);
 
         this.segments[segment].set(this.segments[segment - 1]);
         this.segments[segment].x += this.spacing * dx / distance;

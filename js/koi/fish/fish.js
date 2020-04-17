@@ -20,7 +20,7 @@ const Fish = function(position, direction, constraint) {
 Fish.prototype.FORCE_CONSTRAINT = .5;
 Fish.prototype.FORCE_REPULSION  = .7;
 Fish.prototype.FORCE_ALIGNMENT = .03;
-Fish.prototype.FORCE_ATTRACTION = .015;
+Fish.prototype.FORCE_ATTRACTION = .03;
 Fish.prototype.RADIUS_REPULSION = 1;
 Fish.prototype.RADIUS_ALIGNMENT = 1.5;
 Fish.prototype.RADIUS_ATTRACTION = 2;
@@ -154,7 +154,7 @@ Fish.prototype.update = function(random) {
 
     this.positionPrevious.set(this.position);
     this.position.add(this.velocity);
-    this.body.update(this.position);
+    this.body.update(this.position, this.direction);
 };
 
 /**
