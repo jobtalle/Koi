@@ -11,7 +11,8 @@ const Body = function(length, thickness, head, direction) {
     this.segmentsPrevious = new Array(this.segments.length);
     this.spacing = length / (this.segments.length - 1);
     this.inverseSpacing = 1 / this.spacing;
-    this.radii = this.makeRadii(thickness, .7);
+    this.thickness = thickness;
+    this.radii = this.makeRadii(thickness, .6);
     this.phase = 0;
 
     this.segments[0] = head.copy();
@@ -24,8 +25,8 @@ const Body = function(length, thickness, head, direction) {
 };
 
 Body.prototype.RESOLUTION = .15;
-Body.prototype.SPRING = .5;
-Body.prototype.SWIM_AMPLITUDE = 5.5;
+Body.prototype.SPRING = .6;
+Body.prototype.SWIM_AMPLITUDE = 8;
 Body.prototype.SWIM_SPEED = 8;
 
 /**
