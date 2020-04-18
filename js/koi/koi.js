@@ -13,7 +13,7 @@ const Koi = function(renderer, random) {
 
     this.grid.addConstraint(this.pond.constraint);
 
-    const fishCount = 14;
+    const fishCount = 20;
 
     for (let i = 0; i < fishCount; ++i)
         this.grid.addFish(

@@ -11,7 +11,6 @@ const Body = function(length, thickness, head, direction) {
     this.segmentsPrevious = new Array(this.segments.length);
     this.spacing = length / (this.segments.length - 1);
     this.inverseSpacing = 1 / this.spacing;
-    this.thickness = thickness;
     this.radii = this.makeRadii(thickness, .6);
     this.phase = 0;
 
@@ -26,7 +25,7 @@ const Body = function(length, thickness, head, direction) {
 
 Body.prototype.RESOLUTION = .15;
 Body.prototype.SPRING = .6;
-Body.prototype.SWIM_AMPLITUDE = 8;
+Body.prototype.SWIM_AMPLITUDE = 10;
 Body.prototype.SWIM_SPEED = 8;
 
 /**
@@ -61,7 +60,8 @@ Body.prototype.update = function(head, direction, speed) {
     this.storePreviousState();
     this.segments[0].set(head);
 
-    const angle = direction.angle() + Math.PI + Math.cos(this.phase) * speed * this.SWIM_AMPLITUDE;
+    const speedFactor = speed - Fish.prototype.SPEED_MIN;
+    const angle = direction.angle() + Math.PI + Math.cos(this.phase) * speedFactor * this.SWIM_AMPLITUDE;
 
     let xDir = Math.cos(angle);
     let yDir = Math.sin(angle);

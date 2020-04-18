@@ -7,8 +7,8 @@
  */
 const Renderer = function(canvas, atlasImage, clearColor = new Color(.3, .5, 1)) {
     this.gl =
-        canvas.getContext("webgl", {antialias: false}) ||
-        canvas.getContext("experimental-webgl", {antialias: false});
+        canvas.getContext("webgl") ||
+        canvas.getContext("experimental-webgl");
     this.programSprites = new Shader(
         this.gl,
         this.SHADER_SPRITES_VERTEX,
