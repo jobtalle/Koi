@@ -12,6 +12,7 @@ const Body = function(length, thickness, head, direction) {
     this.spacing = length / (this.segments.length - 1);
     this.inverseSpacing = 1 / this.spacing;
     this.radii = this.makeRadii(thickness, .6);
+    this.springs = this.makeSprings(this.SPRING_START, this.SPRING_END, this.SPRING_POWER);
     this.phase = 0;
 
     this.segments[0] = head.copy();
@@ -24,7 +25,9 @@ const Body = function(length, thickness, head, direction) {
 };
 
 Body.prototype.RESOLUTION = .15;
-Body.prototype.SPRING = .6;
+Body.prototype.SPRING_START = .8;
+Body.prototype.SPRING_END = .3;
+Body.prototype.SPRING_POWER = 1.7;
 Body.prototype.SWIM_AMPLITUDE = 10;
 Body.prototype.SWIM_SPEED = 8;
 
@@ -32,6 +35,7 @@ Body.prototype.SWIM_SPEED = 8;
  * Calculate body segment radii
  * @param {Number} thickness The body thickness at its thickest point
  * @param {Number} power A power to apply to the position of the widest point of the body
+ * @returns {Number[]} An array of radii
  */
 Body.prototype.makeRadii = function(thickness, power) {
     const radii = new Array(this.segments.length);
@@ -40,6 +44,22 @@ Body.prototype.makeRadii = function(thickness, power) {
         radii[segment] = Math.cos(Math.PI * ((segment / (this.segments.length - 1)) ** power + .5)) * thickness * .5;
 
     return radii;
+};
+
+/**
+ * Make spring strengths
+ * @param {Number} start The spring strength at the head
+ * @param {Number} end The spring strength at the tail
+ * @param {Number} power A power to apply to the spring strength attenuation
+ * @returns {Number[]} An array of strings
+ */
+Body.prototype.makeSprings = function(start, end, power) {
+    const springs = new Array(this.segments.length - 1);
+
+    for (let spring = 0; spring < this.segments.length - 1; ++spring)
+        springs[spring ] = start + (end - start) * ((spring / (this.segments.length - 2)) ** power);
+
+    return springs;
 };
 
 /**
@@ -77,8 +97,8 @@ Body.prototype.update = function(head, direction, speed) {
         xDir = dx / distance;
         yDir = dy / distance;
 
-        dx += dxc * this.SPRING;
-        dy += dyc * this.SPRING;
+        dx += dxc * this.springs[segment - 1];
+        dy += dyc * this.springs[segment - 1];
 
         distance = Math.sqrt(dx * dx + dy * dy);
 
