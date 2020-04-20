@@ -24,7 +24,7 @@ const Koi = function(renderer, random) {
         );
 };
 
-Koi.prototype.UPDATE_RATE = 1 / 20;
+Koi.prototype.UPDATE_RATE = 1 / 15;
 
 /**
  * Update the scene

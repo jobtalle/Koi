@@ -18,21 +18,20 @@ const Fish = function(position, direction, constraint) {
 };
 
 Fish.prototype.FORCE_CONSTRAINT = .5;
-Fish.prototype.FORCE_REPULSION  = .7;
+Fish.prototype.FORCE_REPULSION  = .25;
 Fish.prototype.FORCE_ALIGNMENT = .03;
 Fish.prototype.FORCE_ATTRACTION = .06;
 Fish.prototype.RADIUS_REPULSION = .8;
 Fish.prototype.RADIUS_ALIGNMENT = 1.2;
 Fish.prototype.RADIUS_ATTRACTION = 1.5;
-Fish.prototype.POWER_REPULSION = 2;
-Fish.prototype.SPEED_MIN = .01;
-Fish.prototype.SPEED_SLOW = .025;
+Fish.prototype.SPEED_MIN = .03;
+Fish.prototype.SPEED_SLOW = .07;
 Fish.prototype.SPEED_DECAY = .996;
 Fish.prototype.SPEED_CATCH_UP = .003;
-Fish.prototype.BOOST_CHANCE = .0025;
-Fish.prototype.BOOST_POWER = .0012;
-Fish.prototype.BOOST_MIN = 10;
-Fish.prototype.BOOST_MAX = 45;
+Fish.prototype.BOOST_CHANCE = .0035;
+Fish.prototype.BOOST_POWER = .001;
+Fish.prototype.BOOST_MIN = 5;
+Fish.prototype.BOOST_MAX = 35;
 
 /**
  * Interact with another fish that may be in range, applying interaction to both fishes
@@ -52,7 +51,7 @@ Fish.prototype.interact = function(other) {
             other.speed += (this.speed - other.speed) * this.SPEED_CATCH_UP;
 
         if (distance < this.RADIUS_REPULSION) {
-            const proximity = Math.pow(1 - distance / this.RADIUS_REPULSION, this.POWER_REPULSION);
+            const proximity = 1 - distance / this.RADIUS_REPULSION;
             const fx = proximity * this.FORCE_REPULSION * dx / distance;
             const fy = proximity * this.FORCE_REPULSION * dy / distance;
 
