@@ -22,10 +22,8 @@ Grid.prototype.RESOLUTION = 1;
  * @param {Random} random A randomizer
  */
 Grid.prototype.update = function(random) {
-    for (const fish of this.fishes) {
+    for (const fish of this.fishes)
         fish.velocityPrevious.set(fish.velocity);
-        fish.view = false; // TODO: Debug
-    }
 
     for (let fish = 0; fish < this.fishes.length; ++fish) for(let other = fish + 1; other < this.fishes.length; ++other)
         this.fishes[fish].interact(this.fishes[other]);

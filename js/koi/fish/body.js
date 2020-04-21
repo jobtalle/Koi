@@ -7,48 +7,77 @@
  * @constructor
  */
 const Body = function(length, thickness, head, direction) {
-    this.segments = new Array(Math.ceil(length / this.RESOLUTION) + 1);
-    this.segmentsPrevious = new Array(this.segments.length);
-    this.spacing = length / (this.segments.length - 1);
+    this.spine = new Array(Math.ceil(length / this.RESOLUTION) + 1);
+    this.segmentsPrevious = new Array(this.spine.length);
+    this.spacing = length / (this.spine.length - 1);
     this.inverseSpacing = 1 / this.spacing;
-    this.thickness = thickness;
     this.radii = this.makeRadii(thickness, .6);
+    this.springs = this.makeSprings(this.SPRING_START, this.SPRING_END, this.SPRING_POWER);
     this.phase = 0;
 
-    this.segments[0] = head.copy();
-
-    for (let segment = 1; segment < this.segments.length; ++segment)
-        this.segments[segment] = this.segments[segment - 1].copy().subtract(direction.copy().multiply(this.spacing));
-
-    for (let segment = 0; segment < this.segments.length; ++segment)
-        this.segmentsPrevious[segment] = this.segments[segment].copy();
+    this.initializeSpine(head, direction);
 };
 
 Body.prototype.RESOLUTION = .15;
-Body.prototype.SPRING = .6;
-Body.prototype.SWIM_AMPLITUDE = 8;
-Body.prototype.SWIM_SPEED = 8;
+Body.prototype.SPRING_START = .9;
+Body.prototype.SPRING_END = .3;
+Body.prototype.SPRING_POWER = 1.7;
+Body.prototype.SWIM_AMPLITUDE = 8.5;
+Body.prototype.SWIM_SPEED = 6.5;
+Body.prototype.SPEED_THRESHOLD = .02;
+
+/**
+ * Initialize the spine
+ * @param {Vector} head The head position
+ * @param {Vector} direction The initial body direction
+ */
+Body.prototype.initializeSpine = function(head, direction) {
+    this.spine[0] = head.copy();
+
+    for (let segment = 1; segment < this.spine.length; ++segment)
+        this.spine[segment] = this.spine[segment - 1].copy().subtract(direction.copy().multiply(this.spacing));
+
+    for (let segment = 0; segment < this.spine.length; ++segment)
+        this.segmentsPrevious[segment] = this.spine[segment].copy();
+};
 
 /**
  * Calculate body segment radii
  * @param {Number} thickness The body thickness at its thickest point
  * @param {Number} power A power to apply to the position of the widest point of the body
+ * @returns {Number[]} An array of radii
  */
 Body.prototype.makeRadii = function(thickness, power) {
-    const radii = new Array(this.segments.length);
+    const radii = new Array(this.spine.length);
 
-    for (let segment = 0; segment < this.segments.length; ++segment)
-        radii[segment] = Math.cos(Math.PI * ((segment / (this.segments.length - 1)) ** power + .5)) * thickness * .5;
+    for (let segment = 0; segment < this.spine.length; ++segment)
+        radii[segment] = Math.cos(Math.PI * ((segment / (this.spine.length - 1)) ** power + .5)) * thickness * .5;
 
     return radii;
+};
+
+/**
+ * Make spring strengths
+ * @param {Number} start The spring strength at the head
+ * @param {Number} end The spring strength at the tail
+ * @param {Number} power A power to apply to the spring strength attenuation
+ * @returns {Number[]} An array of strings
+ */
+Body.prototype.makeSprings = function(start, end, power) {
+    const springs = new Array(this.spine.length - 1);
+
+    for (let spring = 0; spring < this.spine.length - 1; ++spring)
+        springs[spring ] = start + (end - start) * ((spring / (this.spine.length - 2)) ** power);
+
+    return springs;
 };
 
 /**
  * Store the current state into the previous state
  */
 Body.prototype.storePreviousState = function() {
-    for (let segment = 0; segment < this.segments.length; ++segment)
-        this.segmentsPrevious[segment].set(this.segments[segment]);
+    for (let segment = 0; segment < this.spine.length; ++segment)
+        this.segmentsPrevious[segment].set(this.spine[segment]);
 };
 
 /**
@@ -59,32 +88,33 @@ Body.prototype.storePreviousState = function() {
  */
 Body.prototype.update = function(head, direction, speed) {
     this.storePreviousState();
-    this.segments[0].set(head);
+    this.spine[0].set(head);
 
-    const angle = direction.angle() + Math.PI + Math.cos(this.phase) * speed * this.SWIM_AMPLITUDE;
+    const speedFactor = speed - this.SPEED_THRESHOLD;
+    const angle = direction.angle() + Math.PI + Math.cos(this.phase) * speedFactor * this.SWIM_AMPLITUDE;
 
     let xDir = Math.cos(angle);
     let yDir = Math.sin(angle);
 
-    for (let segment = 1; segment < this.segments.length; ++segment) {
-        let dx = this.segments[segment].x - this.segments[segment - 1].x;
-        let dy = this.segments[segment].y - this.segments[segment - 1].y;
+    for (let segment = 1; segment < this.spine.length; ++segment) {
+        let dx = this.spine[segment].x - this.spine[segment - 1].x;
+        let dy = this.spine[segment].y - this.spine[segment - 1].y;
         let distance = Math.sqrt(dx * dx + dy * dy);
 
-        const dxc = this.segments[segment - 1].x + xDir * this.spacing - this.segments[segment].x;
-        const dyc = this.segments[segment - 1].y + yDir * this.spacing - this.segments[segment].y;
+        const dxc = this.spine[segment - 1].x + xDir * this.spacing - this.spine[segment].x;
+        const dyc = this.spine[segment - 1].y + yDir * this.spacing - this.spine[segment].y;
 
         xDir = dx / distance;
         yDir = dy / distance;
 
-        dx += dxc * this.SPRING;
-        dy += dyc * this.SPRING;
+        dx += dxc * this.springs[segment - 1];
+        dy += dyc * this.springs[segment - 1];
 
         distance = Math.sqrt(dx * dx + dy * dy);
 
-        this.segments[segment].set(this.segments[segment - 1]);
-        this.segments[segment].x += this.spacing * dx / distance;
-        this.segments[segment].y += this.spacing * dy / distance;
+        this.spine[segment].set(this.spine[segment - 1]);
+        this.spine[segment].x += this.spacing * dx / distance;
+        this.spine[segment].y += this.spacing * dy / distance;
     }
 
     if ((this.phase += this.SWIM_SPEED * speed) > Math.PI * 2)
@@ -97,18 +127,18 @@ Body.prototype.update = function(head, direction, speed) {
  * @param {Number} time The interpolation factor
  */
 Body.prototype.render = function(renderer, time) {
-    let xStart, xEnd = this.segmentsPrevious[0].x + (this.segments[0].x - this.segmentsPrevious[0].x) * time;
-    let yStart, yEnd = this.segmentsPrevious[0].y + (this.segments[0].y - this.segmentsPrevious[0].y) * time;
+    let xStart, xEnd = this.segmentsPrevious[0].x + (this.spine[0].x - this.segmentsPrevious[0].x) * time;
+    let yStart, yEnd = this.segmentsPrevious[0].y + (this.spine[0].y - this.segmentsPrevious[0].y) * time;
     let dxStart, dxEnd = 0;
     let dyStart, dyEnd = 0;
 
-    for (let segment = 1; segment < this.segments.length; ++segment) {
+    for (let segment = 1; segment < this.spine.length; ++segment) {
         xStart = xEnd;
         yStart = yEnd;
         dxStart = dxEnd;
         dyStart = dyEnd;
-        xEnd = this.segmentsPrevious[segment].x + (this.segments[segment].x - this.segmentsPrevious[segment].x) * time;
-        yEnd = this.segmentsPrevious[segment].y + (this.segments[segment].y - this.segmentsPrevious[segment].y) * time;
+        xEnd = this.segmentsPrevious[segment].x + (this.spine[segment].x - this.segmentsPrevious[segment].x) * time;
+        yEnd = this.segmentsPrevious[segment].y + (this.spine[segment].y - this.segmentsPrevious[segment].y) * time;
         dxEnd = xEnd - xStart;
         dyEnd = yEnd - yStart;
 

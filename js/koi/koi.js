@@ -13,7 +13,7 @@ const Koi = function(renderer, random) {
 
     this.grid.addConstraint(this.pond.constraint);
 
-    const fishCount = 14;
+    const fishCount = 20;
 
     for (let i = 0; i < fishCount; ++i)
         this.grid.addFish(
@@ -24,7 +24,7 @@ const Koi = function(renderer, random) {
         );
 };
 
-Koi.prototype.UPDATE_RATE = 1 / 20;
+Koi.prototype.UPDATE_RATE = 1 / 15;
 
 /**
  * Update the scene
