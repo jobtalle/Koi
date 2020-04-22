@@ -114,6 +114,17 @@ Vector.prototype.reflect = function(vector) {
 };
 
 /**
+ * Negate this vector
+ * @returns {Vector} The negated vector
+ */
+Vector.prototype.negate = function() {
+    this.x = -this.x;
+    this.y = -this.y;
+
+    return this;
+}
+
+/**
  * Get the angle this vector is pointing towards
  * @returns {Number} The angle in radians
  */
