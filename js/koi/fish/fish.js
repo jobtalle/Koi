@@ -217,15 +217,15 @@ Fish.prototype.update = function(random) {
 Fish.prototype.render = function(renderer, time) {
     this.body.render(renderer, time);
 
-    if (this.turnForce !== 0) {
-        const x = this.positionPrevious.x + (this.position.x - this.positionPrevious.x) * time;
-        const y = this.positionPrevious.y + (this.position.y - this.positionPrevious.y) * time;
-
-        renderer.drawLine(
-            x - .2, y, Color.RED,
-            x + .2, y, Color.RED);
-        renderer.drawLine(
-            x, y - .2, Color.RED,
-            x, y + .2, Color.RED);
-    }
+    // if (this.turnForce !== 0) {
+    //     const x = this.positionPrevious.x + (this.position.x - this.positionPrevious.x) * time;
+    //     const y = this.positionPrevious.y + (this.position.y - this.positionPrevious.y) * time;
+    //
+    //     renderer.drawLine(
+    //         x - .2, y, Color.RED,
+    //         x + .2, y, Color.RED);
+    //     renderer.drawLine(
+    //         x, y - .2, Color.RED,
+    //         x, y + .2, Color.RED);
+    // }
 };
