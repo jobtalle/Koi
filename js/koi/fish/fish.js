@@ -12,32 +12,92 @@ const Fish = function(position, direction, constraint) {
     this.velocity = direction.copy();
     this.velocityPrevious = direction.copy();
     this.constraint = constraint;
-    this.body = new Body(1.1, .25, position, direction);
+    this.body = new Body(1.1, .25, position, direction); // TODO: This should be independent from fish
     this.speed = this.SPEED_MIN;
     this.boost = 0;
+    this.turnDirection = new Vector();
+    this.turnForce = 0;
 };
 
 Fish.prototype.FORCE_CONSTRAINT = .5;
 Fish.prototype.FORCE_REPULSION  = .25;
-Fish.prototype.FORCE_ALIGNMENT = .03;
-Fish.prototype.FORCE_ATTRACTION = .06;
+Fish.prototype.FORCE_ALIGNMENT = .04;
+Fish.prototype.FORCE_ATTRACTION = .05;
 Fish.prototype.RADIUS_REPULSION = .8;
 Fish.prototype.RADIUS_ALIGNMENT = 1.2;
 Fish.prototype.RADIUS_ATTRACTION = 1.5;
 Fish.prototype.SPEED_MIN = .03;
-Fish.prototype.SPEED_SLOW = .07;
+Fish.prototype.SPEED_SLOW = .05;
 Fish.prototype.SPEED_DECAY = .996;
 Fish.prototype.SPEED_CATCH_UP = .003;
 Fish.prototype.BOOST_CHANCE = .0035;
 Fish.prototype.BOOST_POWER = .001;
 Fish.prototype.BOOST_MIN = 5;
 Fish.prototype.BOOST_MAX = 35;
+Fish.prototype.TURN_CHANCE = .0015;
+Fish.prototype.TURN_FORCE = .06;
+Fish.prototype.TURN_POWER = .4;
+Fish.prototype.TURN_DECAY = .94;
+Fish.prototype.TURN_THRESHOLD = .005;
+Fish.prototype.TURN_CARRY = .95;
+Fish.prototype.TURN_FOLLOW_CHANCE = .025;
+Fish.prototype.TURN_AMPLITUDE = Math.PI * .25;
+
+/**
+ * Turn around
+ * @param {Random} random A randomizer
+ */
+Fish.prototype.turn = function(random) {
+    const angle = this.direction.angle() + Math.PI + this.TURN_AMPLITUDE * (random.getFloat() * 2 - 1);
+
+    this.turnDirection.fromAngle(angle);
+    this.turnForce = this.TURN_FORCE;
+};
+
+/**
+ * Copy the turn behaviour from a neighbour
+ * @param {Fish} other The fish to copy behaviour from
+ */
+Fish.prototype.copyTurn = function(other) {
+    this.turnDirection.set(other.turnDirection);
+    this.turnForce = other.turnForce * this.TURN_CARRY;
+};
+
+/**
+ * Apply a turnDirection force
+ */
+Fish.prototype.applyTurn = function() {
+    const magnitude = this.speed * (this.turnForce ** this.TURN_POWER);
+
+    this.velocity.normalize().multiply(this.speed);
+
+    if (this.direction.dot(this.turnDirection) > 0) {
+        this.velocity.x += this.turnDirection.x * magnitude;
+        this.velocity.y += this.turnDirection.y * magnitude;
+    }
+    else {
+        if (this.direction.y * this.turnDirection.x - this.direction.x * this.turnDirection.y > 0) {
+            this.velocity.x += this.direction.y * magnitude;
+            this.velocity.y -= this.direction.x * magnitude;
+        }
+        else {
+            this.velocity.x -= this.direction.y * magnitude;
+            this.velocity.y += this.direction.x * magnitude;
+        }
+    }
+
+    if (this.turnForce < this.TURN_THRESHOLD)
+        this.turnForce = 0;
+    else
+        this.turnForce *= this.TURN_DECAY;
+};
 
 /**
  * Interact with another fish that may be in range, applying interaction to both fishes
  * @param {Fish} other Another fish
+ * @param {Random} random A randomizer
  */
-Fish.prototype.interact = function(other) {
+Fish.prototype.interact = function(other, random) {
     const dx = this.position.x - other.position.x;
     const dy = this.position.y - other.position.y;
     const squaredDistance = dx * dx + dy * dy;
@@ -59,6 +119,11 @@ Fish.prototype.interact = function(other) {
             this.velocity.y += this.speed * fy;
             other.velocity.x -= other.speed * fx;
             other.velocity.y -= other.speed * fy;
+
+            if (this.turnForce === 0 && other.turnForce !== 0 && random.getFloat() < this.TURN_FOLLOW_CHANCE)
+                this.copyTurn(other);
+            else if (this.turnForce !== 0 && other.turnForce === 0 && random.getFloat() < this.TURN_FOLLOW_CHANCE)
+                other.copyTurn(this);
         }
         else if (distance < this.RADIUS_ALIGNMENT) {
             this.velocity.x += this.speed * this.FORCE_ALIGNMENT * other.direction.x;
@@ -90,21 +155,21 @@ Fish.prototype.constrain = function() {
         const magnitude = this.FORCE_CONSTRAINT * proximity;
 
         if (this.velocity.dot(this.constraint.normal) < 0) {
-            const speed = this.velocity.length();
-
             if (this.velocity.y * this.constraint.normal.x - this.velocity.x * this.constraint.normal.y > 0) {
-                this.velocity.x += this.speed * this.velocity.y * magnitude / speed;
-                this.velocity.y -= this.speed * this.velocity.x * magnitude / speed;
+                this.velocity.x += this.speed * this.direction.y * magnitude;
+                this.velocity.y -= this.speed * this.direction.x * magnitude;
             }
             else {
-                this.velocity.x -= this.speed * this.velocity.y * magnitude / speed;
-                this.velocity.y += this.speed * this.velocity.x * magnitude / speed;
+                this.velocity.x -= this.speed * this.direction.y * magnitude;
+                this.velocity.y += this.speed * this.direction.x * magnitude;
             }
         }
         else {
             this.velocity.x += this.speed * this.constraint.normal.x * magnitude;
             this.velocity.y += this.speed * this.constraint.normal.y * magnitude;
         }
+
+        this.turnForce = 0;
     }
 };
 
@@ -114,6 +179,9 @@ Fish.prototype.constrain = function() {
  */
 Fish.prototype.update = function(random) {
     this.constrain();
+
+    if (this.turnDirection)
+        this.applyTurn();
 
     this.speed *= this.SPEED_DECAY;
 
@@ -129,9 +197,11 @@ Fish.prototype.update = function(random) {
     this.velocity.set(this.direction).multiply(this.speed);
 
     if (this.speed < this.SPEED_SLOW) {
-        if (this.boost === 0 && random.getFloat() < this.BOOST_CHANCE) {
+        if (this.boost === 0 && random.getFloat() < this.BOOST_CHANCE)
             this.boost = this.BOOST_MIN + Math.floor(random.getFloat() * (this.BOOST_MAX - this.BOOST_MIN));
-        }
+
+        if (this.turnForce === 0 && random.getFloat() < this.TURN_CHANCE)
+            this.turn(random);
     }
 
     this.positionPrevious.set(this.position);
@@ -146,4 +216,16 @@ Fish.prototype.update = function(random) {
  */
 Fish.prototype.render = function(renderer, time) {
     this.body.render(renderer, time);
+
+    // if (this.turnForce !== 0) {
+    //     const x = this.positionPrevious.x + (this.position.x - this.positionPrevious.x) * time;
+    //     const y = this.positionPrevious.y + (this.position.y - this.positionPrevious.y) * time;
+    //
+    //     renderer.drawLine(
+    //         x - .2, y, Color.RED,
+    //         x + .2, y, Color.RED);
+    //     renderer.drawLine(
+    //         x, y - .2, Color.RED,
+    //         x, y + .2, Color.RED);
+    // }
 };

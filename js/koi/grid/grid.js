@@ -26,7 +26,7 @@ Grid.prototype.update = function(random) {
         fish.velocityPrevious.set(fish.velocity);
 
     for (let fish = 0; fish < this.fishes.length; ++fish) for(let other = fish + 1; other < this.fishes.length; ++other)
-        this.fishes[fish].interact(this.fishes[other]);
+        this.fishes[fish].interact(this.fishes[other], random);
 
     for (const fish of this.fishes)
         fish.update(random);
