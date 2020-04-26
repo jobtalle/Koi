@@ -8,7 +8,7 @@ const Atlas = function(gl, capacity) {
     this.gl = gl;
     this.width = 0;
     this.height = 0;
-    this.available = [];
+    this.available = null;
     this.occupied = [];
     this.texture = this.createTexture(capacity);
 };
@@ -60,9 +60,6 @@ Atlas.prototype.createTexture = function(capacity) {
 
     this.width = this.height = this.nearestPow2(blockResolution * this.RESOLUTION * this.WIDTH_RATIO);
     this.available = this.createSlots(blockResolution, capacity);
-
-    console.log(capacity);
-    console.log(this.available);
 
     this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
