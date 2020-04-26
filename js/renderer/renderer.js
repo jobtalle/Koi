@@ -14,6 +14,12 @@ const Renderer = function(canvas, clearColor = new Color(.3, .5, 1)) {
         this.SHADER_LINES_FRAGMENT,
         ["transform1", "transform2"],
         ["position", "color"]);
+    this.programStrip = new Shader(
+        this.gl,
+        this.SHADER_STRIP_VERTEX,
+        this.SHADER_STRIP_FRAGMENT,
+        ["transform1", "transform2"],
+        ["position"]);
     this.transformBase = new Transform();
     this.transformStack = [this.transformBase];
     this.vertices = [];
@@ -39,6 +45,7 @@ const Renderer = function(canvas, clearColor = new Color(.3, .5, 1)) {
 
 Renderer.prototype.MODE_MESH = 0;
 Renderer.prototype.MODE_LINES = 1;
+Renderer.prototype.MODE_STRIP = 2;
 Renderer.prototype.SHADER_POSITION = `
 gl_Position = vec4((position * mat2(transform1.xy, transform2.xy) + vec2(transform1.z, transform2.z)) *
   vec2(transform1.w, transform2.w) + vec2(-1, 1), 0, 1);
@@ -66,6 +73,25 @@ varying mediump vec4 v_color;
 
 void main() {
     gl_FragColor = v_color;
+}
+`;
+Renderer.prototype.SHADER_STRIP_VERTEX = `
+#version 100
+
+uniform vec4 transform1;
+uniform vec4 transform2;
+
+attribute vec2 position;
+
+void main() {` +
+    Renderer.prototype.SHADER_POSITION + `
+}
+`;
+Renderer.prototype.SHADER_STRIP_FRAGMENT = `
+#version 100
+
+void main() {
+    gl_FragColor = vec4(1.0);
 }
 `;
 
@@ -156,6 +182,19 @@ Renderer.prototype.renderLines = function() {
 };
 
 /**
+ * Render the buffered strip
+ */
+Renderer.prototype.renderStrip = function() {
+    this.updateBuffers();
+
+    this.gl.enableVertexAttribArray(this.programStrip.aPosition);
+    this.gl.vertexAttribPointer(this.programStrip.aPosition, 2, this.gl.FLOAT, false, 8, 0);
+    this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, this.vertices.length >> 1);
+
+    this.vertices.length = 0;
+};
+
+/**
  * Render all queued render commands
  */
 Renderer.prototype.flush = function() {
@@ -166,6 +205,10 @@ Renderer.prototype.flush = function() {
             break;
         case this.MODE_LINES:
             this.renderLines();
+
+            break;
+        case this.MODE_STRIP:
+            this.renderStrip();
 
             break;
     }
@@ -244,11 +287,11 @@ Renderer.prototype.drawMesh = function(mesh) {
 
 /**
  * Draw a line
- * @param {Number} x1 The start X coordinate in pixels
- * @param {Number} y1 The start Y coordinate in pixels
+ * @param {Number} x1 The start X coordinate
+ * @param {Number} y1 The start Y coordinate
  * @param {Color} color1 The color at the line start
- * @param {Number} x2 The end X coordinate in pixels
- * @param {Number} y2 The end Y coordinate in pixels
+ * @param {Number} x2 The end X coordinate
+ * @param {Number} y2 The end Y coordinate
  * @param {Color} color2 The color at the line end
  */
 Renderer.prototype.drawLine = function(x1, y1, color1, x2, y2, color2) {
@@ -256,8 +299,29 @@ Renderer.prototype.drawLine = function(x1, y1, color1, x2, y2, color2) {
 
     this.vertices.push(
         x1, y1, color1.r, color1.g, color1.b, color1.a,
-        x2, y2, color2.r, color2.g, color2.b, color2.a
-    );
+        x2, y2, color2.r, color2.g, color2.b, color2.a);
+};
+
+/**
+ * Add a point to the strip
+ * @param {Number} x The X coordinate
+ * @param {Number} y The Y coordinate
+ */
+Renderer.prototype.drawStrip = function(x, y) {
+    this.setProgram(this.programStrip, this.MODE_STRIP);
+
+    this.vertices.push(x, y);
+};
+
+/**
+ * Add a point to the strip which is the start or the end of a separated strip mesh
+ * @param {Number} x The X coordinate
+ * @param {Number} y The Y coordinate
+ */
+Renderer.prototype.cutStrip = function(x, y) {
+    this.setProgram(this.programStrip, this.MODE_STRIP);
+
+    this.vertices.push(x, y, x, y);
 };
 
 /**
@@ -323,6 +387,7 @@ Renderer.prototype.getHeight = function() {
  */
 Renderer.prototype.free = function() {
     this.programLines.free();
+    this.programStrip.free();
 
     this.gl.deleteBuffer(this.bufferVertices);
     this.gl.deleteBuffer(this.bufferIndices);

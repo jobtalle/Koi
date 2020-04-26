@@ -10,6 +10,7 @@ const Atlas = function(gl, capacity) {
     this.height = 0;
     this.available = null;
     this.occupied = [];
+    this.framebuffer = gl.createFramebuffer();
     this.texture = this.createTexture(capacity);
 };
 
@@ -75,7 +76,11 @@ Atlas.prototype.createTexture = function(capacity) {
         0,
         this.gl.RGBA,
         this.gl.UNSIGNED_BYTE,
-        new Uint8Array(this.width * this.height << 2));
+        null);
+
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.framebuffer);
+    this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, texture, 0);
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
 
     return texture;
 };
@@ -84,5 +89,6 @@ Atlas.prototype.createTexture = function(capacity) {
  * Free all resources maintained by the atlas
  */
 Atlas.prototype.free = function() {
+    this.gl.deleteFramebuffer(this.framebuffer);
     this.gl.deleteTexture(this.texture);
 };

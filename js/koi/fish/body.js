@@ -18,7 +18,7 @@ const Body = function(length, thickness, head, direction) {
     this.initializeSpine(head, direction);
 };
 
-Body.prototype.RESOLUTION = .15;
+Body.prototype.RESOLUTION = .12;
 Body.prototype.SPRING_START = .9;
 Body.prototype.SPRING_END = .3;
 Body.prototype.SPRING_POWER = 1.7;
@@ -132,7 +132,9 @@ Body.prototype.render = function(renderer, time) {
     let dxStart, dxEnd = 0;
     let dyStart, dyEnd = 0;
 
-    for (let segment = 1; segment < this.spine.length; ++segment) {
+    renderer.cutStrip(xEnd, yEnd);
+
+    for (let segment = 1; segment < this.spine.length - 1; ++segment) {
         xStart = xEnd;
         yStart = yEnd;
         dxStart = dxEnd;
@@ -142,19 +144,17 @@ Body.prototype.render = function(renderer, time) {
         dxEnd = xEnd - xStart;
         dyEnd = yEnd - yStart;
 
-        renderer.drawLine(
-            xStart + this.radii[segment - 1] * dyStart * this.inverseSpacing,
-            yStart - this.radii[segment - 1] * dxStart * this.inverseSpacing,
-            Color.WHITE,
+        renderer.drawStrip(
             xEnd + this.radii[segment] * dyEnd * this.inverseSpacing,
-            yEnd - this.radii[segment] * dxEnd * this.inverseSpacing,
-            Color.WHITE);
-        renderer.drawLine(
-            xStart - this.radii[segment - 1] * dyStart * this.inverseSpacing,
-            yStart + this.radii[segment - 1] * dxStart * this.inverseSpacing,
-            Color.WHITE,
+            yEnd - this.radii[segment] * dxEnd * this.inverseSpacing);
+        renderer.drawStrip(
             xEnd - this.radii[segment] * dyEnd * this.inverseSpacing,
-            yEnd + this.radii[segment] * dxEnd * this.inverseSpacing,
-            Color.WHITE);
+            yEnd + this.radii[segment] * dxEnd * this.inverseSpacing);
     }
+
+    renderer.cutStrip(
+        this.spinePrevious[this.spine.length - 1].x +
+            (this.spine[this.spine.length - 1].x - this.spinePrevious[this.spine.length - 1].x) * time,
+        this.spinePrevious[this.spine.length - 1].y +
+            (this.spine[this.spine.length - 1].y - this.spinePrevious[this.spine.length - 1].y) * time);
 };
