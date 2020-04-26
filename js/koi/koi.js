@@ -10,7 +10,7 @@ const Koi = function(renderer, random) {
     this.grid = new Grid(12, 12);
     this.lastUpdate = new Date();
     this.pond = new Pond(new Circle(new Vector(6, 6), 5));
-
+    this.capacity = this.pond.getCapacity();
     this.grid.addConstraint(this.pond.constraint);
 
     const fishCount = 20;

@@ -14,6 +14,14 @@ const Circle = function(position, radius) {
 Circle.prototype = Object.create(Constraint.prototype);
 
 /**
+ * Get the fish capacity of this constraint
+ * @returns {Number} The maximum number of fish that fit within this constraint
+ */
+Circle.prototype.getCapacity = function() {
+    return Math.floor(Math.PI * (this.radius - this.border) * (this.radius - this.border) / this.AREA_PER_FISH);
+};
+
+/**
  * Sample the distance to the nearest edge of this constraint
  * @param {Vector} position The position to sample
  * @returns {Number} The proximity in the range [0, 1]
