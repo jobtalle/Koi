@@ -20,7 +20,6 @@ const Renderer = function(canvas, clearColor = new Color(.3, .5, 1)) {
     this.indices = [];
     this.bufferVertices = this.gl.createBuffer();
     this.bufferIndices = this.gl.createBuffer();
-    this.atlas = this.gl.createTexture();
     this.transformIndex = 0;
     this.bufferVerticesCapacity = 0;
     this.bufferIndicesCapacity = 0;
@@ -34,12 +33,6 @@ const Renderer = function(canvas, clearColor = new Color(.3, .5, 1)) {
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
     this.gl.clearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
-    this.gl.activeTexture(this.gl.TEXTURE0);
-    this.gl.bindTexture(this.gl.TEXTURE_2D, this.atlas);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
 
     this.resize(canvas.width, canvas.height);
 };
@@ -75,20 +68,6 @@ void main() {
     gl_FragColor = v_color;
 }
 `;
-
-/**
- * Find the nearest power of 2 which is bigger than a number
- * @param {Number} number A number
- * @returns {Number} The biggest power of 2 larger than that number
- */
-Renderer.prototype.nearestPow2 = function(number) {
-    let n = 1;
-
-    while (n < number)
-        n <<= 1;
-
-    return n;
-};
 
 /**
  * Upload the current transform to the currently bound shader

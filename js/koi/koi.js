@@ -11,6 +11,7 @@ const Koi = function(renderer, random) {
     this.lastUpdate = new Date();
     this.pond = new Pond(new Circle(new Vector(6, 6), 5));
     this.capacity = this.pond.getCapacity();
+    this.atlas = new Atlas(renderer.gl, this.capacity);
     this.grid.addConstraint(this.pond.constraint);
 
     const fishCount = 20;
@@ -49,4 +50,11 @@ Koi.prototype.render = function() {
 
     this.renderer.transformPop();
     this.renderer.flush();
+};
+
+/**
+ * Free all resources maintained by the simulation
+ */
+Koi.prototype.free = function() {
+    this.atlas.free();
 };
