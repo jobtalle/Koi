@@ -4,7 +4,7 @@
  * @param {Color} clearColor A background color to clear to
  * @constructor
  */
-const Renderer = function(canvas, clearColor = new Color(.3, .5, 1)) {
+const Renderer = function(canvas, clearColor = new Color(.2, .2, .2)) {
     this.gl =
         canvas.getContext("webgl") ||
         canvas.getContext("experimental-webgl");
