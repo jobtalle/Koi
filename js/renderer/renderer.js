@@ -8,6 +8,7 @@ const Renderer = function(canvas, clearColor = new Color(.3, .5, 1)) {
     this.gl =
         canvas.getContext("webgl") ||
         canvas.getContext("experimental-webgl");
+    this.patterns = new Patterns(this.gl);
     this.programLines = new Shader(
         this.gl,
         this.SHADER_LINES_VERTEX,
@@ -386,6 +387,7 @@ Renderer.prototype.getHeight = function() {
  * Free this renderer
  */
 Renderer.prototype.free = function() {
+    this.patterns.free();
     this.programLines.free();
     this.programStrip.free();
 

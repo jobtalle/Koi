@@ -1,10 +1,12 @@
 /**
  * A fish body
+ * @param {Pattern} pattern A body pattern
  * @param {Number} length The body length
  * @param {Number} thickness The body thickness
  * @constructor
  */
-const Body = function(length, thickness) {
+const Body = function(pattern, length, thickness) {
+    this.pattern = pattern;
     this.spine = new Array(Math.ceil(length / this.RESOLUTION) + 1);
     this.spinePrevious = new Array(this.spine.length);
     this.spacing = length / (this.spine.length - 1);
