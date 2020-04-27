@@ -1,33 +1,31 @@
 /**
  * The renderer
  * @param {HTMLCanvasElement} canvas The canvas to render on
- * @param {Image} atlasImage An image containing the atlas
  * @param {Color} clearColor A background color to clear to
  * @constructor
  */
-const Renderer = function(canvas, atlasImage, clearColor = new Color(.3, .5, 1)) {
+const Renderer = function(canvas, clearColor = new Color(.3, .5, 1)) {
     this.gl =
         canvas.getContext("webgl") ||
         canvas.getContext("experimental-webgl");
-    this.programSprites = new Shader(
-        this.gl,
-        this.SHADER_SPRITES_VERTEX,
-        this.SHADER_SPRITES_FRAGMENT,
-        ["transform1", "transform2"],
-        ["position", "uv"]);
     this.programLines = new Shader(
         this.gl,
         this.SHADER_LINES_VERTEX,
         this.SHADER_LINES_FRAGMENT,
         ["transform1", "transform2"],
         ["position", "color"]);
+    this.programStrip = new Shader(
+        this.gl,
+        this.SHADER_STRIP_VERTEX,
+        this.SHADER_STRIP_FRAGMENT,
+        ["transform1", "transform2"],
+        ["position"]);
     this.transformBase = new Transform();
     this.transformStack = [this.transformBase];
     this.vertices = [];
     this.indices = [];
     this.bufferVertices = this.gl.createBuffer();
     this.bufferIndices = this.gl.createBuffer();
-    this.atlas = this.gl.createTexture();
     this.transformIndex = 0;
     this.bufferVerticesCapacity = 0;
     this.bufferIndicesCapacity = 0;
@@ -41,51 +39,16 @@ const Renderer = function(canvas, atlasImage, clearColor = new Color(.3, .5, 1))
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
     this.gl.clearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
-    this.gl.activeTexture(this.gl.TEXTURE0);
-    this.gl.bindTexture(this.gl.TEXTURE_2D, this.atlas);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
-
-    this.initializeSprites(atlasImage);
 
     this.resize(canvas.width, canvas.height);
 };
 
-Renderer.prototype.MODE_SPRITES = 0;
-Renderer.prototype.MODE_MESH = 1;
-Renderer.prototype.MODE_LINES = 2;
+Renderer.prototype.MODE_MESH = 0;
+Renderer.prototype.MODE_LINES = 1;
+Renderer.prototype.MODE_STRIP = 2;
 Renderer.prototype.SHADER_POSITION = `
 gl_Position = vec4((position * mat2(transform1.xy, transform2.xy) + vec2(transform1.z, transform2.z)) *
   vec2(transform1.w, transform2.w) + vec2(-1, 1), 0, 1);
-`;
-Renderer.prototype.SHADER_SPRITES_VERTEX = `
-#version 100
-
-uniform vec4 transform1;
-uniform vec4 transform2;
-
-attribute vec2 position;
-attribute vec2 uv;
-
-varying vec2 v_uv;
-
-void main() {
-    v_uv = uv;` +
-    Renderer.prototype.SHADER_POSITION + `
-}
-`;
-Renderer.prototype.SHADER_SPRITES_FRAGMENT = `
-#version 100
-
-uniform sampler2D atlas;
-
-varying mediump vec2 v_uv;
-
-void main() {
-    gl_FragColor = texture2D(atlas, v_uv);
-}
 `;
 Renderer.prototype.SHADER_LINES_VERTEX = `
 #version 100
@@ -112,55 +75,25 @@ void main() {
     gl_FragColor = v_color;
 }
 `;
+Renderer.prototype.SHADER_STRIP_VERTEX = `
+#version 100
 
-/**
- * Find the nearest power of 2 which is bigger than a number
- * @param {Number} number A number
- * @returns {Number} The biggest power of 2 larger than that number
- */
-Renderer.prototype.nearestPow2 = function(number) {
-    let n = 1;
+uniform vec4 transform1;
+uniform vec4 transform2;
 
-    while (n < number)
-        n <<= 1;
+attribute vec2 position;
 
-    return n;
-};
+void main() {` +
+    Renderer.prototype.SHADER_POSITION + `
+}
+`;
+Renderer.prototype.SHADER_STRIP_FRAGMENT = `
+#version 100
 
-/**
- * Initialize the sprite data
- * @param {Image} atlasImage An image containing the atlas
- */
-Renderer.prototype.initializeSprites = function(atlasImage) {
-    const canvas = document.createElement("canvas");
-
-    canvas.width = this.nearestPow2(atlasImage.width);
-    canvas.height = this.nearestPow2(atlasImage.height);
-    canvas.getContext("2d").drawImage(atlasImage, 0, 0);
-
-    const invWidth = 1 / canvas.width;
-    const invHeight = 1 / canvas.height;
-    const epsilon = 0.000001;
-
-    this.gl.texImage2D(
-        this.gl.TEXTURE_2D,
-        0,
-        this.gl.RGBA,
-        this.gl.RGBA,
-        this.gl.UNSIGNED_BYTE,
-        canvas);
-
-    for (const sprite in sprites) {
-        const data = sprites[sprite];
-
-        for (const frame of data.frames) {
-            frame["uStart"] = frame.x * invWidth + epsilon;
-            frame["uEnd"] = frame.uStart + data.w * invWidth - epsilon - epsilon;
-            frame["vStart"] = frame.y * invHeight + epsilon;
-            frame["vEnd"] = frame.vStart + data.h * invHeight - epsilon - epsilon;
-        }
-    }
-};
+void main() {
+    gl_FragColor = vec4(1.0);
+}
+`;
 
 /**
  * Upload the current transform to the currently bound shader
@@ -220,32 +153,17 @@ Renderer.prototype.setProgram = function(program, mode) {
 };
 
 /**
- * Render all buffered sprites
- */
-Renderer.prototype.renderSprites = function() {
-    this.updateBuffers();
-
-    this.gl.enableVertexAttribArray(this.programSprites.aPosition);
-    this.gl.vertexAttribPointer(this.programSprites.aPosition, 2, this.gl.FLOAT, false, 16, 0);
-    this.gl.enableVertexAttribArray(this.programSprites.aUv);
-    this.gl.vertexAttribPointer(this.programSprites.aUv, 2, this.gl.FLOAT, false, 16, 8);
-    this.gl.drawElements(this.gl.TRIANGLES, this.indices.length, this.gl.UNSIGNED_SHORT, 0);
-
-    this.vertices.length = this.indices.length = 0;
-};
-
-/**
  * Render a mesh
  */
 Renderer.prototype.renderMesh = function() {
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.currentMesh.bufferVertices);
-    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.currentMesh.bufferIndices);
-
-    this.gl.enableVertexAttribArray(this.programSprites.aPosition);
-    this.gl.vertexAttribPointer(this.programSprites.aPosition, 2, this.gl.FLOAT, false, 16, 0);
-    this.gl.enableVertexAttribArray(this.programSprites.aUv);
-    this.gl.vertexAttribPointer(this.programSprites.aUv, 2, this.gl.FLOAT, false, 16, 8);
-    this.gl.drawElements(this.gl.TRIANGLES, this.currentMesh.this.indices.length, this.gl.UNSIGNED_SHORT, 0);
+    // this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.currentMesh.bufferVertices);
+    // this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.currentMesh.bufferIndices);
+    //
+    // this.gl.enableVertexAttribArray(this.programSprites.aPosition);
+    // this.gl.vertexAttribPointer(this.programSprites.aPosition, 2, this.gl.FLOAT, false, 16, 0);
+    // this.gl.enableVertexAttribArray(this.programSprites.aUv);
+    // this.gl.vertexAttribPointer(this.programSprites.aUv, 2, this.gl.FLOAT, false, 16, 8);
+    // this.gl.drawElements(this.gl.TRIANGLES, this.currentMesh.this.indices.length, this.gl.UNSIGNED_SHORT, 0);
 };
 
 /**
@@ -264,20 +182,33 @@ Renderer.prototype.renderLines = function() {
 };
 
 /**
+ * Render the buffered strip
+ */
+Renderer.prototype.renderStrip = function() {
+    this.updateBuffers();
+
+    this.gl.enableVertexAttribArray(this.programStrip.aPosition);
+    this.gl.vertexAttribPointer(this.programStrip.aPosition, 2, this.gl.FLOAT, false, 8, 0);
+    this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, this.vertices.length >> 1);
+
+    this.vertices.length = 0;
+};
+
+/**
  * Render all queued render commands
  */
 Renderer.prototype.flush = function() {
     switch (this.mode) {
-        case this.MODE_SPRITES:
-            this.renderSprites();
-
-            break;
         case this.MODE_MESH:
             this.renderMesh();
 
             break;
         case this.MODE_LINES:
             this.renderLines();
+
+            break;
+        case this.MODE_STRIP:
+            this.renderStrip();
 
             break;
     }
@@ -338,118 +269,29 @@ Renderer.prototype.transformPop = function() {
 };
 
 /**
- * Draw a sprite
- * @param {Sprite} sprite The sprite to draw
- * @param {Number} x The X coordinate in pixels
- * @param {Number} y The Y coordinate in pixels
- */
-Renderer.prototype.drawSprite = function(sprite, x, y) {
-    this.setProgram(this.programSprites, this.MODE_SPRITES);
-
-    const firstVertex = this.vertices.length >> 2;
-    const data = sprites[sprite.name];
-    const frame = data.frames[Math.floor(sprite.frame)];
-
-    x -= data.w * sprite.origin.x;
-    y -= data.h * sprite.origin.y;
-
-    this.vertices.push(
-        x, y, frame.uStart, frame.vStart,
-        x, y + data.h, frame.uStart, frame.vEnd,
-        x + data.w, y + data.h, frame.uEnd, frame.vEnd,
-        x + data.w, y, frame.uEnd, frame.vStart);
-    this.indices.push(
-        firstVertex, firstVertex + 1, firstVertex + 2,
-        firstVertex + 2, firstVertex + 3, firstVertex);
-};
-
-/**
- * Draw a transformed sprite
- * @param {Sprite} sprite The sprite to draw
- * @param {Transform} transform A transform to apply to the sprite
- */
-Renderer.prototype.drawSpriteTransformed = function(sprite, transform) {
-    this.setProgram(this.programSprites, this.MODE_SPRITES);
-
-    const firstVertex = this.vertices.length >> 2;
-    const data = sprites[sprite.name];
-    const frame = data.frames[Math.floor(sprite.frame)];
-    let left = -data.w * sprite.origin.x;
-    let top = -data.h * sprite.origin.y;
-    let right = left + data.w;
-    let bottom = top + data.h;
-
-    this.vertices.push(
-        transform._20 - transform._10 * left - transform._00 * top,
-        transform._21 - transform._11 * left - transform._01 * top,
-        frame.uStart, frame.vStart,
-        transform._20 - transform._10 * left - transform._00 * bottom,
-        transform._21 - transform._11 * left - transform._01 * bottom,
-        frame.uStart, frame.vEnd,
-        transform._20 - transform._10 * right - transform._00 * bottom,
-        transform._21 - transform._11 * right - transform._01 * bottom,
-        frame.uEnd, frame.vEnd,
-        transform._20 - transform._10 * right - transform._00 * top,
-        transform._21 - transform._11 * right - transform._01 * top,
-        frame.uEnd, frame.vStart);
-    this.indices.push(
-        firstVertex, firstVertex + 1, firstVertex + 2,
-        firstVertex + 2, firstVertex + 3, firstVertex);
-};
-
-/**
- * Draw a rotated sprite
- * @param {Sprite} sprite The sprite to draw
- * @param {Number} x The X coordinate in pixels
- * @param {Number} y The Y coordinate in pixels
- * @param {Number} angle The angle in radians
- */
-Renderer.prototype.drawSpriteRotated = function(sprite, x, y, angle) {
-    this.setProgram(this.programSprites, this.MODE_SPRITES);
-
-    const cos = Math.cos(angle);
-    const sin = Math.sin(angle);
-    const firstVertex = this.vertices.length >> 2;
-    const data = sprites[sprite.name];
-    const frame = data.frames[Math.floor(sprite.frame)];
-
-    x -= data.w * sprite.origin.x * cos - data.h * sprite.origin.y * sin;
-    y -= data.w * sprite.origin.x * sin + data.h * sprite.origin.y * cos;
-
-    this.vertices.push(
-        x, y, frame.uStart, frame.vStart,
-        x - data.h * sin, y + data.h * cos, frame.uStart, frame.vEnd,
-        x + data.w * cos - data.h * sin, y + data.w * sin + data.h * cos, frame.uEnd, frame.vEnd,
-        x + data.w * cos, y + data.w * sin, frame.uEnd, frame.vStart);
-    this.indices.push(
-        firstVertex, firstVertex + 1, firstVertex + 2,
-        firstVertex + 2, firstVertex + 3, firstVertex);
-};
-
-/**
  * Draw a mesh
  * @param {Mesh} mesh A mesh
  */
 Renderer.prototype.drawMesh = function(mesh) {
-    this.setProgram(this.programSprites, this.MODE_MESH);
-
-    this.currentMesh = mesh;
-
-    if (mesh.bufferVertices === null)
-        this.createMeshBuffers(mesh);
-    else if (mesh.updated)
-        this.updateMeshBuffers(mesh);
-
-    this.setProgram(null, -1);
+    // this.setProgram(this.programSprites, this.MODE_MESH);
+    //
+    // this.currentMesh = mesh;
+    //
+    // if (mesh.bufferVertices === null)
+    //     this.createMeshBuffers(mesh);
+    // else if (mesh.updated)
+    //     this.updateMeshBuffers(mesh);
+    //
+    // this.setProgram(null, -1);
 };
 
 /**
  * Draw a line
- * @param {Number} x1 The start X coordinate in pixels
- * @param {Number} y1 The start Y coordinate in pixels
+ * @param {Number} x1 The start X coordinate
+ * @param {Number} y1 The start Y coordinate
  * @param {Color} color1 The color at the line start
- * @param {Number} x2 The end X coordinate in pixels
- * @param {Number} y2 The end Y coordinate in pixels
+ * @param {Number} x2 The end X coordinate
+ * @param {Number} y2 The end Y coordinate
  * @param {Color} color2 The color at the line end
  */
 Renderer.prototype.drawLine = function(x1, y1, color1, x2, y2, color2) {
@@ -457,8 +299,29 @@ Renderer.prototype.drawLine = function(x1, y1, color1, x2, y2, color2) {
 
     this.vertices.push(
         x1, y1, color1.r, color1.g, color1.b, color1.a,
-        x2, y2, color2.r, color2.g, color2.b, color2.a
-    );
+        x2, y2, color2.r, color2.g, color2.b, color2.a);
+};
+
+/**
+ * Add a point to the strip
+ * @param {Number} x The X coordinate
+ * @param {Number} y The Y coordinate
+ */
+Renderer.prototype.drawStrip = function(x, y) {
+    this.setProgram(this.programStrip, this.MODE_STRIP);
+
+    this.vertices.push(x, y);
+};
+
+/**
+ * Add a point to the strip which is the start or the end of a separated strip mesh
+ * @param {Number} x The X coordinate
+ * @param {Number} y The Y coordinate
+ */
+Renderer.prototype.cutStrip = function(x, y) {
+    this.setProgram(this.programStrip, this.MODE_STRIP);
+
+    this.vertices.push(x, y, x, y);
 };
 
 /**
@@ -491,8 +354,6 @@ Renderer.prototype.resize = function(width, height) {
     this.width = width;
     this.height = height;
 
-    this.gl.viewport(0, 0, width, height);
-
     this.setProgram(null, -1);
 };
 
@@ -500,6 +361,8 @@ Renderer.prototype.resize = function(width, height) {
  * Clear the render context
  */
 Renderer.prototype.clear = function() {
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
+    this.gl.viewport(0, 0, this.width, this.height);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
 };
 
@@ -523,8 +386,8 @@ Renderer.prototype.getHeight = function() {
  * Free this renderer
  */
 Renderer.prototype.free = function() {
-    this.programSprites.free();
     this.programLines.free();
+    this.programStrip.free();
 
     this.gl.deleteBuffer(this.bufferVertices);
     this.gl.deleteBuffer(this.bufferIndices);

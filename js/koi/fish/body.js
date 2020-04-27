@@ -8,7 +8,7 @@
  */
 const Body = function(length, thickness, head, direction) {
     this.spine = new Array(Math.ceil(length / this.RESOLUTION) + 1);
-    this.segmentsPrevious = new Array(this.spine.length);
+    this.spinePrevious = new Array(this.spine.length);
     this.spacing = length / (this.spine.length - 1);
     this.inverseSpacing = 1 / this.spacing;
     this.radii = this.makeRadii(thickness, .6);
@@ -18,7 +18,7 @@ const Body = function(length, thickness, head, direction) {
     this.initializeSpine(head, direction);
 };
 
-Body.prototype.RESOLUTION = .15;
+Body.prototype.RESOLUTION = .14;
 Body.prototype.SPRING_START = .9;
 Body.prototype.SPRING_END = .3;
 Body.prototype.SPRING_POWER = 1.7;
@@ -33,12 +33,12 @@ Body.prototype.SPEED_THRESHOLD = .02;
  */
 Body.prototype.initializeSpine = function(head, direction) {
     this.spine[0] = head.copy();
+    this.spinePrevious[0] = head.copy();
 
-    for (let segment = 1; segment < this.spine.length; ++segment)
+    for (let segment = 1; segment < this.spine.length; ++segment) {
         this.spine[segment] = this.spine[segment - 1].copy().subtract(direction.copy().multiply(this.spacing));
-
-    for (let segment = 0; segment < this.spine.length; ++segment)
-        this.segmentsPrevious[segment] = this.spine[segment].copy();
+        this.spinePrevious[segment] = this.spine[segment].copy();
+    }
 };
 
 /**
@@ -77,7 +77,7 @@ Body.prototype.makeSprings = function(start, end, power) {
  */
 Body.prototype.storePreviousState = function() {
     for (let segment = 0; segment < this.spine.length; ++segment)
-        this.segmentsPrevious[segment].set(this.spine[segment]);
+        this.spinePrevious[segment].set(this.spine[segment]);
 };
 
 /**
@@ -127,34 +127,34 @@ Body.prototype.update = function(head, direction, speed) {
  * @param {Number} time The interpolation factor
  */
 Body.prototype.render = function(renderer, time) {
-    let xStart, xEnd = this.segmentsPrevious[0].x + (this.spine[0].x - this.segmentsPrevious[0].x) * time;
-    let yStart, yEnd = this.segmentsPrevious[0].y + (this.spine[0].y - this.segmentsPrevious[0].y) * time;
+    let xStart, xEnd = this.spinePrevious[0].x + (this.spine[0].x - this.spinePrevious[0].x) * time;
+    let yStart, yEnd = this.spinePrevious[0].y + (this.spine[0].y - this.spinePrevious[0].y) * time;
     let dxStart, dxEnd = 0;
     let dyStart, dyEnd = 0;
 
-    for (let segment = 1; segment < this.spine.length; ++segment) {
+    renderer.cutStrip(xEnd, yEnd);
+
+    for (let segment = 1; segment < this.spine.length - 1; ++segment) {
         xStart = xEnd;
         yStart = yEnd;
         dxStart = dxEnd;
         dyStart = dyEnd;
-        xEnd = this.segmentsPrevious[segment].x + (this.spine[segment].x - this.segmentsPrevious[segment].x) * time;
-        yEnd = this.segmentsPrevious[segment].y + (this.spine[segment].y - this.segmentsPrevious[segment].y) * time;
+        xEnd = this.spinePrevious[segment].x + (this.spine[segment].x - this.spinePrevious[segment].x) * time;
+        yEnd = this.spinePrevious[segment].y + (this.spine[segment].y - this.spinePrevious[segment].y) * time;
         dxEnd = xEnd - xStart;
         dyEnd = yEnd - yStart;
 
-        renderer.drawLine(
-            xStart + this.radii[segment - 1] * dyStart * this.inverseSpacing,
-            yStart - this.radii[segment - 1] * dxStart * this.inverseSpacing,
-            Color.WHITE,
-            xEnd + this.radii[segment] * dyEnd * this.inverseSpacing,
-            yEnd - this.radii[segment] * dxEnd * this.inverseSpacing,
-            Color.WHITE);
-        renderer.drawLine(
-            xStart - this.radii[segment - 1] * dyStart * this.inverseSpacing,
-            yStart + this.radii[segment - 1] * dxStart * this.inverseSpacing,
-            Color.WHITE,
+        renderer.drawStrip(
             xEnd - this.radii[segment] * dyEnd * this.inverseSpacing,
-            yEnd + this.radii[segment] * dxEnd * this.inverseSpacing,
-            Color.WHITE);
+            yEnd + this.radii[segment] * dxEnd * this.inverseSpacing);
+        renderer.drawStrip(
+            xEnd + this.radii[segment] * dyEnd * this.inverseSpacing,
+            yEnd - this.radii[segment] * dxEnd * this.inverseSpacing);
     }
+
+    renderer.cutStrip(
+        this.spinePrevious[this.spine.length - 1].x +
+            (this.spine[this.spine.length - 1].x - this.spinePrevious[this.spine.length - 1].x) * time,
+        this.spinePrevious[this.spine.length - 1].y +
+            (this.spine[this.spine.length - 1].y - this.spinePrevious[this.spine.length - 1].y) * time);
 };

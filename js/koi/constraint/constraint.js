@@ -7,3 +7,5 @@ const Constraint = function(border) {
     this.border = border;
     this.normal = new Vector(0, 0);
 };
+
+Constraint.prototype.AREA_PER_FISH = 1.3;

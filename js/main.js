@@ -1,35 +1,27 @@
-{
-    const atlas = new Image();
+const renderer = new Renderer(document.getElementById("renderer"));
+const random = new Random();
+const koi = new Koi(renderer, random);
 
-    atlas.onload = () => {
-        const renderer = new Renderer(document.getElementById("renderer"), atlas);
-        const random = new Random();
-        const koi = new Koi(renderer, random);
+const resize = () => {
+    const canvas = document.getElementById("renderer");
+    const wrapper = document.getElementById("wrapper");
 
-        const resize = () => {
-            const canvas = document.getElementById("renderer");
-            const wrapper = document.getElementById("wrapper");
+    canvas.width = wrapper.offsetWidth;
+    canvas.height = wrapper.offsetHeight;
 
-            canvas.width = wrapper.offsetWidth;
-            canvas.height = wrapper.offsetHeight;
+    renderer.resize(canvas.width, canvas.height);
+};
 
-            renderer.resize(canvas.width, canvas.height);
-        };
+window.onresize = resize;
 
-        window.onresize = resize;
+resize();
 
-        resize();
+setInterval(() => koi.update(), Math.round(Koi.prototype.UPDATE_RATE * 1000));
 
-        setInterval(() => koi.update(), Math.round(Koi.prototype.UPDATE_RATE * 1000));
+const loop = () => {
+    koi.render();
 
-        const loop = () => {
-            koi.render();
+    requestAnimationFrame(loop);
+};
 
-            requestAnimationFrame(loop);
-        };
-
-        requestAnimationFrame(loop);
-    };
-
-    atlas.src = "atlas.png";
-}
+requestAnimationFrame(loop);
