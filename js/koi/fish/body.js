@@ -2,11 +2,9 @@
  * A fish body
  * @param {Number} length The body length
  * @param {Number} thickness The body thickness
- * @param {Vector} head The head position
- * @param {Vector} direction The body direction
  * @constructor
  */
-const Body = function(length, thickness, head, direction) {
+const Body = function(length, thickness) {
     this.spine = new Array(Math.ceil(length / this.RESOLUTION) + 1);
     this.spinePrevious = new Array(this.spine.length);
     this.spacing = length / (this.spine.length - 1);
@@ -14,8 +12,6 @@ const Body = function(length, thickness, head, direction) {
     this.radii = this.makeRadii(thickness, .6);
     this.springs = this.makeSprings(this.SPRING_START, this.SPRING_END, this.SPRING_POWER);
     this.phase = 0;
-
-    this.initializeSpine(head, direction);
 };
 
 Body.prototype.RESOLUTION = .14;

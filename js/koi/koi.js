@@ -19,6 +19,7 @@ const Koi = function(renderer, random) {
     for (let i = 0; i < fishCount; ++i)
         this.grid.addFish(
             new Fish(
+                new Body(1.2, .3),
                 new Vector(6 + 6 * (random.getFloat() - .5), 6 + 6 * (random.getFloat() - .5)),
                 new Vector().fromAngle(Math.PI * 2 * random.getFloat()),
                 this.pond.constraint)
