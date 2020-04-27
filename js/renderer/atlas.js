@@ -9,6 +9,7 @@ const Atlas = function(renderer, capacity) {
     this.width = 0;
     this.height = 0;
     this.slotSize = new Vector();
+    this.pixelSize = new Vector();
     this.available = null;
     this.framebuffer = renderer.gl.createFramebuffer();
     this.texture = this.createTexture(renderer.gl, capacity);
@@ -61,8 +62,10 @@ Atlas.prototype.createTexture = function(gl, capacity) {
     const blockResolution = Math.ceil(Math.sqrt(blocks));
 
     this.width = this.height = this.nearestPow2(blockResolution * this.RESOLUTION * this.WIDTH_RATIO);
-    this.slotSize.x = this.RESOLUTION * this.WIDTH_RATIO / this.width;
-    this.slotSize.y = this.RESOLUTION / this.height;
+    this.pixelSize.x = 1 / this.width;
+    this.pixelSize.y = 1 / this.height;
+    this.slotSize.x = this.RESOLUTION * this.WIDTH_RATIO * this.pixelSize.x;
+    this.slotSize.y = this.RESOLUTION * this.pixelSize.y;
     this.available = this.createSlots(blockResolution, capacity);
 
     gl.bindTexture(gl.TEXTURE_2D, texture);
