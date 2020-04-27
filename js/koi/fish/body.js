@@ -18,7 +18,7 @@ const Body = function(length, thickness, head, direction) {
     this.initializeSpine(head, direction);
 };
 
-Body.prototype.RESOLUTION = .12;
+Body.prototype.RESOLUTION = .14;
 Body.prototype.SPRING_START = .9;
 Body.prototype.SPRING_END = .3;
 Body.prototype.SPRING_POWER = 1.7;
@@ -145,11 +145,11 @@ Body.prototype.render = function(renderer, time) {
         dyEnd = yEnd - yStart;
 
         renderer.drawStrip(
-            xEnd + this.radii[segment] * dyEnd * this.inverseSpacing,
-            yEnd - this.radii[segment] * dxEnd * this.inverseSpacing);
-        renderer.drawStrip(
             xEnd - this.radii[segment] * dyEnd * this.inverseSpacing,
             yEnd + this.radii[segment] * dxEnd * this.inverseSpacing);
+        renderer.drawStrip(
+            xEnd + this.radii[segment] * dyEnd * this.inverseSpacing,
+            yEnd - this.radii[segment] * dxEnd * this.inverseSpacing);
     }
 
     renderer.cutStrip(

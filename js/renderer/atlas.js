@@ -8,8 +8,9 @@ const Atlas = function(gl, capacity) {
     this.gl = gl;
     this.width = 0;
     this.height = 0;
+    this.slotWidth = 0;
+    this.slotHeight = 0;
     this.available = null;
-    this.occupied = [];
     this.framebuffer = gl.createFramebuffer();
     this.texture = this.createTexture(capacity);
 };
@@ -43,8 +44,8 @@ Atlas.prototype.createSlots = function(blockResolution, capacity) {
     for (let y = 0; y < blockResolution; ++y) for (let x = 0; x < blockResolution; ++x)
         for (let row = 0; row < this.WIDTH_RATIO; ++row)
             if (available.push(new Vector(
-                x * this.WIDTH_RATIO * this.RESOLUTION,
-                (y * this.WIDTH_RATIO + row) * this.RESOLUTION)) === capacity)
+                (x * this.WIDTH_RATIO * this.RESOLUTION) / this.width,
+                ((y * this.WIDTH_RATIO + row) * this.RESOLUTION) / this.height)) === capacity)
                 return available;
 
     return available;
@@ -60,6 +61,8 @@ Atlas.prototype.createTexture = function(capacity) {
     const blockResolution = Math.ceil(Math.sqrt(blocks));
 
     this.width = this.height = this.nearestPow2(blockResolution * this.RESOLUTION * this.WIDTH_RATIO);
+    this.slotWidth = this.RESOLUTION * this.WIDTH_RATIO / this.width;
+    this.slotHeight = this.RESOLUTION / this.height;
     this.available = this.createSlots(blockResolution, capacity);
 
     this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
@@ -80,9 +83,24 @@ Atlas.prototype.createTexture = function(capacity) {
 
     this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.framebuffer);
     this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, texture, 0);
-    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
 
     return texture;
+};
+
+/**
+ * Get an atlas slot to write to
+ * @returns {Vector} The origin of the atlas slot
+ */
+Atlas.prototype.getSlot = function() {
+    return this.available.pop();
+};
+
+/**
+ * Return an atlas slot that is no longer being used
+ * @param {Vector} slot The origin of the atlas slot
+ */
+Atlas.prototype.returnSlot = function(slot) {
+    this.available.push(slot);
 };
 
 /**

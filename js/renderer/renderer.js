@@ -354,8 +354,6 @@ Renderer.prototype.resize = function(width, height) {
     this.width = width;
     this.height = height;
 
-    this.gl.viewport(0, 0, width, height);
-
     this.setProgram(null, -1);
 };
 
@@ -363,6 +361,8 @@ Renderer.prototype.resize = function(width, height) {
  * Clear the render context
  */
 Renderer.prototype.clear = function() {
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
+    this.gl.viewport(0, 0, this.width, this.height);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
 };
 
