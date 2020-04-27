@@ -8,8 +8,7 @@ const Atlas = function(renderer, capacity) {
     this.renderer = renderer;
     this.width = 0;
     this.height = 0;
-    this.slotWidth = 0;
-    this.slotHeight = 0;
+    this.slotSize = new Vector();
     this.available = null;
     this.framebuffer = renderer.gl.createFramebuffer();
     this.texture = this.createTexture(renderer.gl, capacity);
@@ -62,8 +61,8 @@ Atlas.prototype.createTexture = function(gl, capacity) {
     const blockResolution = Math.ceil(Math.sqrt(blocks));
 
     this.width = this.height = this.nearestPow2(blockResolution * this.RESOLUTION * this.WIDTH_RATIO);
-    this.slotWidth = this.RESOLUTION * this.WIDTH_RATIO / this.width;
-    this.slotHeight = this.RESOLUTION / this.height;
+    this.slotSize.x = this.RESOLUTION * this.WIDTH_RATIO / this.width;
+    this.slotSize.y = this.RESOLUTION / this.height;
     this.available = this.createSlots(blockResolution, capacity);
 
     gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -109,7 +108,10 @@ Atlas.prototype.returnSlot = function(slot) {
  * @param {Pattern} pattern The pattern to write to the atlas
  */
 Atlas.prototype.write = function(pattern) {
-    console.log("Writing to " + pattern.slot.x + ", " + pattern.slot.y);
+    this.renderer.gl.viewport(0, 0, this.width, this.height);
+    this.renderer.gl.bindFramebuffer(this.renderer.gl.FRAMEBUFFER, this.framebuffer);
+
+    this.renderer.patterns.write(pattern);
 };
 
 /**

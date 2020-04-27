@@ -130,9 +130,15 @@ Body.prototype.render = function(renderer, time) {
     let dxStart, dxEnd = 0;
     let dyStart, dyEnd = 0;
 
-    renderer.cutStrip(xEnd, yEnd);
+    renderer.cutStrip(
+        xEnd,
+        yEnd,
+        this.pattern.slot.x,
+        this.pattern.slot.y + this.pattern.size.y * .5);
 
     for (let segment = 1; segment < this.spine.length - 1; ++segment) {
+        const u = this.pattern.slot.x + this.pattern.size.x * segment / (this.spine.length - 1);
+
         xStart = xEnd;
         yStart = yEnd;
         dxStart = dxEnd;
@@ -144,15 +150,21 @@ Body.prototype.render = function(renderer, time) {
 
         renderer.drawStrip(
             xEnd - this.radii[segment] * dyEnd * this.inverseSpacing,
-            yEnd + this.radii[segment] * dxEnd * this.inverseSpacing);
+            yEnd + this.radii[segment] * dxEnd * this.inverseSpacing,
+            u,
+            this.pattern.slot.y);
         renderer.drawStrip(
             xEnd + this.radii[segment] * dyEnd * this.inverseSpacing,
-            yEnd - this.radii[segment] * dxEnd * this.inverseSpacing);
+            yEnd - this.radii[segment] * dxEnd * this.inverseSpacing,
+            u,
+            this.pattern.slot.y + this.pattern.size.y);
     }
 
     renderer.cutStrip(
         this.spinePrevious[this.spine.length - 1].x +
             (this.spine[this.spine.length - 1].x - this.spinePrevious[this.spine.length - 1].x) * time,
         this.spinePrevious[this.spine.length - 1].y +
-            (this.spine[this.spine.length - 1].y - this.spinePrevious[this.spine.length - 1].y) * time);
+            (this.spine[this.spine.length - 1].y - this.spinePrevious[this.spine.length - 1].y) * time,
+        this.pattern.slot.x + this.pattern.size.x,
+        this.pattern.slot.y + this.pattern.size.y * .5);
 };

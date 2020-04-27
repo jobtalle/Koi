@@ -20,7 +20,7 @@ const Renderer = function(canvas, clearColor = new Color(.3, .5, 1)) {
         this.SHADER_STRIP_VERTEX,
         this.SHADER_STRIP_FRAGMENT,
         ["transform1", "transform2"],
-        ["position"]);
+        ["position", "uv"]);
     this.transformBase = new Transform();
     this.transformStack = [this.transformBase];
     this.vertices = [];
@@ -63,8 +63,7 @@ attribute vec4 color;
 varying vec4 v_color;
 
 void main() {
-    v_color = color;` +
-    Renderer.prototype.SHADER_POSITION + `
+  v_color = color;` + Renderer.prototype.SHADER_POSITION + `
 }
 `;
 Renderer.prototype.SHADER_LINES_FRAGMENT = `
@@ -73,7 +72,7 @@ Renderer.prototype.SHADER_LINES_FRAGMENT = `
 varying mediump vec4 v_color;
 
 void main() {
-    gl_FragColor = v_color;
+  gl_FragColor = v_color;
 }
 `;
 Renderer.prototype.SHADER_STRIP_VERTEX = `
@@ -83,16 +82,23 @@ uniform vec4 transform1;
 uniform vec4 transform2;
 
 attribute vec2 position;
+attribute vec2 uv;
 
-void main() {` +
-    Renderer.prototype.SHADER_POSITION + `
+varying vec2 v_uv;
+
+void main() {
+  v_uv = uv;` + Renderer.prototype.SHADER_POSITION + `
 }
 `;
 Renderer.prototype.SHADER_STRIP_FRAGMENT = `
 #version 100
 
+uniform sampler2D atlas;
+
+varying mediump vec2 v_uv;
+
 void main() {
-    gl_FragColor = vec4(1.0);
+  gl_FragColor = texture2D(atlas, v_uv);
 }
 `;
 
@@ -125,8 +131,11 @@ Renderer.prototype.updateBuffers = function() {
         this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.bufferIndicesCapacity << 2, this.gl.STREAM_DRAW);
     }
 
-    this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array(this.vertices));
-    this.gl.bufferSubData(this.gl.ELEMENT_ARRAY_BUFFER, 0, new Uint16Array(this.indices));
+    if (this.vertices.length !== 0)
+        this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array(this.vertices));
+
+    if (this.indices.length !== 0)
+        this.gl.bufferSubData(this.gl.ELEMENT_ARRAY_BUFFER, 0, new Uint16Array(this.indices));
 };
 
 /**
@@ -189,8 +198,10 @@ Renderer.prototype.renderStrip = function() {
     this.updateBuffers();
 
     this.gl.enableVertexAttribArray(this.programStrip.aPosition);
-    this.gl.vertexAttribPointer(this.programStrip.aPosition, 2, this.gl.FLOAT, false, 8, 0);
-    this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, this.vertices.length >> 1);
+    this.gl.vertexAttribPointer(this.programStrip.aPosition, 2, this.gl.FLOAT, false, 16, 0);
+    this.gl.enableVertexAttribArray(this.programStrip.aUv);
+    this.gl.vertexAttribPointer(this.programStrip.aUv, 2, this.gl.FLOAT, false, 16, 8);
+    this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, this.vertices.length >> 2);
 
     this.vertices.length = 0;
 };
@@ -307,22 +318,26 @@ Renderer.prototype.drawLine = function(x1, y1, color1, x2, y2, color2) {
  * Add a point to the strip
  * @param {Number} x The X coordinate
  * @param {Number} y The Y coordinate
+ * @param {Number} u The texture U coordinate
+ * @param {Number} v The texture V coordinate
  */
-Renderer.prototype.drawStrip = function(x, y) {
+Renderer.prototype.drawStrip = function(x, y, u, v) {
     this.setProgram(this.programStrip, this.MODE_STRIP);
 
-    this.vertices.push(x, y);
+    this.vertices.push(x, y, u, v);
 };
 
 /**
  * Add a point to the strip which is the start or the end of a separated strip mesh
  * @param {Number} x The X coordinate
  * @param {Number} y The Y coordinate
+ * @param {Number} u The texture U coordinate
+ * @param {Number} v The texture V coordinate
  */
-Renderer.prototype.cutStrip = function(x, y) {
+Renderer.prototype.cutStrip = function(x, y, u, v) {
     this.setProgram(this.programStrip, this.MODE_STRIP);
 
-    this.vertices.push(x, y, x, y);
+    this.vertices.push(x, y, u, v, x, y, u, v);
 };
 
 /**

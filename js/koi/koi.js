@@ -17,7 +17,12 @@ const Koi = function(renderer, random) {
     const fishCount = 20;
 
     for (let i = 0; i < fishCount; ++i) {
-        const pattern = new Pattern([new PatternBase(new Color(.8, .4, .2))], this.atlas.getSlot());
+        const pattern = new Pattern(
+            [
+                new PatternBase(new Color(Math.random(), Math.random(), Math.random()))
+            ],
+            this.atlas.getSlot(),
+            this.atlas.slotSize);
 
         this.atlas.write(pattern);
 
