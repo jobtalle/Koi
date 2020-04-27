@@ -1,21 +1,23 @@
 /**
  * A fish body
+ * @param {Pattern} pattern A body pattern
+ * @param {Vector} atlasPixel The pixel size on the atlas in UV coordinates
  * @param {Number} length The body length
  * @param {Number} thickness The body thickness
- * @param {Vector} head The head position
- * @param {Vector} direction The body direction
  * @constructor
  */
-const Body = function(length, thickness, head, direction) {
+const Body = function(pattern, atlasPixel, length, thickness) {
+    this.pattern = pattern;
     this.spine = new Array(Math.ceil(length / this.RESOLUTION) + 1);
     this.spinePrevious = new Array(this.spine.length);
     this.spacing = length / (this.spine.length - 1);
     this.inverseSpacing = 1 / this.spacing;
     this.radii = this.makeRadii(thickness, .6);
     this.springs = this.makeSprings(this.SPRING_START, this.SPRING_END, this.SPRING_POWER);
+    this.u = this.makeU(atlasPixel);
+    this.vCenter = pattern.slot.y + pattern.size.y * .5;
+    this.vRadii = this.makeVRadii(atlasPixel);
     this.phase = 0;
-
-    this.initializeSpine(head, direction);
 };
 
 Body.prototype.RESOLUTION = .14;
@@ -39,6 +41,36 @@ Body.prototype.initializeSpine = function(head, direction) {
         this.spine[segment] = this.spine[segment - 1].copy().subtract(direction.copy().multiply(this.spacing));
         this.spinePrevious[segment] = this.spine[segment].copy();
     }
+};
+
+/**
+ * Make an array of texture U coordinates per segment
+ * @param {Vector} atlasPixel The pixel size on the atlas in UV coordinates
+ * @returns {Number[]} The U array
+ */
+Body.prototype.makeU = function(atlasPixel) {
+    const uStart = this.pattern.slot.x + atlasPixel.x;
+    const uEnd = this.pattern.slot.x + this.pattern.size.x - atlasPixel.y;
+    const u = new Array(this.spine.length);
+
+    for (let segment = 0; segment < this.spine.length; ++segment)
+        u[segment] = uStart + (uEnd - uStart) * segment / (this.spine.length - 1);
+
+    return u;
+};
+
+/**
+ * Make the radii of texture V coordinates
+ * @param {Vector} atlasPixel The pixel size on the atlas in UV coordinates
+ * @returns {Number[]} The V radii
+ */
+Body.prototype.makeVRadii = function(atlasPixel) {
+    const vRadii = new Array(this.spine.length - 2);
+
+    for (let segment = 1; segment < this.spine.length - 1; ++segment)
+        vRadii[segment - 1] = this.pattern.size.y * .5 - atlasPixel.y;
+
+    return vRadii;
 };
 
 /**
@@ -132,7 +164,11 @@ Body.prototype.render = function(renderer, time) {
     let dxStart, dxEnd = 0;
     let dyStart, dyEnd = 0;
 
-    renderer.cutStrip(xEnd, yEnd);
+    renderer.cutStrip(
+        xEnd,
+        yEnd,
+        this.u[0],
+        this.vCenter);
 
     for (let segment = 1; segment < this.spine.length - 1; ++segment) {
         xStart = xEnd;
@@ -146,15 +182,21 @@ Body.prototype.render = function(renderer, time) {
 
         renderer.drawStrip(
             xEnd - this.radii[segment] * dyEnd * this.inverseSpacing,
-            yEnd + this.radii[segment] * dxEnd * this.inverseSpacing);
+            yEnd + this.radii[segment] * dxEnd * this.inverseSpacing,
+            this.u[segment],
+            this.vCenter - this.vRadii[segment - 1]);
         renderer.drawStrip(
             xEnd + this.radii[segment] * dyEnd * this.inverseSpacing,
-            yEnd - this.radii[segment] * dxEnd * this.inverseSpacing);
+            yEnd - this.radii[segment] * dxEnd * this.inverseSpacing,
+            this.u[segment],
+            this.vCenter + this.vRadii[segment - 1]);
     }
 
     renderer.cutStrip(
         this.spinePrevious[this.spine.length - 1].x +
             (this.spine[this.spine.length - 1].x - this.spinePrevious[this.spine.length - 1].x) * time,
         this.spinePrevious[this.spine.length - 1].y +
-            (this.spine[this.spine.length - 1].y - this.spinePrevious[this.spine.length - 1].y) * time);
+            (this.spine[this.spine.length - 1].y - this.spinePrevious[this.spine.length - 1].y) * time,
+        this.u[this.spine.length - 1],
+        this.vCenter);
 };

@@ -1,18 +1,18 @@
 /**
  * The fish pattern atlas, containing all fish patterns
- * @param {WebGLRenderingContext} gl A webGL context
+ * @param {Renderer} renderer The renderer
  * @param {Number} capacity The number of fish patterns this atlas must be able to contain
  * @constructor
  */
-const Atlas = function(gl, capacity) {
-    this.gl = gl;
+const Atlas = function(renderer, capacity) {
+    this.renderer = renderer;
     this.width = 0;
     this.height = 0;
-    this.slotWidth = 0;
-    this.slotHeight = 0;
+    this.slotSize = new Vector();
+    this.pixelSize = new Vector();
     this.available = null;
-    this.framebuffer = gl.createFramebuffer();
-    this.texture = this.createTexture(capacity);
+    this.framebuffer = renderer.gl.createFramebuffer();
+    this.texture = this.createTexture(renderer.gl, capacity);
 };
 
 Atlas.prototype.RESOLUTION = 32;
@@ -53,36 +53,39 @@ Atlas.prototype.createSlots = function(blockResolution, capacity) {
 
 /**
  * Create the atlas texture
+ * @param {WebGLRenderingContext} gl A webGL context
  * @param {Number} capacity The number of fish patterns this atlas must be able to contain
  */
-Atlas.prototype.createTexture = function(capacity) {
-    const texture = this.gl.createTexture();
+Atlas.prototype.createTexture = function(gl, capacity) {
+    const texture = gl.createTexture();
     const blocks = Math.ceil(capacity / this.WIDTH_RATIO);
     const blockResolution = Math.ceil(Math.sqrt(blocks));
 
     this.width = this.height = this.nearestPow2(blockResolution * this.RESOLUTION * this.WIDTH_RATIO);
-    this.slotWidth = this.RESOLUTION * this.WIDTH_RATIO / this.width;
-    this.slotHeight = this.RESOLUTION / this.height;
+    this.pixelSize.x = 1 / this.width;
+    this.pixelSize.y = 1 / this.height;
+    this.slotSize.x = this.RESOLUTION * this.WIDTH_RATIO * this.pixelSize.x;
+    this.slotSize.y = this.RESOLUTION * this.pixelSize.y;
     this.available = this.createSlots(blockResolution, capacity);
 
-    this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
-    this.gl.texImage2D(
-        this.gl.TEXTURE_2D,
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texImage2D(
+        gl.TEXTURE_2D,
         0,
-        this.gl.RGBA,
+        gl.RGBA,
         this.width,
         this.height,
         0,
-        this.gl.RGBA,
-        this.gl.UNSIGNED_BYTE,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
         null);
 
-    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.framebuffer);
-    this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, texture, 0);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
 
     return texture;
 };
@@ -104,9 +107,20 @@ Atlas.prototype.returnSlot = function(slot) {
 };
 
 /**
+ * Write a texture to the atlas
+ * @param {Pattern} pattern The pattern to write to the atlas
+ */
+Atlas.prototype.write = function(pattern) {
+    this.renderer.gl.viewport(0, 0, this.width, this.height);
+    this.renderer.gl.bindFramebuffer(this.renderer.gl.FRAMEBUFFER, this.framebuffer);
+
+    this.renderer.patterns.write(pattern);
+};
+
+/**
  * Free all resources maintained by the atlas
  */
 Atlas.prototype.free = function() {
-    this.gl.deleteFramebuffer(this.framebuffer);
-    this.gl.deleteTexture(this.texture);
+    this.renderer.gl.deleteFramebuffer(this.framebuffer);
+    this.renderer.gl.deleteTexture(this.texture);
 };

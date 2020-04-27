@@ -11,18 +11,31 @@ const Koi = function(renderer, random) {
     this.lastUpdate = new Date();
     this.pond = new Pond(new Circle(new Vector(6, 6), 5));
     this.capacity = this.pond.getCapacity();
-    this.atlas = new Atlas(renderer.gl, this.capacity);
+    this.atlas = new Atlas(renderer, this.capacity);
     this.grid.addConstraint(this.pond.constraint);
 
     const fishCount = 20;
 
-    for (let i = 0; i < fishCount; ++i)
+    for (let i = 0; i < fishCount; ++i) {
+        const lightness = .6 + .4 * (i / (fishCount - 1));
+
+        const pattern = new Pattern(
+            [
+                new PatternBase(new Color(lightness, lightness, lightness))
+            ],
+            this.atlas.getSlot(),
+            this.atlas.slotSize);
+
+        this.atlas.write(pattern);
+
         this.grid.addFish(
             new Fish(
+                new Body(pattern, this.atlas.pixelSize, 1.2, .3),
                 new Vector(6 + 6 * (random.getFloat() - .5), 6 + 6 * (random.getFloat() - .5)),
                 new Vector().fromAngle(Math.PI * 2 * random.getFloat()),
                 this.pond.constraint)
         );
+    }
 };
 
 Koi.prototype.UPDATE_RATE = 1 / 15;
