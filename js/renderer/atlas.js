@@ -15,7 +15,7 @@ const Atlas = function(renderer, capacity) {
     this.texture = this.createTexture(renderer.gl, capacity);
 };
 
-Atlas.prototype.RESOLUTION = 32;
+Atlas.prototype.RESOLUTION = 128;
 Atlas.prototype.RATIO = 4;
 
 /**

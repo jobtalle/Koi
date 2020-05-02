@@ -17,25 +17,26 @@ const Koi = function(renderer, random) {
     const fishCount = 20;
 
     for (let i = 0; i < fishCount; ++i) {
-        const lightness = .6 + .4 * (i / (fishCount - 1));
+        const lightness = .9;
 
         const pattern = new Pattern(
             [
                 new PatternBase(new Color(lightness, lightness, lightness)),
                 new PatternSpots(
-                    .3,
+                    1.5,
                     new Color(0.8, 0.3, 0.2),
                     new Vector3(0, 0, 0),
                     new Vector3(Math.random() * 64, Math.random() * 64, Math.random() * 64),
                     new Vector3(Math.random() - .5, Math.random() - .5, Math.random() - .5).normalize()
                 )
             ],
+            new PatternShape(0.6),
             this.atlas.getSlot(),
             this.atlas.slotSize);
 
         this.atlas.write(pattern);
 
-        this.grid.addFish(
+        thneeis.grid.addFish(
             new Fish(
                 new Body(pattern, this.atlas.pixelSize, 1.2, .3),
                 new Vector2(6 + 6 * (random.getFloat() - .5), 6 + 6 * (random.getFloat() - .5)),

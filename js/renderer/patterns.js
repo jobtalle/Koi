@@ -8,9 +8,10 @@ const Patterns = function(gl) {
     this.buffer = gl.createBuffer();
     this.programBase = PatternBase.prototype.createShader(gl);
     this.programSpots = PatternSpots.prototype.createShader(gl);
+    this.programShape = PatternShape.prototype.createShader(gl);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, 32, gl.STREAM_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, 64, gl.STREAM_DRAW);
 };
 
 /**
@@ -24,7 +25,13 @@ Patterns.prototype.writeLayer = function(layer, program) {
     layer.configure(this.gl, program);
 
     this.gl.enableVertexAttribArray(program.aPosition);
-    this.gl.vertexAttribPointer(program.aPosition, 2, this.gl.FLOAT, false, 8, 0);
+    this.gl.vertexAttribPointer(program.aPosition, 2, this.gl.FLOAT, false, 16, 0);
+
+    if (program.aUv) {
+        this.gl.enableVertexAttribArray(program.aUv);
+        this.gl.vertexAttribPointer(program.aUv, 2, this.gl.FLOAT, false, 16, 8);
+    }
+
     this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, 4);
 };
 
@@ -37,12 +44,16 @@ Patterns.prototype.write = function(pattern) {
     this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array([
         2 * pattern.slot.x - 1,
         2 * pattern.slot.y - 1,
+        0, 0,
         2 * pattern.slot.x - 1,
         2 * (pattern.slot.y + pattern.size.y) - 1,
+        0, 1,
         2 * (pattern.slot.x + pattern.size.x) - 1,
         2 * (pattern.slot.y + pattern.size.y) - 1,
+        1, 1,
         2 * (pattern.slot.x + pattern.size.x) - 1,
-        2 * pattern.slot.y - 1
+        2 * pattern.slot.y - 1,
+        1, 0
     ]));
 
     for (const layer of pattern.layers) switch (layer.constructor) {
@@ -55,6 +66,10 @@ Patterns.prototype.write = function(pattern) {
 
             break;
     }
+
+    this.gl.disable(this.gl.BLEND);
+    this.writeLayer(pattern.shape, this.programShape);
+    this.gl.enable(this.gl.BLEND);
 };
 
 /**
@@ -63,6 +78,7 @@ Patterns.prototype.write = function(pattern) {
 Patterns.prototype.free = function() {
     this.programBase.free();
     this.programSpots.free();
+    this.programShape.free();
 
     this.gl.deleteBuffer(this.buffer);
 };

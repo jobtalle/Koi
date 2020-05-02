@@ -8,7 +8,7 @@
  * @constructor
  */
 const PatternSpots = function(scale, color, origin, anchor, x) {
-    this.scale = scale;
+    this.scale = scale / Atlas.prototype.RESOLUTION;
     this.color = color;
     this.origin = origin;
     this.anchor = anchor;
@@ -64,11 +64,12 @@ mediump float cubicNoise(mediump vec3 at) {
 
 PatternSpots.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
+attribute vec2 uv;
 
-varying mediump vec2 uv;
+varying mediump vec2 iUv;
 
 void main() {
-  uv = position * 0.5 + vec2(0.5);
+  iUv = uv;
 
   gl_Position = vec4(position, 0.0, 1.0);
 }
@@ -83,13 +84,13 @@ uniform mediump vec3 origin;
 uniform mediump vec3 anchor;
 uniform mediump mat3 rotate;
 
-varying mediump vec2 uv;
+varying mediump vec2 iUv;
 
 void main() {
-  mediump vec2 at = size * uv * scale;
+  mediump vec2 at = size * iUv * scale;
   mediump float noise = cubicNoise(anchor + vec3(at, 0.0) * rotate);
 
-  if (noise < 0.5)
+  if (noise < 0.55)
     discard;
     
   gl_FragColor = vec4(color, 1.0);
@@ -147,5 +148,5 @@ PatternSpots.prototype.createShader = function(gl) {
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
         ["scale", "size", "color", "origin", "anchor", "rotate"],
-        ["position"]);
+        ["position", "uv"]);
 };

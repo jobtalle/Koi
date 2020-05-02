@@ -83,7 +83,8 @@ Body.prototype.makeRadii = function(thickness, power) {
     const radii = new Array(this.spine.length);
 
     for (let segment = 0; segment < this.spine.length; ++segment)
-        radii[segment] = Math.cos(Math.PI * ((segment / (this.spine.length - 1)) ** power + .5)) * thickness * .5;
+        // radii[segment] = Math.cos(Math.PI * ((segment / (this.spine.length - 1)) ** power + .5)) * thickness * .5;
+        radii[segment] = thickness * .5;
 
     return radii;
 };
@@ -170,7 +171,7 @@ Body.prototype.render = function(renderer, time) {
         this.u[0],
         this.vCenter);
 
-    for (let segment = 1; segment < this.spine.length - 1; ++segment) {
+    for (let segment = 1; segment < this.spine.length; ++segment) {
         xStart = xEnd;
         yStart = yEnd;
         dxStart = dxEnd;
@@ -191,12 +192,4 @@ Body.prototype.render = function(renderer, time) {
             this.u[segment],
             this.vCenter + this.vRadii[segment - 1]);
     }
-
-    renderer.cutStrip(
-        this.spinePrevious[this.spine.length - 1].x +
-            (this.spine[this.spine.length - 1].x - this.spinePrevious[this.spine.length - 1].x) * time,
-        this.spinePrevious[this.spine.length - 1].y +
-            (this.spine[this.spine.length - 1].y - this.spinePrevious[this.spine.length - 1].y) * time,
-        this.u[this.spine.length - 1],
-        this.vCenter);
 };
