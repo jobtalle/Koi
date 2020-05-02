@@ -51,9 +51,7 @@ Renderer.prototype.SHADER_POSITION = `
 gl_Position = vec4((position * mat2(transform1.xy, transform2.xy) + vec2(transform1.z, transform2.z)) *
   vec2(transform1.w, transform2.w) + vec2(-1, 1), 0, 1);
 `;
-Renderer.prototype.SHADER_LINES_VERTEX = `
-#version 100
-
+Renderer.prototype.SHADER_LINES_VERTEX = `#version 100
 uniform vec4 transform1;
 uniform vec4 transform2;
 
@@ -66,18 +64,14 @@ void main() {
   v_color = color;` + Renderer.prototype.SHADER_POSITION + `
 }
 `;
-Renderer.prototype.SHADER_LINES_FRAGMENT = `
-#version 100
-
+Renderer.prototype.SHADER_LINES_FRAGMENT = `#version 100
 varying mediump vec4 v_color;
 
 void main() {
   gl_FragColor = v_color;
 }
 `;
-Renderer.prototype.SHADER_STRIP_VERTEX = `
-#version 100
-
+Renderer.prototype.SHADER_STRIP_VERTEX = `#version 100
 uniform vec4 transform1;
 uniform vec4 transform2;
 
@@ -90,9 +84,7 @@ void main() {
   v_uv = uv;` + Renderer.prototype.SHADER_POSITION + `
 }
 `;
-Renderer.prototype.SHADER_STRIP_FRAGMENT = `
-#version 100
-
+Renderer.prototype.SHADER_STRIP_FRAGMENT = `#version 100
 uniform sampler2D atlas;
 
 varying mediump vec2 v_uv;

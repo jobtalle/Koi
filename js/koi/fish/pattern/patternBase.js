@@ -7,18 +7,14 @@ const PatternBase = function(color) {
     this.color = color;
 };
 
-PatternBase.prototype.SHADER_VERTEX = `
-#version 100
-
+PatternBase.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
 
 void main() {
   gl_Position = vec4(position, 0.0, 1.0);
 }
 `;
-PatternBase.prototype.SHADER_FRAGMENT = `
-#version 100
-
+PatternBase.prototype.SHADER_FRAGMENT = `#version 100
 uniform lowp vec3 color;
 
 void main() {

@@ -1,7 +1,7 @@
 /**
  * A fish body
  * @param {Pattern} pattern A body pattern
- * @param {Vector} atlasPixel The pixel size on the atlas in UV coordinates
+ * @param {Vector2} atlasPixel The pixel size on the atlas in UV coordinates
  * @param {Number} length The body length
  * @param {Number} thickness The body thickness
  * @constructor
@@ -30,8 +30,8 @@ Body.prototype.SPEED_THRESHOLD = .02;
 
 /**
  * Initialize the spine
- * @param {Vector} head The head position
- * @param {Vector} direction The initial body direction
+ * @param {Vector2} head The head position
+ * @param {Vector2} direction The initial body direction
  */
 Body.prototype.initializeSpine = function(head, direction) {
     this.spine[0] = head.copy();
@@ -45,7 +45,7 @@ Body.prototype.initializeSpine = function(head, direction) {
 
 /**
  * Make an array of texture U coordinates per segment
- * @param {Vector} atlasPixel The pixel size on the atlas in UV coordinates
+ * @param {Vector2} atlasPixel The pixel size on the atlas in UV coordinates
  * @returns {Number[]} The U array
  */
 Body.prototype.makeU = function(atlasPixel) {
@@ -61,7 +61,7 @@ Body.prototype.makeU = function(atlasPixel) {
 
 /**
  * Make the radii of texture V coordinates
- * @param {Vector} atlasPixel The pixel size on the atlas in UV coordinates
+ * @param {Vector2} atlasPixel The pixel size on the atlas in UV coordinates
  * @returns {Number[]} The V radii
  */
 Body.prototype.makeVRadii = function(atlasPixel) {
@@ -114,8 +114,8 @@ Body.prototype.storePreviousState = function() {
 
 /**
  * Update the body state
- * @param {Vector} head The new head position
- * @param {Vector} direction The normalized head direction
+ * @param {Vector2} head The new head position
+ * @param {Vector2} direction The normalized head direction
  * @param {Number} speed The fish speed
  */
 Body.prototype.update = function(head, direction, speed) {

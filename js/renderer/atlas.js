@@ -8,15 +8,15 @@ const Atlas = function(renderer, capacity) {
     this.renderer = renderer;
     this.width = 0;
     this.height = 0;
-    this.slotSize = new Vector();
-    this.pixelSize = new Vector();
+    this.slotSize = new Vector2();
+    this.pixelSize = new Vector2();
     this.available = null;
     this.framebuffer = renderer.gl.createFramebuffer();
     this.texture = this.createTexture(renderer.gl, capacity);
 };
 
 Atlas.prototype.RESOLUTION = 32;
-Atlas.prototype.WIDTH_RATIO = 4;
+Atlas.prototype.RATIO = 4;
 
 /**
  * Find the nearest power of 2 which is bigger than or equal to a number
@@ -36,16 +36,16 @@ Atlas.prototype.nearestPow2 = function(number) {
  * Create all texture slots on the atlas
  * @param {Number} blockResolution The square root of the number of slot blocks on this atlas
  * @param {Number} capacity The number of fish patterns this atlas must be able to contain
- * @returns {Vector[]} The positions of all texture slots
+ * @returns {Vector2[]} The positions of all texture slots
  */
 Atlas.prototype.createSlots = function(blockResolution, capacity) {
     const available = [];
 
     for (let y = 0; y < blockResolution; ++y) for (let x = 0; x < blockResolution; ++x)
-        for (let row = 0; row < this.WIDTH_RATIO; ++row)
-            if (available.push(new Vector(
-                (x * this.WIDTH_RATIO * this.RESOLUTION) / this.width,
-                ((y * this.WIDTH_RATIO + row) * this.RESOLUTION) / this.height)) === capacity)
+        for (let row = 0; row < this.RATIO; ++row)
+            if (available.push(new Vector2(
+                (x * this.RATIO * this.RESOLUTION) / this.width,
+                ((y * this.RATIO + row) * this.RESOLUTION) / this.height)) === capacity)
                 return available;
 
     return available;
@@ -58,13 +58,13 @@ Atlas.prototype.createSlots = function(blockResolution, capacity) {
  */
 Atlas.prototype.createTexture = function(gl, capacity) {
     const texture = gl.createTexture();
-    const blocks = Math.ceil(capacity / this.WIDTH_RATIO);
+    const blocks = Math.ceil(capacity / this.RATIO);
     const blockResolution = Math.ceil(Math.sqrt(blocks));
 
-    this.width = this.height = this.nearestPow2(blockResolution * this.RESOLUTION * this.WIDTH_RATIO);
+    this.width = this.height = this.nearestPow2(blockResolution * this.RESOLUTION * this.RATIO);
     this.pixelSize.x = 1 / this.width;
     this.pixelSize.y = 1 / this.height;
-    this.slotSize.x = this.RESOLUTION * this.WIDTH_RATIO * this.pixelSize.x;
+    this.slotSize.x = this.RESOLUTION * this.RATIO * this.pixelSize.x;
     this.slotSize.y = this.RESOLUTION * this.pixelSize.y;
     this.available = this.createSlots(blockResolution, capacity);
 
@@ -92,7 +92,7 @@ Atlas.prototype.createTexture = function(gl, capacity) {
 
 /**
  * Get an atlas slot to write to
- * @returns {Vector} The origin of the atlas slot
+ * @returns {Vector2} The origin of the atlas slot
  */
 Atlas.prototype.getSlot = function() {
     return this.available.pop();
@@ -100,7 +100,7 @@ Atlas.prototype.getSlot = function() {
 
 /**
  * Return an atlas slot that is no longer being used
- * @param {Vector} slot The origin of the atlas slot
+ * @param {Vector2} slot The origin of the atlas slot
  */
 Atlas.prototype.returnSlot = function(slot) {
     this.available.push(slot);

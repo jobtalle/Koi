@@ -1,8 +1,8 @@
 /**
  * A fish
  * @param {Body} body The fish body
- * @param {Vector} position The initial position
- * @param {Vector} direction The initial direction vector, which must be normalized
+ * @param {Vector2} position The initial position
+ * @param {Vector2} direction The initial direction vector, which must be normalized
  * @param {Object} constraint The constraint in which this fish lives
  * @constructor
  */
@@ -16,7 +16,7 @@ const Fish = function(body, position, direction, constraint) {
     this.body = body;
     this.speed = this.SPEED_MIN;
     this.boost = 0;
-    this.turnDirection = new Vector();
+    this.turnDirection = new Vector2();
     this.turnForce = 0;
 
     this.body.initializeSpine(position, direction);
@@ -34,9 +34,9 @@ Fish.prototype.SPEED_SLOW = .04;
 Fish.prototype.SPEED_DECAY = .996;
 Fish.prototype.SPEED_CATCH_UP = .003;
 Fish.prototype.BOOST_CHANCE = .0035;
-Fish.prototype.BOOST_POWER = .001;
+Fish.prototype.BOOST_POWER = .0015;
 Fish.prototype.BOOST_MIN = 5;
-Fish.prototype.BOOST_MAX = 35;
+Fish.prototype.BOOST_MAX = 30;
 Fish.prototype.TURN_CHANCE = .0015;
 Fish.prototype.TURN_FORCE = .06;
 Fish.prototype.TURN_POWER = .4;

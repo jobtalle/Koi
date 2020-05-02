@@ -7,6 +7,7 @@ const Patterns = function(gl) {
     this.gl = gl;
     this.buffer = gl.createBuffer();
     this.programBase = PatternBase.prototype.createShader(gl);
+    this.programSpots = PatternSpots.prototype.createShader(gl);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
     gl.bufferData(gl.ARRAY_BUFFER, 32, gl.STREAM_DRAW);
@@ -49,6 +50,10 @@ Patterns.prototype.write = function(pattern) {
             this.writeLayer(layer, this.programBase);
 
             break;
+        case PatternSpots:
+            this.writeLayer(layer, this.programSpots);
+
+            break;
     }
 };
 
@@ -57,6 +62,7 @@ Patterns.prototype.write = function(pattern) {
  */
 Patterns.prototype.free = function() {
     this.programBase.free();
+    this.programSpots.free();
 
     this.gl.deleteBuffer(this.buffer);
 };

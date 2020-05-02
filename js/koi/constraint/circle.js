@@ -1,6 +1,6 @@
 /**
  * A circle constraint
- * @param {Vector} position The center position
+ * @param {Vector2} position The center position
  * @param {Number} radius The circle radius
  * @constructor
  */
@@ -23,7 +23,7 @@ Circle.prototype.getCapacity = function() {
 
 /**
  * Sample the distance to the nearest edge of this constraint
- * @param {Vector} position The position to sample
+ * @param {Vector2} position The position to sample
  * @returns {Number} The proximity in the range [0, 1]
  */
 Circle.prototype.sample = function(position) {

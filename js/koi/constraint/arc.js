@@ -1,6 +1,6 @@
 /**
  * An arc constraint
- * @param {Vector} position The center position
+ * @param {Vector2} position The center position
  * @param {Number} radius The arc radius
  * @param {Number} width The arc width
  * @constructor

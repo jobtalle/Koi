@@ -9,7 +9,7 @@ const Koi = function(renderer, random) {
     this.random = random;
     this.grid = new Grid(12, 12);
     this.lastUpdate = new Date();
-    this.pond = new Pond(new Circle(new Vector(6, 6), 5));
+    this.pond = new Pond(new Circle(new Vector2(6, 6), 5));
     this.capacity = this.pond.getCapacity();
     this.atlas = new Atlas(renderer, this.capacity);
     this.grid.addConstraint(this.pond.constraint);
@@ -21,7 +21,14 @@ const Koi = function(renderer, random) {
 
         const pattern = new Pattern(
             [
-                new PatternBase(new Color(lightness, lightness, lightness))
+                new PatternBase(new Color(lightness, lightness, lightness)),
+                new PatternSpots(
+                    .3,
+                    new Color(0.8, 0.3, 0.2),
+                    new Vector3(0, 0, 0),
+                    new Vector3(Math.random() * 64, Math.random() * 64, Math.random() * 64),
+                    new Vector3(Math.random() - .5, Math.random() - .5, Math.random() - .5).normalize()
+                )
             ],
             this.atlas.getSlot(),
             this.atlas.slotSize);
@@ -31,8 +38,8 @@ const Koi = function(renderer, random) {
         this.grid.addFish(
             new Fish(
                 new Body(pattern, this.atlas.pixelSize, 1.2, .3),
-                new Vector(6 + 6 * (random.getFloat() - .5), 6 + 6 * (random.getFloat() - .5)),
-                new Vector().fromAngle(Math.PI * 2 * random.getFloat()),
+                new Vector2(6 + 6 * (random.getFloat() - .5), 6 + 6 * (random.getFloat() - .5)),
+                new Vector2().fromAngle(Math.PI * 2 * random.getFloat()),
                 this.pond.constraint)
         );
     }
