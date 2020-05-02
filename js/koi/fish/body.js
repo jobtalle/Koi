@@ -51,7 +51,7 @@ Body.prototype.initializeSpine = function(head, direction) {
 Body.prototype.makeU = function(atlasPixel) {
     const uStart = this.pattern.slot.x + atlasPixel.x;
     const uEnd = this.pattern.slot.x + this.pattern.size.x - atlasPixel.y;
-    const u = new Array(this.spine.length);
+    const u = new Array(this.spine.length + 1);
 
     for (let segment = 0; segment < this.spine.length; ++segment)
         u[segment] = uStart + (uEnd - uStart) * segment / (this.spine.length - 1);
@@ -67,7 +67,7 @@ Body.prototype.makeU = function(atlasPixel) {
 Body.prototype.makeVRadii = function(atlasPixel) {
     const vRadii = new Array(this.spine.length - 2);
 
-    for (let segment = 1; segment < this.spine.length - 1; ++segment)
+    for (let segment = 1; segment < this.spine.length; ++segment)
         vRadii[segment - 1] = this.pattern.size.y * .5 - atlasPixel.y;
 
     return vRadii;
@@ -171,7 +171,7 @@ Body.prototype.render = function(renderer, time) {
         this.u[0],
         this.vCenter);
 
-    for (let segment = 1; segment < this.spine.length; ++segment) {
+    for (let segment = 1; segment < this.spine.length - 1; ++segment) {
         xStart = xEnd;
         yStart = yEnd;
         dxStart = dxEnd;
@@ -192,4 +192,10 @@ Body.prototype.render = function(renderer, time) {
             this.u[segment],
             this.vCenter + this.vRadii[segment - 1]);
     }
+
+    renderer.cutStrip(
+        this.spinePrevious[this.spine.length - 1].x + (this.spine[this.spine.length - 1].x - this.spinePrevious[this.spine.length - 1].x) * time,
+        this.spinePrevious[this.spine.length - 1].y + (this.spine[this.spine.length - 1].y - this.spinePrevious[this.spine.length - 1].y) * time,
+        this.u[this.spine.length - 1],
+        this.vCenter);
 };
