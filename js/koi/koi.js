@@ -36,7 +36,7 @@ const Koi = function(renderer, random) {
 
         this.atlas.write(pattern);
 
-        thneeis.grid.addFish(
+        this.grid.addFish(
             new Fish(
                 new Body(pattern, this.atlas.pixelSize, 1.2, .3),
                 new Vector2(6 + 6 * (random.getFloat() - .5), 6 + 6 * (random.getFloat() - .5)),
