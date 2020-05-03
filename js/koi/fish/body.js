@@ -8,11 +8,12 @@
  */
 const Body = function(pattern, atlasPixel, length, thickness) {
     this.pattern = pattern;
+    this.atlasPixel = atlasPixel;
+    this.radius = thickness * .5;
     this.spine = new Array(Math.ceil(length / this.RESOLUTION) + 1);
     this.spinePrevious = new Array(this.spine.length);
     this.spacing = length / (this.spine.length - 1);
     this.inverseSpacing = 1 / this.spacing;
-    this.radii = this.makeRadii(thickness, .6);
     this.springs = this.makeSprings(this.SPRING_START, this.SPRING_END, this.SPRING_POWER);
     this.u = this.makeU(atlasPixel);
     this.vCenter = pattern.slot.y + pattern.size.y * .5;
@@ -71,22 +72,6 @@ Body.prototype.makeVRadii = function(atlasPixel) {
         vRadii[segment - 1] = this.pattern.size.y * .5 - atlasPixel.y;
 
     return vRadii;
-};
-
-/**
- * Calculate body segment radii
- * @param {Number} thickness The body thickness at its thickest point
- * @param {Number} power A power to apply to the position of the widest point of the body
- * @returns {Number[]} An array of radii
- */
-Body.prototype.makeRadii = function(thickness, power) {
-    const radii = new Array(this.spine.length);
-
-    for (let segment = 0; segment < this.spine.length; ++segment)
-        // radii[segment] = Math.cos(Math.PI * ((segment / (this.spine.length - 1)) ** power + .5)) * thickness * .5;
-        radii[segment] = thickness * .5;
-
-    return radii;
 };
 
 /**
@@ -160,37 +145,45 @@ Body.prototype.update = function(head, direction, speed) {
  * @param {Number} time The interpolation factor
  */
 Body.prototype.render = function(renderer, time) {
-    let xStart, xEnd = this.spinePrevious[0].x + (this.spine[0].x - this.spinePrevious[0].x) * time;
-    let yStart, yEnd = this.spinePrevious[0].y + (this.spine[0].y - this.spinePrevious[0].y) * time;
-    let dxStart, dxEnd = 0;
-    let dyStart, dyEnd = 0;
+    let xp, x = this.spinePrevious[0].x + (this.spine[0].x - this.spinePrevious[0].x) * time;
+    let yp, y = this.spinePrevious[0].y + (this.spine[0].y - this.spinePrevious[0].y) * time;
+    let dxp, dx;
+    let dyp, dy;
 
-    renderer.cutStrip(
-        xEnd,
-        yEnd,
-        this.u[0],
-        this.vCenter);
+    renderer.cutStrip(x, y, 0, 0);
 
-    for (let segment = 1; segment < this.spine.length - 1; ++segment) {
-        xStart = xEnd;
-        yStart = yEnd;
-        dxStart = dxEnd;
-        dyStart = dyEnd;
-        xEnd = this.spinePrevious[segment].x + (this.spine[segment].x - this.spinePrevious[segment].x) * time;
-        yEnd = this.spinePrevious[segment].y + (this.spine[segment].y - this.spinePrevious[segment].y) * time;
-        dxEnd = xEnd - xStart;
-        dyEnd = yEnd - yStart;
+    for (let segment = 1; segment < this.spine.length; ++segment) {
+        xp = x;
+        yp = y;
+
+        x = this.spinePrevious[segment].x + (this.spine[segment].x - this.spinePrevious[segment].x) * time;
+        y = this.spinePrevious[segment].y + (this.spine[segment].y - this.spinePrevious[segment].y) * time;
+
+        if (segment === 1) {
+            dxp = x - xp;
+            dyp = y - yp;
+        }
+        else {
+            dxp = dx;
+            dyp = dy;
+        }
+
+        dx = x - xp;
+        dy = y - yp;
+
+        const dxAveraged = (dx + dxp) * .5;
+        const dyAveraged = (dy + dyp) * .5;
 
         renderer.drawStrip(
-            xEnd - this.radii[segment] * dyEnd * this.inverseSpacing,
-            yEnd + this.radii[segment] * dxEnd * this.inverseSpacing,
-            this.u[segment],
-            this.vCenter - this.vRadii[segment - 1]);
+            xp - this.radius * dyAveraged * this.inverseSpacing,
+            yp + this.radius * dxAveraged * this.inverseSpacing,
+            this.u[segment - 1],
+            this.vCenter - this.pattern.size.y * .5 + this.atlasPixel.y);
         renderer.drawStrip(
-            xEnd + this.radii[segment] * dyEnd * this.inverseSpacing,
-            yEnd - this.radii[segment] * dxEnd * this.inverseSpacing,
-            this.u[segment],
-            this.vCenter + this.vRadii[segment - 1]);
+            xp + this.radius * dyAveraged * this.inverseSpacing,
+            yp - this.radius * dxAveraged * this.inverseSpacing,
+            this.u[segment - 1],
+            this.vCenter + this.pattern.size.y * .5 - this.atlasPixel.y);
     }
 
     renderer.cutStrip(

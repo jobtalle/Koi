@@ -2,15 +2,13 @@
  * A coloured spots pattern
  * @param {Number} scale The noise scale
  * @param {Color} color The spot color
- * @param {Vector3} origin The noise origin
  * @param {Vector3} anchor The noise sample position
  * @param {Vector3} x The noise sample X direction
  * @constructor
  */
-const PatternSpots = function(scale, color, origin, anchor, x) {
+const PatternSpots = function(scale, color, anchor, x) {
     this.scale = scale / Atlas.prototype.RESOLUTION;
     this.color = color;
-    this.origin = origin;
     this.anchor = anchor;
     this.x = x;
 };
@@ -80,14 +78,13 @@ PatternSpots.prototype.SHADER_FRAGMENT = `#version 100
 uniform mediump float scale;
 uniform mediump vec2 size;
 uniform lowp vec3 color;
-uniform mediump vec3 origin;
 uniform mediump vec3 anchor;
 uniform mediump mat3 rotate;
 
 varying mediump vec2 iUv;
 
 void main() {
-  mediump vec2 at = size * iUv * scale;
+  mediump vec2 at = size * (iUv - vec2(0.5)) * scale;
   mediump float noise = cubicNoise(anchor + vec3(at, 0.0) * rotate);
 
   if (noise < 0.55)
@@ -125,7 +122,6 @@ PatternSpots.prototype.configure = function(gl, program) {
     gl.uniform1f(program.uScale, this.scale);
     gl.uniform2f(program.uSize, Atlas.prototype.RESOLUTION * Atlas.prototype.RATIO, Atlas.prototype.RESOLUTION);
     gl.uniform3f(program.uColor, this.color.r, this.color.g, this.color.b);
-    gl.uniform3f(program.uOrigin, this.origin.x, this.origin.y, this.origin.z);
     gl.uniform3f(program.uAnchor, this.anchor.x, this.anchor.y, this.anchor.z);
     gl.uniformMatrix3fv(
         program.uRotate,
@@ -147,6 +143,6 @@ PatternSpots.prototype.createShader = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["scale", "size", "color", "origin", "anchor", "rotate"],
+        ["scale", "size", "color", "anchor", "rotate"],
         ["position", "uv"]);
 };

@@ -25,7 +25,6 @@ const Koi = function(renderer, random) {
                 new PatternSpots(
                     1.5,
                     new Color(0.8, 0.3, 0.2),
-                    new Vector3(0, 0, 0),
                     new Vector3(Math.random() * 64, Math.random() * 64, Math.random() * 64),
                     new Vector3(Math.random() - .5, Math.random() - .5, Math.random() - .5).normalize()
                 )
