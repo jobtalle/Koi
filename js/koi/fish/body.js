@@ -10,18 +10,17 @@ const Body = function(pattern, atlasPixel, length, thickness) {
     this.pattern = pattern;
     this.atlasPixel = atlasPixel;
     this.radius = thickness * .5;
-    this.spine = new Array(Math.ceil(length / this.RESOLUTION) + 1);
+    this.spine = new Array(this.RESOLUTION);
     this.spinePrevious = new Array(this.spine.length);
     this.spacing = length / (this.spine.length - 1);
     this.inverseSpacing = 1 / this.spacing;
     this.springs = this.makeSprings(this.SPRING_START, this.SPRING_END, this.SPRING_POWER);
     this.u = this.makeU(atlasPixel);
     this.vCenter = pattern.slot.y + pattern.size.y * .5;
-    this.vRadii = this.makeVRadii(atlasPixel);
     this.phase = 0;
 };
 
-Body.prototype.RESOLUTION = .14;
+Body.prototype.RESOLUTION = 10;
 Body.prototype.SPRING_START = .9;
 Body.prototype.SPRING_END = .3;
 Body.prototype.SPRING_POWER = 1.7;
