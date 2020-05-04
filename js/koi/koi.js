@@ -8,9 +8,8 @@ const Koi = function(renderer, random) {
     this.renderer = renderer;
     this.random = random;
     this.lastUpdate = new Date();
-    this.pond = new Pond(new Circle(new Vector2(6, 6), 5));
-    this.capacity = this.pond.getCapacity();
-    this.atlas = new Atlas(renderer, this.capacity);
+    this.ponds = [new Pond(new Circle(new Vector2(6, 6), 5))]
+    this.atlas = new Atlas(renderer, this.getCapacity());
 
     const fishCount = 20;
 
@@ -33,7 +32,7 @@ const Koi = function(renderer, random) {
 
         this.atlas.write(pattern);
 
-        this.pond.addFish(
+        this.ponds[0].addFish(
             new Fish(
                 new Body(pattern, this.atlas.pixelSize, 1.2, .3),
                 new Vector2(6 + 6 * (random.getFloat() - .5), 6 + 6 * (random.getFloat() - .5)),
@@ -45,12 +44,26 @@ const Koi = function(renderer, random) {
 Koi.prototype.UPDATE_RATE = 1 / 15;
 
 /**
+ * Get the total number of fish this simulation supports
+ * @returns {Number} The total fish capacity
+ */
+Koi.prototype.getCapacity = function() {
+    let capacity = 0;
+
+    for (const pond of this.ponds)
+        capacity += pond.getCapacity();
+
+    return capacity;
+};
+
+/**
  * Update the scene
  */
 Koi.prototype.update = function() {
     this.lastUpdate = new Date();
 
-    this.pond.update(this.random);
+    for (const pond of this.ponds)
+        pond.update(this.random);
 };
 
 /**
@@ -64,7 +77,8 @@ Koi.prototype.render = function() {
 
     this.renderer.getTransform().scale(90, 75);
 
-    this.pond.render(this.renderer, time);
+    for (const pond of this.ponds)
+        pond.render(this.renderer, time);
 
     this.renderer.transformPop();
     this.renderer.flush();
