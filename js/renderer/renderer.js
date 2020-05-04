@@ -6,8 +6,8 @@
  */
 const Renderer = function(canvas, clearColor = new Color(.2, .2, .2)) {
     this.gl =
-        canvas.getContext("webgl") ||
-        canvas.getContext("experimental-webgl");
+        canvas.getContext("webgl", {alpha: false}) ||
+        canvas.getContext("experimental-webgl", {alpha: false});
     this.patterns = new Patterns(this.gl);
     this.programLines = new Shader(
         this.gl,
