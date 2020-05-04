@@ -7,12 +7,10 @@
 const Koi = function(renderer, random) {
     this.renderer = renderer;
     this.random = random;
-    this.grid = new Grid(12, 12);
     this.lastUpdate = new Date();
     this.pond = new Pond(new Circle(new Vector2(6, 6), 5));
     this.capacity = this.pond.getCapacity();
     this.atlas = new Atlas(renderer, this.capacity);
-    this.grid.addConstraint(this.pond.constraint);
 
     const fishCount = 20;
 
@@ -35,12 +33,11 @@ const Koi = function(renderer, random) {
 
         this.atlas.write(pattern);
 
-        this.grid.addFish(
+        this.pond.addFish(
             new Fish(
                 new Body(pattern, this.atlas.pixelSize, 1.2, .3),
                 new Vector2(6 + 6 * (random.getFloat() - .5), 6 + 6 * (random.getFloat() - .5)),
-                new Vector2().fromAngle(Math.PI * 2 * random.getFloat()),
-                this.pond.constraint)
+                new Vector2().fromAngle(Math.PI * 2 * random.getFloat()))
         );
     }
 };
@@ -52,7 +49,8 @@ Koi.prototype.UPDATE_RATE = 1 / 15;
  */
 Koi.prototype.update = function() {
     this.lastUpdate = new Date();
-    this.grid.update(this.random);
+
+    this.pond.update(this.random);
 };
 
 /**
@@ -66,7 +64,7 @@ Koi.prototype.render = function() {
 
     this.renderer.getTransform().scale(90, 75);
 
-    this.grid.render(this.renderer, time);
+    this.pond.render(this.renderer, time);
 
     this.renderer.transformPop();
     this.renderer.flush();

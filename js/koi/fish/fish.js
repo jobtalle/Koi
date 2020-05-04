@@ -3,16 +3,14 @@
  * @param {Body} body The fish body
  * @param {Vector2} position The initial position
  * @param {Vector2} direction The initial direction vector, which must be normalized
- * @param {Object} constraint The constraint in which this fish lives
  * @constructor
  */
-const Fish = function(body, position, direction, constraint) {
+const Fish = function(body, position, direction) {
     this.position = position.copy();
     this.positionPrevious = position.copy();
     this.direction = direction.copy();
     this.velocity = direction.copy();
     this.velocityPrevious = direction.copy();
-    this.constraint = constraint;
     this.body = body;
     this.speed = this.SPEED_MIN;
     this.boost = 0;
@@ -150,15 +148,16 @@ Fish.prototype.interact = function(other, random) {
 
 /**
  * Constrain the fish within its constraint
+ * @param {Constraint} constraint A constraint
  */
-Fish.prototype.constrain = function() {
-    const proximity = this.constraint.sample(this.position);
+Fish.prototype.constrain = function(constraint) {
+    const proximity = constraint.sample(this.position);
 
     if (proximity !== 0) {
         const magnitude = this.FORCE_CONSTRAINT * proximity;
 
-        if (this.velocity.dot(this.constraint.normal) < 0) {
-            if (this.velocity.y * this.constraint.normal.x - this.velocity.x * this.constraint.normal.y > 0) {
+        if (this.velocity.dot(constraint.normal) < 0) {
+            if (this.velocity.y * constraint.normal.x - this.velocity.x * constraint.normal.y > 0) {
                 this.velocity.x += this.speed * this.direction.y * magnitude;
                 this.velocity.y -= this.speed * this.direction.x * magnitude;
             }
@@ -168,8 +167,8 @@ Fish.prototype.constrain = function() {
             }
         }
         else {
-            this.velocity.x += this.speed * this.constraint.normal.x * magnitude;
-            this.velocity.y += this.speed * this.constraint.normal.y * magnitude;
+            this.velocity.x += this.speed * constraint.normal.x * magnitude;
+            this.velocity.y += this.speed * constraint.normal.y * magnitude;
         }
 
         this.turnForce = 0;
@@ -178,10 +177,11 @@ Fish.prototype.constrain = function() {
 
 /**
  * Update the fish
+ * @param {Constraint} constraint A constraint
  * @param {Random} random A randomizer
  */
-Fish.prototype.update = function(random) {
-    this.constrain();
+Fish.prototype.update = function(constraint, random) {
+    this.constrain(constraint);
 
     if (this.turnDirection)
         this.applyTurn();
@@ -219,16 +219,4 @@ Fish.prototype.update = function(random) {
  */
 Fish.prototype.render = function(renderer, time) {
     this.body.render(renderer, time);
-
-    // if (this.turnForce !== 0) {
-    //     const x = this.positionPrevious.x + (this.position.x - this.positionPrevious.x) * time;
-    //     const y = this.positionPrevious.y + (this.position.y - this.positionPrevious.y) * time;
-    //
-    //     renderer.drawLine(
-    //         x - .2, y, Color.RED,
-    //         x + .2, y, Color.RED);
-    //     renderer.drawLine(
-    //         x, y - .2, Color.RED,
-    //         x, y + .2, Color.RED);
-    // }
 };

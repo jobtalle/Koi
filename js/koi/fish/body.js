@@ -69,7 +69,7 @@ Body.prototype.makeSprings = function(start, end, power) {
     const springs = new Array(this.spine.length - 1);
 
     for (let spring = 0; spring < this.spine.length - 1; ++spring)
-        springs[spring ] = start + (end - start) * ((spring / (this.spine.length - 2)) ** power);
+        springs[spring] = start + (end - start) * ((spring / (this.spine.length - 2)) ** power);
 
     return springs;
 };

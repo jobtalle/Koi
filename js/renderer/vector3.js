@@ -64,6 +64,15 @@ Vector3.prototype.length = function() {
 };
 
 /**
+ * Check whether this vector is equal to another vector
+ * @param {Vector3} other The other vector
+ * @returns {Boolean} A boolean indicating whether the vectors are the same
+ */
+Vector3.prototype.equals = function(other) {
+    return this.x === other.x && this.y === other.y && this.z === other.z;
+};
+
+/**
  * Normalize this vector
  * @returns {Vector3} The modified vector
  */
