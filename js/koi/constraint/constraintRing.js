@@ -5,7 +5,7 @@
  * @param {Number} width The arc width
  * @constructor
  */
-const Ring = function(position, radius, width) {
+const ConstraintRing = function(position, radius, width) {
     this.position = position;
     this.radius = radius;
     this.width = width;
@@ -13,13 +13,13 @@ const Ring = function(position, radius, width) {
     Constraint.call(this);
 };
 
-Ring.prototype = Object.create(Constraint.prototype);
+ConstraintRing.prototype = Object.create(Constraint.prototype);
 
 /**
  * Get the fish capacity of this constraint
  * @returns {Number} The maximum number of fish that fit within this constraint
  */
-Ring.prototype.getCapacity = function() {
+ConstraintRing.prototype.getCapacity = function() {
     const radiusInner = this.radius - this.width + this.border;
     const radiusOuter = this.radius + this.width - this.border;
 
@@ -31,7 +31,7 @@ Ring.prototype.getCapacity = function() {
  * @param {Vector2} position The position to sample
  * @returns {Number} The proximity in the range [0, 1]
  */
-Ring.prototype.sample = function(position) {
+ConstraintRing.prototype.sample = function(position) {
     const innerRadius = this.radius - this.width + this.border;
     const outerRadius = this.radius + this.width - this.border;
     const dx = position.x - this.position.x;
@@ -64,7 +64,7 @@ Ring.prototype.sample = function(position) {
  * Draw the arc
  * @param {Renderer} renderer The renderer
  */
-Ring.prototype.render = function(renderer) {
+ConstraintRing.prototype.render = function(renderer) {
     let x, y, xp, yp;
 
     for (let i = 0; i <= 64; ++i) {

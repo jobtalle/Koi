@@ -9,9 +9,9 @@ const Koi = function(renderer, random) {
     this.random = random;
     this.lastUpdate = new Date();
     this.ponds = [
-        new Pond(new Circle(new Vector2(6, 6), 5)),
-        new Pond(new Ring(new Vector2(6, 6), 7, 1.5)),
-        new Pond(new Ring(new Vector2(6 + 14, 6), 7, 1.5))
+        new Pond(new ConstraintCircle(new Vector2(6, 6), 5)),
+        new Pond(new ConstraintRing(new Vector2(6, 6), 7, 1.5)),
+        new Pond(new ConstraintRing(new Vector2(6 + 14, 6), 7, 1.5))
     ];
     this.atlas = new Atlas(renderer, this.getCapacity());
 
