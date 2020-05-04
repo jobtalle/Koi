@@ -29,7 +29,7 @@ const Koi = function(renderer, random) {
                     new Vector3(Math.random() - .5, Math.random() - .5, Math.random() - .5).normalize()
                 )
             ],
-            new PatternShape(0.6),
+            new PatternShape(0.6, 0.8),
             this.atlas.getSlot(),
             this.atlas.slotSize);
 
@@ -64,7 +64,7 @@ Koi.prototype.render = function() {
     this.renderer.clear();
     this.renderer.transformPush();
 
-    this.renderer.getTransform().scale(75, 75);
+    this.renderer.getTransform().scale(90, 75);
 
     this.grid.render(this.renderer, time);
 
