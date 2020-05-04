@@ -8,7 +8,7 @@ const Circle = function(position, radius) {
     this.position = position;
     this.radius = radius;
 
-    Constraint.call(this, 1.2);
+    Constraint.call(this);
 };
 
 Circle.prototype = Object.create(Constraint.prototype);
@@ -53,7 +53,7 @@ Circle.prototype.render = function(renderer) {
     let x, y, xp, yp;
 
     for (let i = 0; i <= 64; ++i) {
-        const angle = Math.PI * 2 * i / 64;
+        const angle = Math.PI * i / 32;
 
         xp = x;
         yp = y;

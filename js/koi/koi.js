@@ -8,7 +8,11 @@ const Koi = function(renderer, random) {
     this.renderer = renderer;
     this.random = random;
     this.lastUpdate = new Date();
-    this.ponds = [new Pond(new Circle(new Vector2(6, 6), 5))]
+    this.ponds = [
+        new Pond(new Circle(new Vector2(6, 6), 5)),
+        new Pond(new Ring(new Vector2(6, 6), 7, 1.5)),
+        new Pond(new Ring(new Vector2(6 + 14, 6), 7, 1.5))
+    ];
     this.atlas = new Atlas(renderer, this.getCapacity());
 
     const fishCount = 20;
@@ -32,10 +36,10 @@ const Koi = function(renderer, random) {
 
         this.atlas.write(pattern);
 
-        this.ponds[0].addFish(
+        this.ponds[1].addFish(
             new Fish(
                 new Body(pattern, this.atlas.pixelSize, 1.2, .3),
-                new Vector2(6 + 6 * (random.getFloat() - .5), 6 + 6 * (random.getFloat() - .5)),
+                new Vector2(13 + 3 * (random.getFloat() - .5), 6 + 3 * (random.getFloat() - .5)),
                 new Vector2().fromAngle(Math.PI * 2 * random.getFloat()))
         );
     }
