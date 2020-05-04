@@ -10,7 +10,6 @@ const Fish = function(body, position, direction) {
     this.positionPrevious = position.copy();
     this.direction = direction.copy();
     this.velocity = direction.copy();
-    this.velocityPrevious = direction.copy();
     this.body = body;
     this.speed = this.SPEED_MIN;
     this.boost = 0;
