@@ -176,3 +176,11 @@ Body.prototype.render = function(renderer, time) {
         this.u[this.spine.length - 1],
         this.pattern.slot.y + this.pattern.size.y * .5);
 };
+
+/**
+ * Free all resources maintained by this body
+ * @param {Atlas} atlas The texture atlas
+ */
+Body.prototype.free = function(atlas) {
+    this.pattern.free(atlas);
+};

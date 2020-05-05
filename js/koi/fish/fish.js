@@ -228,3 +228,11 @@ Fish.prototype.update = function(constraint, random) {
 Fish.prototype.render = function(renderer, time) {
     this.body.render(renderer, time);
 };
+
+/**
+ * Free all resources maintained by this fish
+ * @param {Atlas} atlas The texture atlas
+ */
+Fish.prototype.free = function(atlas) {
+    this.body.free(atlas);
+};

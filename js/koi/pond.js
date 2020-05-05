@@ -26,16 +26,17 @@ Pond.prototype.addFish = function(fish) {
 
 /**
  * Update this pond and its contents
+ * @param {Atlas} atlas The texture atlas
  * @param {Random} random A randomizer
  */
-Pond.prototype.update = function(random) {
+Pond.prototype.update = function(atlas, random) {
     for (let fish = this.fishes.length; fish-- > 0;) {
         for (let other = fish - 1; other-- > 0;)
             this.fishes[fish].interact(this.fishes[other], random);
 
         if (this.fishes[fish].update(this.constraint, random)) {
+            this.fishes[fish].free(atlas);
             this.fishes.splice(fish, 1);
-            // TODO: Free fish
         }
     }
 };

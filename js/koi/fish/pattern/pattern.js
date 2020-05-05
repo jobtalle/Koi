@@ -12,3 +12,11 @@ const Pattern = function(layers, shape, slot, size) {
     this.slot = slot;
     this.size = size;
 };
+
+/**
+ * Free all resources maintained by this pattern
+ * @param {Atlas} atlas The texture atlas
+ */
+Pattern.prototype.free = function(atlas) {
+    atlas.returnSlot(this.slot);
+};

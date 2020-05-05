@@ -69,7 +69,7 @@ Koi.prototype.update = function() {
     this.lastUpdate = new Date();
 
     for (const pond of this.ponds)
-        pond.update(this.random);
+        pond.update(this.atlas, this.random);
 };
 
 /**
