@@ -103,7 +103,7 @@ Atlas.prototype.getSlot = function() {
  * @param {Vector2} slot The origin of the atlas slot
  */
 Atlas.prototype.returnSlot = function(slot) {
-    this.available.push(slot);
+    this.available.unshift(slot);
 };
 
 /**

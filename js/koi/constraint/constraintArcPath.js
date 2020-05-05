@@ -63,10 +63,10 @@ ConstraintArcPath.prototype.sample = function(position) {
     for (let arc = 0; arc < this.arcs.length; ++arc) {
         const dx = position.x - this.arcs[arc].center.x;
         const dy = position.y - this.arcs[arc].center.y;
-        const length = Math.sqrt(dx * dx + dy * dy);
+        const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (dx * this.arcs[arc].direction.x + dy * this.arcs[arc].direction.y >= this.arcs[arc].cone * length) {
-            const proximity = this.rings[arc].sample(position);
+        if (dx * this.arcs[arc].direction.x + dy * this.arcs[arc].direction.y >= this.arcs[arc].cone * distance) {
+            const proximity = this.rings[arc].sample(dx, dy, distance);
 
             this.normal = this.rings[arc].normal;
 

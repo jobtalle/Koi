@@ -28,28 +28,23 @@ ConstraintRing.prototype.getCapacity = function() {
 
 /**
  * Sample the distance to the nearest edge of this constraint
- * @param {Vector2} position The position to sample
+ * @param {Number} dx The X distance to the center
+ * @param {Number} dy The Y distance to the center
+ * @param {Number} distance The distance to the ring center
  * @returns {Number} The proximity
  */
-ConstraintRing.prototype.sample = function(position) {
+ConstraintRing.prototype.sample = function(dx, dy, distance) {
     const innerRadius = this.radius - this.width + this.border;
     const outerRadius = this.radius + this.width - this.border;
-    const dx = position.x - this.position.x;
-    const dy = position.y - this.position.y;
-    const squaredDistance = dx * dx + dy * dy;
 
-    if (squaredDistance < innerRadius * innerRadius) {
-        const distance = Math.sqrt(squaredDistance);
-
+    if (distance < innerRadius) {
         this.normal.x = dx;
         this.normal.y = dy;
         this.normal.divide(distance);
 
         return (innerRadius - distance) / this.border;
     }
-    else if (squaredDistance > outerRadius * outerRadius) {
-        const distance = Math.sqrt(squaredDistance);
-
+    else if (distance > outerRadius) {
         this.normal.x = dx;
         this.normal.y = dy;
         this.normal.divide(-distance);

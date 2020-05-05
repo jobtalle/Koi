@@ -41,7 +41,7 @@ const Koi = function(renderer, random) {
         this.ponds[1].addFish(
             new Fish(
                 new Body(pattern, this.atlas.pixelSize, 1.2, .3),
-                new Vector2(13 + 3 * (random.getFloat() - .5), 6 + 3 * (random.getFloat() - .5)),
+                new Vector2(13.5 + 3 * (random.getFloat() - .5), 6 + 3 * (random.getFloat() - .5)),
                 new Vector2().fromAngle(Math.PI * 2 * random.getFloat()))
         );
     }
