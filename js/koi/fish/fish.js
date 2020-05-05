@@ -148,11 +148,12 @@ Fish.prototype.interact = function(other, random) {
 /**
  * Constrain the fish within its constraint
  * @param {Constraint} constraint A constraint
+ * @returns {Boolean} A boolean indicating whether the fish left the scene
  */
 Fish.prototype.constrain = function(constraint) {
     const proximity = constraint.sample(this.position);
 
-    if (proximity !== 0) {
+    if (proximity > 0) {
         const magnitude = this.FORCE_CONSTRAINT * proximity;
 
         if (this.velocity.dot(constraint.normal) < 0) {
@@ -171,16 +172,22 @@ Fish.prototype.constrain = function(constraint) {
         }
 
         this.turnForce = 0;
+
+        return false;
     }
+    else if (proximity === -1)
+        return true;
 };
 
 /**
  * Update the fish
  * @param {Constraint} constraint A constraint
  * @param {Random} random A randomizer
+ * @returns {Boolean} A boolean indicating whether the fish left the scene
  */
 Fish.prototype.update = function(constraint, random) {
-    this.constrain(constraint);
+    if (this.constrain(constraint))
+        return true;
 
     if (this.turnDirection)
         this.applyTurn();
@@ -209,6 +216,8 @@ Fish.prototype.update = function(constraint, random) {
     this.positionPrevious.set(this.position);
     this.position.add(this.velocity);
     this.body.update(this.position, this.direction, this.speed);
+
+    return false;
 };
 
 /**

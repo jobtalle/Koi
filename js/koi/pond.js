@@ -29,11 +29,14 @@ Pond.prototype.addFish = function(fish) {
  * @param {Random} random A randomizer
  */
 Pond.prototype.update = function(random) {
-    for (let fish = 0; fish < this.fishes.length; ++fish) {
-        for (let other = fish + 1; other < this.fishes.length; ++other)
+    for (let fish = this.fishes.length; fish-- > 0;) {
+        for (let other = fish - 1; other-- > 0;)
             this.fishes[fish].interact(this.fishes[other], random);
 
-        this.fishes[fish].update(this.constraint, random);
+        if (this.fishes[fish].update(this.constraint, random)) {
+            this.fishes.splice(fish, 1);
+            // TODO: Free fish
+        }
     }
 };
 

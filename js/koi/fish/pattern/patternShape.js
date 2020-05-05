@@ -34,8 +34,8 @@ uniform mediump float radiusPower;
 varying mediump vec2 iUv;
 
 void main() {
-  mediump float radius = abs(iUv.y - 0.5);
-  mediump float edge = 0.5 * pow(cos(3.141592 * (pow(iUv.x, centerPower) - 0.5)), radiusPower);
+  mediump float radius = 2.0 * abs(iUv.y - 0.5);
+  mediump float edge = pow(cos(3.141592 * (pow(iUv.x, centerPower) - 0.5)), radiusPower);
   
   if (radius > edge)
     gl_FragColor = vec4(0.0);

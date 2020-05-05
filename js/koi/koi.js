@@ -10,8 +10,10 @@ const Koi = function(renderer, random) {
     this.lastUpdate = new Date();
     this.ponds = [
         new Pond(new ConstraintCircle(new Vector2(6, 6), 5)),
-        new Pond(new ConstraintRing(new Vector2(6, 6), 7, 1.5)),
-        new Pond(new ConstraintRing(new Vector2(6 + 14, 6), 7, 1.5))
+        new Pond(new ConstraintArcPath([
+            new ConstraintArcPath.Arc(new Vector2(6, 6), 7.5, 0, Math.PI * 0.5),
+            new ConstraintArcPath.Arc(new Vector2(21, 6), 7.5, Math.PI, Math.PI * 1.5)
+        ], 1.5))
     ];
     this.atlas = new Atlas(renderer, this.getCapacity());
 
@@ -79,7 +81,7 @@ Koi.prototype.render = function() {
     this.renderer.clear();
     this.renderer.transformPush();
 
-    this.renderer.getTransform().scale(90, 75);
+    this.renderer.getTransform().scale(70, 55);
 
     for (const pond of this.ponds)
         pond.render(this.renderer, time);

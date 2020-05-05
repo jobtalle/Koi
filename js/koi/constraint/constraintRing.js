@@ -29,7 +29,7 @@ ConstraintRing.prototype.getCapacity = function() {
 /**
  * Sample the distance to the nearest edge of this constraint
  * @param {Vector2} position The position to sample
- * @returns {Number} The proximity in the range [0, 1]
+ * @returns {Number} The proximity
  */
 ConstraintRing.prototype.sample = function(position) {
     const innerRadius = this.radius - this.width + this.border;
