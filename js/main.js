@@ -1,5 +1,6 @@
 const renderer = new Renderer(document.getElementById("renderer"));
 const random = new Random();
+let koi = null;
 
 const resize = () => {
     const canvas = document.getElementById("renderer");
@@ -7,15 +8,19 @@ const resize = () => {
 
     canvas.width = wrapper.offsetWidth;
     canvas.height = wrapper.offsetHeight;
-    // TODO: Resize koi constellation
+
     renderer.resize(canvas.width, canvas.height);
+
+    if (koi)
+        koi.resize();
 };
 
 window.onresize = resize;
 
 resize();
 
-const koi = new Koi(renderer, random);
+koi = new Koi(renderer, random);
+
 const loop = () => {
     koi.render();
 

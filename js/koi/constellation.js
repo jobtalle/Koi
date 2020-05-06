@@ -42,7 +42,6 @@ Constellation.prototype.fit = function() {
     const height = 1 + Math.sin(angle) * pondDiagonal + this.FACTOR_SMALL;
     const scale = this.width / width;
 
-    // Make constraints
     const constraintBig = new ConstraintCircle(
         new Vector2(1, 1).multiply(scale),
         scale);
@@ -64,9 +63,14 @@ Constellation.prototype.fit = function() {
         ],
         scale * this.FACTOR_RIVER);
 
-    // Instantiate or update ponds
-    // TODO: Update pond constraints if ponds are already instantiated
-    this.big = new Pond(constraintBig);
-    this.small = new Pond(constraintSmall);
-    this.river = new Pond(constraintRiver);
+    if (this.big) {
+        this.big.replaceConstraint(constraintBig);
+        this.small.replaceConstraint(constraintSmall);
+        this.river.replaceConstraint(constraintRiver);
+    }
+    else {
+        this.big = new Pond(constraintBig);
+        this.small = new Pond(constraintSmall);
+        this.river = new Pond(constraintRiver);
+    }
 };

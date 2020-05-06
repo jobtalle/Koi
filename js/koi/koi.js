@@ -36,6 +36,13 @@ Koi.prototype.getCapacity = function() {
 };
 
 /**
+ * Notify that the renderer has resized
+ */
+Koi.prototype.resize = function() {
+    this.constellation.resize(renderer.getWidth() / 70, renderer.getHeight() / 70);
+};
+
+/**
  * Update the scene
  */
 Koi.prototype.update = function() {

@@ -28,6 +28,15 @@ Pond.prototype.canDrop = function() {
 };
 
 /**
+ * Replace this ponds constraint
+ * @param {Object} constraint A new constraint
+ */
+Pond.prototype.replaceConstraint = function(constraint) {
+    this.constraint = constraint;
+    this.capacity = constraint.getCapacity();
+}
+
+/**
  * Add a fish to this pond
  * @param {Fish} fish A fish
  */
