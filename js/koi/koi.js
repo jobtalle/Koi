@@ -16,35 +16,36 @@ const Koi = function(renderer, random) {
         ], 1.5))
     ];
     this.atlas = new Atlas(renderer, this.getCapacity());
+    this.spawner = new Spawner(this.ponds[1], new Vector2(6.1, 6 + 7.5), new Vector2(1, 0));
 
-    const fishCount = 20;
-
-    for (let i = 0; i < fishCount; ++i) {
-        const lightness = .9;
-
-        const pattern = new Pattern(
-            [
-                new PatternBase(new Color(lightness, lightness, lightness)),
-                new PatternSpots(
-                    1.5,
-                    new Color(0.8, 0.3, 0.2),
-                    new Vector3(Math.random() * 64, Math.random() * 64, Math.random() * 64),
-                    new Vector3(Math.random() - .5, Math.random() - .5, Math.random() - .5).normalize()
-                )
-            ],
-            new PatternShape(0.6, 0.8),
-            this.atlas.getSlot(),
-            this.atlas.slotSize);
-
-        this.atlas.write(pattern);
-
-        this.ponds[1].addFish(
-            new Fish(
-                new Body(pattern, this.atlas.pixelSize, 1.2, .3),
-                new Vector2(13.5 + 3 * (random.getFloat() - .5), 6 + 3 * (random.getFloat() - .5)),
-                new Vector2().fromAngle(Math.PI * 2 * random.getFloat()))
-        );
-    }
+    // const fishCount = 20;
+    //
+    // for (let i = 0; i < fishCount; ++i) {
+    //     const lightness = .9;
+    //
+    //     const pattern = new Pattern(
+    //         [
+    //             new PatternBase(new Color(lightness, lightness, lightness)),
+    //             new PatternSpots(
+    //                 1.5,
+    //                 new Color(0.8, 0.3, 0.2),
+    //                 new Vector3(Math.random() * 64, Math.random() * 64, Math.random() * 64),
+    //                 new Vector3(Math.random() - .5, Math.random() - .5, Math.random() - .5).normalize()
+    //             )
+    //         ],
+    //         new PatternShape(0.6, 0.8),
+    //         this.atlas.getSlot(),
+    //         this.atlas.slotSize);
+    //
+    //     this.atlas.write(pattern);
+    //
+    //     this.ponds[1].addFish(
+    //         new Fish(
+    //             new Body(pattern, this.atlas.pixelSize, 1.2, .3),
+    //             new Vector2(13.5 + 3 * (random.getFloat() - .5), 6 + 3 * (random.getFloat() - .5)),
+    //             new Vector2().fromAngle(Math.PI * 2 * random.getFloat()))
+    //     );
+    // }
 };
 
 Koi.prototype.UPDATE_RATE = 1 / 15;
@@ -57,7 +58,7 @@ Koi.prototype.getCapacity = function() {
     let capacity = 0;
 
     for (const pond of this.ponds)
-        capacity += pond.getCapacity();
+        capacity += pond.capacity;
 
     return capacity;
 };
@@ -66,6 +67,8 @@ Koi.prototype.getCapacity = function() {
  * Update the scene
  */
 Koi.prototype.update = function() {
+    this.spawner.update(this.UPDATE_RATE, this.atlas, this.random);
+
     this.lastUpdate = new Date();
 
     for (const pond of this.ponds)
@@ -76,7 +79,13 @@ Koi.prototype.update = function() {
  * Render the scene
  */
 Koi.prototype.render = function() {
-    const time = Math.min(.001 * (new Date() - this.lastUpdate) / this.UPDATE_RATE, 1);
+    let time = .001 * (new Date() - this.lastUpdate) / this.UPDATE_RATE;
+
+    while (time > 1) {
+        time -= 1;
+
+        this.update();
+    }
 
     this.renderer.clear();
     this.renderer.transformPush();

@@ -16,8 +16,6 @@ window.onresize = resize;
 
 resize();
 
-setInterval(() => koi.update(), Math.round(Koi.prototype.UPDATE_RATE * 1000));
-
 const loop = () => {
     koi.render();
 

@@ -5,15 +5,26 @@
  */
 const Pond = function(constraint) {
     this.constraint = constraint;
+    this.capacity = constraint.getCapacity();
     this.fishes = [];
 };
 
+Pond.prototype.SPAWN_OVERHEAD = 2;
+
 /**
- * Get the fish capacity of this pond
- * @returns {Number} The maximum number of fish that fit in this pond
+ * Check if a fish can be spawned in this pond
+ * @returns {Boolean} A boolean indicating whether a fish may be spawned
  */
-Pond.prototype.getCapacity = function() {
-    return this.constraint.getCapacity();
+Pond.prototype.canSpawn = function() {
+    return this.fishes.length < this.capacity - this.SPAWN_OVERHEAD;
+};
+
+/**
+ * Check if a fish can be dropped in this pond
+ * @returns {Boolean} A boolean indicating whether a fish may be dropped
+ */
+Pond.prototype.canDrop = function() {
+    return this.fishes.length < this.capacity;
 };
 
 /**
