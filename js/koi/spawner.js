@@ -1,14 +1,10 @@
 /**
  * The fish spawner
- * @param {Pond} pond A pond to spawn fish in
- * @param {Vector2} point The point to spawn new fish at
- * @param {Vector2} direction The initial direction of spawned fish
+ * @param {Constellation} constellation A constellation to spawn fish in
  * @constructor
  */
-const Spawner = function(pond, point, direction) {
-    this.pond = pond;
-    this.point = point;
-    this.direction = direction;
+const Spawner = function(constellation) {
+    this.constellation = constellation;
     this.time = 0;
 };
 
@@ -25,7 +21,7 @@ Spawner.prototype.update = function(timeStep, atlas, random) {
     if ((this.time -= timeStep) < 0) {
         this.time += this.SPAWN_TIME_MIN + (this.SPAWN_TIME_MAX - this.SPAWN_TIME_MIN) * random.getFloat();
 
-        if (this.pond.canSpawn()) {
+        if (this.constellation.river.canSpawn()) {
             const pattern = new Pattern(
                 [
                     new PatternBase(new Color(.9, .9, .9)),
@@ -40,10 +36,10 @@ Spawner.prototype.update = function(timeStep, atlas, random) {
 
             atlas.write(pattern);
 
-            this.pond.addFish(new Fish(
+            this.constellation.river.addFish(new Fish(
                 new Body(pattern, atlas.pixelSize, 1.2, .3),
-                this.point,
-                this.direction));
+                this.constellation.spawnPoint,
+                this.constellation.spawnDirection));
         }
     }
 };

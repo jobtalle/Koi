@@ -407,5 +407,4 @@ Renderer.prototype.free = function() {
 
     this.gl.deleteBuffer(this.bufferVertices);
     this.gl.deleteBuffer(this.bufferIndices);
-    this.gl.deleteTexture(this.atlas);
 };

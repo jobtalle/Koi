@@ -9,31 +9,16 @@ const Koi = function(renderer, random) {
     this.random = random;
     this.constellation = new Constellation(renderer.getWidth() / 70, renderer.getHeight() / 70);
     this.lastUpdate = new Date();
-    this.ponds = [
-        new Pond(new ConstraintCircle(new Vector2(6, 6), 5)),
-        new Pond(new ConstraintArcPath([
-            new ConstraintArcPath.Arc(new Vector2(6, 6), 7.5, 0, Math.PI * 0.5),
-            new ConstraintArcPath.Arc(new Vector2(21, 6), 7.5, Math.PI, Math.PI * 1.5)
-        ], 1.5))
-    ];
-    this.atlas = new Atlas(renderer, this.getCapacity());
-    this.spawner = new Spawner(this.ponds[1], new Vector2(6.1, 6 + 7.5), new Vector2(1, 0));
+    // TODO: Atlas capacity may overflow!
+    this.atlas = new Atlas(renderer, this.constellation.getCapacity());
+    this.spawner = new Spawner(this.constellation);
+
+    // TODO: This is a debug warp
+    for (let i = 0; i < 1000; ++i)
+        this.update();
 };
 
 Koi.prototype.UPDATE_RATE = 1 / 15;
-
-/**
- * Get the total number of fish this simulation supports
- * @returns {Number} The total fish capacity
- */
-Koi.prototype.getCapacity = function() {
-    let capacity = 0;
-
-    for (const pond of this.ponds)
-        capacity += pond.capacity;
-
-    return capacity;
-};
 
 /**
  * Notify that the renderer has resized
@@ -53,8 +38,6 @@ Koi.prototype.update = function() {
     this.constellation.small.update(this.atlas, this.random);
     this.constellation.big.update(this.atlas, this.random);
     this.constellation.river.update(this.atlas, this.random);
-    // for (const pond of this.ponds)
-    //     pond.update(this.atlas, this.random);
 };
 
 /**
@@ -77,9 +60,6 @@ Koi.prototype.render = function() {
     this.constellation.small.render(this.renderer, time);
     this.constellation.big.render(this.renderer, time);
     this.constellation.river.render(this.renderer, time);
-
-    // for (const pond of this.ponds)
-    //     pond.render(this.renderer, time);
 
     this.renderer.transformPop();
 

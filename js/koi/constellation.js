@@ -5,12 +5,13 @@
  * @constructor
  */
 const Constellation = function(width, height) {
-    this.angle = 0;
     this.width = width;
     this.height = height;
     this.big = null;
     this.small = null;
     this.river = null;
+    this.spawnPoint = null;
+    this.spawnDirection = new Vector2(0, 1);
 
     this.fit();
 };
@@ -32,6 +33,14 @@ Constellation.prototype.resize = function(width, height) {
 };
 
 /**
+ * Get the total number of fish this constellation supports
+ * @returns {Number} The total fish capacity
+ */
+Constellation.prototype.getCapacity = function() {
+    return this.big.capacity + this.small.capacity + this.river.capacity;
+};
+
+/**
  * Calculate the constellation layout
  */
 Constellation.prototype.fit = function() {
@@ -40,6 +49,7 @@ Constellation.prototype.fit = function() {
     const w = this.width;
     const h = this.height;
 
+    // TODO: Really, clean this mess up
     const radiusBig = Math.min(
         (Math.sqrt(Math.pow(2 * h * p + 2 * h + 2 * p * w + 2 * w, 2) - 4 * (- (h * h) - (w * w)) * (-(p * p) + 2 * p * q - 2 * p + q * q + 2 * q - 1)) -
             2 * h * p - 2 * h - 2 * p * w - 2 * w) / (2 * (-(p * p) + 2 * p * q - 2 * p + q * q + 2 * q - 1)),
@@ -81,4 +91,6 @@ Constellation.prototype.fit = function() {
         this.small = new Pond(constraintSmall);
         this.river = new Pond(constraintRiver);
     }
+
+    this.spawnPoint = new Vector2(riverWidth * -.5, radiusBig + .000001);
 };
