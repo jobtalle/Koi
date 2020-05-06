@@ -35,8 +35,6 @@ Pond.prototype.addFish = function(fish) {
     this.fishes.push(fish);
 };
 
-// TODO: Add function to assign a new constraint to this pond, maintain fishes
-
 /**
  * Update this pond and its contents
  * @param {Atlas} atlas The texture atlas

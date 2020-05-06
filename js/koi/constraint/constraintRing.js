@@ -8,7 +8,7 @@
 const ConstraintRing = function(position, radius, width) {
     this.position = position;
     this.radius = radius;
-    this.width = width;
+    this.width = width * .5;
 
     Constraint.call(this);
 };
@@ -71,7 +71,7 @@ ConstraintRing.prototype.render = function(renderer) {
         y = this.position.y + Math.sin(angle) * (this.radius - this.width);
 
         if (i !== 0)
-            renderer.drawLine(xp, yp, Color.WHITE, x, y, Color.WHITE);
+            renderer.drawLine(xp, yp, Color.BLUE, x, y, Color.BLUE);
     }
 
     for (let i = 0; i <= 64; ++i) {
@@ -83,6 +83,6 @@ ConstraintRing.prototype.render = function(renderer) {
         y = this.position.y + Math.sin(angle) * (this.radius + this.width);
 
         if (i !== 0)
-            renderer.drawLine(xp, yp, Color.WHITE, x, y, Color.WHITE);
+            renderer.drawLine(xp, yp, Color.BLUE, x, y, Color.BLUE);
     }
 };
