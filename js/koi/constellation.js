@@ -35,42 +35,35 @@ Constellation.prototype.resize = function(width, height) {
  * Calculate the constellation layout
  */
 Constellation.prototype.fit = function() {
-    const pondDiagonal = 1 + 2 * this.FACTOR_PADDING + this.FACTOR_RIVER + this.FACTOR_SMALL;
-    const angleOffset = Math.asin((1 - this.FACTOR_SMALL) / pondDiagonal);
-    const angle = angleOffset;
-    const width = 1 + Math.cos(angle) * pondDiagonal + this.FACTOR_SMALL;
-    const height = 1 + Math.sin(angle) * pondDiagonal + this.FACTOR_SMALL;
-    const scale = this.width / width;
+    const p = this.FACTOR_SMALL;
+    const q = this.FACTOR_RIVER;
+    const w = this.width;
+    const h = this.height;
+
+    const radiusBig = Math.min(
+        (Math.sqrt(Math.pow(2 * h * p + 2 * h + 2 * p * w + 2 * w, 2) - 4 * (- (h * h) - (w * w)) * (-(p * p) + 2 * p * q - 2 * p + q * q + 2 * q - 1)) -
+            2 * h * p - 2 * h - 2 * p * w - 2 * w) / (2 * (-(p * p) + 2 * p * q - 2 * p + q * q + 2 * q - 1)),
+        Math.min(this.width, this.height) * .5);
+    const radiusSmall = this.FACTOR_SMALL * radiusBig;
+    const centerBig = new Vector2(radiusBig, radiusBig);
+    const centerSmall = new Vector2(this.width - radiusSmall, this.height - radiusSmall);
+    const diagonal = centerSmall.copy().subtract(centerBig).length()
 
     const constraintBig = new ConstraintCircle(
-        new Vector2(1, 1).multiply(scale),
-        scale);
+        centerBig,
+        radiusBig * (1 - this.FACTOR_PADDING));
     const constraintSmall = new ConstraintCircle(
-        new Vector2(1 + Math.cos(angle) * pondDiagonal, 1 + Math.sin(angle) * pondDiagonal).multiply(scale),
-        scale * this.FACTOR_SMALL);
-    const constraintRiver = new ConstraintArcPath(
-        [
-            new ConstraintArcPath.Arc(
-                constraintBig.position,
-                scale * (1 + this.FACTOR_PADDING + this.FACTOR_RIVER * .5),
-                angleOffset,
-                Math.PI * .5),
-            new ConstraintArcPath.Arc(
-                constraintSmall.position,
-                scale * (this.FACTOR_SMALL + this.FACTOR_PADDING + this.FACTOR_RIVER * .5),
-                Math.PI + angleOffset,
-                Math.PI * 1.5)
-        ],
-        scale * this.FACTOR_RIVER);
+        centerSmall,
+        radiusSmall - radiusBig * this.FACTOR_PADDING);
 
     if (this.big) {
         this.big.replaceConstraint(constraintBig);
         this.small.replaceConstraint(constraintSmall);
-        this.river.replaceConstraint(constraintRiver);
+        // this.river.replaceConstraint(constraintRiver);
     }
     else {
         this.big = new Pond(constraintBig);
         this.small = new Pond(constraintSmall);
-        this.river = new Pond(constraintRiver);
+        // this.river = new Pond(constraintRiver);
     }
 };
