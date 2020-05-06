@@ -17,35 +17,6 @@ const Koi = function(renderer, random) {
     ];
     this.atlas = new Atlas(renderer, this.getCapacity());
     this.spawner = new Spawner(this.ponds[1], new Vector2(6.1, 6 + 7.5), new Vector2(1, 0));
-
-    // const fishCount = 20;
-    //
-    // for (let i = 0; i < fishCount; ++i) {
-    //     const lightness = .9;
-    //
-    //     const pattern = new Pattern(
-    //         [
-    //             new PatternBase(new Color(lightness, lightness, lightness)),
-    //             new PatternSpots(
-    //                 1.5,
-    //                 new Color(0.8, 0.3, 0.2),
-    //                 new Vector3(Math.random() * 64, Math.random() * 64, Math.random() * 64),
-    //                 new Vector3(Math.random() - .5, Math.random() - .5, Math.random() - .5).normalize()
-    //             )
-    //         ],
-    //         new PatternShape(0.6, 0.8),
-    //         this.atlas.getSlot(),
-    //         this.atlas.slotSize);
-    //
-    //     this.atlas.write(pattern);
-    //
-    //     this.ponds[1].addFish(
-    //         new Fish(
-    //             new Body(pattern, this.atlas.pixelSize, 1.2, .3),
-    //             new Vector2(13.5 + 3 * (random.getFloat() - .5), 6 + 3 * (random.getFloat() - .5)),
-    //             new Vector2().fromAngle(Math.PI * 2 * random.getFloat()))
-    //     );
-    // }
 };
 
 Koi.prototype.UPDATE_RATE = 1 / 15;
@@ -96,6 +67,14 @@ Koi.prototype.render = function() {
         pond.render(this.renderer, time);
 
     this.renderer.transformPop();
+
+    // this.renderer.cutStrip(0, 0, 0, 0);
+    // this.renderer.drawStrip(0, 800,0, 1);
+    // this.renderer.cutStrip(800, 800,1, 1);
+    // this.renderer.cutStrip(0, 0, 0, 0);
+    // this.renderer.drawStrip(800, 0,1, 0);
+    // this.renderer.cutStrip(800, 800,1, 1);
+
     this.renderer.flush();
 };
 
