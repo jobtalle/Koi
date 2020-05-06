@@ -36,9 +36,7 @@ Spawner.prototype.update = function(timeStep, atlas, random) {
                         new Vector3(Math.random() - .5, Math.random() - .5, Math.random() - .5).normalize()
                     )
                 ],
-                new PatternShape(0.6, 0.8),
-                atlas.getSlot(), // TODO: atlas.write should assign this information after it becomes valid!
-                atlas.slotSize);
+                new PatternShape(0.6, 0.8));
 
             atlas.write(pattern);
 

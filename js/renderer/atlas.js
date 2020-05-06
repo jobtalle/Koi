@@ -111,6 +111,9 @@ Atlas.prototype.returnSlot = function(slot) {
  * @param {Pattern} pattern The pattern to write to the atlas
  */
 Atlas.prototype.write = function(pattern) {
+    pattern.slot = this.getSlot();
+    pattern.size = this.slotSize;
+
     this.renderer.unbindShader();
     this.renderer.gl.viewport(0, 0, this.width, this.height);
     this.renderer.gl.bindFramebuffer(this.renderer.gl.FRAMEBUFFER, this.framebuffer);
