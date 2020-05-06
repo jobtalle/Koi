@@ -42,7 +42,7 @@ Pond.prototype.addFish = function(fish) {
  */
 Pond.prototype.update = function(atlas, random) {
     for (let fish = this.fishes.length; fish-- > 0;) {
-        for (let other = fish - 1; other-- > 0;)
+        for (let other = fish; other-- > 0;)
             this.fishes[fish].interact(this.fishes[other], random);
 
         if (this.fishes[fish].update(this.constraint, random)) {

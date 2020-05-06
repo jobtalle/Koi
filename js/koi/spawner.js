@@ -12,8 +12,8 @@ const Spawner = function(pond, point, direction) {
     this.time = 0;
 };
 
-Spawner.prototype.SPAWN_TIME_MIN = 2;
-Spawner.prototype.SPAWN_TIME_MAX = 10;
+Spawner.prototype.SPAWN_TIME_MIN = 1;
+Spawner.prototype.SPAWN_TIME_MAX = 5;
 
 /**
  * Update the spawner
