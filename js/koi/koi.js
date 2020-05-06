@@ -7,6 +7,7 @@
 const Koi = function(renderer, random) {
     this.renderer = renderer;
     this.random = random;
+    this.constellation = new Constellation(renderer.getWidth(), renderer.getHeight());
     this.lastUpdate = new Date();
     this.ponds = [
         new Pond(new ConstraintCircle(new Vector2(6, 6), 5)),
