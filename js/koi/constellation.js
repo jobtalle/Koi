@@ -47,7 +47,8 @@ Constellation.prototype.fit = function() {
     const radiusSmall = this.FACTOR_SMALL * radiusBig;
     const centerBig = new Vector2(radiusBig, radiusBig);
     const centerSmall = new Vector2(this.width - radiusSmall, this.height - radiusSmall);
-    const diagonal = centerSmall.copy().subtract(centerBig).length()
+    const riverWidth = centerSmall.copy().subtract(centerBig).length() - radiusBig - radiusSmall;
+    const riverTurn = Math.atan((centerSmall.y - centerBig.y) / (centerSmall.x - centerBig.x));
 
     const constraintBig = new ConstraintCircle(
         centerBig,
@@ -55,15 +56,29 @@ Constellation.prototype.fit = function() {
     const constraintSmall = new ConstraintCircle(
         centerSmall,
         radiusSmall - radiusBig * this.FACTOR_PADDING);
+    const constraintRiver = new ConstraintArcPath(
+        [
+            new ConstraintArcPath.Arc(
+                centerBig,
+                radiusBig + riverWidth * .5,
+                riverTurn,
+                Math.PI),
+            new ConstraintArcPath.Arc(
+                centerSmall,
+                radiusSmall + riverWidth * .5,
+                Math.PI + riverTurn,
+                Math.PI * 2)
+        ],
+        radiusBig * this.FACTOR_RIVER);
 
     if (this.big) {
         this.big.replaceConstraint(constraintBig);
         this.small.replaceConstraint(constraintSmall);
-        // this.river.replaceConstraint(constraintRiver);
+        this.river.replaceConstraint(constraintRiver);
     }
     else {
         this.big = new Pond(constraintBig);
         this.small = new Pond(constraintSmall);
-        // this.river = new Pond(constraintRiver);
+        this.river = new Pond(constraintRiver);
     }
 };

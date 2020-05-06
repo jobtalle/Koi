@@ -52,7 +52,7 @@ Koi.prototype.update = function() {
 
     this.constellation.small.update(this.atlas, this.random);
     this.constellation.big.update(this.atlas, this.random);
-    // this.constellation.river.update(this.atlas, this.random);
+    this.constellation.river.update(this.atlas, this.random);
     // for (const pond of this.ponds)
     //     pond.update(this.atlas, this.random);
 };
@@ -76,7 +76,7 @@ Koi.prototype.render = function() {
 
     this.constellation.small.render(this.renderer, time);
     this.constellation.big.render(this.renderer, time);
-    // this.constellation.river.render(this.renderer, time);
+    this.constellation.river.render(this.renderer, time);
 
     // for (const pond of this.ponds)
     //     pond.render(this.renderer, time);
