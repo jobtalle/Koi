@@ -14,6 +14,7 @@ const PatternSpots = function(scale, color, anchor, x) {
 };
 
 PatternSpots.prototype.UP = new Vector3(0, 1, 0);
+PatternSpots.prototype.UP_ALT = new Vector3(.1, 1, 0);
 
 PatternSpots.prototype.SHADER_CUBIC_NOISE = `
 mediump float random(mediump vec3 x) {
@@ -98,6 +99,9 @@ void main() {
  * @returns {Vector3} The Z direction vector
  */
 PatternSpots.prototype.getZ = function() {
+    if (this.x.equals(this.UP))
+        return this.x.cross(this.UP_ALT).normalize();
+
     return this.x.cross(this.UP).normalize();
 };
 

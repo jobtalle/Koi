@@ -1,6 +1,6 @@
 const renderer = new Renderer(document.getElementById("renderer"));
 const random = new Random();
-const koi = new Koi(renderer, random);
+let koi = null;
 
 const resize = () => {
     const canvas = document.getElementById("renderer");
@@ -10,13 +10,16 @@ const resize = () => {
     canvas.height = wrapper.offsetHeight;
 
     renderer.resize(canvas.width, canvas.height);
+
+    if (koi)
+        koi.resize();
 };
 
 window.onresize = resize;
 
 resize();
 
-setInterval(() => koi.update(), Math.round(Koi.prototype.UPDATE_RATE * 1000));
+koi = new Koi(renderer, random);
 
 const loop = () => {
     koi.render();

@@ -6,8 +6,8 @@
  */
 const Renderer = function(canvas, clearColor = new Color(.2, .2, .2)) {
     this.gl =
-        canvas.getContext("webgl") ||
-        canvas.getContext("experimental-webgl");
+        canvas.getContext("webgl", {alpha: false}) ||
+        canvas.getContext("experimental-webgl", {alpha: false});
     this.patterns = new Patterns(this.gl);
     this.programLines = new Shader(
         this.gl,
@@ -369,9 +369,16 @@ Renderer.prototype.resize = function(width, height) {
  * Clear the render context
  */
 Renderer.prototype.clear = function() {
-    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
     this.gl.viewport(0, 0, this.width, this.height);
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+};
+
+/**
+ * Indicate that an external shader program is made active
+ */
+Renderer.prototype.unbindShader = function() {
+    this.programActive = null;
 };
 
 /**
@@ -400,5 +407,4 @@ Renderer.prototype.free = function() {
 
     this.gl.deleteBuffer(this.bufferVertices);
     this.gl.deleteBuffer(this.bufferIndices);
-    this.gl.deleteTexture(this.atlas);
 };

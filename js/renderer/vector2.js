@@ -100,31 +100,6 @@ Vector2.prototype.normalize = function() {
 };
 
 /**
- * Reflect this vector
- * @param {Vector2} vector A surface normal to reflect against
- * @returns {Vector2} The modified vector
- */
-Vector2.prototype.reflect = function(vector) {
-    const ddot = this.dot(vector) * 2;
-
-    this.x -= ddot * vector.x;
-    this.y -= ddot * vector.y;
-
-    return this;
-};
-
-/**
- * Negate this vector
- * @returns {Vector2} The negated vector
- */
-Vector2.prototype.negate = function() {
-    this.x = -this.x;
-    this.y = -this.y;
-
-    return this;
-}
-
-/**
  * Get the angle this vector is pointing towards
  * @returns {Number} The angle in radians
  */

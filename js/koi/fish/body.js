@@ -16,7 +16,6 @@ const Body = function(pattern, atlasPixel, length, thickness) {
     this.inverseSpacing = 1 / this.spacing;
     this.springs = this.makeSprings(this.SPRING_START, this.SPRING_END, this.SPRING_POWER);
     this.u = this.makeU(atlasPixel);
-    this.vCenter = pattern.slot.y + pattern.size.y * .5;
     this.phase = 0;
 };
 
@@ -51,26 +50,12 @@ Body.prototype.initializeSpine = function(head, direction) {
 Body.prototype.makeU = function(atlasPixel) {
     const uStart = this.pattern.slot.x + atlasPixel.x;
     const uEnd = this.pattern.slot.x + this.pattern.size.x - atlasPixel.y;
-    const u = new Array(this.spine.length + 1);
+    const u = new Array(this.spine.length);
 
     for (let segment = 0; segment < this.spine.length; ++segment)
         u[segment] = uStart + (uEnd - uStart) * segment / (this.spine.length - 1);
 
     return u;
-};
-
-/**
- * Make the radii of texture V coordinates
- * @param {Vector2} atlasPixel The pixel size on the atlas in UV coordinates
- * @returns {Number[]} The V radii
- */
-Body.prototype.makeVRadii = function(atlasPixel) {
-    const vRadii = new Array(this.spine.length - 2);
-
-    for (let segment = 1; segment < this.spine.length; ++segment)
-        vRadii[segment - 1] = this.pattern.size.y * .5 - atlasPixel.y;
-
-    return vRadii;
 };
 
 /**
@@ -84,7 +69,7 @@ Body.prototype.makeSprings = function(start, end, power) {
     const springs = new Array(this.spine.length - 1);
 
     for (let spring = 0; spring < this.spine.length - 1; ++spring)
-        springs[spring ] = start + (end - start) * ((spring / (this.spine.length - 2)) ** power);
+        springs[spring] = start + (end - start) * ((spring / (this.spine.length - 2)) ** power);
 
     return springs;
 };
@@ -159,14 +144,12 @@ Body.prototype.render = function(renderer, time) {
         y = this.spinePrevious[segment].y + (this.spine[segment].y - this.spinePrevious[segment].y) * time;
 
         if (segment === 1) {
-            dxp = x - xp;
-            dyp = y - yp;
-        }
-        else {
-            dxp = dx;
-            dyp = dy;
+            dx = x - xp;
+            dy = y - yp;
         }
 
+        dxp = dx;
+        dyp = dy;
         dx = x - xp;
         dy = y - yp;
 
@@ -177,17 +160,27 @@ Body.prototype.render = function(renderer, time) {
             xp - this.radius * dyAveraged * this.inverseSpacing,
             yp + this.radius * dxAveraged * this.inverseSpacing,
             this.u[segment - 1],
-            this.vCenter - this.pattern.size.y * .5 + this.atlasPixel.y);
+            this.pattern.slot.y + this.atlasPixel.y);
         renderer.drawStrip(
             xp + this.radius * dyAveraged * this.inverseSpacing,
             yp - this.radius * dxAveraged * this.inverseSpacing,
             this.u[segment - 1],
-            this.vCenter + this.pattern.size.y * .5 - this.atlasPixel.y);
+            this.pattern.slot.y + this.pattern.size.y - this.atlasPixel.y);
     }
 
     renderer.cutStrip(
-        this.spinePrevious[this.spine.length - 1].x + (this.spine[this.spine.length - 1].x - this.spinePrevious[this.spine.length - 1].x) * time,
-        this.spinePrevious[this.spine.length - 1].y + (this.spine[this.spine.length - 1].y - this.spinePrevious[this.spine.length - 1].y) * time,
+        this.spinePrevious[this.spine.length - 1].x +
+            (this.spine[this.spine.length - 1].x - this.spinePrevious[this.spine.length - 1].x) * time,
+        this.spinePrevious[this.spine.length - 1].y +
+            (this.spine[this.spine.length - 1].y - this.spinePrevious[this.spine.length - 1].y) * time,
         this.u[this.spine.length - 1],
-        this.vCenter);
+        this.pattern.slot.y + this.pattern.size.y * .5);
+};
+
+/**
+ * Free all resources maintained by this body
+ * @param {Atlas} atlas The texture atlas
+ */
+Body.prototype.free = function(atlas) {
+    this.pattern.free(atlas);
 };

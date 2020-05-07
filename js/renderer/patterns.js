@@ -67,9 +67,9 @@ Patterns.prototype.write = function(pattern) {
             break;
     }
 
-    this.gl.disable(this.gl.BLEND);
+    this.gl.blendFunc(this.gl.ZERO, this.gl.SRC_COLOR)
     this.writeLayer(pattern.shape, this.programShape);
-    this.gl.enable(this.gl.BLEND);
+    this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
 };
 
 /**

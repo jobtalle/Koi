@@ -7,68 +7,83 @@
 const Koi = function(renderer, random) {
     this.renderer = renderer;
     this.random = random;
-    this.grid = new Grid(12, 12);
+    this.scale = this.getScale(renderer.getWidth(), renderer.getHeight());
+    this.constellation = new Constellation(renderer.getWidth() / this.scale, renderer.getHeight() / this.scale);
     this.lastUpdate = new Date();
-    this.pond = new Pond(new Circle(new Vector2(6, 6), 5));
-    this.capacity = this.pond.getCapacity();
-    this.atlas = new Atlas(renderer, this.capacity);
-    this.grid.addConstraint(this.pond.constraint);
+    // TODO: Atlas capacity may overflow!
+    this.atlas = new Atlas(renderer, this.constellation.getCapacity());
+    this.spawner = new Spawner(this.constellation);
 
-    const fishCount = 20;
-
-    for (let i = 0; i < fishCount; ++i) {
-        const lightness = .9;
-
-        const pattern = new Pattern(
-            [
-                new PatternBase(new Color(lightness, lightness, lightness)),
-                new PatternSpots(
-                    1.5,
-                    new Color(0.8, 0.3, 0.2),
-                    new Vector3(Math.random() * 64, Math.random() * 64, Math.random() * 64),
-                    new Vector3(Math.random() - .5, Math.random() - .5, Math.random() - .5).normalize()
-                )
-            ],
-            new PatternShape(0.6),
-            this.atlas.getSlot(),
-            this.atlas.slotSize);
-
-        this.atlas.write(pattern);
-
-        this.grid.addFish(
-            new Fish(
-                new Body(pattern, this.atlas.pixelSize, 1.2, .3),
-                new Vector2(6 + 6 * (random.getFloat() - .5), 6 + 6 * (random.getFloat() - .5)),
-                new Vector2().fromAngle(Math.PI * 2 * random.getFloat()),
-                this.pond.constraint)
-        );
-    }
+    // TODO: This is a debug warp
+    for (let i = 0; i < 1000; ++i)
+        this.update();
 };
 
 Koi.prototype.UPDATE_RATE = 1 / 15;
+Koi.prototype.PREFERRED_SCALE = 80;
+Koi.prototype.SIZE_MIN = 12;
+Koi.prototype.SIZE_MAX = 15;
+
+/**
+ * Calculate the scene scale
+ * @param {Number} width The view width in pixels
+ * @param {Number} height The view height in pixels
+ */
+Koi.prototype.getScale = function(width, height) {
+    return Math.max(
+        Math.min(
+            this.PREFERRED_SCALE,
+            Math.min(width, height) / this.SIZE_MIN),
+        Math.min(width, height) / this.SIZE_MAX);
+};
+
+/**
+ * Notify that the renderer has resized
+ */
+Koi.prototype.resize = function() {
+    this.scale = this.getScale(renderer.getWidth(), renderer.getHeight());
+    this.constellation.resize(renderer.getWidth() / this.scale, renderer.getHeight() / this.scale);
+};
 
 /**
  * Update the scene
  */
 Koi.prototype.update = function() {
+    this.spawner.update(this.UPDATE_RATE, this.atlas, this.random);
+    this.constellation.update(this.atlas, this.random);
+
     this.lastUpdate = new Date();
-    this.grid.update(this.random);
 };
 
 /**
  * Render the scene
  */
 Koi.prototype.render = function() {
-    const time = Math.min(.001 * (new Date() - this.lastUpdate) / this.UPDATE_RATE, 1);
+    let time = .001 * (new Date() - this.lastUpdate) / this.UPDATE_RATE;
+
+    while (time > 1) {
+        time -= 1;
+
+        this.update();
+    }
 
     this.renderer.clear();
     this.renderer.transformPush();
 
-    this.renderer.getTransform().scale(75, 75);
+    this.renderer.getTransform().scale(this.scale, this.scale);
+    // this.renderer.getTransform().translate(1, 2);
 
-    this.grid.render(this.renderer, time);
+    this.constellation.render(this.renderer, time);
 
     this.renderer.transformPop();
+
+    // this.renderer.cutStrip(0, 0, 0, 0);
+    // this.renderer.drawStrip(0, 800,0, 1);
+    // this.renderer.cutStrip(800, 800,1, 1);
+    // this.renderer.cutStrip(0, 0, 0, 0);
+    // this.renderer.drawStrip(800, 0,1, 0);
+    // this.renderer.cutStrip(800, 800,1, 1);
+
     this.renderer.flush();
 };
 
