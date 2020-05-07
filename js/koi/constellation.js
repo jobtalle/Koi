@@ -17,7 +17,7 @@ const Constellation = function(width, height) {
 };
 
 Constellation.prototype.FACTOR_PADDING = .1;
-Constellation.prototype.FACTOR_SMALL = .7;
+Constellation.prototype.FACTOR_SMALL = .6;
 Constellation.prototype.FACTOR_RIVER = .6;
 
 /**
@@ -49,9 +49,9 @@ Constellation.prototype.fit = function() {
     const w = this.width;
     const h = this.height;
 
-    const radiusBig = Math.min(0.5 * (Math.sqrt(
-        4 * ((p + 1) * (p + 1) * (h + w) * (h + w) + (h * h + w * w) * (q * (2 * p + q + 2) - p * (p + 2) - 1))) -
-        2 * (p + 1) * (h + w)) /
+    const radiusBig = Math.min((Math.sqrt(
+        ((p + 1) * (p + 1) * (h + w) * (h + w) + (h * h + w * w) * (q * (2 * p + q + 2) - p * (p + 2) - 1))) -
+        (p + 1) * (h + w)) /
         (p * (2 * q - p - 2) + q * (q + 2) - 1),
         Math.min(this.width, this.height) * .5);
     const radiusSmall = this.FACTOR_SMALL * radiusBig;

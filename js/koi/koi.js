@@ -15,7 +15,7 @@ const Koi = function(renderer, random) {
     this.spawner = new Spawner(this.constellation);
 
     // TODO: This is a debug warp
-    for (let i = 0; i < 1000; ++i)
+    for (let i = 0; i < 10000; ++i)
         this.update();
 };
 
@@ -77,12 +77,12 @@ Koi.prototype.render = function() {
 
     this.renderer.transformPop();
 
-    // this.renderer.cutStrip(0, 0, 0, 0);
-    // this.renderer.drawStrip(0, 800,0, 1);
-    // this.renderer.cutStrip(800, 800,1, 1);
-    // this.renderer.cutStrip(0, 0, 0, 0);
-    // this.renderer.drawStrip(800, 0,1, 0);
-    // this.renderer.cutStrip(800, 800,1, 1);
+    this.renderer.cutStrip(0, 0, 0, 0);
+    this.renderer.drawStrip(0, 800,0, 1);
+    this.renderer.cutStrip(800, 800,1, 1);
+    this.renderer.cutStrip(0, 0, 0, 0);
+    this.renderer.drawStrip(800, 0,1, 0);
+    this.renderer.cutStrip(800, 800,1, 1);
 
     this.renderer.flush();
 };
