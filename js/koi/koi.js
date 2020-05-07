@@ -7,7 +7,8 @@
 const Koi = function(renderer, random) {
     this.renderer = renderer;
     this.random = random;
-    this.constellation = new Constellation(renderer.getWidth() / 70, renderer.getHeight() / 70);
+    this.scale = this.getScale(renderer.getWidth(), renderer.getHeight());
+    this.constellation = new Constellation(renderer.getWidth() / this.scale, renderer.getHeight() / this.scale);
     this.lastUpdate = new Date();
     // TODO: Atlas capacity may overflow!
     this.atlas = new Atlas(renderer, this.constellation.getCapacity());
@@ -19,12 +20,29 @@ const Koi = function(renderer, random) {
 };
 
 Koi.prototype.UPDATE_RATE = 1 / 15;
+Koi.prototype.PREFERRED_SCALE = 80;
+Koi.prototype.SIZE_MIN = 12; // The minimum size of the smallest dimension
+Koi.prototype.SIZE_MAX = 15; // The maximum size of the smallest dimension
+
+/**
+ * Calculate the scene scale
+ * @param {Number} width The view width in pixels
+ * @param {Number} height The view height in pixels
+ */
+Koi.prototype.getScale = function(width, height) {
+    return Math.max(
+        Math.min(
+            this.PREFERRED_SCALE,
+            Math.min(width, height) / this.SIZE_MIN),
+        Math.min(width, height) / this.SIZE_MAX);
+};
 
 /**
  * Notify that the renderer has resized
  */
 Koi.prototype.resize = function() {
-    this.constellation.resize(renderer.getWidth() / 70, renderer.getHeight() / 70);
+    this.scale = this.getScale(renderer.getWidth(), renderer.getHeight());
+    this.constellation.resize(renderer.getWidth() / this.scale, renderer.getHeight() / this.scale);
 };
 
 /**
@@ -32,12 +50,9 @@ Koi.prototype.resize = function() {
  */
 Koi.prototype.update = function() {
     this.spawner.update(this.UPDATE_RATE, this.atlas, this.random);
+    this.constellation.update(this.atlas, this.random);
 
     this.lastUpdate = new Date();
-
-    this.constellation.small.update(this.atlas, this.random);
-    this.constellation.big.update(this.atlas, this.random);
-    this.constellation.river.update(this.atlas, this.random);
 };
 
 /**
@@ -55,12 +70,10 @@ Koi.prototype.render = function() {
     this.renderer.clear();
     this.renderer.transformPush();
 
-    this.renderer.getTransform().scale(70, 70);
+    this.renderer.getTransform().scale(this.scale, this.scale);
     // this.renderer.getTransform().translate(1, 2);
 
-    this.constellation.small.render(this.renderer, time);
-    this.constellation.big.render(this.renderer, time);
-    this.constellation.river.render(this.renderer, time);
+    this.constellation.render(this.renderer, time);
 
     this.renderer.transformPop();
 

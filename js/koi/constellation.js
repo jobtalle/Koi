@@ -118,3 +118,26 @@ Constellation.prototype.fit = function() {
         this.river = new Pond(constraintRiver);
     }
 };
+
+/**
+ * Update the constellation
+ * @param {Atlas} atlas The pattern atlas
+ * @param {Random} random A randomizer
+ */
+Constellation.prototype.update = function(atlas, random) {
+    this.small.update(atlas, random);
+    this.big.update(atlas, random);
+    this.river.update(atlas, random);
+};
+
+/**
+ * Render the constellation
+ * @param {Renderer} renderer The renderer
+ * @param {Number} time The amount of time since the last update
+ */
+Constellation.prototype.render = function(renderer, time) {
+    // TODO: Track last update time per pond
+    this.small.render(renderer, time);
+    this.big.render(renderer, time);
+    this.river.render(renderer, time);
+};
