@@ -114,13 +114,13 @@ Renderer.prototype.updateBuffers = function() {
     if (this.vertices.length > this.bufferVerticesCapacity) {
         this.bufferVerticesCapacity = this.vertices.length;
 
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.bufferVerticesCapacity << 2, this.gl.STREAM_DRAW);
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.bufferVerticesCapacity << 2, this.gl.DYNAMIC_DRAW);
     }
 
     if (this.indices.length > this.bufferIndicesCapacity) {
         this.bufferIndicesCapacity = this.indices.length;
 
-        this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.bufferIndicesCapacity << 2, this.gl.STREAM_DRAW);
+        this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.bufferIndicesCapacity << 2, this.gl.DYNAMIC_DRAW);
     }
 
     if (this.vertices.length !== 0)

@@ -11,7 +11,7 @@ const Patterns = function(gl) {
     this.programShape = PatternShape.prototype.createShader(gl);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, 64, gl.STREAM_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, 64, gl.DYNAMIC_DRAW);
 };
 
 /**
@@ -27,7 +27,7 @@ Patterns.prototype.writeLayer = function(layer, program) {
     this.gl.enableVertexAttribArray(program.aPosition);
     this.gl.vertexAttribPointer(program.aPosition, 2, this.gl.FLOAT, false, 16, 0);
 
-    if (program.aUv) {
+    if (program.aUv !== undefined) {
         this.gl.enableVertexAttribArray(program.aUv);
         this.gl.vertexAttribPointer(program.aUv, 2, this.gl.FLOAT, false, 16, 8);
     }
@@ -41,6 +41,7 @@ Patterns.prototype.writeLayer = function(layer, program) {
  */
 Patterns.prototype.write = function(pattern) {
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
+
     this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array([
         2 * pattern.slot.x - 1,
         2 * pattern.slot.y - 1,
