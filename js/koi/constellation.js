@@ -49,10 +49,10 @@ Constellation.prototype.fit = function() {
     const w = this.width;
     const h = this.height;
 
-    // TODO: Really, clean this mess up
-    const radiusBig = Math.min(
-        (Math.sqrt(Math.pow(2 * h * p + 2 * h + 2 * p * w + 2 * w, 2) - 4 * (- (h * h) - (w * w)) * (-(p * p) + 2 * p * q - 2 * p + q * q + 2 * q - 1)) -
-            2 * h * p - 2 * h - 2 * p * w - 2 * w) / (2 * (-(p * p) + 2 * p * q - 2 * p + q * q + 2 * q - 1)),
+    const radiusBig = Math.min(0.5 * (Math.sqrt(
+        4 * ((p + 1) * (p + 1) * (h + w) * (h + w) + (h * h + w * w) * (q * (2 * p + q + 2) - p * (p + 2) - 1))) -
+        2 * (p + 1) * (h + w)) /
+        (p * (2 * q - p - 2) + q * (q + 2) - 1),
         Math.min(this.width, this.height) * .5);
     const radiusSmall = this.FACTOR_SMALL * radiusBig;
     const centerBig = new Vector2(radiusBig, radiusBig);

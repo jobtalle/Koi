@@ -108,27 +108,5 @@ ConstraintArcPath.prototype.render = function(renderer) {
                 arc.center.y + Math.sin(radiansEnd) * (arc.radius + this.width * .5),
                 Color.WHITE);
         }
-
-        renderer.drawLine(
-            arc.center.x,
-            arc.center.y,
-            Color.RED,
-            arc.center.x + arc.direction.x,
-            arc.center.y + arc.direction.y,
-            Color.RED);
-        renderer.drawLine(
-            arc.center.x - .2,
-            arc.center.y,
-            Color.RED,
-            arc.center.x + .2,
-            arc.center.y,
-            Color.RED);
-        renderer.drawLine(
-            arc.center.x,
-            arc.center.y - .2,
-            Color.RED,
-            arc.center.x,
-            arc.center.y + .2,
-            Color.RED);
     }
 };
