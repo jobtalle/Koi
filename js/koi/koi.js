@@ -56,6 +56,7 @@ Koi.prototype.render = function() {
     this.renderer.transformPush();
 
     this.renderer.getTransform().scale(70, 70);
+    // this.renderer.getTransform().translate(1, 2);
 
     this.constellation.small.render(this.renderer, time);
     this.constellation.big.render(this.renderer, time);

@@ -8,7 +8,7 @@
 const ConstraintRing = function(position, radius, width) {
     this.position = position;
     this.radius = radius;
-    this.width = width * .5;
+    this.halfWidth = width * .5;
 
     Constraint.call(this);
 };
@@ -20,8 +20,8 @@ ConstraintRing.prototype = Object.create(Constraint.prototype);
  * @returns {Number} The maximum number of fish that fit within this constraint
  */
 ConstraintRing.prototype.getCapacity = function() {
-    const radiusInner = this.radius - this.width + this.border;
-    const radiusOuter = this.radius + this.width - this.border;
+    const radiusInner = this.radius - this.halfWidth + this.border;
+    const radiusOuter = this.radius + this.halfWidth - this.border;
 
     return Math.floor(Math.PI * (radiusOuter * radiusOuter - radiusInner * radiusInner) / this.AREA_PER_FISH);
 };
@@ -34,8 +34,8 @@ ConstraintRing.prototype.getCapacity = function() {
  * @returns {Number} The proximity
  */
 ConstraintRing.prototype.sample = function(dx, dy, distance) {
-    const innerRadius = this.radius - this.width + this.border;
-    const outerRadius = this.radius + this.width - this.border;
+    const innerRadius = this.radius - this.halfWidth + this.border;
+    const outerRadius = this.radius + this.halfWidth - this.border;
 
     if (distance < innerRadius) {
         this.normal.x = dx;
@@ -67,8 +67,8 @@ ConstraintRing.prototype.render = function(renderer) {
 
         xp = x;
         yp = y;
-        x = this.position.x + Math.cos(angle) * (this.radius - this.width);
-        y = this.position.y + Math.sin(angle) * (this.radius - this.width);
+        x = this.position.x + Math.cos(angle) * (this.radius - this.halfWidth);
+        y = this.position.y + Math.sin(angle) * (this.radius - this.halfWidth);
 
         if (i !== 0)
             renderer.drawLine(xp, yp, Color.BLUE, x, y, Color.BLUE);
@@ -79,8 +79,8 @@ ConstraintRing.prototype.render = function(renderer) {
 
         xp = x;
         yp = y;
-        x = this.position.x + Math.cos(angle) * (this.radius + this.width);
-        y = this.position.y + Math.sin(angle) * (this.radius + this.width);
+        x = this.position.x + Math.cos(angle) * (this.radius + this.halfWidth);
+        y = this.position.y + Math.sin(angle) * (this.radius + this.halfWidth);
 
         if (i !== 0)
             renderer.drawLine(xp, yp, Color.BLUE, x, y, Color.BLUE);

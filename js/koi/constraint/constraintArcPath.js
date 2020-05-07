@@ -24,6 +24,10 @@ ConstraintArcPath.Arc = function(center, radius, start, end) {
     this.radius = radius;
     this.radians = end - start;
 
+    // TODO: Start and end do not need to be stored if nothing is drawn
+    this.start = start;
+    this.end = end;
+
     this.cone = Math.cos(this.radians * .5);
     this.direction = new Vector2().fromAngle(start + this.radians * .5);
 };
@@ -83,6 +87,28 @@ ConstraintArcPath.prototype.sample = function(position) {
  */
 ConstraintArcPath.prototype.render = function(renderer) {
     for (const arc of this.arcs) {
+        const steps = Math.floor((arc.end - arc.start) / .05);
+
+        for (let i = 0; i < steps; ++i) {
+            const radiansStart = arc.start + (arc.end - arc.start) * i / steps;
+            const radiansEnd = arc.start + (arc.end - arc.start) * (i + 1) / steps;
+
+            renderer.drawLine(
+                arc.center.x + Math.cos(radiansStart) * (arc.radius - this.width * .5),
+                arc.center.y + Math.sin(radiansStart) * (arc.radius - this.width * .5),
+                Color.WHITE,
+                arc.center.x + Math.cos(radiansEnd) * (arc.radius - this.width * .5),
+                arc.center.y + Math.sin(radiansEnd) * (arc.radius - this.width * .5),
+                Color.WHITE);
+            renderer.drawLine(
+                arc.center.x + Math.cos(radiansStart) * (arc.radius + this.width * .5),
+                arc.center.y + Math.sin(radiansStart) * (arc.radius + this.width * .5),
+                Color.WHITE,
+                arc.center.x + Math.cos(radiansEnd) * (arc.radius + this.width * .5),
+                arc.center.y + Math.sin(radiansEnd) * (arc.radius + this.width * .5),
+                Color.WHITE);
+        }
+
         renderer.drawLine(
             arc.center.x,
             arc.center.y,
@@ -105,7 +131,4 @@ ConstraintArcPath.prototype.render = function(renderer) {
             arc.center.y + .2,
             Color.RED);
     }
-
-    for (const ring of this.rings)
-        ring.render(renderer);
 };

@@ -11,14 +11,14 @@ const Constellation = function(width, height) {
     this.small = null;
     this.river = null;
     this.spawnPoint = null;
-    this.spawnDirection = new Vector2(0, 1);
+    this.spawnDirection = null;
 
     this.fit();
 };
 
 Constellation.prototype.FACTOR_PADDING = .1;
 Constellation.prototype.FACTOR_SMALL = .7;
-Constellation.prototype.FACTOR_RIVER = .5;
+Constellation.prototype.FACTOR_RIVER = .6;
 
 /**
  * Resize the constellation
@@ -66,20 +66,46 @@ Constellation.prototype.fit = function() {
     const constraintSmall = new ConstraintCircle(
         centerSmall,
         radiusSmall - radiusBig * this.FACTOR_PADDING);
-    const constraintRiver = new ConstraintArcPath(
-        [
-            new ConstraintArcPath.Arc(
-                centerBig,
-                radiusBig + riverWidth * .5,
-                riverTurn,
-                Math.PI),
-            new ConstraintArcPath.Arc(
-                centerSmall,
-                radiusSmall + riverWidth * .5,
-                Math.PI + riverTurn,
-                Math.PI * 2)
-        ],
-        radiusBig * this.FACTOR_RIVER);
+    let constraintRiver;
+
+    if (this.width > this.height) {
+        constraintRiver = new ConstraintArcPath(
+            [
+                new ConstraintArcPath.Arc(
+                    centerBig,
+                    radiusBig + riverWidth * .5,
+                    riverTurn,
+                    Math.PI),
+                new ConstraintArcPath.Arc(
+                    centerSmall,
+                    radiusSmall + riverWidth * .5,
+                    Math.PI + riverTurn,
+                    Math.PI * 2)
+            ],
+            radiusBig * this.FACTOR_RIVER);
+
+        this.spawnPoint = new Vector2(riverWidth * -.5, radiusBig + .000001);
+        this.spawnDirection = new Vector2(0, 1);
+    }
+    else {
+        constraintRiver = new ConstraintArcPath(
+            [
+                new ConstraintArcPath.Arc(
+                    centerBig,
+                    radiusBig + riverWidth * .5,
+                    Math.PI * 1.5,
+                    Math.PI * 2 + riverTurn),
+                new ConstraintArcPath.Arc(
+                    centerSmall,
+                    radiusSmall + riverWidth * .5,
+                    Math.PI * .5,
+                    Math.PI + riverTurn)
+            ],
+            radiusBig * this.FACTOR_RIVER);
+
+        this.spawnPoint = new Vector2(radiusBig + .000001, riverWidth * -.5);
+        this.spawnDirection = new Vector2(0, 1);
+    }
 
     if (this.big) {
         this.big.replaceConstraint(constraintBig);
@@ -91,6 +117,4 @@ Constellation.prototype.fit = function() {
         this.small = new Pond(constraintSmall);
         this.river = new Pond(constraintRiver);
     }
-
-    this.spawnPoint = new Vector2(riverWidth * -.5, radiusBig + .000001);
 };

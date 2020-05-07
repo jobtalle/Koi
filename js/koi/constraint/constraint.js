@@ -9,4 +9,4 @@ const Constraint = function(border = this.BORDER) {
 };
 
 Constraint.prototype.AREA_PER_FISH = 1.3;
-Constraint.prototype.BORDER = 1.2;
+Constraint.prototype.BORDER = 1.1;
