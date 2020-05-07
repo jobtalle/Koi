@@ -21,8 +21,8 @@ const Koi = function(renderer, random) {
 
 Koi.prototype.UPDATE_RATE = 1 / 15;
 Koi.prototype.PREFERRED_SCALE = 80;
-Koi.prototype.SIZE_MIN = 12; // The minimum size of the smallest dimension
-Koi.prototype.SIZE_MAX = 15; // The maximum size of the smallest dimension
+Koi.prototype.SIZE_MIN = 12;
+Koi.prototype.SIZE_MAX = 15;
 
 /**
  * Calculate the scene scale

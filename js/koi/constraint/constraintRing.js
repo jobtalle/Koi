@@ -20,8 +20,8 @@ ConstraintRing.prototype = Object.create(Constraint.prototype);
  * @returns {Number} The maximum number of fish that fit within this constraint
  */
 ConstraintRing.prototype.getCapacity = function() {
-    const radiusInner = this.radius - this.halfWidth + this.border;
-    const radiusOuter = this.radius + this.halfWidth - this.border;
+    const radiusInner = this.radius - this.halfWidth;
+    const radiusOuter = this.radius + this.halfWidth;
 
     return Math.floor(Math.PI * (radiusOuter * radiusOuter - radiusInner * radiusInner) / this.AREA_PER_FISH);
 };

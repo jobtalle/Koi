@@ -18,7 +18,7 @@ ConstraintCircle.prototype = Object.create(Constraint.prototype);
  * @returns {Number} The maximum number of fish that fit within this constraint
  */
 ConstraintCircle.prototype.getCapacity = function() {
-    return Math.floor(Math.PI * (this.radius - this.border) * (this.radius - this.border) / this.AREA_PER_FISH);
+    return Math.floor(Math.PI * this.radius * this.radius / this.AREA_PER_FISH);
 };
 
 /**

@@ -53,7 +53,7 @@ ConstraintArcPath.prototype.getCapacity = function() {
     let capacity = 0;
 
     for (let arc = 0; arc < this.arcs.length; ++arc)
-        capacity += this.rings[arc].getCapacity() * this.arcs[arc].radians / Math.PI * 2;
+        capacity += this.rings[arc].getCapacity() * this.arcs[arc].radians * .5 / Math.PI;
 
     return Math.floor(capacity);
 };
