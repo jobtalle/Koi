@@ -18,7 +18,7 @@ const Constellation = function(width, height) {
 
 Constellation.prototype.FACTOR_PADDING = .1;
 Constellation.prototype.FACTOR_SMALL = .6;
-Constellation.prototype.FACTOR_RIVER = .6;
+Constellation.prototype.FACTOR_RIVER = .55;
 
 /**
  * Resize the constellation
@@ -132,11 +132,8 @@ Constellation.prototype.fit = function() {
         this.river = new Pond(constraintRiver);
     }
 
-    // TODO: This always happens
     if (this.river.capacity > this.big.capacity)
         this.river.capacity = this.big.capacity;
-
-    console.log(this.big.capacity + ", " + this.river.capacity + ", " + this.small.capacity);
 };
 
 /**
