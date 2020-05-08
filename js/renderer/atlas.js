@@ -6,6 +6,7 @@
  */
 const Atlas = function(renderer, capacity) {
     this.renderer = renderer;
+    this.capacity = capacity;
     this.width = 0;
     this.height = 0;
     this.slotSize = new Vector2();
@@ -15,7 +16,7 @@ const Atlas = function(renderer, capacity) {
     this.texture = this.createTexture(renderer.gl, capacity);
 };
 
-Atlas.prototype.RESOLUTION = 64;
+Atlas.prototype.RESOLUTION = 48;
 Atlas.prototype.RATIO = 4;
 
 /**

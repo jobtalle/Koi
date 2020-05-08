@@ -49,17 +49,19 @@ Constellation.prototype.fit = function() {
     const w = this.width;
     const h = this.height;
 
+    const radiusBigMax = Math.min(this.width, this.height) * .5;
     const radiusBig = Math.min((Math.sqrt(
         ((p + 1) * (p + 1) * (h + w) * (h + w) + (h * h + w * w) * (q * (2 * p + q + 2) - p * (p + 2) - 1))) -
         (p + 1) * (h + w)) /
         (p * (2 * q - p - 2) + q * (q + 2) - 1),
-        Math.min(this.width, this.height) * .5);
+        radiusBigMax);
     const radiusSmall = this.FACTOR_SMALL * radiusBig;
     const centerBig = new Vector2(radiusBig, radiusBig);
     const centerSmall = new Vector2(this.width - radiusSmall, this.height - radiusSmall);
     const riverWidth = centerSmall.copy().subtract(centerBig).length() - radiusBig - radiusSmall;
     const riverTurn = Math.atan((centerSmall.y - centerBig.y) / (centerSmall.x - centerBig.x));
 
+    const fullTurn = radiusBig !== radiusBigMax;
     const constraintBig = new ConstraintCircle(
         centerBig,
         radiusBig * (1 - this.FACTOR_PADDING));
@@ -75,7 +77,7 @@ Constellation.prototype.fit = function() {
                     centerBig,
                     radiusBig + riverWidth * .5,
                     riverTurn,
-                    Math.PI),
+                    fullTurn ? Math.PI : Math.PI * .5),
                 new ConstraintArcPath.Arc(
                     centerSmall,
                     radiusSmall + riverWidth * .5,
@@ -84,8 +86,14 @@ Constellation.prototype.fit = function() {
             ],
             radiusBig * this.FACTOR_RIVER);
 
-        this.spawnPoint = new Vector2(riverWidth * -.5, radiusBig + .000001);
-        this.spawnDirection = new Vector2(0, 1);
+        if (fullTurn) {
+            this.spawnPoint = new Vector2(riverWidth * -.5, radiusBig + .000001);
+            this.spawnDirection = new Vector2(0, 1);
+        }
+        else {
+            this.spawnPoint = new Vector2(radiusBig + .000001, this.height + riverWidth * .5);
+            this.spawnDirection = new Vector2(1, 0);
+        }
     }
     else {
         constraintRiver = new ConstraintArcPath(
@@ -93,8 +101,8 @@ Constellation.prototype.fit = function() {
                 new ConstraintArcPath.Arc(
                     centerBig,
                     radiusBig + riverWidth * .5,
-                    Math.PI * 1.5,
-                    Math.PI * 2 + riverTurn),
+                    fullTurn ? Math.PI * 1.5 : 0,
+                    fullTurn ? Math.PI * 2 + riverTurn : riverTurn),
                 new ConstraintArcPath.Arc(
                     centerSmall,
                     radiusSmall + riverWidth * .5,
@@ -103,8 +111,14 @@ Constellation.prototype.fit = function() {
             ],
             radiusBig * this.FACTOR_RIVER);
 
-        this.spawnPoint = new Vector2(radiusBig + .000001, riverWidth * -.5);
-        this.spawnDirection = new Vector2(0, 1);
+        if (fullTurn) {
+            this.spawnPoint = new Vector2(radiusBig + .000001, riverWidth * -.5);
+            this.spawnDirection = new Vector2(1, 0);
+        }
+        else {
+            this.spawnPoint = new Vector2(this.width + riverWidth * .5, radiusBig + .000001);
+            this.spawnDirection = new Vector2(0, 1);
+        }
     }
 
     if (this.big) {
@@ -117,6 +131,12 @@ Constellation.prototype.fit = function() {
         this.small = new Pond(constraintSmall);
         this.river = new Pond(constraintRiver);
     }
+
+    // TODO: This always happens
+    if (this.river.capacity > this.big.capacity)
+        this.river.capacity = this.big.capacity;
+
+    console.log(this.big.capacity + ", " + this.river.capacity + ", " + this.small.capacity);
 };
 
 /**
