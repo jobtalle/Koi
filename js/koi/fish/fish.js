@@ -28,6 +28,7 @@ Fish.prototype.RADIUS_ALIGNMENT = 1.25;
 Fish.prototype.RADIUS_ATTRACTION = 1.5;
 Fish.prototype.SPEED_MIN = .025;
 Fish.prototype.SPEED_SLOW = .04;
+Fish.prototype.SPEED_DROP = .06;
 Fish.prototype.SPEED_DECAY = .996;
 Fish.prototype.SPEED_CATCH_UP = .003;
 Fish.prototype.BOOST_CHANCE = .0035;
@@ -42,6 +43,16 @@ Fish.prototype.TURN_THRESHOLD = .005;
 Fish.prototype.TURN_CARRY = .95;
 Fish.prototype.TURN_FOLLOW_CHANCE = .025;
 Fish.prototype.TURN_AMPLITUDE = Math.PI * .25;
+
+/**
+ * Drop the fish into a new pond, orient along its body rotation
+ */
+Fish.prototype.drop = function() {
+    this.position.set(this.body.spine[0]);
+    this.direction.set(this.body.spine[0]).subtract(this.body.spine[1]).normalize();
+    this.velocity.set(this.direction);
+    this.speed = this.SPEED_DROP;
+};
 
 /**
  * Turn around

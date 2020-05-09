@@ -58,10 +58,7 @@ Koi.prototype.touchMove = function(x, y) {
  */
 Koi.prototype.touchEnd = function() {
     if (this.dragging) {
-        this.dragging.direction.set(this.dragging.body.spine[0]).subtract(this.dragging.body.spine[1]).normalize();
-        this.dragging.velocity.set(this.dragging.direction);
-        this.dragging.speed = this.dragging.SPEED_SLOW;
-        this.dragging.boostSpeed(this.random);
+        this.dragging.drop();
 
         this.constellation.drop(this.dragging);
         this.dragging = null;
@@ -96,10 +93,8 @@ Koi.prototype.update = function() {
     this.spawner.update(this.UPDATE_RATE, this.atlas, this.random);
     this.constellation.update(this.atlas, this.random);
 
-    if (this.dragging) {
+    if (this.dragging)
         this.dragging.body.updateDrag(this.dragPoint);
-        this.dragging.position.set(this.dragPoint);
-    }
 
     this.lastUpdate = new Date();
 };
