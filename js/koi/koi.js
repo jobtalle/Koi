@@ -8,7 +8,9 @@ const Koi = function(renderer, random) {
     this.renderer = renderer;
     this.random = random;
     this.scale = this.getScale(renderer.getWidth(), renderer.getHeight());
-    this.constellation = new Constellation(renderer.getWidth() / this.scale, renderer.getHeight() / this.scale);
+    this.constellation = new Constellation(
+        renderer.getWidth() / this.scale,
+        renderer.getHeight() / (this.scale * this.Y_SCALE));
     this.lastUpdate = new Date();
     // TODO: Atlas capacity may overflow!
     this.atlas = new Atlas(renderer, this.constellation.getCapacity());
@@ -23,6 +25,7 @@ Koi.prototype.UPDATE_RATE = 1 / 15;
 Koi.prototype.PREFERRED_SCALE = 80;
 Koi.prototype.SIZE_MIN = 11;
 Koi.prototype.SIZE_MAX = 13;
+Koi.prototype.Y_SCALE = .75;
 
 /**
  * Calculate the scene scale
@@ -30,11 +33,10 @@ Koi.prototype.SIZE_MAX = 13;
  * @param {Number} height The view height in pixels
  */
 Koi.prototype.getScale = function(width, height) {
+    const minSize = Math.min(width, height / this.Y_SCALE);
+
     return Math.max(
-        Math.min(
-            this.PREFERRED_SCALE,
-            Math.min(width, height) / this.SIZE_MIN),
-        Math.min(width, height) / this.SIZE_MAX);
+        Math.min(this.PREFERRED_SCALE, minSize / this.SIZE_MIN), minSize / this.SIZE_MAX);
 };
 
 /**
@@ -42,7 +44,9 @@ Koi.prototype.getScale = function(width, height) {
  */
 Koi.prototype.resize = function() {
     this.scale = this.getScale(renderer.getWidth(), renderer.getHeight());
-    this.constellation.resize(renderer.getWidth() / this.scale, renderer.getHeight() / this.scale);
+    this.constellation.resize(
+        renderer.getWidth() / this.scale,
+        renderer.getHeight() / (this.scale * this.Y_SCALE));
 };
 
 /**
@@ -70,7 +74,7 @@ Koi.prototype.render = function() {
     this.renderer.clear();
     this.renderer.transformPush();
 
-    this.renderer.getTransform().scale(this.scale, this.scale);
+    this.renderer.getTransform().scale(this.scale, this.scale * this.Y_SCALE);
     // this.renderer.getTransform().translate(1, 2);
 
     this.constellation.render(this.renderer, time);
