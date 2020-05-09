@@ -15,6 +15,8 @@ const Koi = function(renderer, random) {
     // TODO: Atlas capacity may overflow!
     this.atlas = new Atlas(renderer, this.constellation.getCapacity());
     this.spawner = new Spawner(this.constellation);
+    this.dragging = null;
+    this.dragPoint = new Vector2();
 
     // TODO: This is a debug warp
     for (let i = 0; i < 2000; ++i)
@@ -32,8 +34,28 @@ Koi.prototype.Y_SCALE = .75;
  * @param {Number} x The X position in pixels
  * @param {Number} y The Y position in pixels
  */
-Koi.prototype.touchDown = function(x, y) {
-    this.constellation.pick(x / this.scale, y / (this.scale * this.Y_SCALE));
+Koi.prototype.touchStart = function(x, y) {
+    this.dragging = this.constellation.pick(x / this.scale, y / (this.scale * this.Y_SCALE));
+    this.dragPoint.x = x / this.scale;
+    this.dragPoint.y = y / (this.scale * this.Y_SCALE);
+};
+
+/**
+ * Move a touch event
+ * @param {Number} x The X position in pixels
+ * @param {Number} y The Y position in pixels
+ */
+Koi.prototype.touchMove = function(x, y) {
+    // TODO: Make this scale operation a vector by vector multiplication
+    this.dragPoint.x = x / this.scale;
+    this.dragPoint.y = y / (this.scale * this.Y_SCALE);
+};
+
+/**
+ * End a touch event
+ */
+Koi.prototype.touchEnd = function() {
+
 };
 
 /**
@@ -64,6 +86,11 @@ Koi.prototype.update = function() {
     this.spawner.update(this.UPDATE_RATE, this.atlas, this.random);
     this.constellation.update(this.atlas, this.random);
 
+    if (this.dragging) {
+        this.dragging.body.updateDrag(this.dragPoint);
+        this.dragging.position.set(this.dragPoint);
+    }
+
     this.lastUpdate = new Date();
 };
 
@@ -81,13 +108,24 @@ Koi.prototype.render = function() {
 
     this.renderer.clear();
     this.renderer.transformPush();
-
     this.renderer.getTransform().scale(this.scale, this.scale * this.Y_SCALE);
-    // this.renderer.getTransform().translate(1, 2);
 
     this.constellation.render(this.renderer, time);
 
     this.renderer.transformPop();
+
+    if (this.dragging) {
+        this.renderer.transformPush();
+        this.renderer.getTransform().scale(this.scale, this.scale);
+        this.renderer.getTransform().translate(
+            0,
+            (this.Y_SCALE - 1) * (this.dragging.body.spinePrevious[0].y +
+            (this.dragging.body.spine[0].y - this.dragging.body.spinePrevious[0].y) * time));
+
+        this.dragging.render(this.renderer, time);
+
+        this.renderer.transformPop();
+    }
 
     this.renderer.cutStrip(0, 0, 0, 0);
     this.renderer.drawStrip(0, 400,0, 1);

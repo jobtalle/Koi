@@ -12,11 +12,13 @@ const Body = function(pattern, atlasPixel, length, thickness) {
     this.radius = thickness * .5;
     this.spine = new Array(this.RESOLUTION);
     this.spinePrevious = new Array(this.spine.length);
+    this.momentum = new Array(this.spine.length - 1).fill(0);
     this.spacing = length / (this.spine.length - 1);
     this.inverseSpacing = 1 / this.spacing;
     this.springs = this.makeSprings(this.SPRING_START, this.SPRING_END, this.SPRING_POWER);
     this.u = this.makeU(atlasPixel);
     this.phase = 0;
+    this.anchorDelta = new Vector2();
 };
 
 Body.prototype.RESOLUTION = 10;
@@ -31,19 +33,26 @@ Body.prototype.SPEED_THRESHOLD = .02;
  * Check if this fish overlaps the given position
  * @param {Number} x The X position
  * @param {Number} y The Y position
- * @returns {Number} The segment index where the fish is clicked, or -1 if the fish is not clicked
+ * @returns {Boolean} A boolean indicating whether this body has been hit
  */
 Body.prototype.atPosition = function(x, y) {
+    let dx = x - this.spine[0].x;
+    let dy = y - this.spine[0].y;
+    let radius = this.spacing * (this.spine.length - 1);
+
+    if (dx * dx + dy * dy > radius * radius)
+        return false;
+
     for (let segment = 1; segment < this.spine.length - 1; ++segment) {
-        const dx = x - this.spine[segment].x;
-        const dy = y - this.spine[segment].y;
-        const radius = this.pattern.shape.sample(segment / (this.spine.length - 1)) * this.radius;
+        dx = x - this.spine[segment].x;
+        dy = y - this.spine[segment].y;
+        radius = this.pattern.shape.sample(segment / (this.spine.length - 1)) * this.radius;
 
         if (dx * dx + dy * dy < radius * radius)
-            return segment;
+            return true;
     }
 
-    return -1;
+    return false;
 };
 
 /**
@@ -140,6 +149,43 @@ Body.prototype.update = function(head, direction, speed) {
 
     if ((this.phase += this.SWIM_SPEED * speed) > Math.PI * 2)
         this.phase -= Math.PI * 2;
+};
+
+/**
+ * Update the body while being dragged
+ * @param {Vector2} anchor The point where the fish is being held
+ */
+Body.prototype.updateDrag = function(anchor) {
+    this.storePreviousState();
+
+    if (!this.spine[0].equals(anchor)) {
+        this.anchorDelta.set(anchor);
+        this.anchorDelta.subtract(this.spine[0]);
+        this.anchorDelta.normalize();
+    }
+
+    this.spine[0].set(anchor);
+
+    const mm = 0.15;
+    // TODO: Prevent "folding" of spine
+    for (let segment = 1; segment < this.spine.length; ++segment) {
+        let dx = this.spine[segment].x - this.spine[segment - 1].x;
+        let dy = this.spine[segment].y - (this.spine[segment - 1].y - this.spacing);
+        this.momentum[segment - 1] -= dx * 0.5;
+        this.momentum[segment - 1] *= .9;
+
+        if (this.momentum[segment - 1] < -mm)
+            this.momentum[segment - 1] = -mm;
+        else if (this.momentum[segment - 1] > mm)
+            this.momentum[segment - 1] = mm;
+
+        dx += this.momentum[segment - 1];
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        this.spine[segment].set(this.spine[segment - 1]);
+        this.spine[segment].x += this.spacing * dx / distance;
+        this.spine[segment].y += this.spacing * dy / distance;
+    }
 };
 
 /**

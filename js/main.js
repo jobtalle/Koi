@@ -31,5 +31,13 @@ const loop = () => {
 requestAnimationFrame(loop);
 
 canvas.addEventListener("mousedown", event => {
-    koi.touchDown(event.clientX, event.clientY);
+    koi.touchStart(event.clientX, event.clientY);
+});
+
+canvas.addEventListener("mousemove", event => {
+    koi.touchMove(event.clientX, event.clientY);
+});
+
+canvas.addEventListener("mouseup", event => {
+    koi.touchEnd();
 });
