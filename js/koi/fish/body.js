@@ -18,7 +18,6 @@ const Body = function(pattern, atlasPixel, length, thickness) {
     this.springs = this.makeSprings(this.SPRING_START, this.SPRING_END, this.SPRING_POWER);
     this.u = this.makeU(atlasPixel);
     this.phase = 0;
-    this.anchorDelta = new Vector2();
 };
 
 Body.prototype.RESOLUTION = 10;
@@ -157,13 +156,6 @@ Body.prototype.update = function(head, direction, speed) {
  */
 Body.prototype.updateDrag = function(anchor) {
     this.storePreviousState();
-
-    if (!this.spine[0].equals(anchor)) {
-        this.anchorDelta.set(anchor);
-        this.anchorDelta.subtract(this.spine[0]);
-        this.anchorDelta.normalize();
-    }
-
     this.spine[0].set(anchor);
 
     const mm = 0.15;

@@ -147,6 +147,19 @@ Constellation.prototype.pick = function(x, y) {
 };
 
 /**
+ * Drop a fish in the nearest suitable location of this constellation
+ * @param {Fish} fish A fish
+ */
+Constellation.prototype.drop = function(fish) {
+    if (this.big.constraint.contains(fish.position.x, fish.position.y))
+        this.big.addFish(fish);
+    else if (this.small.constraint.contains(fish.position.x, fish.position.y))
+        this.small.addFish(fish);
+    else if (this.river.constraint.contains(fish.position.x, fish.position.y))
+        this.river.addFish(fish);
+};
+
+/**
  * Update the constellation
  * @param {Atlas} atlas The pattern atlas
  * @param {Random} random A randomizer

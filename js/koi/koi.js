@@ -47,15 +47,20 @@ Koi.prototype.touchStart = function(x, y) {
  */
 Koi.prototype.touchMove = function(x, y) {
     // TODO: Make this scale operation a vector by vector multiplication
-    this.dragPoint.x = x / this.scale;
-    this.dragPoint.y = y / (this.scale * this.Y_SCALE);
+    if (this.dragging) {
+        this.dragPoint.x = x / this.scale;
+        this.dragPoint.y = y / (this.scale * this.Y_SCALE);
+    }
 };
 
 /**
  * End a touch event
  */
 Koi.prototype.touchEnd = function() {
-
+    if (this.dragging) {
+        this.constellation.drop(this.dragging);
+        this.dragging = null;
+    }
 };
 
 /**
