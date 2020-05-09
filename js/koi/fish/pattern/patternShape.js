@@ -45,6 +45,15 @@ void main() {
 `;
 
 /**
+ * Sample the shape thickness ratio
+ * @param {Number} x The X position to sample at in the range [0, 1]
+ * @returns {Number} The thickness in the range [0, 1]
+ */
+PatternShape.prototype.sample = function(x) {
+    return Math.pow(Math.cos(Math.PI * (Math.pow(x, this.centerPower) - 0.5)), this.radiusPower);
+};
+
+/**
  * Configure this pattern to a shader
  * @param {WebGLRenderingContext} gl A webGL context
  * @param {Shader} program A shader program created from this patterns' shaders

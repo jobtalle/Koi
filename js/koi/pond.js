@@ -54,6 +54,14 @@ Pond.prototype.pick = function(x, y) {
     if (!this.constraint.contains(x, y))
         return null;
 
+    for (let fish = this.fishes.length; fish-- > 0;) {
+        const at = this.fishes[fish].body.atPosition(x, y);
+
+        if (at !== -1)
+            console.log(at);
+    }
+
+
     return null;
 };
 

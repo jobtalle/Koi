@@ -44,8 +44,7 @@ Koi.prototype.touchDown = function(x, y) {
 Koi.prototype.getScale = function(width, height) {
     const minSize = Math.min(width, height / this.Y_SCALE);
 
-    return Math.max(
-        Math.min(this.PREFERRED_SCALE, minSize / this.SIZE_MIN), minSize / this.SIZE_MAX);
+    return Math.max(Math.min(this.PREFERRED_SCALE, minSize / this.SIZE_MIN), minSize / this.SIZE_MAX);
 };
 
 /**

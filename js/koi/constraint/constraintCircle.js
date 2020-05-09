@@ -35,7 +35,7 @@ ConstraintCircle.prototype.contains = function(x, y) {
     const dx = x - this.position.x;
     const dy = y - this.position.y;
 
-    return Math.sqrt(dx * dx + dy * dy) < this.radius;
+    return dx * dx + dy * dy < this.radius * this.radius;
 };
 
 /**

@@ -28,6 +28,25 @@ Body.prototype.SWIM_SPEED = 6.5;
 Body.prototype.SPEED_THRESHOLD = .02;
 
 /**
+ * Check if this fish overlaps the given position
+ * @param {Number} x The X position
+ * @param {Number} y The Y position
+ * @returns {Number} The segment index where the fish is clicked, or -1 if the fish is not clicked
+ */
+Body.prototype.atPosition = function(x, y) {
+    for (let segment = 1; segment < this.spine.length - 1; ++segment) {
+        const dx = x - this.spine[segment].x;
+        const dy = y - this.spine[segment].y;
+        const radius = this.pattern.shape.sample(segment / (this.spine.length - 1)) * this.radius;
+
+        if (dx * dx + dy * dy < radius * radius)
+            return segment;
+    }
+
+    return -1;
+};
+
+/**
  * Initialize the spine
  * @param {Vector2} head The head position
  * @param {Vector2} direction The initial body direction
