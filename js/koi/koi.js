@@ -58,6 +58,11 @@ Koi.prototype.touchMove = function(x, y) {
  */
 Koi.prototype.touchEnd = function() {
     if (this.dragging) {
+        this.dragging.direction.set(this.dragging.body.spine[0]).subtract(this.dragging.body.spine[1]).normalize();
+        this.dragging.velocity.set(this.dragging.direction);
+        this.dragging.speed = this.dragging.SPEED_SLOW;
+        this.dragging.boostSpeed(this.random);
+
         this.constellation.drop(this.dragging);
         this.dragging = null;
     }

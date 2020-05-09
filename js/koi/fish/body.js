@@ -27,6 +27,7 @@ Body.prototype.SPRING_POWER = 1.7;
 Body.prototype.SWIM_AMPLITUDE = 8.5;
 Body.prototype.SWIM_SPEED = 6.5;
 Body.prototype.SPEED_THRESHOLD = .02;
+Body.prototype.OVERLAP_PADDING = 1.5;
 
 /**
  * Check if this fish overlaps the given position
@@ -45,7 +46,7 @@ Body.prototype.atPosition = function(x, y) {
     for (let segment = 1; segment < this.spine.length - 1; ++segment) {
         dx = x - this.spine[segment].x;
         dy = y - this.spine[segment].y;
-        radius = this.pattern.shape.sample(segment / (this.spine.length - 1)) * this.radius;
+        radius = this.pattern.shape.sample(segment / (this.spine.length - 1)) * this.radius * this.OVERLAP_PADDING;
 
         if (dx * dx + dy * dy < radius * radius)
             return true;
@@ -158,12 +159,12 @@ Body.prototype.updateDrag = function(anchor) {
     this.storePreviousState();
     this.spine[0].set(anchor);
 
-    const mm = 0.15;
+    const mm = 0.25;
     // TODO: Prevent "folding" of spine
     for (let segment = 1; segment < this.spine.length; ++segment) {
         let dx = this.spine[segment].x - this.spine[segment - 1].x;
         let dy = this.spine[segment].y - (this.spine[segment - 1].y - this.spacing);
-        this.momentum[segment - 1] -= dx * 0.5;
+        this.momentum[segment - 1] -= dx * 0.6;
         this.momentum[segment - 1] *= .9;
 
         if (this.momentum[segment - 1] < -mm)

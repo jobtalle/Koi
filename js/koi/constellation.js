@@ -157,6 +157,8 @@ Constellation.prototype.drop = function(fish) {
         this.small.addFish(fish);
     else if (this.river.constraint.contains(fish.position.x, fish.position.y))
         this.river.addFish(fish);
+
+    // TODO: if this fails, drop at the nearest suitable location
 };
 
 /**

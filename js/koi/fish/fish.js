@@ -180,6 +180,14 @@ Fish.prototype.constrain = function(constraint) {
 };
 
 /**
+ * Speed up
+ * @param {Random} random A randomizer
+ */
+Fish.prototype.boostSpeed = function(random) {
+    this.boost = this.BOOST_MIN + Math.floor(random.getFloat() * (this.BOOST_MAX - this.BOOST_MIN));
+};
+
+/**
  * Update the fish
  * @param {Constraint} constraint A constraint
  * @param {Random} random A randomizer
@@ -207,7 +215,7 @@ Fish.prototype.update = function(constraint, random) {
 
     if (this.speed < this.SPEED_SLOW) {
         if (this.boost === 0 && random.getFloat() < this.BOOST_CHANCE)
-            this.boost = this.BOOST_MIN + Math.floor(random.getFloat() * (this.BOOST_MAX - this.BOOST_MIN));
+            this.boostSpeed(random);
 
         if (this.turnForce === 0 && random.getFloat() < this.TURN_CHANCE)
             this.turn(random);
