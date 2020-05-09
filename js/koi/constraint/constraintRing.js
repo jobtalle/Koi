@@ -27,6 +27,20 @@ ConstraintRing.prototype.getCapacity = function() {
 };
 
 /**
+ * Check whether a given point is contained within this constraint
+ * @param {Number} x The X position
+ * @param {Number} y The Y position
+ * @returns {Boolean} A boolean indicating whether the given point is inside this constraint
+ */
+ConstraintRing.prototype.contains = function(x, y) {
+    const dx = x - this.position.x;
+    const dy = y - this.position.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    return distance > this.radius - this.halfWidth && distance < this.radius + this.halfWidth;
+};
+
+/**
  * Sample the distance to the nearest edge of this constraint
  * @param {Number} dx The X distance to the center
  * @param {Number} dy The Y distance to the center

@@ -1,4 +1,5 @@
-const renderer = new Renderer(document.getElementById("renderer"));
+const canvas = document.getElementById("renderer");
+const renderer = new Renderer(canvas);
 const random = new Random();
 let koi = null;
 
@@ -28,3 +29,7 @@ const loop = () => {
 };
 
 requestAnimationFrame(loop);
+
+canvas.addEventListener("mousedown", event => {
+    koi.touchDown(event.clientX, event.clientY);
+});

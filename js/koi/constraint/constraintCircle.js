@@ -26,6 +26,19 @@ ConstraintCircle.prototype.getCapacity = function() {
 };
 
 /**
+ * Check whether a given point is contained within this constraint
+ * @param {Number} x The X position
+ * @param {Number} y The Y position
+ * @returns {Boolean} A boolean indicating whether the given point is inside this constraint
+ */
+ConstraintCircle.prototype.contains = function(x, y) {
+    const dx = x - this.position.x;
+    const dy = y - this.position.y;
+
+    return Math.sqrt(dx * dx + dy * dy) < this.radius;
+};
+
+/**
  * Sample the distance to the nearest edge of this constraint
  * @param {Vector2} position The position to sample
  * @returns {Number} The proximity

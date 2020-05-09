@@ -59,6 +59,26 @@ ConstraintArcPath.prototype.getCapacity = function() {
 };
 
 /**
+ * Check whether a given point is contained within this constraint
+ * @param {Number} x The X position
+ * @param {Number} y The Y position
+ * @returns {Boolean} A boolean indicating whether the given point is inside this constraint
+ */
+ConstraintArcPath.prototype.contains = function(x, y) {
+    for (let arc = 0; arc < this.arcs.length; ++arc) {
+        const dx = x - this.arcs[arc].center.x;
+        const dy = y - this.arcs[arc].center.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (dx * this.arcs[arc].direction.x + dy * this.arcs[arc].direction.y >= this.arcs[arc].cone * distance)
+            if (this.rings[arc].contains(x, y))
+                return true;
+    }
+
+    return false;
+};
+
+/**
  * Sample the distance to the nearest edge of this constraint
  * @param {Vector2} position The position to sample
  * @returns {Number} The proximity

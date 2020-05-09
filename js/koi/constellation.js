@@ -16,7 +16,7 @@ const Constellation = function(width, height) {
     this.fit();
 };
 
-Constellation.prototype.FACTOR_PADDING = .1;
+Constellation.prototype.FACTOR_PADDING = .12;
 Constellation.prototype.FACTOR_SMALL = .6;
 Constellation.prototype.FACTOR_RIVER = .55;
 
@@ -134,6 +134,16 @@ Constellation.prototype.fit = function() {
 
     if (this.river.capacity > this.big.capacity)
         this.river.capacity = this.big.capacity;
+};
+
+/**
+ * Pick up a fish at given coordinates
+ * @param {Number} x The X position
+ * @param {Number} y The Y position
+ * @returns {Fish} The fish at the given position, or null if no fish exists there
+ */
+Constellation.prototype.pick = function(x, y) {
+    return this.big.pick(x, y) || this.small.pick(x, y) || this.river.pick(x, y) || null;
 };
 
 /**

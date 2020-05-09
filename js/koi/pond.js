@@ -5,7 +5,7 @@
  */
 const Pond = function(constraint) {
     this.constraint = constraint;
-    this.capacity = constraint.getCapacity();
+    this.capacity = constraint.getCapacity(); // TODO: Remove capacity? Atlas can resize "indefinitely"
     this.fishes = [];
 };
 
@@ -42,6 +42,19 @@ Pond.prototype.replaceConstraint = function(constraint) {
  */
 Pond.prototype.addFish = function(fish) {
     this.fishes.push(fish);
+};
+
+/**
+ * Pick up a fish from the pond
+ * @param {Number} x The X position
+ * @param {Number} y The Y position
+ * @returns {Fish} The fish at the given position, or null if no fish exists there
+ */
+Pond.prototype.pick = function(x, y) {
+    if (!this.constraint.contains(x, y))
+        return null;
+
+    return null;
 };
 
 /**

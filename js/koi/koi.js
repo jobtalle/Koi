@@ -28,6 +28,15 @@ Koi.prototype.SIZE_MAX = 13;
 Koi.prototype.Y_SCALE = .75;
 
 /**
+ * Start a touch event
+ * @param {Number} x The X position in pixels
+ * @param {Number} y The Y position in pixels
+ */
+Koi.prototype.touchDown = function(x, y) {
+    this.constellation.pick(x / this.scale, y / (this.scale * this.Y_SCALE));
+};
+
+/**
  * Calculate the scene scale
  * @param {Number} width The view width in pixels
  * @param {Number} height The view height in pixels
