@@ -26,7 +26,7 @@ Body.prototype.SPRING_POWER = 1.7;
 Body.prototype.SWIM_AMPLITUDE = 8.5;
 Body.prototype.SWIM_SPEED = 6.5;
 Body.prototype.SPEED_THRESHOLD = .02;
-Body.prototype.OVERLAP_PADDING = 1.5;
+Body.prototype.OVERLAP_PADDING = 1.8;
 
 /**
  * Check if this fish overlaps the given position
