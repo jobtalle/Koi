@@ -30,13 +30,15 @@ Pond.prototype.canDrop = function() {
 /**
  * Replace this ponds constraint
  * @param {Object} constraint A new constraint
+ * @param {Atlas} atlas The texture atlas
  */
-Pond.prototype.replaceConstraint = function(constraint) {
+Pond.prototype.replaceConstraint = function(constraint, atlas) {
     this.constraint = constraint;
     this.capacity = constraint.getCapacity();
 
-    for (const fish of this.fishes)
-        this.constraint.constrain(fish.position);
+    for (let fish = this.fishes.length; fish-- > 0;)
+        if (!this.constraint.constrain(this.fishes[fish].position))
+            this.removeFish(fish, atlas);
 }
 
 /**
@@ -45,6 +47,16 @@ Pond.prototype.replaceConstraint = function(constraint) {
  */
 Pond.prototype.addFish = function(fish) {
     this.fishes.push(fish);
+};
+
+/**
+ * Remove a fish from the pond
+ * @param {Number} index The index of this fish in the fish array
+ * @param {Atlas} atlas The texture atlas
+ */
+Pond.prototype.removeFish = function(index, atlas) {
+    this.fishes[index].free(atlas);
+    this.fishes.splice(index, 1);
 };
 
 /**
@@ -78,10 +90,8 @@ Pond.prototype.update = function(atlas, random) {
         for (let other = fish; other-- > 0;)
             this.fishes[fish].interact(this.fishes[other], random);
 
-        if (this.fishes[fish].update(this.constraint, random)) {
-            this.fishes[fish].free(atlas);
-            this.fishes.splice(fish, 1);
-        }
+        if (this.fishes[fish].update(this.constraint, random))
+            this.removeFish(fish, atlas);
     }
 };
 

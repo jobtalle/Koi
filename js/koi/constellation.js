@@ -24,12 +24,13 @@ Constellation.prototype.FACTOR_RIVER = .55;
  * Resize the constellation
  * @param {Number} width The scene width
  * @param {Number} height The scene height
+ * @param {Atlas} atlas The texture atlas
  */
-Constellation.prototype.resize = function(width, height) {
+Constellation.prototype.resize = function(width, height, atlas) {
     this.width = width;
     this.height = height;
 
-    this.fit();
+    this.fit(atlas);
 };
 
 /**
@@ -42,8 +43,9 @@ Constellation.prototype.getCapacity = function() {
 
 /**
  * Calculate the constellation layout
+ * @param {Atlas} [atlas] The texture atlas, required when fish exist in the constellation
  */
-Constellation.prototype.fit = function() {
+Constellation.prototype.fit = function(atlas = null) {
     const p = this.FACTOR_SMALL;
     const q = this.FACTOR_RIVER;
     const w = this.width;
@@ -122,9 +124,9 @@ Constellation.prototype.fit = function() {
     }
 
     if (this.big) {
-        this.big.replaceConstraint(constraintBig);
-        this.small.replaceConstraint(constraintSmall);
-        this.river.replaceConstraint(constraintRiver);
+        this.big.replaceConstraint(constraintBig, atlas);
+        this.small.replaceConstraint(constraintSmall, atlas);
+        this.river.replaceConstraint(constraintRiver, atlas);
     }
     else {
         this.big = new Pond(constraintBig);

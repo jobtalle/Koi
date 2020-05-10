@@ -74,7 +74,8 @@ Koi.prototype.resize = function() {
     this.scale = this.getScale(renderer.getWidth(), renderer.getHeight());
     this.constellation.resize(
         renderer.getWidth() / this.scale,
-        renderer.getHeight() / (this.scale * this.Y_SCALE));
+        renderer.getHeight() / (this.scale * this.Y_SCALE),
+        this.atlas);
 };
 
 /**
