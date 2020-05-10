@@ -37,7 +37,7 @@ Koi.prototype.touchStart = function(x, y) {
     const fish = this.constellation.pick(x / this.scale, y / (this.scale * this.Y_SCALE));
 
     if (fish)
-        this.mover.pickUp(fish);
+        this.mover.pickUp(fish,x / this.scale, y / (this.scale * this.Y_SCALE));
 };
 
 /**
@@ -53,7 +53,7 @@ Koi.prototype.touchMove = function(x, y) {
  * End a touch event
  */
 Koi.prototype.touchEnd = function() {
-    this.mover.release();
+    this.mover.drop();
 };
 
 /**

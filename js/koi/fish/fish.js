@@ -48,7 +48,6 @@ Fish.prototype.TURN_AMPLITUDE = Math.PI * .25;
  * Drop the fish into a new pond, orient along its body rotation
  */
 Fish.prototype.drop = function() {
-    this.position.set(this.body.spine[0]);
     this.direction.set(this.body.spine[0]).subtract(this.body.spine[1]).normalize();
     this.velocity.set(this.direction);
     this.speed = this.SPEED_DROP;

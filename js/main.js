@@ -34,10 +34,22 @@ canvas.addEventListener("mousedown", event => {
     koi.touchStart(event.clientX, event.clientY);
 });
 
+canvas.addEventListener("touchstart", event => {
+    koi.touchStart(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+});
+
 canvas.addEventListener("mousemove", event => {
     koi.touchMove(event.clientX, event.clientY);
 });
 
-canvas.addEventListener("mouseup", event => {
+canvas.addEventListener("touchmove", event => {
+    koi.touchMove(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+})
+
+canvas.addEventListener("mouseup", () => {
+    koi.touchEnd();
+});
+
+canvas.addEventListener("touchend", () => {
     koi.touchEnd();
 });

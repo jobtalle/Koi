@@ -7,6 +7,8 @@ const Mover = function(constellation) {
     this.constellation = constellation;
     this.move = null;
     this.cursor = new Vector2();
+    this.cursorPrevious = new Vector2();
+    this.offset = new Vector2();
 };
 
 /**
@@ -14,7 +16,10 @@ const Mover = function(constellation) {
  */
 Mover.prototype.update = function() {
     if (this.move)
-        this.move.body.updateDrag(this.cursor);
+        this.move.body.update(
+            this.move.position,
+            this.move.direction,
+            this.move.speed);
 };
 
 /**
@@ -33,22 +38,36 @@ Mover.prototype.render = function(renderer, time) {
  * @param {Number} y The Y position in meters
  */
 Mover.prototype.touchMove = function(x, y) {
+    this.cursorPrevious.set(this.cursor);
     this.cursor.x = x;
     this.cursor.y = y;
+
+    if (this.move) {
+        for (const point of this.move.body.spine)
+            point.add(this.cursor).subtract(this.cursorPrevious);
+
+        this.move.position.set(this.cursor).add(this.offset);
+    }
 };
 
 /**
  * Start a new move
  * @param {Fish} fish The fish that needs to be moved
+ * @param {Number} x The X position in meters
+ * @param {Number} y The Y position in meters
  */
-Mover.prototype.pickUp = function(fish) {
+Mover.prototype.pickUp = function(fish, x, y) {
+    this.cursorPrevious.x = this.cursor.x = x;
+    this.cursorPrevious.y = this.cursor.y = y;
     this.move = fish;
+    this.offset.x = fish.position.x - this.cursor.x;
+    this.offset.y = fish.position.y - this.cursor.y;
 };
 
 /**
  * Release any move
  */
-Mover.prototype.release = function() {
+Mover.prototype.drop = function() {
     if (this.move) {
         this.move.drop();
         this.constellation.drop(this.move);

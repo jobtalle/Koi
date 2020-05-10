@@ -12,7 +12,6 @@ const Body = function(pattern, atlasPixel, length, thickness) {
     this.radius = thickness * .5;
     this.spine = new Array(this.RESOLUTION);
     this.spinePrevious = new Array(this.spine.length);
-    this.momentum = new Array(this.spine.length - 1).fill(0);
     this.spacing = length / (this.spine.length - 1);
     this.inverseSpacing = 1 / this.spacing;
     this.springs = this.makeSprings(this.SPRING_START, this.SPRING_END, this.SPRING_POWER);
@@ -149,36 +148,6 @@ Body.prototype.update = function(head, direction, speed) {
 
     if ((this.phase += this.SWIM_SPEED * speed) > Math.PI * 2)
         this.phase -= Math.PI * 2;
-};
-
-/**
- * Update the body while being dragged
- * @param {Vector2} anchor The point where the fish is being held
- */
-Body.prototype.updateDrag = function(anchor) {
-    this.storePreviousState();
-    this.spine[0].set(anchor);
-
-    const mm = 0.25;
-    // TODO: Prevent "folding" of spine
-    for (let segment = 1; segment < this.spine.length; ++segment) {
-        let dx = this.spine[segment].x - this.spine[segment - 1].x;
-        let dy = this.spine[segment].y - (this.spine[segment - 1].y - this.spacing);
-        this.momentum[segment - 1] -= dx * 0.6;
-        this.momentum[segment - 1] *= .9;
-
-        if (this.momentum[segment - 1] < -mm)
-            this.momentum[segment - 1] = -mm;
-        else if (this.momentum[segment - 1] > mm)
-            this.momentum[segment - 1] = mm;
-
-        dx += this.momentum[segment - 1];
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        this.spine[segment].set(this.spine[segment - 1]);
-        this.spine[segment].x += this.spacing * dx / distance;
-        this.spine[segment].y += this.spacing * dy / distance;
-    }
 };
 
 /**
