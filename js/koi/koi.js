@@ -11,12 +11,11 @@ const Koi = function(renderer, random) {
     this.constellation = new Constellation(
         renderer.getWidth() / this.scale,
         renderer.getHeight() / (this.scale * this.Y_SCALE));
+    this.mover = new Mover(this.constellation);
     this.lastUpdate = new Date();
     // TODO: Atlas capacity may overflow!
     this.atlas = new Atlas(renderer, this.constellation.getCapacity());
     this.spawner = new Spawner(this.constellation);
-    this.dragging = null;
-    this.dragPoint = new Vector2();
 
     // TODO: This is a debug warp
     for (let i = 0; i < 2000; ++i)
@@ -35,9 +34,10 @@ Koi.prototype.Y_SCALE = .75;
  * @param {Number} y The Y position in pixels
  */
 Koi.prototype.touchStart = function(x, y) {
-    this.dragging = this.constellation.pick(x / this.scale, y / (this.scale * this.Y_SCALE));
-    this.dragPoint.x = x / this.scale;
-    this.dragPoint.y = y / (this.scale * this.Y_SCALE);
+    const fish = this.constellation.pick(x / this.scale, y / (this.scale * this.Y_SCALE));
+
+    if (fish)
+        this.mover.pickUp(fish);
 };
 
 /**
@@ -46,23 +46,14 @@ Koi.prototype.touchStart = function(x, y) {
  * @param {Number} y The Y position in pixels
  */
 Koi.prototype.touchMove = function(x, y) {
-    // TODO: Make this scale operation a vector by vector multiplication
-    if (this.dragging) {
-        this.dragPoint.x = x / this.scale;
-        this.dragPoint.y = y / (this.scale * this.Y_SCALE);
-    }
+    this.mover.touchMove(x / this.scale, y / (this.scale * this.Y_SCALE));
 };
 
 /**
  * End a touch event
  */
 Koi.prototype.touchEnd = function() {
-    if (this.dragging) {
-        this.dragging.drop();
-
-        this.constellation.drop(this.dragging);
-        this.dragging = null;
-    }
+    this.mover.release();
 };
 
 /**
@@ -92,9 +83,7 @@ Koi.prototype.resize = function() {
 Koi.prototype.update = function() {
     this.spawner.update(this.UPDATE_RATE, this.atlas, this.random);
     this.constellation.update(this.atlas, this.random);
-
-    if (this.dragging)
-        this.dragging.body.updateDrag(this.dragPoint);
+    this.mover.update();
 
     this.lastUpdate = new Date();
 };
@@ -116,21 +105,9 @@ Koi.prototype.render = function() {
     this.renderer.getTransform().scale(this.scale, this.scale * this.Y_SCALE);
 
     this.constellation.render(this.renderer, time);
+    this.mover.render(this.renderer, time);
 
     this.renderer.transformPop();
-
-    if (this.dragging) {
-        this.renderer.transformPush();
-        this.renderer.getTransform().scale(this.scale, this.scale);
-        this.renderer.getTransform().translate(
-            0,
-            (this.Y_SCALE - 1) * (this.dragging.body.spinePrevious[0].y +
-            (this.dragging.body.spine[0].y - this.dragging.body.spinePrevious[0].y) * time));
-
-        this.dragging.render(this.renderer, time);
-
-        this.renderer.transformPop();
-    }
 
     this.renderer.cutStrip(0, 0, 0, 0);
     this.renderer.drawStrip(0, 400,0, 1);
