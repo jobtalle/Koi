@@ -59,6 +59,24 @@ ConstraintArcPath.prototype.getCapacity = function() {
 };
 
 /**
+ * Constrain a vector to make sure it is inside the constraint
+ * @param {Vector2} vector The vector to constrain
+ */
+ConstraintArcPath.prototype.constrain = function(vector) {
+    for (let arc = 0; arc < this.arcs.length; ++arc) {
+        const dx = vector.x - this.arcs[arc].center.x;
+        const dy = vector.y - this.arcs[arc].center.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (dx * this.arcs[arc].direction.x + dy * this.arcs[arc].direction.y >= this.arcs[arc].cone * distance) {
+            this.rings[arc].constrain(vector, dx, dy, distance);
+
+            return;
+        }
+    }
+};
+
+/**
  * Check whether a given point is contained within this constraint
  * @param {Number} x The X position
  * @param {Number} y The Y position

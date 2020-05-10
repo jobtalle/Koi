@@ -17,7 +17,7 @@ const Constellation = function(width, height) {
 };
 
 Constellation.prototype.FACTOR_PADDING = .12;
-Constellation.prototype.FACTOR_SMALL = .6;
+Constellation.prototype.FACTOR_SMALL = .7;
 Constellation.prototype.FACTOR_RIVER = .55;
 
 /**
@@ -157,8 +157,35 @@ Constellation.prototype.drop = function(fish) {
         this.small.addFish(fish);
     else if (this.river.constraint.contains(fish.position.x, fish.position.y))
         this.river.addFish(fish);
+    else {
+        const nearestBig = fish.position.copy();
+        const nearestSmall = fish.position.copy();
+        const nearestRiver = fish.position.copy();
 
-    // TODO: if this fails, drop at the nearest suitable location
+        this.big.constraint.constrain(nearestBig);
+        this.small.constraint.constrain(nearestSmall);
+        this.river.constraint.constrain(nearestRiver);
+
+        let nearestDist = fish.position.copy().subtract(nearestBig).length();
+        let nearestPosition = nearestBig;
+        let nearest = this.big;
+
+        const smallDist = fish.position.copy().subtract(nearestSmall).length();
+
+        if (smallDist < nearestDist) {
+            nearestDist = smallDist;
+            nearestPosition = nearestSmall;
+            nearest = this.small;
+        }
+
+        if (fish.position.copy().subtract(nearestRiver).length() < nearestDist) {
+            nearestPosition = nearestRiver;
+            nearest = this.river;
+        }
+
+        fish.position.set(nearestPosition);
+        nearest.addFish(fish);
+    }
 };
 
 /**

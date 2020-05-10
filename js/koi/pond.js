@@ -34,6 +34,9 @@ Pond.prototype.canDrop = function() {
 Pond.prototype.replaceConstraint = function(constraint) {
     this.constraint = constraint;
     this.capacity = constraint.getCapacity();
+
+    for (const fish of this.fishes)
+        this.constraint.constrain(fish.position);
 }
 
 /**

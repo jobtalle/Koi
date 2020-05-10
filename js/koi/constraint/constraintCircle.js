@@ -26,6 +26,24 @@ ConstraintCircle.prototype.getCapacity = function() {
 };
 
 /**
+ * Constrain a vector to make sure it is inside the constraint
+ * @param {Vector2} vector The vector to constrain
+ */
+ConstraintCircle.prototype.constrain = function(vector) {
+    const dx = vector.x - this.position.x;
+    const dy = vector.y - this.position.y;
+    const distanceSquared = dx * dx + dy * dy;
+
+    if (distanceSquared < this.radius * this.radius)
+        return;
+
+    const distance = Math.sqrt(distanceSquared);
+
+    vector.x = this.position.x + this.radius * dx / distance;
+    vector.y = this.position.y + this.radius * dy / distance;
+};
+
+/**
  * Check whether a given point is contained within this constraint
  * @param {Number} x The X position
  * @param {Number} y The Y position
