@@ -22,6 +22,7 @@ const Koi = function(systems, random) {
         this.update();
 };
 
+Koi.prototype.FRAME_TIME_MAX = 1;
 Koi.prototype.UPDATE_RATE = 1 / 15;
 Koi.prototype.PREFERRED_SCALE = 80;
 Koi.prototype.SIZE_MIN = 11;
@@ -106,7 +107,7 @@ Koi.prototype.update = function() {
  * @param {Number} deltaTime The amount of time passed since the last frame
  */
 Koi.prototype.render = function(deltaTime) {
-    this.time += deltaTime;
+    this.time += Math.min(this.FRAME_TIME_MAX, deltaTime);
 
     while (this.time > this.UPDATE_RATE) {
         this.time -= this.UPDATE_RATE;
