@@ -191,7 +191,7 @@ Constellation.prototype.drop = function(fish) {
             }
         }
 
-        fish.position.set(nearestPosition);
+        fish.drop(nearestPosition);
         nearest.addFish(fish);
     }
 };

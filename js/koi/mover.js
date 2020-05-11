@@ -9,6 +9,7 @@ const Mover = function(constellation) {
     this.cursor = new Vector2();
     this.cursorPrevious = new Vector2();
     this.offset = new Vector2();
+    this.cursorOffset = new Vector2();
 };
 
 /**
@@ -43,10 +44,8 @@ Mover.prototype.touchMove = function(x, y) {
     this.cursor.y = y;
 
     if (this.move) {
-        for (const point of this.move.body.spine)
-            point.add(this.cursor).subtract(this.cursorPrevious);
-
-        this.move.position.set(this.cursor).add(this.offset);
+        this.cursorOffset.set(this.cursor).add(this.offset);
+        this.move.moveTo(this.cursorOffset);
     }
 };
 
@@ -69,7 +68,6 @@ Mover.prototype.pickUp = function(fish, x, y) {
  */
 Mover.prototype.drop = function() {
     if (this.move) {
-        this.move.drop();
         this.constellation.drop(this.move);
         this.move = null;
     }

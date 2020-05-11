@@ -28,7 +28,7 @@ ConstraintCircle.prototype.getCapacity = function() {
 /**
  * Constrain a vector to make sure it is inside the constraint
  * @param {Vector2} vector The vector to constrain
- * @returns {Boolean} A boolean indicating whether the vector could be constrained
+ * @returns {Boolean} A boolean indicating whether the vector could be constrained, always true for circles
  */
 ConstraintCircle.prototype.constrain = function(vector) {
     const dx = vector.x - this.position.x;

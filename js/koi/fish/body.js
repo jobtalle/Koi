@@ -29,6 +29,20 @@ Body.prototype.SPEED_THRESHOLD = .02;
 Body.prototype.OVERLAP_PADDING = 1.8;
 
 /**
+ * Instantly move the body to the given position
+ * @param {Vector2} position The position to move the spine head to
+ */
+Body.prototype.moveTo = function(position) {
+    const dx = position.x - this.spine[0].x;
+    const dy = position.y - this.spine[0].y;
+
+    for (const point of this.spine) {
+        point.x += dx;
+        point.y += dy;
+    }
+};
+
+/**
  * Check if this fish overlaps the given position
  * @param {Number} x The X position
  * @param {Number} y The Y position

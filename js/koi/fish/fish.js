@@ -45,11 +45,20 @@ Fish.prototype.TURN_FOLLOW_CHANCE = .025;
 Fish.prototype.TURN_AMPLITUDE = Math.PI * .25;
 
 /**
- * Drop the fish into a new pond, orient along its body rotation
+ * Move the fish to a given position
+ * @param {Vector2} position The position to move to
  */
-Fish.prototype.drop = function() {
-    this.direction.set(this.body.spine[0]).subtract(this.body.spine[1]).normalize();
-    this.velocity.set(this.direction);
+Fish.prototype.moveTo = function(position) {
+    this.position.set(position);
+    this.body.moveTo(position);
+};
+
+/**
+ * Drop the fish into a new pond, orient along its body rotation
+ * @param {Vector2} position The position to drop the fish at
+ */
+Fish.prototype.drop = function(position) {
+    this.moveTo(position);
     this.speed = this.SPEED_DROP;
 };
 

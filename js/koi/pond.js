@@ -20,14 +20,6 @@ Pond.prototype.canSpawn = function() {
 };
 
 /**
- * Check if a fish can be dropped in this pond
- * @returns {Boolean} A boolean indicating whether a fish may be dropped
- */
-Pond.prototype.canDrop = function() {
-    return this.fishes.length < this.capacity;
-};
-
-/**
  * Replace this ponds constraint
  * @param {Object} constraint A new constraint
  * @param {Atlas} atlas The texture atlas
