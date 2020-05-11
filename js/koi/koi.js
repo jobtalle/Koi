@@ -15,6 +15,7 @@ const Koi = function(systems, random) {
     this.lastUpdate = new Date();
     this.atlas = new Atlas(systems.gl, systems.patterns, this.constellation.getCapacity());
     this.spawner = new Spawner(this.constellation);
+    this.time = 0;
 
     // TODO: This is a debug warp
     for (let i = 0; i < 1000; ++i)
@@ -102,26 +103,28 @@ Koi.prototype.update = function() {
 
 /**
  * Render the scene
+ * @param {Number} deltaTime The amount of time passed since the last frame
  */
-Koi.prototype.render = function() {
-    let time = .001 * (new Date() - this.lastUpdate) / this.UPDATE_RATE;
+Koi.prototype.render = function(deltaTime) {
+    this.time += deltaTime;
 
-    while (time > 1) {
-        time -= 1;
+    while (this.time > this.UPDATE_RATE) {
+        this.time -= this.UPDATE_RATE;
 
         this.update();
     }
+
+    const timeFactor = this.time / this.UPDATE_RATE;
 
     this.systems.targetMain();
     this.systems.clear(new Color(.2, .2, .2));
 
     this.systems.primitives.setViewport(this.systems.width, this.systems.height);
-
     this.systems.primitives.transformPush();
     this.systems.primitives.getTransform().scale(this.scale, this.scale);
 
-    this.constellation.render(this.systems.primitives, time);
-    this.mover.render(this.systems.primitives, time);
+    this.constellation.render(this.systems.primitives, timeFactor);
+    this.mover.render(this.systems.primitives, timeFactor);
 
     this.systems.primitives.transformPop();
 

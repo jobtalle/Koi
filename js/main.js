@@ -4,6 +4,7 @@ const gl =
     canvas.getContext("experimental-webgl", {alpha: false, antialias: false});
 const systems = new Systems(gl, canvas.width, canvas.height);
 const random = new Random();
+let lastDate = new Date();
 let koi = null;
 let loaded = true;
 
@@ -27,7 +28,10 @@ koi = new Koi(systems, random);
 
 const loop = () => {
     if (loaded) {
-        koi.render();
+        const date = new Date();
+
+        koi.render(.001 * (date - lastDate));
+        lastDate = date;
 
         requestAnimationFrame(loop);
     }
