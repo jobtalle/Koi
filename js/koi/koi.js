@@ -1,19 +1,19 @@
 /**
  * The koi game
- * @param {Renderer} renderer The renderer
+ * @param {Systems} systems The render systems
  * @param {Random} random A randomizer
  * @constructor
  */
-const Koi = function(renderer, random) {
-    this.renderer = renderer;
+const Koi = function(systems, random) {
+    this.systems = systems;
     this.random = random;
-    this.scale = this.getScale(renderer.getWidth(), renderer.getHeight());
+    this.scale = this.getScale(systems.width, systems.height);
     this.constellation = new Constellation(
-        renderer.getWidth() / this.scale,
-        renderer.getHeight() / this.scale);
+        systems.width / this.scale,
+        systems.height / this.scale);
     this.mover = new Mover(this.constellation);
     this.lastUpdate = new Date();
-    this.atlas = new Atlas(renderer, this.constellation.getCapacity());
+    this.atlas = new Atlas(systems.gl, systems.patterns, this.constellation.getCapacity());
     this.spawner = new Spawner(this.constellation);
 
     // TODO: This is a debug warp
@@ -70,7 +70,7 @@ Koi.prototype.getScale = function(width, height) {
  */
 Koi.prototype.replaceAtlas = function() {
     this.atlas.free();
-    this.atlas = new Atlas(this.renderer, this.constellation.getCapacity());
+    this.atlas = new Atlas(this.systems.gl, this.systems.patterns, this.constellation.getCapacity());
 
     this.constellation.updateAtlas(this.atlas);
 };
@@ -79,10 +79,10 @@ Koi.prototype.replaceAtlas = function() {
  * Notify that the renderer has resized
  */
 Koi.prototype.resize = function() {
-    this.scale = this.getScale(renderer.getWidth(), renderer.getHeight());
+    this.scale = this.getScale(this.systems.width, this.systems.height);
     this.constellation.resize(
-        renderer.getWidth() / this.scale,
-        renderer.getHeight() / this.scale,
+        this.systems.width / this.scale,
+        this.systems.height / this.scale,
         this.atlas);
 
     if (this.constellation.getCapacity() > this.atlas.capacity)
@@ -112,23 +112,27 @@ Koi.prototype.render = function() {
         this.update();
     }
 
-    this.renderer.clear();
-    this.renderer.transformPush();
-    this.renderer.getTransform().scale(this.scale, this.scale);
+    this.systems.targetMain();
+    this.systems.clear(new Color(.2, .2, .2));
 
-    this.constellation.render(this.renderer, time);
-    this.mover.render(this.renderer, time);
+    this.systems.primitives.setViewport(this.systems.width, this.systems.height);
 
-    this.renderer.transformPop();
+    this.systems.primitives.transformPush();
+    this.systems.primitives.getTransform().scale(this.scale, this.scale);
 
-    this.renderer.cutStrip(0, 0, 0, 0);
-    this.renderer.drawStrip(0, 400,0, 1);
-    this.renderer.cutStrip(400, 400,1, 1);
-    this.renderer.cutStrip(0, 0, 0, 0);
-    this.renderer.drawStrip(400, 0,1, 0);
-    this.renderer.cutStrip(400, 400,1, 1);
+    this.constellation.render(this.systems.primitives, time);
+    this.mover.render(this.systems.primitives, time);
 
-    this.renderer.flush();
+    this.systems.primitives.transformPop();
+
+    this.systems.primitives.cutStrip(0, 0, 0, 0);
+    this.systems.primitives.drawStrip(0, 400,0, 1);
+    this.systems.primitives.cutStrip(400, 400,1, 1);
+    this.systems.primitives.cutStrip(0, 0, 0, 0);
+    this.systems.primitives.drawStrip(400, 0,1, 0);
+    this.systems.primitives.cutStrip(400, 400,1, 1);
+
+    this.systems.primitives.flush();
 };
 
 /**

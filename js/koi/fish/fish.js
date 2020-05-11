@@ -249,11 +249,11 @@ Fish.prototype.update = function(constraint, random) {
 
 /**
  * Render the fish
- * @param {Renderer} renderer The renderer
+ * @param {Primitives} primitives The primitives renderer
  * @param {Number} time The interpolation factor
  */
-Fish.prototype.render = function(renderer, time) {
-    this.body.render(renderer, time);
+Fish.prototype.render = function(primitives, time) {
+    this.body.render(primitives, time);
 };
 
 /**

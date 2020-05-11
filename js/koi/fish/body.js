@@ -147,10 +147,10 @@ Body.prototype.update = function(head, direction, speed) {
 
 /**
  * Render the body
- * @param {Renderer} renderer The renderer
+ * @param {Primitives} primitives The primitives renderer
  * @param {Number} time The interpolation factor
  */
-Body.prototype.render = function(renderer, time) {
+Body.prototype.render = function(primitives, time) {
     const uStart = this.pattern.slot.x + this.pattern.pixelSize.x;
     const uLength = this.pattern.slot.x + this.pattern.size.x - this.pattern.pixelSize.x - uStart;
 
@@ -159,7 +159,7 @@ Body.prototype.render = function(renderer, time) {
     let dxp, dx;
     let dyp, dy;
 
-    renderer.cutStrip(x, y, 0, 0);
+    primitives.cutStrip(x, y, 0, 0);
 
     for (let segment = 1; segment < this.spine.length; ++segment) {
         xp = x;
@@ -182,19 +182,19 @@ Body.prototype.render = function(renderer, time) {
         const dyAveraged = (dy + dyp) * .5;
         const u = uStart + uLength * (segment - 1) / (this.spine.length - 1);
 
-        renderer.drawStrip(
+        primitives.drawStrip(
             xp - this.radius * dyAveraged * this.inverseSpacing,
             yp + this.radius * dxAveraged * this.inverseSpacing,
             u,
             this.pattern.slot.y + this.pattern.pixelSize.y);
-        renderer.drawStrip(
+        primitives.drawStrip(
             xp + this.radius * dyAveraged * this.inverseSpacing,
             yp - this.radius * dxAveraged * this.inverseSpacing,
             u,
             this.pattern.slot.y + this.pattern.size.y - this.pattern.pixelSize.y);
     }
 
-    renderer.cutStrip(
+    primitives.cutStrip(
         this.spinePrevious[this.spine.length - 1].x +
             (this.spine[this.spine.length - 1].x - this.spinePrevious[this.spine.length - 1].x) * time,
         this.spinePrevious[this.spine.length - 1].y +

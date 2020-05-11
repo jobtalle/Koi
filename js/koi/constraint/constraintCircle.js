@@ -73,9 +73,9 @@ ConstraintCircle.prototype.sample = function(position) {
 
 /**
  * Draw the circle
- * @param {Renderer} renderer The renderer
+ * @param {Primitives} primitives The primitives renderer
  */
-ConstraintCircle.prototype.render = function(renderer) {
+ConstraintCircle.prototype.render = function(primitives) {
     let x, y, xp, yp;
 
     for (let i = 0; i <= 64; ++i) {
@@ -87,6 +87,6 @@ ConstraintCircle.prototype.render = function(renderer) {
         y = this.position.y + Math.sin(angle) * this.radius;
 
         if (i !== 0)
-            renderer.drawLine(xp, yp, Color.WHITE, x, y, Color.WHITE);
+            primitives.drawLine(xp, yp, Color.WHITE, x, y, Color.WHITE);
     }
 };

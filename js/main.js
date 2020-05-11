@@ -1,16 +1,19 @@
 const canvas = document.getElementById("renderer");
-const renderer = new Renderer(canvas);
+const gl =
+    canvas.getContext("webgl", {alpha: false, antialias: false}) ||
+    canvas.getContext("experimental-webgl", {alpha: false, antialias: false});
+const systems = new Systems(gl, canvas.width, canvas.height);
 const random = new Random();
 let koi = null;
+let loaded = true;
 
 const resize = () => {
-    const canvas = document.getElementById("renderer");
     const wrapper = document.getElementById("wrapper");
 
     canvas.width = wrapper.offsetWidth;
     canvas.height = wrapper.offsetHeight;
 
-    renderer.resize(canvas.width, canvas.height);
+    systems.resize(canvas.width, canvas.height);
 
     if (koi)
         koi.resize();
@@ -20,12 +23,14 @@ window.onresize = resize;
 
 resize();
 
-koi = new Koi(renderer, random);
+koi = new Koi(systems, random);
 
 const loop = () => {
-    koi.render();
+    if (loaded) {
+        koi.render();
 
-    requestAnimationFrame(loop);
+        requestAnimationFrame(loop);
+    }
 };
 
 requestAnimationFrame(loop);
@@ -61,3 +66,9 @@ canvas.addEventListener("touchend", event => {
 
     koi.touchEnd();
 });
+
+window.onbeforeunload = () => {
+    koi.free();
+    systems.free();
+    loaded = false;
+};

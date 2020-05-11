@@ -78,35 +78,3 @@ ConstraintRing.prototype.sample = function(dx, dy, distance) {
 
     return 0;
 };
-
-/**
- * Draw the arc
- * @param {Renderer} renderer The renderer
- */
-ConstraintRing.prototype.render = function(renderer) {
-    let x, y, xp, yp;
-
-    for (let i = 0; i <= 64; ++i) {
-        const angle = Math.PI * i / 32;
-
-        xp = x;
-        yp = y;
-        x = this.position.x + Math.cos(angle) * (this.radius - this.halfWidth);
-        y = this.position.y + Math.sin(angle) * (this.radius - this.halfWidth);
-
-        if (i !== 0)
-            renderer.drawLine(xp, yp, Color.BLUE, x, y, Color.BLUE);
-    }
-
-    for (let i = 0; i <= 64; ++i) {
-        const angle = Math.PI * i / 32;
-
-        xp = x;
-        yp = y;
-        x = this.position.x + Math.cos(angle) * (this.radius + this.halfWidth);
-        y = this.position.y + Math.sin(angle) * (this.radius + this.halfWidth);
-
-        if (i !== 0)
-            renderer.drawLine(xp, yp, Color.BLUE, x, y, Color.BLUE);
-    }
-};

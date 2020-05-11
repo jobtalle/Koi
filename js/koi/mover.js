@@ -25,12 +25,12 @@ Mover.prototype.update = function() {
 
 /**
  * Render the mover
- * @param {Renderer} renderer The renderer
+ * @param {Primitives} primitives The primitives renderer
  * @param {Number} time The interpolation factor since the last update
  */
-Mover.prototype.render = function(renderer, time) {
+Mover.prototype.render = function(primitives, time) {
     if (this.move)
-        this.move.body.render(renderer, time);
+        this.move.render(primitives, time);
 };
 
 /**

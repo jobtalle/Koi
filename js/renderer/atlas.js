@@ -1,19 +1,21 @@
 /**
  * The fish pattern atlas, containing all fish patterns
- * @param {Renderer} renderer The renderer
+ * @param {WebGLRenderingContext} gl A WebGL context
+ * @param {Patterns} patterns A pattern renderer
  * @param {Number} capacity The number of fish patterns this atlas must be able to contain
  * @constructor
  */
-const Atlas = function(renderer, capacity) {
-    this.renderer = renderer;
+const Atlas = function(gl, patterns, capacity) {
+    this.gl = gl;
+    this.patterns = patterns;
     this.capacity = 0;
     this.width = 0;
     this.height = 0;
     this.slotSize = new Vector2();
     this.pixelSize = new Vector2();
     this.available = null;
-    this.framebuffer = renderer.gl.createFramebuffer();
-    this.texture = this.createTexture(renderer.gl, capacity);
+    this.framebuffer = gl.createFramebuffer();
+    this.texture = this.createTexture(gl, capacity);
 };
 
 Atlas.prototype.RESOLUTION = 48;
@@ -116,17 +118,16 @@ Atlas.prototype.write = function(pattern) {
     pattern.size = this.slotSize;
     pattern.pixelSize = this.pixelSize;
 
-    this.renderer.unbindShader();
-    this.renderer.gl.viewport(0, 0, this.width, this.height);
-    this.renderer.gl.bindFramebuffer(this.renderer.gl.FRAMEBUFFER, this.framebuffer);
+    this.gl.viewport(0, 0, this.width, this.height);
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.framebuffer);
 
-    this.renderer.patterns.write(pattern);
+    this.patterns.write(pattern);
 };
 
 /**
  * Free all resources maintained by the atlas
  */
 Atlas.prototype.free = function() {
-    this.renderer.gl.deleteFramebuffer(this.framebuffer);
-    this.renderer.gl.deleteTexture(this.texture);
+    this.gl.deleteFramebuffer(this.framebuffer);
+    this.gl.deleteTexture(this.texture);
 };

@@ -111,9 +111,9 @@ ConstraintArcPath.prototype.sample = function(position) {
 
 /**
  * Draw the circle
- * @param {Renderer} renderer The renderer
+ * @param {Primitives} primitives The primitives renderer
  */
-ConstraintArcPath.prototype.render = function(renderer) {
+ConstraintArcPath.prototype.render = function(primitives) {
     for (const arc of this.arcs) {
         const steps = Math.floor((arc.end - arc.start) / .05);
 
@@ -121,14 +121,14 @@ ConstraintArcPath.prototype.render = function(renderer) {
             const radiansStart = arc.start + (arc.end - arc.start) * i / steps;
             const radiansEnd = arc.start + (arc.end - arc.start) * (i + 1) / steps;
 
-            renderer.drawLine(
+            primitives.drawLine(
                 arc.center.x + Math.cos(radiansStart) * (arc.radius - this.width * .5),
                 arc.center.y + Math.sin(radiansStart) * (arc.radius - this.width * .5),
                 Color.WHITE,
                 arc.center.x + Math.cos(radiansEnd) * (arc.radius - this.width * .5),
                 arc.center.y + Math.sin(radiansEnd) * (arc.radius - this.width * .5),
                 Color.WHITE);
-            renderer.drawLine(
+            primitives.drawLine(
                 arc.center.x + Math.cos(radiansStart) * (arc.radius + this.width * .5),
                 arc.center.y + Math.sin(radiansStart) * (arc.radius + this.width * .5),
                 Color.WHITE,

@@ -41,7 +41,6 @@ Patterns.prototype.writeLayer = function(layer, program) {
  */
 Patterns.prototype.write = function(pattern) {
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
-
     this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array([
         2 * pattern.slot.x - 1,
         2 * pattern.slot.y - 1,
@@ -57,6 +56,8 @@ Patterns.prototype.write = function(pattern) {
         1, 0
     ]));
 
+    this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
+
     for (const layer of pattern.layers) switch (layer.constructor) {
         case PatternBase:
             this.writeLayer(layer, this.programBase);
@@ -70,7 +71,6 @@ Patterns.prototype.write = function(pattern) {
 
     this.gl.blendFunc(this.gl.ZERO, this.gl.SRC_COLOR)
     this.writeLayer(pattern.shape, this.programShape);
-    this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
 };
 
 /**

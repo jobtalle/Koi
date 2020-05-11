@@ -1,14 +1,10 @@
 /**
- * The renderer
- * @param {HTMLCanvasElement} canvas The canvas to render on
- * @param {Color} clearColor A background color to clear to
+ * The primitives renderer
+ * @param {WebGLRenderingContext} gl A WebGL context
  * @constructor
  */
-const Renderer = function(canvas, clearColor = new Color(.2, .2, .2)) {
-    this.gl =
-        canvas.getContext("webgl", this.CONTEXT_PARAMS) ||
-        canvas.getContext("experimental-webgl", this.CONTEXT_PARAMS);
-    this.patterns = new Patterns(this.gl);
+const Primitives = function(gl) {
+    this.gl = gl;
     this.programLines = new Shader(
         this.gl,
         this.SHADER_LINES_VERTEX,
@@ -21,7 +17,7 @@ const Renderer = function(canvas, clearColor = new Color(.2, .2, .2)) {
         this.SHADER_STRIP_FRAGMENT,
         ["transform1", "transform2"],
         ["position", "uv"]);
-    this.transformBase = new Transform();
+    this.transformBase = new Transform(2, 0, 0, 0, -2, 0);
     this.transformStack = [this.transformBase];
     this.vertices = [];
     this.indices = [];
@@ -32,25 +28,18 @@ const Renderer = function(canvas, clearColor = new Color(.2, .2, .2)) {
     this.bufferIndicesCapacity = 0;
     this.programCurrent = null;
     this.programActive = null;
+    this.mode = -1;
     this.width = 0;
     this.height = 0;
-    this.mode = -1;
-
-    this.gl.enable(this.gl.BLEND);
-    this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
-    this.gl.clearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
-
-    this.resize(canvas.width, canvas.height);
 };
 
-Renderer.prototype.CONTEXT_PARAMS = {alpha: false, antialias: false};
-Renderer.prototype.MODE_LINES = 0;
-Renderer.prototype.MODE_STRIP = 1;
-Renderer.prototype.SHADER_POSITION = `
+Primitives.prototype.MODE_LINES = 0;
+Primitives.prototype.MODE_STRIP = 1;
+Primitives.prototype.SHADER_POSITION = `
 gl_Position = vec4((position * mat2(transform1.xy, transform2.xy) + vec2(transform1.z, transform2.z)) *
   vec2(transform1.w, transform2.w) + vec2(-1, 1), 0, 1);
 `;
-Renderer.prototype.SHADER_LINES_VERTEX = `#version 100
+Primitives.prototype.SHADER_LINES_VERTEX = `#version 100
 uniform vec4 transform1;
 uniform vec4 transform2;
 
@@ -60,17 +49,17 @@ attribute vec4 color;
 varying vec4 v_color;
 
 void main() {
-  v_color = color;` + Renderer.prototype.SHADER_POSITION + `
+  v_color = color;` + Primitives.prototype.SHADER_POSITION + `
 }
 `;
-Renderer.prototype.SHADER_LINES_FRAGMENT = `#version 100
+Primitives.prototype.SHADER_LINES_FRAGMENT = `#version 100
 varying mediump vec4 v_color;
 
 void main() {
   gl_FragColor = v_color;
 }
 `;
-Renderer.prototype.SHADER_STRIP_VERTEX = `#version 100
+Primitives.prototype.SHADER_STRIP_VERTEX = `#version 100
 uniform vec4 transform1;
 uniform vec4 transform2;
 
@@ -80,10 +69,10 @@ attribute vec2 uv;
 varying vec2 v_uv;
 
 void main() {
-  v_uv = uv;` + Renderer.prototype.SHADER_POSITION + `
+  v_uv = uv;` + Primitives.prototype.SHADER_POSITION + `
 }
 `;
-Renderer.prototype.SHADER_STRIP_FRAGMENT = `#version 100
+Primitives.prototype.SHADER_STRIP_FRAGMENT = `#version 100
 uniform sampler2D atlas;
 
 varying mediump vec2 v_uv;
@@ -96,7 +85,7 @@ void main() {
 /**
  * Upload the current transform to the currently bound shader
  */
-Renderer.prototype.updateTransform = function() {
+Primitives.prototype.updateTransform = function() {
     const transform = this.transformStack[this.transformIndex];
 
     this.gl.uniform4f(this.programCurrent.uTransform1, transform._00, transform._10, transform._20, 1 / this.width);
@@ -106,9 +95,8 @@ Renderer.prototype.updateTransform = function() {
 /**
  * Upload the current vertex & index buffers to the GPU
  */
-Renderer.prototype.updateBuffers = function() {
+Primitives.prototype.updateBuffers = function() {
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.bufferVertices);
-    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.bufferIndices);
 
     if (this.vertices.length > this.bufferVerticesCapacity) {
         this.bufferVerticesCapacity = this.vertices.length;
@@ -116,17 +104,19 @@ Renderer.prototype.updateBuffers = function() {
         this.gl.bufferData(this.gl.ARRAY_BUFFER, this.bufferVerticesCapacity << 2, this.gl.DYNAMIC_DRAW);
     }
 
-    if (this.indices.length > this.bufferIndicesCapacity) {
-        this.bufferIndicesCapacity = this.indices.length;
+    this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array(this.vertices));
 
-        this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.bufferIndicesCapacity << 2, this.gl.DYNAMIC_DRAW);
-    }
+    if (this.indices.length !== 0) {
+        this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.bufferIndices);
 
-    if (this.vertices.length !== 0)
-        this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array(this.vertices));
+        if (this.indices.length > this.bufferIndicesCapacity) {
+            this.bufferIndicesCapacity = this.indices.length;
 
-    if (this.indices.length !== 0)
+            this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.bufferIndicesCapacity << 2, this.gl.DYNAMIC_DRAW);
+        }
+
         this.gl.bufferSubData(this.gl.ELEMENT_ARRAY_BUFFER, 0, new Uint16Array(this.indices));
+    }
 };
 
 /**
@@ -134,7 +124,7 @@ Renderer.prototype.updateBuffers = function() {
  * @param {Shader} program The shader program
  * @param {Number} mode The render mode
  */
-Renderer.prototype.setProgram = function(program, mode) {
+Primitives.prototype.setProgram = function(program, mode) {
     if (this.programCurrent !== program) {
         this.flush();
 
@@ -156,7 +146,7 @@ Renderer.prototype.setProgram = function(program, mode) {
 /**
  * Render all buffered lines
  */
-Renderer.prototype.renderLines = function() {
+Primitives.prototype.renderLines = function() {
     this.updateBuffers();
 
     this.gl.enableVertexAttribArray(this.programLines.aPosition);
@@ -171,7 +161,7 @@ Renderer.prototype.renderLines = function() {
 /**
  * Render the buffered strip
  */
-Renderer.prototype.renderStrip = function() {
+Primitives.prototype.renderStrip = function() {
     this.updateBuffers();
 
     this.gl.enableVertexAttribArray(this.programStrip.aPosition);
@@ -186,12 +176,10 @@ Renderer.prototype.renderStrip = function() {
 /**
  * Render all queued render commands
  */
-Renderer.prototype.flush = function() {
-    switch (this.mode) {
-        case this.MODE_MESH:
-            this.renderMesh();
+Primitives.prototype.flush = function() {
+    this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
 
-            break;
+    switch (this.mode) {
         case this.MODE_LINES:
             this.renderLines();
 
@@ -207,14 +195,14 @@ Renderer.prototype.flush = function() {
  * Get the current transform
  * @returns {Transform} The currently active transform which may be modified
  */
-Renderer.prototype.getTransform = function() {
+Primitives.prototype.getTransform = function() {
     return this.transformStack[this.transformIndex];
 };
 
 /**
  * Save the current transform & push a new one on the stack
  */
-Renderer.prototype.transformPush = function() {
+Primitives.prototype.transformPush = function() {
     this.setProgram(null, -1);
 
     if (++this.transformIndex === this.transformStack.length)
@@ -226,7 +214,7 @@ Renderer.prototype.transformPush = function() {
 /**
  * Pop the current transform from the stack, restoring the previously pushed one
  */
-Renderer.prototype.transformPop = function() {
+Primitives.prototype.transformPop = function() {
     this.setProgram(null, -1);
 
     --this.transformIndex;
@@ -241,7 +229,7 @@ Renderer.prototype.transformPop = function() {
  * @param {Number} y2 The end Y coordinate
  * @param {Color} color2 The color at the line end
  */
-Renderer.prototype.drawLine = function(x1, y1, color1, x2, y2, color2) {
+Primitives.prototype.drawLine = function(x1, y1, color1, x2, y2, color2) {
     this.setProgram(this.programLines, this.MODE_LINES);
 
     this.vertices.push(
@@ -256,7 +244,7 @@ Renderer.prototype.drawLine = function(x1, y1, color1, x2, y2, color2) {
  * @param {Number} u The texture U coordinate
  * @param {Number} v The texture V coordinate
  */
-Renderer.prototype.drawStrip = function(x, y, u, v) {
+Primitives.prototype.drawStrip = function(x, y, u, v) {
     this.setProgram(this.programStrip, this.MODE_STRIP);
 
     this.vertices.push(x, y, u, v);
@@ -269,68 +257,27 @@ Renderer.prototype.drawStrip = function(x, y, u, v) {
  * @param {Number} u The texture U coordinate
  * @param {Number} v The texture V coordinate
  */
-Renderer.prototype.cutStrip = function(x, y, u, v) {
+Primitives.prototype.cutStrip = function(x, y, u, v) {
     this.setProgram(this.programStrip, this.MODE_STRIP);
 
     this.vertices.push(x, y, u, v, x, y, u, v);
 };
 
 /**
- * Resize the render context
+ * Resize the viewport
  * @param {Number} width The width in pixels
  * @param {Number} height The height in pixels
  */
-Renderer.prototype.resize = function(width, height) {
-    this.transformBase._00 = 2;
-    this.transformBase._10 = 0;
-    this.transformBase._20 = 0;
-    this.transformBase._01 = 0;
-    this.transformBase._11 = -2;
-    this.transformBase._21 = 0;
-
+Primitives.prototype.setViewport = function(width, height) {
     this.width = width;
     this.height = height;
-
-    this.setProgram(null, -1);
+    this.programActive = this.programCurrent = null;
 };
 
 /**
- * Clear the render context
+ * Free this primitives renderer
  */
-Renderer.prototype.clear = function() {
-    this.gl.viewport(0, 0, this.width, this.height);
-    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
-    this.gl.clear(this.gl.COLOR_BUFFER_BIT);
-};
-
-/**
- * Indicate that an external shader program is made active
- */
-Renderer.prototype.unbindShader = function() {
-    this.programActive = null;
-};
-
-/**
- * Get the width of this renderer
- * @returns {Number} The width in pixels
- */
-Renderer.prototype.getWidth = function() {
-    return this.width;
-};
-
-/**
- * Get the height of this renderer
- * @returns {Number} The height in pixels
- */
-Renderer.prototype.getHeight = function() {
-    return this.height;
-};
-
-/**
- * Free this renderer
- */
-Renderer.prototype.free = function() {
-    this.patterns.free();
+Primitives.prototype.free = function() {
     this.programLines.free();
     this.programStrip.free();
 
