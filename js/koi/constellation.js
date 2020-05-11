@@ -16,9 +16,9 @@ const Constellation = function(width, height) {
     this.fit();
 };
 
-Constellation.prototype.FACTOR_PADDING = .12;
+Constellation.prototype.FACTOR_PADDING = .1;
 Constellation.prototype.FACTOR_SMALL = .7;
-Constellation.prototype.FACTOR_RIVER = .55;
+Constellation.prototype.FACTOR_RIVER = .6;
 
 /**
  * Resize the constellation
@@ -42,21 +42,26 @@ Constellation.prototype.getCapacity = function() {
 };
 
 /**
+ * Calculate the radius of the big pond which makes all elements fit optimally
+ * @param {Number} width The scene width
+ * @param {Number} height The scene height
+ */
+Constellation.prototype.getBigPondRadius = function(width, height) {
+    const p1 = this.FACTOR_SMALL + 1;
+    const a = (this.FACTOR_RIVER + p1) * (this.FACTOR_RIVER + p1) - 2 * p1 * p1;
+    const b = 2 * p1 * (height + width);
+    const c = -height * height - width * width;
+
+    return (Math.sqrt(b * b - 4 * a * c) - b) / (a + a);
+};
+
+/**
  * Calculate the constellation layout
  * @param {Atlas} [atlas] The texture atlas, required when fish exist in the constellation
  */
 Constellation.prototype.fit = function(atlas = null) {
-    const p = this.FACTOR_SMALL;
-    const q = this.FACTOR_RIVER;
-    const w = this.width;
-    const h = this.height;
-
     const radiusBigMax = Math.min(this.width, this.height) * .5;
-    const radiusBig = Math.min((Math.sqrt(
-        ((p + 1) * (p + 1) * (h + w) * (h + w) + (h * h + w * w) * (q * (2 * p + q + 2) - p * (p + 2) - 1))) -
-        (p + 1) * (h + w)) /
-        (p * (2 * q - p - 2) + q * (q + 2) - 1),
-        radiusBigMax);
+    const radiusBig = Math.min(this.getBigPondRadius(this.width, this.height), radiusBigMax);
     const radiusSmall = this.FACTOR_SMALL * radiusBig;
     const centerBig = new Vector2(radiusBig, radiusBig);
     const centerSmall = new Vector2(this.width - radiusSmall, this.height - radiusSmall);
