@@ -38,10 +38,9 @@ Atlas.prototype.nearestPow2 = function(number) {
 /**
  * Create all texture slots on the atlas
  * @param {Number} blockResolution The square root of the number of slot blocks on this atlas
- * @param {Number} capacity The number of fish patterns this atlas must be able to contain
  * @returns {Vector2[]} The positions of all available texture slots
  */
-Atlas.prototype.createSlots = function(blockResolution, capacity) {
+Atlas.prototype.createSlots = function(blockResolution) {
     const available = [];
 
     for (let y = 0; y < blockResolution; ++y) for (let x = 0; x < blockResolution; ++x)
@@ -68,7 +67,7 @@ Atlas.prototype.createTexture = function(gl, capacity) {
     this.pixelSize.y = 1 / this.height;
     this.slotSize.x = this.RESOLUTION * this.RATIO * this.pixelSize.x;
     this.slotSize.y = this.RESOLUTION * this.pixelSize.y;
-    this.available = this.createSlots(blockResolution, capacity);
+    this.available = this.createSlots(blockResolution);
     this.capacity = this.available.length;
 
     gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -116,7 +115,6 @@ Atlas.prototype.returnSlot = function(slot) {
 Atlas.prototype.write = function(pattern) {
     pattern.slot = this.getSlot();
     pattern.size = this.slotSize;
-    pattern.pixelSize = this.pixelSize;
 
     this.gl.viewport(0, 0, this.width, this.height);
     this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.framebuffer);

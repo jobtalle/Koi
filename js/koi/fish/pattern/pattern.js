@@ -9,7 +9,6 @@ const Pattern = function(layers, shape) {
     this.shape = shape;
     this.slot = null;
     this.size = null;
-    this.pixelSize = null;
 };
 
 /**

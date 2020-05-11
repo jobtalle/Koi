@@ -1,5 +1,5 @@
 /**
- * A container for all rendering systems
+ * A container for all persistent rendering systems
  * @param {WebGLRenderingContext} gl A WebGL context
  * @param {Number} width The WebGL context width in pixels
  * @param {Number} height The WebGL context height in pixels

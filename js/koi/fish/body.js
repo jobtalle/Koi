@@ -151,8 +151,8 @@ Body.prototype.update = function(head, direction, speed) {
  * @param {Number} time The interpolation factor
  */
 Body.prototype.render = function(primitives, time) {
-    const uStart = this.pattern.slot.x + this.pattern.pixelSize.x;
-    const uLength = this.pattern.slot.x + this.pattern.size.x - this.pattern.pixelSize.x - uStart;
+    const uStart = this.pattern.slot.x;
+    const uLength = this.pattern.slot.x + this.pattern.size.x - uStart;
 
     let xp, x = this.spinePrevious[0].x + (this.spine[0].x - this.spinePrevious[0].x) * time;
     let yp, y = this.spinePrevious[0].y + (this.spine[0].y - this.spinePrevious[0].y) * time;
@@ -186,12 +186,12 @@ Body.prototype.render = function(primitives, time) {
             xp - this.radius * dyAveraged * this.inverseSpacing,
             yp + this.radius * dxAveraged * this.inverseSpacing,
             u,
-            this.pattern.slot.y + this.pattern.pixelSize.y);
+            this.pattern.slot.y);
         primitives.drawStrip(
             xp + this.radius * dyAveraged * this.inverseSpacing,
             yp - this.radius * dxAveraged * this.inverseSpacing,
             u,
-            this.pattern.slot.y + this.pattern.size.y - this.pattern.pixelSize.y);
+            this.pattern.slot.y + this.pattern.size.y);
     }
 
     primitives.cutStrip(
