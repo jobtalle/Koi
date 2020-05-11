@@ -32,7 +32,6 @@ const Renderer = function(canvas, clearColor = new Color(.2, .2, .2)) {
     this.bufferIndicesCapacity = 0;
     this.programCurrent = null;
     this.programActive = null;
-    this.currentMesh = null;
     this.width = 0;
     this.height = 0;
     this.mode = -1;
@@ -45,9 +44,8 @@ const Renderer = function(canvas, clearColor = new Color(.2, .2, .2)) {
 };
 
 Renderer.prototype.CONTEXT_PARAMS = {alpha: false, antialias: false};
-Renderer.prototype.MODE_MESH = 0;
-Renderer.prototype.MODE_LINES = 1;
-Renderer.prototype.MODE_STRIP = 2;
+Renderer.prototype.MODE_LINES = 0;
+Renderer.prototype.MODE_STRIP = 1;
 Renderer.prototype.SHADER_POSITION = `
 gl_Position = vec4((position * mat2(transform1.xy, transform2.xy) + vec2(transform1.z, transform2.z)) *
   vec2(transform1.w, transform2.w) + vec2(-1, 1), 0, 1);
@@ -156,20 +154,6 @@ Renderer.prototype.setProgram = function(program, mode) {
 };
 
 /**
- * Render a mesh
- */
-Renderer.prototype.renderMesh = function() {
-    // this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.currentMesh.bufferVertices);
-    // this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.currentMesh.bufferIndices);
-    //
-    // this.gl.enableVertexAttribArray(this.programSprites.aPosition);
-    // this.gl.vertexAttribPointer(this.programSprites.aPosition, 2, this.gl.FLOAT, false, 16, 0);
-    // this.gl.enableVertexAttribArray(this.programSprites.aUv);
-    // this.gl.vertexAttribPointer(this.programSprites.aUv, 2, this.gl.FLOAT, false, 16, 8);
-    // this.gl.drawElements(this.gl.TRIANGLES, this.currentMesh.this.indices.length, this.gl.UNSIGNED_SHORT, 0);
-};
-
-/**
  * Render all buffered lines
  */
 Renderer.prototype.renderLines = function() {
@@ -220,31 +204,6 @@ Renderer.prototype.flush = function() {
 };
 
 /**
- * Create the GPU buffers for a mesh
- * @param {Mesh} mesh A mesh
- */
-Renderer.prototype.createMeshBuffers = function(mesh) {
-    mesh.bufferVertices = this.gl.createBuffer();
-    mesh.bufferIndices = this.gl.createBuffer();
-
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, mesh.bufferVertices);
-    this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(mesh.vertices), this.gl.STATIC_DRAW);
-    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, mesh.bufferIndices);
-    this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(mesh.indices), this.gl.STATIC_DRAW);
-};
-
-/**
- * Upload mesh data to its buffers
- * @param {Mesh} mesh A mesh
- */
-Renderer.prototype.updateMeshBuffers = function(mesh) {
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, mesh.bufferVertices);
-    this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array(mesh.vertices));
-    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, mesh.bufferIndices);
-    this.gl.bufferSubData(this.gl.ELEMENT_ARRAY_BUFFER, 0, new Uint16Array(mesh.indices));
-};
-
-/**
  * Get the current transform
  * @returns {Transform} The currently active transform which may be modified
  */
@@ -271,23 +230,6 @@ Renderer.prototype.transformPop = function() {
     this.setProgram(null, -1);
 
     --this.transformIndex;
-};
-
-/**
- * Draw a mesh
- * @param {Mesh} mesh A mesh
- */
-Renderer.prototype.drawMesh = function(mesh) {
-    // this.setProgram(this.programSprites, this.MODE_MESH);
-    //
-    // this.currentMesh = mesh;
-    //
-    // if (mesh.bufferVertices === null)
-    //     this.createMeshBuffers(mesh);
-    // else if (mesh.updated)
-    //     this.updateMeshBuffers(mesh);
-    //
-    // this.setProgram(null, -1);
 };
 
 /**
@@ -331,20 +273,6 @@ Renderer.prototype.cutStrip = function(x, y, u, v) {
     this.setProgram(this.programStrip, this.MODE_STRIP);
 
     this.vertices.push(x, y, u, v, x, y, u, v);
-};
-
-/**
- * Free a mesh
- * @param {Mesh} mesh The mesh to free
- */
-Renderer.prototype.freeMesh = function(mesh) {
-    if (mesh.bufferVertices === null)
-        return;
-
-    this.gl.deleteBuffer(mesh.bufferVertices);
-    this.gl.deleteBuffer(mesh.bufferIndices);
-
-    mesh.bufferVertices = mesh.bufferIndices = null;
 };
 
 /**
