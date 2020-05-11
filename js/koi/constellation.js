@@ -50,9 +50,9 @@ Constellation.prototype.getBigPondRadius = function(width, height) {
     const p1 = this.FACTOR_SMALL + 1;
     const a = (this.FACTOR_RIVER + p1) * (this.FACTOR_RIVER + p1) - 2 * p1 * p1;
     const b = 2 * p1 * (height + width);
-    const c = -height * height - width * width;
+    const c = height * height + width * width;
 
-    return (Math.sqrt(b * b - 4 * a * c) - b) / (a + a);
+    return (Math.sqrt(b * b + 4 * a * c) - b) / (a + a);
 };
 
 /**
@@ -171,7 +171,6 @@ Constellation.prototype.drop = function(fish) {
 
         this.big.constraint.constrain(nearestBig);
         this.small.constraint.constrain(nearestSmall);
-        this.river.constraint.constrain(nearestRiver);
 
         let nearestDist = fish.position.copy().subtract(nearestBig).length();
         let nearestPosition = nearestBig;
@@ -185,9 +184,11 @@ Constellation.prototype.drop = function(fish) {
             nearest = this.small;
         }
 
-        if (fish.position.copy().subtract(nearestRiver).length() < nearestDist) {
-            nearestPosition = nearestRiver;
-            nearest = this.river;
+        if (this.river.constraint.constrain(nearestRiver)) {
+            if (fish.position.copy().subtract(nearestRiver).length() < nearestDist) {
+                nearestPosition = nearestRiver;
+                nearest = this.river;
+            }
         }
 
         fish.position.set(nearestPosition);
