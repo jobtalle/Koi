@@ -55,6 +55,14 @@ Constellation.prototype.getCapacity = function() {
 };
 
 /**
+ * Get the number of fish existing in the constellation
+ * @returns {Number}
+ */
+Constellation.prototype.getFishCount = function() {
+    return this.big.fishes.length + this.small.fishes.length + this.river.fishes.length;
+};
+
+/**
  * Calculate the radius of the big pond which makes all elements fit optimally
  * @param {Number} width The scene width
  * @param {Number} height The scene height

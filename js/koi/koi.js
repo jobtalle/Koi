@@ -17,7 +17,7 @@ const Koi = function(renderer, random) {
     this.spawner = new Spawner(this.constellation);
 
     // TODO: This is a debug warp
-    for (let i = 0; i < 2000; ++i)
+    for (let i = 0; i < 1000; ++i)
         this.update();
 };
 

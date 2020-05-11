@@ -6,8 +6,8 @@
  */
 const Renderer = function(canvas, clearColor = new Color(.2, .2, .2)) {
     this.gl =
-        canvas.getContext("webgl", {alpha: false}) ||
-        canvas.getContext("experimental-webgl", {alpha: false});
+        canvas.getContext("webgl", this.CONTEXT_PARAMS) ||
+        canvas.getContext("experimental-webgl", this.CONTEXT_PARAMS);
     this.patterns = new Patterns(this.gl);
     this.programLines = new Shader(
         this.gl,
@@ -44,6 +44,7 @@ const Renderer = function(canvas, clearColor = new Color(.2, .2, .2)) {
     this.resize(canvas.width, canvas.height);
 };
 
+Renderer.prototype.CONTEXT_PARAMS = {alpha: false, antialias: false};
 Renderer.prototype.MODE_MESH = 0;
 Renderer.prototype.MODE_LINES = 1;
 Renderer.prototype.MODE_STRIP = 2;

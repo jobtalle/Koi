@@ -10,6 +10,7 @@ const Spawner = function(constellation) {
 
 Spawner.prototype.SPAWN_TIME_MIN = 1;
 Spawner.prototype.SPAWN_TIME_MAX = 5;
+Spawner.prototype.SPAWN_OVERHEAD = 8;
 
 /**
  * Update the spawner
@@ -21,7 +22,7 @@ Spawner.prototype.update = function(timeStep, atlas, random) {
     if ((this.time -= timeStep) < 0) {
         this.time += this.SPAWN_TIME_MIN + (this.SPAWN_TIME_MAX - this.SPAWN_TIME_MIN) * random.getFloat();
 
-        if (true) { // TODO: Can spawn? Check global limit.
+        if (this.constellation.getFishCount() < this.constellation.getCapacity() - this.SPAWN_OVERHEAD) {
             const pattern = new Pattern(
                 [
                     new PatternBase(new Color(.9, .9, .9)),
