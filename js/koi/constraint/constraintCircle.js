@@ -14,18 +14,6 @@ const ConstraintCircle = function(position, radius) {
 ConstraintCircle.prototype = Object.create(Constraint.prototype);
 
 /**
- * Get the fish capacity of this constraint
- * @returns {Number} The maximum number of fish that fit within this constraint
- */
-ConstraintCircle.prototype.getCapacity = function() {
-    const radiusSquared =
-        (this.radius - this.border * this.BORDER_AREA_FACTOR) *
-        (this.radius - this.border * this.BORDER_AREA_FACTOR);
-
-    return Math.floor(Math.PI * radiusSquared / this.AREA_PER_FISH);
-};
-
-/**
  * Constrain a vector to make sure it is inside the constraint
  * @param {Vector2} vector The vector to constrain
  * @returns {Boolean} A boolean indicating whether the vector could be constrained, always true for circles

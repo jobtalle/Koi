@@ -21,7 +21,7 @@ Spawner.prototype.update = function(timeStep, atlas, random) {
     if ((this.time -= timeStep) < 0) {
         this.time += this.SPAWN_TIME_MIN + (this.SPAWN_TIME_MAX - this.SPAWN_TIME_MIN) * random.getFloat();
 
-        if (this.constellation.river.canSpawn()) {
+        if (true) { // TODO: Can spawn? Check global limit.
             const pattern = new Pattern(
                 [
                     new PatternBase(new Color(.9, .9, .9)),

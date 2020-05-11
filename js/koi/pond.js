@@ -5,18 +5,7 @@
  */
 const Pond = function(constraint) {
     this.constraint = constraint;
-    this.capacity = constraint.getCapacity(); // TODO: Remove capacity? Atlas can resize "indefinitely"
     this.fishes = [];
-};
-
-Pond.prototype.SPAWN_OVERHEAD = 2;
-
-/**
- * Check if a fish can be spawned in this pond
- * @returns {Boolean} A boolean indicating whether a fish may be spawned
- */
-Pond.prototype.canSpawn = function() {
-    return this.fishes.length < this.capacity - this.SPAWN_OVERHEAD;
 };
 
 /**
@@ -26,7 +15,6 @@ Pond.prototype.canSpawn = function() {
  */
 Pond.prototype.replaceConstraint = function(constraint, atlas) {
     this.constraint = constraint;
-    this.capacity = constraint.getCapacity();
 
     for (let fish = this.fishes.length; fish-- > 0;)
         if (!this.constraint.constrain(this.fishes[fish].position))

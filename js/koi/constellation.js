@@ -38,7 +38,7 @@ Constellation.prototype.resize = function(width, height, atlas) {
  * @returns {Number} The total fish capacity
  */
 Constellation.prototype.getCapacity = function() {
-    return this.big.capacity + this.small.capacity + this.river.capacity;
+    return 100; // TODO: Calculate based on ponds
 };
 
 /**
@@ -49,7 +49,7 @@ Constellation.prototype.getCapacity = function() {
 Constellation.prototype.getBigPondRadius = function(width, height) {
     const p1 = this.FACTOR_SMALL + 1;
     const a = (this.FACTOR_RIVER + p1) * (this.FACTOR_RIVER + p1) - 2 * p1 * p1;
-    const b = 2 * p1 * (height + width);
+    const b = (p1 + p1) * (height + width);
     const c = height * height + width * width;
 
     return (Math.sqrt(b * b + 4 * a * c) - b) / (a + a);
@@ -138,9 +138,6 @@ Constellation.prototype.fit = function(atlas = null) {
         this.small = new Pond(constraintSmall);
         this.river = new Pond(constraintRiver);
     }
-
-    if (this.river.capacity > this.big.capacity)
-        this.river.capacity = this.big.capacity;
 };
 
 /**

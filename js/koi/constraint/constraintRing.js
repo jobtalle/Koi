@@ -16,17 +16,6 @@ const ConstraintRing = function(position, radius, width) {
 ConstraintRing.prototype = Object.create(Constraint.prototype);
 
 /**
- * Get the fish capacity of this constraint
- * @returns {Number} The maximum number of fish that fit within this constraint
- */
-ConstraintRing.prototype.getCapacity = function() {
-    const radiusInner = this.radius - this.halfWidth + this.border * this.BORDER_AREA_FACTOR;
-    const radiusOuter = this.radius + this.halfWidth - this.border * this.BORDER_AREA_FACTOR;
-
-    return Math.floor(Math.PI * (radiusOuter * radiusOuter - radiusInner * radiusInner) / this.AREA_PER_FISH);
-};
-
-/**
  * Constrain a vector to make sure it is inside the constraint
  * @param {Vector2} vector The vector to constrain
  * @param {Number} dx The X distance to the center

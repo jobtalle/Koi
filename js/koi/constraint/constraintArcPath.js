@@ -46,19 +46,6 @@ ConstraintArcPath.prototype.makeRings = function(arcs) {
 };
 
 /**
- * Get the fish capacity of this constraint
- * @returns {Number} The maximum number of fish that fit within this constraint
- */
-ConstraintArcPath.prototype.getCapacity = function() {
-    let capacity = 0;
-
-    for (let arc = 0; arc < this.arcs.length; ++arc)
-        capacity += this.rings[arc].getCapacity() * this.arcs[arc].radians * .5 / Math.PI;
-
-    return Math.floor(capacity);
-};
-
-/**
  * Constrain a vector to make sure it is inside the constraint
  * @param {Vector2} vector The vector to constrain
  * @returns {Boolean} A boolean indicating whether the vector could be constrained
