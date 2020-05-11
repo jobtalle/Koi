@@ -16,9 +16,14 @@ const Pond = function(constraint) {
 Pond.prototype.replaceConstraint = function(constraint, atlas) {
     this.constraint = constraint;
 
-    for (let fish = this.fishes.length; fish-- > 0;)
-        if (!this.constraint.constrain(this.fishes[fish].position))
+    for (let fish = this.fishes.length; fish-- > 0;) {
+        const newPosition = this.fishes[fish].position;
+
+        if (!this.constraint.constrain(newPosition))
             this.removeFish(fish, atlas);
+        else
+            this.fishes[fish].moveTo(newPosition);
+    }
 }
 
 /**
