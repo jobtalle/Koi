@@ -1,21 +1,18 @@
 /**
  * A fish body
- * @param {Pattern} pattern A body pattern
- * @param {Vector2} atlasPixel The pixel size on the atlas in UV coordinates
+ * @param {Pattern} pattern A body pattern=
  * @param {Number} length The body length
  * @param {Number} thickness The body thickness
  * @constructor
  */
-const Body = function(pattern, atlasPixel, length, thickness) {
+const Body = function(pattern, length, thickness) {
     this.pattern = pattern;
-    this.atlasPixel = atlasPixel;
     this.radius = thickness * .5;
     this.spine = new Array(this.RESOLUTION);
     this.spinePrevious = new Array(this.spine.length);
     this.spacing = length / (this.spine.length - 1);
     this.inverseSpacing = 1 / this.spacing;
     this.springs = this.makeSprings(this.SPRING_START, this.SPRING_END, this.SPRING_POWER);
-    this.u = this.makeU(atlasPixel);
     this.phase = 0;
 };
 
@@ -81,22 +78,6 @@ Body.prototype.initializeSpine = function(head, direction) {
         this.spine[segment] = this.spine[segment - 1].copy().subtract(direction.copy().multiply(this.spacing));
         this.spinePrevious[segment] = this.spine[segment].copy();
     }
-};
-
-/**
- * Make an array of texture U coordinates per segment
- * @param {Vector2} atlasPixel The pixel size on the atlas in UV coordinates
- * @returns {Number[]} The U array
- */
-Body.prototype.makeU = function(atlasPixel) {
-    const uStart = this.pattern.slot.x + atlasPixel.x;
-    const uEnd = this.pattern.slot.x + this.pattern.size.x - atlasPixel.y;
-    const u = new Array(this.spine.length);
-
-    for (let segment = 0; segment < this.spine.length; ++segment)
-        u[segment] = uStart + (uEnd - uStart) * segment / (this.spine.length - 1);
-
-    return u;
 };
 
 /**
@@ -170,6 +151,9 @@ Body.prototype.update = function(head, direction, speed) {
  * @param {Number} time The interpolation factor
  */
 Body.prototype.render = function(renderer, time) {
+    const uStart = this.pattern.slot.x + this.pattern.pixelSize.x;
+    const uLength = this.pattern.slot.x + this.pattern.size.x - this.pattern.pixelSize.x - uStart;
+
     let xp, x = this.spinePrevious[0].x + (this.spine[0].x - this.spinePrevious[0].x) * time;
     let yp, y = this.spinePrevious[0].y + (this.spine[0].y - this.spinePrevious[0].y) * time;
     let dxp, dx;
@@ -196,17 +180,18 @@ Body.prototype.render = function(renderer, time) {
 
         const dxAveraged = (dx + dxp) * .5;
         const dyAveraged = (dy + dyp) * .5;
+        const u = uStart + uLength * (segment - 1) / (this.spine.length - 1);
 
         renderer.drawStrip(
             xp - this.radius * dyAveraged * this.inverseSpacing,
             yp + this.radius * dxAveraged * this.inverseSpacing,
-            this.u[segment - 1],
-            this.pattern.slot.y + this.atlasPixel.y);
+            u,
+            this.pattern.slot.y + this.pattern.pixelSize.y);
         renderer.drawStrip(
             xp + this.radius * dyAveraged * this.inverseSpacing,
             yp - this.radius * dxAveraged * this.inverseSpacing,
-            this.u[segment - 1],
-            this.pattern.slot.y + this.pattern.size.y - this.atlasPixel.y);
+            u,
+            this.pattern.slot.y + this.pattern.size.y - this.pattern.pixelSize.y);
     }
 
     renderer.cutStrip(
@@ -214,7 +199,7 @@ Body.prototype.render = function(renderer, time) {
             (this.spine[this.spine.length - 1].x - this.spinePrevious[this.spine.length - 1].x) * time,
         this.spinePrevious[this.spine.length - 1].y +
             (this.spine[this.spine.length - 1].y - this.spinePrevious[this.spine.length - 1].y) * time,
-        this.u[this.spine.length - 1],
+        uStart + uLength,
         this.pattern.slot.y + this.pattern.size.y * .5);
 };
 

@@ -19,6 +19,17 @@ const Constellation = function(width, height) {
 Constellation.prototype.FACTOR_PADDING = .1;
 Constellation.prototype.FACTOR_SMALL = .7;
 Constellation.prototype.FACTOR_RIVER = .6;
+Constellation.prototype.FISH_PER_AREA = 1;
+
+/**
+ * Update the atlas, write all fish textures again
+ * @param {Atlas} atlas The atlas
+ */
+Constellation.prototype.updateAtlas = function(atlas) {
+    this.big.updateAtlas(atlas);
+    this.small.updateAtlas(atlas);
+    this.river.updateAtlas(atlas);
+};
 
 /**
  * Resize the constellation
@@ -38,7 +49,9 @@ Constellation.prototype.resize = function(width, height, atlas) {
  * @returns {Number} The total fish capacity
  */
 Constellation.prototype.getCapacity = function() {
-    return 100; // TODO: Calculate based on ponds
+    return Math.ceil(this.FISH_PER_AREA * Math.PI * (
+        this.big.constraint.radius * this.big.constraint.radius +
+        this.small.constraint.radius * this.small.constraint.radius));
 };
 
 /**

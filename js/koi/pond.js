@@ -9,6 +9,15 @@ const Pond = function(constraint) {
 };
 
 /**
+ * Update the atlas, write all fish textures again
+ * @param {Atlas} atlas The atlas
+ */
+Pond.prototype.updateAtlas = function(atlas) {
+    for (const fish of this.fishes)
+        atlas.write(fish.body.pattern);
+};
+
+/**
  * Replace this ponds constraint
  * @param {Object} constraint A new constraint
  * @param {Atlas} atlas The texture atlas

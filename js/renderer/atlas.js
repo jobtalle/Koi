@@ -6,7 +6,7 @@
  */
 const Atlas = function(renderer, capacity) {
     this.renderer = renderer;
-    this.capacity = capacity;
+    this.capacity = 0;
     this.width = 0;
     this.height = 0;
     this.slotSize = new Vector2();
@@ -67,6 +67,7 @@ Atlas.prototype.createTexture = function(gl, capacity) {
     this.slotSize.x = this.RESOLUTION * this.RATIO * this.pixelSize.x;
     this.slotSize.y = this.RESOLUTION * this.pixelSize.y;
     this.available = this.createSlots(blockResolution, capacity);
+    this.capacity = this.available.length;
 
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -113,6 +114,7 @@ Atlas.prototype.returnSlot = function(slot) {
 Atlas.prototype.write = function(pattern) {
     pattern.slot = this.getSlot();
     pattern.size = this.slotSize;
+    pattern.pixelSize = this.pixelSize;
 
     this.renderer.unbindShader();
     this.renderer.gl.viewport(0, 0, this.width, this.height);

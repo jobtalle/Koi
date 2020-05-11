@@ -13,7 +13,6 @@ const Koi = function(renderer, random) {
         renderer.getHeight() / this.scale);
     this.mover = new Mover(this.constellation);
     this.lastUpdate = new Date();
-    // TODO: Atlas capacity may overflow!
     this.atlas = new Atlas(renderer, this.constellation.getCapacity());
     this.spawner = new Spawner(this.constellation);
 
@@ -67,6 +66,16 @@ Koi.prototype.getScale = function(width, height) {
 };
 
 /**
+ * Replace the atlas by a new one, the old one was too small
+ */
+Koi.prototype.replaceAtlas = function() {
+    this.atlas.free();
+    this.atlas = new Atlas(this.renderer, this.constellation.getCapacity());
+
+    this.constellation.updateAtlas(this.atlas);
+};
+
+/**
  * Notify that the renderer has resized
  */
 Koi.prototype.resize = function() {
@@ -75,6 +84,9 @@ Koi.prototype.resize = function() {
         renderer.getWidth() / this.scale,
         renderer.getHeight() / this.scale,
         this.atlas);
+
+    if (this.constellation.getCapacity() > this.atlas.capacity)
+        this.replaceAtlas();
 };
 
 /**

@@ -31,6 +31,8 @@ const loop = () => {
 requestAnimationFrame(loop);
 
 canvas.addEventListener("mousedown", event => {
+    event.preventDefault();
+
     koi.touchStart(event.clientX, event.clientY);
 });
 
