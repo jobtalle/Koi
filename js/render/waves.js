@@ -17,7 +17,7 @@ const Waves = function(gl) {
         gl,
         this.SHADER_PROPAGATE_VERTEX,
         this.SHADER_PROPAGATE_FRAGMENT,
-        ["size", "damping"],
+        ["size", "scale", "damping"],
         ["position"]);
     this.programInfluence = new Shader(
         gl,
@@ -82,10 +82,13 @@ void main() {
 `;
 
 Waves.prototype.SHADER_PROPAGATE_VERTEX = `#version 100
+uniform mediump vec2 size;
+uniform mediump float scale;
+
 attribute vec2 position;
 
 void main() {
-  gl_Position = vec4(position, 0.0, 1.0);
+  gl_Position = vec4(vec2(2.0, -2.0) * position / size * scale + vec2(-1.0, 1.0), 0.0, 1.0);
 }
 `;
 
@@ -191,10 +194,10 @@ Waves.prototype.applyInfluences = function(water) {
             const index = flare + flare + flare;
 
             this.gl.uniform2f(this.programInfluence.uOrigin,
-                water.flares[index] * WaterPlane.prototype.RESOLUTION,
-                water.flares[index + 1] * WaterPlane.prototype.RESOLUTION);
+                water.flares[index] * WaterPlane.prototype.SCALE,
+                water.flares[index + 1] * WaterPlane.prototype.SCALE);
             this.gl.uniform1f(this.programInfluence.uRadius,
-                water.flares[index + 2] * WaterPlane.prototype.RESOLUTION);
+                water.flares[index + 2] * WaterPlane.prototype.SCALE);
 
             this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, this.SHAPE_FLARE_PRECISION + 2);
         }
@@ -208,22 +211,28 @@ Waves.prototype.applyInfluences = function(water) {
 /**
  * Propagate the waves on a water plane
  * @param {WaterPlane} water A water plane
+ * @param {MeshMask} mesh A mesh containing all water pixels
  */
-Waves.prototype.propagate = function(water) {
+Waves.prototype.propagate = function(water, mesh) {
     this.programPropagate.use();
 
     water.flip();
     water.getFront().target();
 
     this.gl.uniform2f(this.programPropagate.uSize, water.width, water.height);
+    this.gl.uniform1f(this.programPropagate.uScale, water.SCALE);
     this.gl.uniform1f(this.programPropagate.uDamping, this.DAMPING);
 
-    this.useBuffer();
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, mesh.vertices);
+    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, mesh.indices);
+
+    this.gl.enableVertexAttribArray(this.programPropagate.aPosition);
+    this.gl.vertexAttribPointer(this.programPropagate.aPosition, 2, this.gl.FLOAT, false, 8, 0);
 
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, water.getBack().texture);
 
-    this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, 4);
+    this.gl.drawElements(this.gl.TRIANGLES, mesh.indexCount, this.gl.UNSIGNED_SHORT, 0);
 
     this.applyInfluences(water);
 };
@@ -271,7 +280,6 @@ Waves.prototype.render = function(
     this.gl.bindTexture(this.gl.TEXTURE_2D, water.getFront().texture);
 
     this.gl.drawElements(this.gl.TRIANGLES, mesh.indexCount, this.gl.UNSIGNED_SHORT, 0);
-    this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, 4);
 };
 
 /**

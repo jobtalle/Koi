@@ -9,8 +9,8 @@ const WaterPlane = function(gl, width, height) {
     // TODO: Use LUMINANCE_ALPHA 2 channel format, you don't need more
     // TODO: Downscale for performance & wave speed
     this.front = 0;
-    this.width = Math.ceil(width * this.RESOLUTION);
-    this.height = Math.ceil(height * this.RESOLUTION);
+    this.width = Math.ceil(width * this.SCALE);
+    this.height = Math.ceil(height * this.SCALE);
     this.flares = [];
     this.targets = [
         new RenderTarget(gl, this.width, this.height, gl.RGB, gl.LINEAR, gl.FLOAT),
@@ -18,7 +18,7 @@ const WaterPlane = function(gl, width, height) {
     ];
 };
 
-WaterPlane.prototype.RESOLUTION = 14;
+WaterPlane.prototype.SCALE = 14;
 
 /**
  * Add a flare of wave height to the water plane
