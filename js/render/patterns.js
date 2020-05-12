@@ -32,6 +32,9 @@ Patterns.prototype.writeLayer = function(layer, program) {
         this.gl.vertexAttribPointer(program.aUv, 2, this.gl.FLOAT, false, 16, 8);
     }
 
+    if (program.uSize !== undefined)
+        this.gl.uniform2f(program.uSize, Atlas.prototype.RATIO, 1);
+
     this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, 4);
 };
 

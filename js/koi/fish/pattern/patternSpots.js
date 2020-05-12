@@ -7,7 +7,7 @@
  * @constructor
  */
 const PatternSpots = function(scale, color, anchor, x) {
-    this.scale = scale / Atlas.prototype.RESOLUTION;
+    this.scale = scale;
     this.color = color;
     this.anchor = anchor;
     this.x = x;
@@ -85,7 +85,7 @@ uniform mediump mat3 rotate;
 varying mediump vec2 iUv;
 
 void main() {
-  mediump vec2 at = size * (iUv - vec2(0.5)) * scale;
+  mediump vec2 at = (iUv - vec2(0.5)) * size * scale;
   mediump float noise = cubicNoise(anchor + vec3(at, 0.0) * rotate);
 
   if (noise < 0.5)
@@ -124,7 +124,6 @@ PatternSpots.prototype.configure = function(gl, program) {
     const y = this.getY(z);
 
     gl.uniform1f(program.uScale, this.scale);
-    gl.uniform2f(program.uSize, Atlas.prototype.RESOLUTION * Atlas.prototype.RATIO, Atlas.prototype.RESOLUTION);
     gl.uniform3f(program.uColor, this.color.r, this.color.g, this.color.b);
     gl.uniform3f(program.uAnchor, this.anchor.x, this.anchor.y, this.anchor.z);
     gl.uniformMatrix3fv(
