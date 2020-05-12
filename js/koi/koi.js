@@ -13,7 +13,7 @@ const Koi = function(systems, random) {
         systems.height / this.scale);
     this.mover = new Mover(this.constellation);
     this.atlas = new Atlas(systems.gl, systems.patterns, this.constellation.getCapacity());
-    this.background = new Background(systems.gl, systems.sand, systems.width, systems.height);
+    this.background = new Background(systems.gl, systems.sand, systems.width, systems.height, this.scale);
     this.underwater = new RenderTarget(systems.gl, systems.width, systems.height, systems.gl.RGB, systems.gl.NEAREST);
     this.spawner = new Spawner(this.constellation);
     this.time = 0;
@@ -100,7 +100,7 @@ Koi.prototype.resize = function() {
         this.systems.gl.NEAREST);
 
     this.background.free();
-    this.background = new Background(systems.gl, systems.sand, systems.width, systems.height);
+    this.background = new Background(systems.gl, systems.sand, systems.width, systems.height, this.scale);
 };
 
 /**

@@ -4,24 +4,26 @@
  * @param {Sand} sand The sand renderer
  * @param {Number} width The width in pixels
  * @param {Number} height The height in pixels
+ * @param {Number} scale The render scale
  * @constructor
  */
-const Background = function(gl, sand, width, height) {
+const Background = function(gl, sand, width, height, scale) {
     this.bottom = new RenderTarget(gl, width, height, gl.RGB, gl.NEAREST);
     this.width = width;
     this.height = height;
 
-    this.paintSand(sand);
+    this.paintSand(sand, scale);
 };
 
 /**
  * Paint sand on the bottom
  * @param {Sand} sand The sand renderer
+ * @param {Number} scale The render scale
  */
-Background.prototype.paintSand = function(sand) {
+Background.prototype.paintSand = function(sand, scale) {
     this.bottom.target();
 
-    sand.write(this.width, this.height);
+    sand.write(scale);
 };
 
 /**
