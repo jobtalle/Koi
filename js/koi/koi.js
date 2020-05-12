@@ -166,13 +166,23 @@ Koi.prototype.render = function(deltaTime) {
     this.background.render(this.systems.primitives);
 
     // Render fishes
-    this.constellation.render(this.systems.primitives, this.atlas.renderTarget.texture, this.scale, timeFactor);
+    this.constellation.render(
+        this.systems.primitives,
+        this.atlas.renderTarget.texture,
+        this.scale,
+        timeFactor);
 
     // Target window
     this.systems.targetMain();
 
     // Render shaded water
-    this.systems.waves.render(this.underwater.texture, this.water, this.systems.width, this.systems.height, timeFactor);
+    this.systems.waves.render(
+        this.underwater.texture,
+        this.water,
+        this.systems.width,
+        this.systems.height,
+        this.scale,
+        timeFactor);
 
     // Render mover
     this.systems.primitives.setViewport(this.systems.width, this.systems.height);

@@ -11,13 +11,13 @@ const Waves = function(gl) {
         gl,
         this.SHADER_DISTORT_VERTEX,
         this.SHADER_DISTORT_FRAGMENT,
-        ["background", "waterBack", "waterFront", "size", "waterSize", "time"],
+        ["background", "waterBack", "waterFront", "depth", "size", "waterSize", "time"],
         ["position"]);
     this.programPropagate = new Shader(
         gl,
         this.SHADER_PROPAGATE_VERTEX,
         this.SHADER_PROPAGATE_FRAGMENT,
-        ["size"],
+        ["size", "damping"],
         ["position"]);
     this.programInfluence = new Shader(
         gl,
@@ -45,6 +45,7 @@ Waves.prototype.SHADER_DISTORT_FRAGMENT = `#version 100
 uniform sampler2D background;
 uniform sampler2D waterBack;
 uniform sampler2D waterFront;
+uniform mediump float depth;
 uniform mediump vec2 size;
 uniform mediump vec2 waterSize;
 uniform mediump float time;
@@ -56,16 +57,20 @@ mediump float get(mediump vec2 delta) {
 }
 
 void main() {
-  mediump float dx = get(vec2(1.0, 0.0)) - get(vec2(-1.0, 0.0));
-  mediump float dy = get(vec2(0.0, 1.0)) - get(vec2(0.0, -1.0));
-  mediump vec2 displacement = 12.0 * vec2(dx, dy) / size;
-  mediump vec2 focus = vec2(-0.1, 0.1);
-  mediump vec3 normal = vec3(displacement.xy * 80.0, sqrt(1.0 - dot(displacement.xy, displacement.xy)));
-  mediump float shiny = dot(normalize(vec3(-1.0, -1.0, 0.0)), normal);
+  mediump float dyx = get(vec2(1.0, 0.0)) - get(vec2(-1.0, 0.0));
+  mediump float dyz = get(vec2(0.0, 1.0)) - get(vec2(0.0, -1.0));
+  mediump vec3 normal = cross(
+    normalize(vec3(2.0, dyx, 0.0)),
+    normalize(vec3(0.0, dyz, 2.0)));
+  mediump vec2 displacement = (depth * normal.xz) / size;
+  mediump float shiny = dot(normalize(vec3(1.0, 0.0, 1.0)), normal);
+  
+  if (shiny < 0.0)
+    shiny *= 0.5;
   
   mediump vec4 filter = vec4(0.93, 0.98, 1.0, 1.0);
   
-  gl_FragColor = filter * texture2D(background, gl_FragCoord.xy / size + displacement) * (1.0 + shiny * 0.4);
+  gl_FragColor = filter * texture2D(background, gl_FragCoord.xy / size + displacement) * (1.0 + shiny * 0.5);
 }
 `;
 
@@ -80,11 +85,10 @@ void main() {
 Waves.prototype.SHADER_PROPAGATE_FRAGMENT = `#version 100
 uniform sampler2D source;
 uniform mediump vec2 size;
-uniform mediump vec2 waterSize;
+uniform mediump float damping;
 
 void main() {
-  mediump float damping = 0.98;
-  mediump vec2 uv = (gl_FragCoord.xy) / size;
+  mediump vec2 uv = gl_FragCoord.xy / size;
   mediump vec2 step = vec2(1.0 / size.x, 1.0 / size.y);
   mediump vec4 pixel = texture2D(source, uv);
   mediump vec4 pixelLeft = texture2D(source, vec2(uv.x - step.x, uv.y));
@@ -116,11 +120,13 @@ Waves.prototype.SHADER_INFLUENCE_FRAGMENT = `#version 100
 varying mediump float intensity;
 
 void main() {
-  gl_FragColor = vec4(1.0, 0.0, 0.0, intensity * 0.5);
+  gl_FragColor = vec4(2.0, 0.0, 0.0, intensity * 0.5);
 }
 `;
 
 Waves.prototype.SHAPE_FLARE_PRECISION = 16;
+Waves.prototype.DAMPING = .99;
+Waves.prototype.DEPTH = 0.3;
 
 /**
  * Create a buffer containing a flare shape
@@ -207,6 +213,7 @@ Waves.prototype.propagate = function(water) {
     water.getFront().target();
 
     this.gl.uniform2f(this.programPropagate.uSize, water.width, water.height);
+    this.gl.uniform1f(this.programPropagate.uDamping, this.DAMPING);
 
     this.useBuffer();
 
@@ -224,14 +231,22 @@ Waves.prototype.propagate = function(water) {
  * @param {WaterPlane} water A water plane to shade the background with
  * @param {Number} width The background width in pixels
  * @param {Number} height The background height in pixels
+ * @param {Number} scale The render scale
  * @param {Number} time The interpolation factor
  */
-Waves.prototype.render = function(background, water, width, height, time) {
+Waves.prototype.render = function(
+    background,
+    water,
+    width,
+    height,
+    scale,
+    time) {
     this.programDistort.use();
 
     this.gl.uniform1i(this.programDistort.uBackground, 0);
     this.gl.uniform1i(this.programDistort.uWaterBack, 1);
     this.gl.uniform1i(this.programDistort.uWaterFront, 2);
+    this.gl.uniform1f(this.programDistort.uDepth, this.DEPTH * scale);
     this.gl.uniform2f(this.programDistort.uSize, width, height);
     this.gl.uniform2f(this.programDistort.uWaterSize, water.width, water.height);
     this.gl.uniform1f(this.programDistort.uTime, time);

@@ -10,7 +10,7 @@ const PatternShape = function(centerPower, radiusPower) {
 };
 
 PatternShape.prototype.SHADE_POWER = 1.8;
-PatternShape.prototype.LIGHT_POWER = 0.4;
+PatternShape.prototype.LIGHT_POWER = 0.5;
 PatternShape.prototype.AMBIENT = 0.4;
 
 PatternShape.prototype.SHADER_VERTEX = `#version 100

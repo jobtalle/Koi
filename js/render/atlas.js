@@ -8,13 +8,12 @@
 const Atlas = function(gl, patterns, capacity) {
     this.gl = gl;
     this.patterns = patterns;
-    this.capacity = 0;
     this.slotSize = new Vector2();
     this.available = null;
     this.renderTarget = this.createRenderTarget(capacity);
 };
 
-Atlas.prototype.RESOLUTION = 48;
+Atlas.prototype.RESOLUTION = 64;
 Atlas.prototype.RATIO = 4;
 
 /**
@@ -63,7 +62,6 @@ Atlas.prototype.createRenderTarget = function(capacity) {
     this.slotSize.x = this.RESOLUTION * this.RATIO / size;
     this.slotSize.y = this.RESOLUTION / size;
     this.available = this.createSlots(blockResolution, size, size);
-    this.capacity = this.available.length;
 
     return renderTarget;
 };
