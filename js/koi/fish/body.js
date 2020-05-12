@@ -45,7 +45,7 @@ Body.prototype.moveTo = function(position) {
  * @param {Number} y The Y position
  * @returns {Boolean} A boolean indicating whether this body has been hit
  */
-Body.prototype.atPosition = function(x, y) {
+Body.prototype.atPosition = function(x, y) { // TODO: Use a better method which allows padding
     let dx = x - this.spine[0].x;
     let dy = y - this.spine[0].y;
     let radius = this.spacing * (this.spine.length - 1);

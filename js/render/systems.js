@@ -11,6 +11,7 @@ const Systems = function(gl, width, height) {
     this.height = height;
     this.primitives = new Primitives(gl);
     this.patterns = new Patterns(gl);
+    this.sand = new Sand(gl);
 
     this.initialize();
 };
@@ -46,4 +47,5 @@ Systems.prototype.targetMain = function() {
 Systems.prototype.free = function() {
     this.primitives.free();
     this.patterns.free();
+    this.sand.free();
 };

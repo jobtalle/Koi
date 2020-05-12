@@ -13,6 +13,7 @@ const Koi = function(systems, random) {
         systems.height / this.scale);
     this.mover = new Mover(this.constellation);
     this.atlas = new Atlas(systems.gl, systems.patterns, this.constellation.getCapacity());
+    this.background = new Background(systems.gl, systems.width, systems.height);
     this.underwater = new RenderTarget(systems.gl, systems.width, systems.height, systems.gl.RGB, systems.gl.NEAREST);
     this.spawner = new Spawner(this.constellation);
     this.time = 0;
@@ -97,6 +98,9 @@ Koi.prototype.resize = function() {
         this.systems.height,
         this.systems.gl.RGB,
         this.systems.gl.NEAREST);
+
+    this.background.free();
+    this.background = new Background(systems.gl, systems.width, systems.height);
 };
 
 /**
@@ -124,12 +128,13 @@ Koi.prototype.render = function(deltaTime) {
     const timeFactor = this.time / this.UPDATE_RATE;
 
     this.underwater.target();
-    this.systems.gl.clearColor(.2, .3, .4, 1);
-    this.systems.gl.clear(this.systems.gl.COLOR_BUFFER_BIT); // TODO: Not needed when background is texture
 
     this.systems.primitives.setViewport(this.underwater.width, this.underwater.height);
-    this.systems.primitives.setTexture(this.atlas.renderTarget.texture);
+    this.systems.primitives.setTexture(this.background.renderTarget.texture);
+    this.systems.primitives.drawQuad(0, 0, this.systems.width, this.systems.height);
+    this.systems.primitives.flush();
 
+    this.systems.primitives.setTexture(this.atlas.renderTarget.texture);
     this.systems.primitives.transformPush();
     this.systems.primitives.getTransform().scale(this.scale, this.scale);
 
@@ -137,28 +142,14 @@ Koi.prototype.render = function(deltaTime) {
     this.mover.render(this.systems.primitives, timeFactor);
 
     this.systems.primitives.transformPop();
-
-    this.systems.primitives.cutStrip(0, 0, 0, 0);
-    this.systems.primitives.drawStrip(0, 400,0, 1);
-    this.systems.primitives.cutStrip(400, 400,1, 1);
-    this.systems.primitives.cutStrip(0, 0, 0, 0);
-    this.systems.primitives.drawStrip(400, 0,1, 0);
-    this.systems.primitives.cutStrip(400, 400,1, 1);
-
+    this.systems.primitives.drawQuad(0, 0, 400, 400);
     this.systems.primitives.flush();
 
     this.systems.targetMain();
 
     this.systems.primitives.setViewport(this.systems.width, this.systems.height);
     this.systems.primitives.setTexture(this.underwater.texture);
-
-    this.systems.primitives.cutStrip(0, 0, 0, 1);
-    this.systems.primitives.drawStrip(0, this.systems.height,0, 0);
-    this.systems.primitives.cutStrip(this.systems.width, this.systems.height,1, 0);
-    this.systems.primitives.cutStrip(0, 0, 0, 1);
-    this.systems.primitives.drawStrip(this.systems.width, 0,1, 1);
-    this.systems.primitives.cutStrip(this.systems.width, this.systems.height,1, 0);
-
+    this.systems.primitives.drawQuad(0, this.systems.height, this.systems.width, -this.systems.height);
     this.systems.primitives.flush();
 };
 
@@ -166,6 +157,7 @@ Koi.prototype.render = function(deltaTime) {
  * Free all resources maintained by the simulation
  */
 Koi.prototype.free = function() {
+    this.background.free();
     this.atlas.free();
     this.underwater.free();
 };

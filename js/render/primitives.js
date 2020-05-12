@@ -238,7 +238,7 @@ Primitives.prototype.drawLine = function(x1, y1, color1, x2, y2, color2) {
 };
 
 /**
- * Add a point to the strip
+ * Add a point to the textured strip
  * @param {Number} x The X coordinate
  * @param {Number} y The Y coordinate
  * @param {Number} u The texture U coordinate
@@ -251,7 +251,7 @@ Primitives.prototype.drawStrip = function(x, y, u, v) {
 };
 
 /**
- * Add a point to the strip which is the start or the end of a separated strip mesh
+ * Add a point to the textured strip which is the start or the end of a separated strip mesh
  * @param {Number} x The X coordinate
  * @param {Number} y The Y coordinate
  * @param {Number} u The texture U coordinate
@@ -261,6 +261,23 @@ Primitives.prototype.cutStrip = function(x, y, u, v) {
     this.setProgram(this.programStrip, this.MODE_STRIP);
 
     this.vertices.push(x, y, u, v, x, y, u, v);
+};
+
+/**
+ * Draw a textured quad
+ * @param {Number} x The X position
+ * @param {Number} y The Y position
+ * @param {Number} width The width
+ * @param {Number} height The height
+ */
+Primitives.prototype.drawQuad = function(x, y, width, height) {
+    // TODO: Don't use strip here
+    this.cutStrip(x, y, 0, 0);
+    this.drawStrip(x, y + height,0, 1);
+    this.cutStrip(x + width, y + height,1, 1);
+    this.cutStrip(x, y, 0, 0);
+    this.drawStrip(x + width, y,1, 0);
+    this.cutStrip(x + width, y + height,1, 1);
 };
 
 /**
