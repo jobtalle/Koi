@@ -130,6 +130,8 @@ Koi.prototype.update = function() {
     this.spawner.update(this.UPDATE_RATE, this.atlas, this.random);
     this.constellation.update(this.atlas, this.random);
     this.mover.update();
+
+    this.systems.waves.propagate(this.water);
 };
 
 /**

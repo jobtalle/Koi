@@ -7,11 +7,21 @@
  */
 const WaterPlane = function(gl, width, height) {
     // TODO: Use LUMINANCE_ALPHA 2 channel format, you don't need more
+    // TODO: Downscale for performance & wave speed
     this.front = 0;
+    this.width = width;
+    this.height = height;
     this.targets = [
         new RenderTarget(gl, width, height, gl.RGBA, gl.LINEAR),
         new RenderTarget(gl, width, height, gl.RGBA, gl.LINEAR)
     ];
+};
+
+/**
+ * Flip the buffers after propagating
+ */
+WaterPlane.prototype.flip = function() {
+    this.front = 1 - this.front;
 };
 
 /**
