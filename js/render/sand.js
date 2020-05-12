@@ -33,7 +33,7 @@ Sand.prototype.SHADER_FRAGMENT = `#version 100
 uniform mediump float scale;
 
 void main() {
-  mediump float lightness = 0.4 + 0.2 * cubicNoise(vec3(2.0 * gl_FragCoord.xy / scale, 0.0));
+  mediump float lightness = 0.5 + 0.1 * (cubicNoise(vec3(2.0 * gl_FragCoord.xy / scale, 0.0)) > 0.5 ? 1.0 : 0.0);
   
   gl_FragColor = vec4(vec3(lightness), 1.0);
 }

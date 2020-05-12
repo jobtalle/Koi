@@ -4,7 +4,7 @@
  * @param {Number} width The width in pixels
  * @param {Number} height The height in pixels
  * @param {GLenum} format The texture data format
- * @param {GLenum} filter Texture filtering method, GL_NEAREST by default
+ * @param {GLenum} filter Texture filtering method
  * @param {GLenum} type The data type
  * @constructor
  */
@@ -33,7 +33,7 @@ RenderTarget.prototype.target = function() {
 /**
  * Create the texture for this underwater bufferQuad
  * @param {GLenum} format The texture data format
- * @param {GLenum} filter Texture filtering method, GL_NEAREST by default
+ * @param {GLenum} filter Texture filtering method
  * @param {GLenum} type The data type
  * @returns {WebGLTexture} A WebGL texture
  */

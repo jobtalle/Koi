@@ -82,8 +82,6 @@ Koi.prototype.touchStart = function(x, y) {
         this.mover.pickUp(fish,x / this.scale, y / this.scale);
 
     this.touchDown = true;
-
-    this.water.addFlare(x / this.scale, y /this.scale, 0.5);
 };
 
 /**
@@ -94,7 +92,7 @@ Koi.prototype.touchStart = function(x, y) {
 Koi.prototype.touchMove = function(x, y) {
     this.mover.touchMove(x / this.scale, y / this.scale);
 
-    if (this.touchDown)
+    if (this.touchDown && !this.mover.move)
         this.water.addFlare(x / this.scale, y /this.scale, 0.3);
 };
 

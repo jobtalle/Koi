@@ -11,7 +11,7 @@ const Waves = function(gl) {
         gl,
         this.SHADER_DISTORT_VERTEX,
         this.SHADER_DISTORT_FRAGMENT,
-        ["background", "waterBack", "waterFront", "size", "time"],
+        ["background", "waterBack", "waterFront", "size", "waterSize", "time"],
         ["position"]);
     this.programPropagate = new Shader(
         gl,
@@ -46,10 +46,11 @@ uniform sampler2D background;
 uniform sampler2D waterBack;
 uniform sampler2D waterFront;
 uniform mediump vec2 size;
+uniform mediump vec2 waterSize;
 uniform mediump float time;
 
 mediump float get(int x, int y) {
-  mediump vec2 uv = (gl_FragCoord.xy + vec2(float(x), float(y))) / size;
+  mediump vec2 uv = gl_FragCoord.xy / size + vec2(float(x), float(y)) / waterSize;
   
   return mix(texture2D(waterBack, uv).r, texture2D(waterFront, uv).r, time);
 }
@@ -59,9 +60,11 @@ void main() {
   mediump float dy = get(0, 1) - get(0, -1);
   mediump vec2 displacement = 40.0 * vec2(dx, dy) / size;
   mediump vec2 focus = vec2(-0.1, 0.1);
-  mediump float shiny = max(0.0, -displacement.x - displacement.y) * 90.0;
+  mediump vec3 normal = vec3(displacement.xy * 80.0, sqrt(1.0 - dot(displacement.xy, displacement.xy)));
+  mediump float shiny = dot(normalize(vec3(-1.0, -1.0, 1.0)), normal) * 0.5;
   
-  gl_FragColor = texture2D(background, gl_FragCoord.xy / size + displacement) * (1.0 + shiny);
+  gl_FragColor = texture2D(background, gl_FragCoord.xy / size + displacement) * (0.7 + shiny);
+  // gl_FragColor = vec4(vec3(get(0, 0) * 0.05 + 0.5), 1.0);
 }
 `;
 
@@ -76,14 +79,17 @@ void main() {
 Waves.prototype.SHADER_PROPAGATE_FRAGMENT = `#version 100
 uniform sampler2D source;
 uniform mediump vec2 size;
+uniform mediump vec2 waterSize;
 
 void main() {
-  mediump float damping = 0.998;
-  mediump vec4 pixel = texture2D(source, gl_FragCoord.xy / size);
-  mediump vec4 pixelLeft = texture2D(source, vec2(gl_FragCoord.x - 1.0, gl_FragCoord.y) / size);
-  mediump vec4 pixelRight = texture2D(source, vec2(gl_FragCoord.x + 1.0, gl_FragCoord.y) / size);
-  mediump vec4 pixelUp = texture2D(source, vec2(gl_FragCoord.x, gl_FragCoord.y - 1.0) / size);
-  mediump vec4 pixelDown = texture2D(source, vec2(gl_FragCoord.x, gl_FragCoord.y + 1.0) / size);
+  mediump float damping = 0.99;
+  mediump vec2 uv = (gl_FragCoord.xy) / size;
+  mediump vec2 step = vec2(1.0 / size.x, 1.0 / size.y);
+  mediump vec4 pixel = texture2D(source, uv);
+  mediump vec4 pixelLeft = texture2D(source, vec2(uv.x - step.x, uv.y));
+  mediump vec4 pixelRight = texture2D(source, vec2(uv.x + step.x, uv.y));
+  mediump vec4 pixelUp = texture2D(source, vec2(uv.x, uv.y - step.y));
+  mediump vec4 pixelDown = texture2D(source, vec2(uv.x, uv.y + step.y));
   
   gl_FragColor = vec4(((pixelLeft.r + pixelUp.r + pixelRight.r + pixelDown.r) / 2.0 - pixel.g) * damping, pixel.r, 0.0, 1.0);
 }
@@ -226,6 +232,7 @@ Waves.prototype.render = function(background, water, width, height, time) {
     this.gl.uniform1i(this.programDistort.uWaterBack, 1);
     this.gl.uniform1i(this.programDistort.uWaterFront, 2);
     this.gl.uniform2f(this.programDistort.uSize, width, height);
+    this.gl.uniform2f(this.programDistort.uWaterSize, water.width, water.height);
     this.gl.uniform1f(this.programDistort.uTime, time);
 
     this.useBuffer();

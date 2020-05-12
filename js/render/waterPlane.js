@@ -18,7 +18,7 @@ const WaterPlane = function(gl, width, height) {
     ];
 };
 
-WaterPlane.prototype.RESOLUTION = 24;
+WaterPlane.prototype.RESOLUTION = 16;
 
 /**
  * Add a flare of wave height to the water plane
