@@ -15,7 +15,7 @@ const Atlas = function(gl, patterns, capacity) {
     this.pixelSize = new Vector2();
     this.available = null;
     this.framebuffer = gl.createFramebuffer();
-    this.texture = this.createTexture(gl, capacity);
+    this.texture = this.createTexture(capacity);
 };
 
 Atlas.prototype.RESOLUTION = 48;
@@ -54,11 +54,10 @@ Atlas.prototype.createSlots = function(blockResolution) {
 
 /**
  * Create the atlas texture
- * @param {WebGLRenderingContext} gl A webGL context
  * @param {Number} capacity The number of fish patterns this atlas must be able to contain
  */
-Atlas.prototype.createTexture = function(gl, capacity) {
-    const texture = gl.createTexture();
+Atlas.prototype.createTexture = function(capacity) {
+    const texture = this.gl.createTexture();
     const blocks = Math.ceil(capacity / this.RATIO);
     const blockResolution = Math.ceil(Math.sqrt(blocks));
 
@@ -70,24 +69,24 @@ Atlas.prototype.createTexture = function(gl, capacity) {
     this.available = this.createSlots(blockResolution);
     this.capacity = this.available.length;
 
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texImage2D(
-        gl.TEXTURE_2D,
+    this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
+    this.gl.texImage2D(
+        this.gl.TEXTURE_2D,
         0,
-        gl.RGBA,
+        this.gl.RGBA,
         this.width,
         this.height,
         0,
-        gl.RGBA,
-        gl.UNSIGNED_BYTE,
+        this.gl.RGBA,
+        this.gl.UNSIGNED_BYTE,
         null);
 
-    gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.framebuffer);
+    this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, texture, 0);
 
     return texture;
 };

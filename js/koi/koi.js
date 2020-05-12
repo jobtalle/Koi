@@ -12,8 +12,8 @@ const Koi = function(systems, random) {
         systems.width / this.scale,
         systems.height / this.scale);
     this.mover = new Mover(this.constellation);
-    this.lastUpdate = new Date();
     this.atlas = new Atlas(systems.gl, systems.patterns, this.constellation.getCapacity());
+    this.underwater = new Underwater(systems.gl, systems.width, systems.height);
     this.spawner = new Spawner(this.constellation);
     this.time = 0;
 
@@ -89,6 +89,9 @@ Koi.prototype.resize = function() {
 
     if (this.constellation.getCapacity() > this.atlas.capacity)
         this.replaceAtlas();
+
+    this.underwater.free();
+    this.underwater = new Underwater(this.systems.gl, this.systems.width, this.systems.height);
 };
 
 /**
@@ -121,6 +124,8 @@ Koi.prototype.render = function(deltaTime) {
     this.systems.clear(new Color(.2, .2, .2));
 
     this.systems.primitives.setViewport(this.systems.width, this.systems.height);
+    this.systems.primitives.setTexture(this.atlas.texture);
+
     this.systems.primitives.transformPush();
     this.systems.primitives.getTransform().scale(this.scale, this.scale);
 
@@ -144,4 +149,5 @@ Koi.prototype.render = function(deltaTime) {
  */
 Koi.prototype.free = function() {
     this.atlas.free();
+    this.underwater.free();
 };
