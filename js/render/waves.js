@@ -11,7 +11,7 @@ const Waves = function(gl) {
         gl,
         this.SHADER_DISTORT_VERTEX,
         this.SHADER_DISTORT_FRAGMENT,
-        ["background", "water", "size"],
+        ["background", "waterBack", "waterFront", "size", "time"],
         ["position"]);
     this.programPropagate = new Shader(
         gl,
@@ -43,22 +43,25 @@ void main() {
 
 Waves.prototype.SHADER_DISTORT_FRAGMENT = `#version 100
 uniform sampler2D background;
-uniform sampler2D water;
+uniform sampler2D waterBack;
+uniform sampler2D waterFront;
 uniform mediump vec2 size;
+uniform mediump float time;
 
-lowp float get(int x, int y) {
-  return texture2D(water, (gl_FragCoord.xy + vec2(float(x), float(y))) / size).r;
+mediump float get(int x, int y) {
+  mediump vec2 uv = (gl_FragCoord.xy + vec2(float(x), float(y))) / size;
+  
+  return mix(texture2D(waterBack, uv).r, texture2D(waterFront, uv).r, time);
 }
 
 void main() {
-  lowp float dx = get(1, 0) - get(-1, 0);
-  lowp float dy = get(0, 1) - get(0, -1);
-  lowp vec2 displacement = 20.0 * vec2(dx, dy) / size;
-  lowp vec2 focus = vec2(-0.1, 0.1);
-  lowp float shiny = max(0.0, -displacement.x - displacement.y) * 40.0;
+  mediump float dx = get(1, 0) - get(-1, 0);
+  mediump float dy = get(0, 1) - get(0, -1);
+  mediump vec2 displacement = 40.0 * vec2(dx, dy) / size;
+  mediump vec2 focus = vec2(-0.1, 0.1);
+  mediump float shiny = max(0.0, -displacement.x - displacement.y) * 90.0;
   
   gl_FragColor = texture2D(background, gl_FragCoord.xy / size + displacement) * (1.0 + shiny);
-  // gl_FragColor = vec4(texture2D(water, gl_FragCoord.xy / size).r, 0.0, 0.0, 1.0);
 }
 `;
 
@@ -75,12 +78,12 @@ uniform sampler2D source;
 uniform mediump vec2 size;
 
 void main() {
-  lowp float damping = 0.998;
-  lowp vec4 pixel = texture2D(source, gl_FragCoord.xy / size);
-  lowp vec4 pixelLeft = texture2D(source, vec2(gl_FragCoord.x - 1.0, gl_FragCoord.y) / size);
-  lowp vec4 pixelRight = texture2D(source, vec2(gl_FragCoord.x + 1.0, gl_FragCoord.y) / size);
-  lowp vec4 pixelUp = texture2D(source, vec2(gl_FragCoord.x, gl_FragCoord.y - 1.0) / size);
-  lowp vec4 pixelDown = texture2D(source, vec2(gl_FragCoord.x, gl_FragCoord.y + 1.0) / size);
+  mediump float damping = 0.998;
+  mediump vec4 pixel = texture2D(source, gl_FragCoord.xy / size);
+  mediump vec4 pixelLeft = texture2D(source, vec2(gl_FragCoord.x - 1.0, gl_FragCoord.y) / size);
+  mediump vec4 pixelRight = texture2D(source, vec2(gl_FragCoord.x + 1.0, gl_FragCoord.y) / size);
+  mediump vec4 pixelUp = texture2D(source, vec2(gl_FragCoord.x, gl_FragCoord.y - 1.0) / size);
+  mediump vec4 pixelDown = texture2D(source, vec2(gl_FragCoord.x, gl_FragCoord.y + 1.0) / size);
   
   gl_FragColor = vec4(((pixelLeft.r + pixelUp.r + pixelRight.r + pixelDown.r) / 2.0 - pixel.g) * damping, pixel.r, 0.0, 1.0);
 }
@@ -106,7 +109,7 @@ Waves.prototype.SHADER_INFLUENCE_FRAGMENT = `#version 100
 varying mediump float intensity;
 
 void main() {
-  gl_FragColor = vec4(1.0, 0.0, 0.0, intensity);
+  gl_FragColor = vec4(intensity, 0.0, 0.0, intensity);
 }
 `;
 
@@ -146,9 +149,8 @@ Waves.prototype.useBuffer = function() {
 /**
  * Apply all influences to the water buffer
  * @param {WaterPlane} water A water plane
- * @param {Number} scale The render scale
  */
-Waves.prototype.applyInfluences = function(water, scale) {
+Waves.prototype.applyInfluences = function(water) {
     this.gl.enable(this.gl.BLEND); // TODO: Only when required
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
 
@@ -173,9 +175,10 @@ Waves.prototype.applyInfluences = function(water, scale) {
             const index = flare + flare + flare;
 
             this.gl.uniform2f(this.programInfluence.uOrigin,
-                water.flares[index] * scale,
-                water.flares[index + 1] * scale);
-            this.gl.uniform1f(this.programInfluence.uRadius, water.flares[index + 2]);
+                water.flares[index] * WaterPlane.prototype.RESOLUTION,
+                water.flares[index + 1] * WaterPlane.prototype.RESOLUTION);
+            this.gl.uniform1f(this.programInfluence.uRadius,
+                water.flares[index + 2] * WaterPlane.prototype.RESOLUTION);
 
             this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, this.SHAPE_FLARE_PRECISION + 2);
         }
@@ -189,9 +192,8 @@ Waves.prototype.applyInfluences = function(water, scale) {
 /**
  * Propagate the waves on a water plane
  * @param {WaterPlane} water A water plane
- * @param {Number} scale The render scale
  */
-Waves.prototype.propagate = function(water, scale) {
+Waves.prototype.propagate = function(water) {
     this.programPropagate.use();
 
     water.flip();
@@ -206,7 +208,7 @@ Waves.prototype.propagate = function(water, scale) {
 
     this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, 4);
 
-    this.applyInfluences(water, scale);
+    this.applyInfluences(water);
 };
 
 /**
@@ -215,19 +217,24 @@ Waves.prototype.propagate = function(water, scale) {
  * @param {WaterPlane} water A water plane to shade the background with
  * @param {Number} width The background width in pixels
  * @param {Number} height The background height in pixels
+ * @param {Number} time The interpolation factor
  */
-Waves.prototype.render = function(background, water, width, height) {
+Waves.prototype.render = function(background, water, width, height, time) {
     this.programDistort.use();
 
     this.gl.uniform1i(this.programDistort.uBackground, 0);
-    this.gl.uniform1i(this.programDistort.uWater, 1);
+    this.gl.uniform1i(this.programDistort.uWaterBack, 1);
+    this.gl.uniform1i(this.programDistort.uWaterFront, 2);
     this.gl.uniform2f(this.programDistort.uSize, width, height);
+    this.gl.uniform1f(this.programDistort.uTime, time);
 
     this.useBuffer();
 
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, background);
     this.gl.activeTexture(this.gl.TEXTURE1);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, water.getBack().texture);
+    this.gl.activeTexture(this.gl.TEXTURE2);
     this.gl.bindTexture(this.gl.TEXTURE_2D, water.getFront().texture);
 
     this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, 4);

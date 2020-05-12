@@ -1,22 +1,24 @@
 /**
  * A water plane to render waves on
  * @param {WebGLRenderingContext} gl A WebGL render context
- * @param {Number} width The scene width in pixels
- * @param {Number} height The scene height in pixels
+ * @param {Number} width The scene width
+ * @param {Number} height The scene height
  * @constructor
  */
 const WaterPlane = function(gl, width, height) {
     // TODO: Use LUMINANCE_ALPHA 2 channel format, you don't need more
     // TODO: Downscale for performance & wave speed
     this.front = 0;
-    this.width = width;
-    this.height = height;
+    this.width = Math.ceil(width * this.RESOLUTION);
+    this.height = Math.ceil(height * this.RESOLUTION);
     this.flares = [];
     this.targets = [
-        new RenderTarget(gl, width, height, gl.RGB, gl.LINEAR, gl.FLOAT),
-        new RenderTarget(gl, width, height, gl.RGB, gl.LINEAR, gl.FLOAT)
+        new RenderTarget(gl, this.width, this.height, gl.RGB, gl.LINEAR, gl.FLOAT),
+        new RenderTarget(gl, this.width, this.height, gl.RGB, gl.LINEAR, gl.FLOAT)
     ];
 };
+
+WaterPlane.prototype.RESOLUTION = 24;
 
 /**
  * Add a flare of wave height to the water plane

@@ -18,6 +18,7 @@ const Koi = function(systems, random) {
     this.water = null;
     this.spawner = new Spawner(this.constellation);
     this.time = 0;
+    this.touchDown = false;
 
     this.createRenderables();
 
@@ -55,8 +56,8 @@ Koi.prototype.createRenderables = function() {
         this.systems.gl.UNSIGNED_BYTE);
     this.water = new WaterPlane(
         this.systems.gl,
-        this.systems.width,
-        this.systems.height);
+        this.systems.width / this.scale,
+        this.systems.height / this.scale);
 };
 
 /**
@@ -79,8 +80,10 @@ Koi.prototype.touchStart = function(x, y) {
 
     if (fish)
         this.mover.pickUp(fish,x / this.scale, y / this.scale);
-    else
-        this.water.addFlare(x / this.scale, y /this.scale, 8.5); // TODO: Debug drops
+
+    this.touchDown = true;
+
+    this.water.addFlare(x / this.scale, y /this.scale, 0.5);
 };
 
 /**
@@ -90,6 +93,9 @@ Koi.prototype.touchStart = function(x, y) {
  */
 Koi.prototype.touchMove = function(x, y) {
     this.mover.touchMove(x / this.scale, y / this.scale);
+
+    if (this.touchDown)
+        this.water.addFlare(x / this.scale, y /this.scale, 0.3);
 };
 
 /**
@@ -97,6 +103,8 @@ Koi.prototype.touchMove = function(x, y) {
  */
 Koi.prototype.touchEnd = function() {
     this.mover.drop();
+
+    this.touchDown = false;
 };
 
 /**
@@ -134,7 +142,7 @@ Koi.prototype.update = function() {
     this.constellation.update(this.atlas, this.random);
     this.mover.update();
 
-    this.systems.waves.propagate(this.water, this.scale);
+    this.systems.waves.propagate(this.water);
 };
 
 /**
@@ -166,7 +174,7 @@ Koi.prototype.render = function(deltaTime) {
     this.systems.targetMain();
 
     // Render shaded water
-    this.systems.waves.render(this.underwater.texture, this.water, this.systems.width, this.systems.height);
+    this.systems.waves.render(this.underwater.texture, this.water, this.systems.width, this.systems.height, timeFactor);
 
     // Render mover
     this.systems.primitives.setViewport(this.systems.width, this.systems.height);
