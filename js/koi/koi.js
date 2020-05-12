@@ -100,7 +100,7 @@ Koi.prototype.resize = function() {
         this.systems.gl.NEAREST);
 
     this.background.free();
-    this.background = new Background(systems.gl, systems.width, systems.height);
+    this.background = new Background(systems.gl, systems.sand, systems.width, systems.height);
 };
 
 /**
