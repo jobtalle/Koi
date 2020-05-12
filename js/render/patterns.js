@@ -56,6 +56,7 @@ Patterns.prototype.write = function(pattern) {
         1, 0
     ]));
 
+    this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
 
     for (const layer of pattern.layers) switch (layer.constructor) {
@@ -71,6 +72,7 @@ Patterns.prototype.write = function(pattern) {
 
     this.gl.blendFunc(this.gl.ZERO, this.gl.SRC_COLOR)
     this.writeLayer(pattern.shape, this.programShape);
+    this.gl.disable(this.gl.BLEND);
 };
 
 /**

@@ -12,15 +12,6 @@ const Systems = function(gl, width, height) {
     this.primitives = new Primitives(gl);
     this.patterns = new Patterns(gl);
     this.sand = new Sand(gl);
-
-    this.initialize();
-};
-
-/**
- * Initialize the OpenGL context
- */
-Systems.prototype.initialize = function() {
-    this.gl.enable(this.gl.BLEND);
 };
 
 /**

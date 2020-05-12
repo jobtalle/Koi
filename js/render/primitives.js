@@ -177,8 +177,6 @@ Primitives.prototype.renderStrip = function() {
  * Render all queued render commands
  */
 Primitives.prototype.flush = function() {
-    this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
-
     switch (this.mode) {
         case this.MODE_LINES:
             this.renderLines();

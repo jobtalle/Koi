@@ -138,8 +138,14 @@ Koi.prototype.render = function(deltaTime) {
     this.systems.primitives.transformPush();
     this.systems.primitives.getTransform().scale(this.scale, this.scale);
 
+    this.systems.gl.enable(this.systems.gl.BLEND);
+    this.systems.gl.blendFunc(this.systems.gl.SRC_ALPHA, this.systems.gl.ONE_MINUS_SRC_ALPHA);
+
     this.constellation.render(this.systems.primitives, timeFactor);
     this.mover.render(this.systems.primitives, timeFactor);
+    this.systems.primitives.flush();
+
+    this.systems.gl.disable(this.systems.gl.BLEND);
 
     this.systems.primitives.transformPop();
     this.systems.primitives.drawQuad(0, 0, 400, 400);

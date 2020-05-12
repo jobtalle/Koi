@@ -231,7 +231,6 @@ Constellation.prototype.update = function(atlas, random) {
  * @param {Number} time The amount of time since the last update
  */
 Constellation.prototype.render = function(primitives, time) {
-    // TODO: Track last update time per pond
     this.small.render(primitives, time);
     this.big.render(primitives, time);
     this.river.render(primitives, time);
