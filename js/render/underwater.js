@@ -14,6 +14,14 @@ const Underwater = function(gl, width, height) {
 };
 
 /**
+ * Set this buffer as render target
+ */
+Underwater.prototype.target = function() {
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.framebuffer);
+    this.gl.viewport(0, 0, this.width, this.height);
+};
+
+/**
  * Create the texture for this underwater buffer
  * @returns {WebGLTexture} A WebGL texture
  */

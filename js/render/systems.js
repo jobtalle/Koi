@@ -33,15 +33,6 @@ Systems.prototype.resize = function(width, height) {
 };
 
 /**
- * Clear the OpenGL color buffer
- * @param {Color} color A clear color
- */
-Systems.prototype.clear = function(color) {
-    this.gl.clearColor(color.r, color.g, color.b, color.a);
-    this.gl.clear(this.gl.COLOR_BUFFER_BIT);
-};
-
-/**
  * Target the framebuffer visible to the user
  */
 Systems.prototype.targetMain = function() {

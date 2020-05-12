@@ -120,10 +120,10 @@ Koi.prototype.render = function(deltaTime) {
 
     const timeFactor = this.time / this.UPDATE_RATE;
 
-    this.systems.targetMain();
-    this.systems.clear(new Color(.2, .2, .2));
+    this.underwater.target();
+    this.systems.gl.clear(this.systems.gl.COLOR_BUFFER_BIT); // TODO: Not needed when background is texture
 
-    this.systems.primitives.setViewport(this.systems.width, this.systems.height);
+    this.systems.primitives.setViewport(this.underwater.width, this.underwater.height);
     this.systems.primitives.setTexture(this.atlas.texture);
 
     this.systems.primitives.transformPush();
@@ -140,6 +140,20 @@ Koi.prototype.render = function(deltaTime) {
     this.systems.primitives.cutStrip(0, 0, 0, 0);
     this.systems.primitives.drawStrip(400, 0,1, 0);
     this.systems.primitives.cutStrip(400, 400,1, 1);
+
+    this.systems.primitives.flush();
+
+    this.systems.targetMain();
+
+    this.systems.primitives.setViewport(this.systems.width, this.systems.height);
+    this.systems.primitives.setTexture(this.underwater.texture);
+
+    this.systems.primitives.cutStrip(0, 0, 0, 1);
+    this.systems.primitives.drawStrip(0, this.systems.height,0, 0);
+    this.systems.primitives.cutStrip(this.systems.width, this.systems.height,1, 0);
+    this.systems.primitives.cutStrip(0, 0, 0, 1);
+    this.systems.primitives.drawStrip(this.systems.width, 0,1, 1);
+    this.systems.primitives.cutStrip(this.systems.width, this.systems.height,1, 0);
 
     this.systems.primitives.flush();
 };
