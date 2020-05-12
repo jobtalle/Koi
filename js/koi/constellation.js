@@ -228,10 +228,21 @@ Constellation.prototype.update = function(atlas, random) {
 /**
  * Render the constellation
  * @param {Primitives} primitives The primitives renderer
+ * @param {WebGLTexture} atlas The atlas texture
+ * @param {Number} scale The render scale
  * @param {Number} time The amount of time since the last update
  */
-Constellation.prototype.render = function(primitives, time) {
+Constellation.prototype.render = function(primitives, atlas, scale, time) {
+    primitives.transformPush();
+    primitives.getTransform().scale(scale, scale);
+    primitives.setTexture(atlas);
+    primitives.gl.enable(primitives.gl.BLEND);
+    primitives.gl.blendFunc(primitives.gl.SRC_ALPHA, primitives.gl.ONE_MINUS_SRC_ALPHA);
+
     this.small.render(primitives, time);
     this.big.render(primitives, time);
     this.river.render(primitives, time);
+
+    primitives.transformPop();
+    primitives.gl.disable(primitives.gl.BLEND);
 };

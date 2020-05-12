@@ -127,36 +127,27 @@ Koi.prototype.render = function(deltaTime) {
 
     const timeFactor = this.time / this.UPDATE_RATE;
 
+    // Target underwater buffer
     this.underwater.target();
-
     this.systems.primitives.setViewport(this.underwater.width, this.underwater.height);
-    this.systems.primitives.setTexture(this.background.renderTarget.texture);
-    this.systems.primitives.drawQuad(0, 0, this.systems.width, this.systems.height);
-    this.systems.primitives.flush();
 
-    this.systems.primitives.setTexture(this.atlas.renderTarget.texture);
-    this.systems.primitives.transformPush();
-    this.systems.primitives.getTransform().scale(this.scale, this.scale);
+    // Render background
+    this.background.render(this.systems.primitives);
 
-    this.systems.gl.enable(this.systems.gl.BLEND);
-    this.systems.gl.blendFunc(this.systems.gl.SRC_ALPHA, this.systems.gl.ONE_MINUS_SRC_ALPHA);
+    // Render fishes
+    this.constellation.render(this.systems.primitives, this.atlas.renderTarget.texture, this.scale, timeFactor);
 
-    this.constellation.render(this.systems.primitives, timeFactor);
-    this.mover.render(this.systems.primitives, timeFactor);
-    this.systems.primitives.flush();
-
-    this.systems.gl.disable(this.systems.gl.BLEND);
-
-    this.systems.primitives.transformPop();
-    this.systems.primitives.drawQuad(0, 0, 400, 400);
-    this.systems.primitives.flush();
-
+    // Target window
     this.systems.targetMain();
 
-    this.systems.primitives.setViewport(this.systems.width, this.systems.height);
+    // Render shaded water
     this.systems.primitives.setTexture(this.underwater.texture);
+    this.systems.primitives.setViewport(this.systems.width, this.systems.height);
     this.systems.primitives.drawQuad(0, this.systems.height, this.systems.width, -this.systems.height);
     this.systems.primitives.flush();
+
+    // Render mover
+    this.mover.render(this.systems.primitives, this.atlas.renderTarget.texture, this.scale, timeFactor);
 };
 
 /**

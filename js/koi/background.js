@@ -7,6 +7,18 @@
  */
 const Background = function(gl, width, height) {
     this.renderTarget = new RenderTarget(gl, width, height, gl.RGB, gl.NEAREST);
+    this.width = width;
+    this.height = height;
+};
+
+/**
+ * Render the background
+ * @param {Primitives} primitives The primitives renderer
+ */
+Background.prototype.render = function(primitives) {
+    primitives.setTexture(this.renderTarget.texture);
+    primitives.drawQuad(0, 0, this.width, this.height);
+    primitives.flush();
 };
 
 /**
