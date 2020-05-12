@@ -93,7 +93,7 @@ Koi.prototype.touchMove = function(x, y) {
     this.mover.touchMove(x / this.scale, y / this.scale);
 
     if (this.touchDown && !this.mover.move)
-        this.water.addFlare(x / this.scale, y /this.scale, 0.3);
+        this.water.addFlare(x / this.scale, y /this.scale, 0.1);
 };
 
 /**

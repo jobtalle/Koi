@@ -11,6 +11,7 @@ const PatternShape = function(centerPower, radiusPower) {
 
 PatternShape.prototype.SHADE_POWER = 1.8;
 PatternShape.prototype.LIGHT_POWER = 0.4;
+PatternShape.prototype.AMBIENT = 0.4;
 
 PatternShape.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
@@ -30,6 +31,7 @@ uniform mediump float centerPower;
 uniform mediump float shadePower;
 uniform mediump float lightPower;
 uniform mediump float radiusPower;
+uniform mediump float ambient;
 
 varying mediump vec2 iUv;
 
@@ -39,8 +41,11 @@ void main() {
   
   if (radius > edge)
     gl_FragColor = vec4(0.0);
-  else
-    gl_FragColor = vec4(vec3(pow(max(0.0, 1.0 - pow(radius / edge, shadePower)), lightPower)), 1.0);
+  else {
+    mediump float shade = pow(max(0.0, 1.0 - pow(radius / edge, shadePower)), lightPower);
+    
+    gl_FragColor = vec4(vec3(shade) * (1.0 - ambient) + ambient, 1.0);
+  }
 }
 `;
 
@@ -63,6 +68,7 @@ PatternShape.prototype.configure = function(gl, program) {
     gl.uniform1f(program.uShadePower, this.SHADE_POWER);
     gl.uniform1f(program.uLightPower, this.LIGHT_POWER);
     gl.uniform1f(program.uRadiusPower, this.radiusPower);
+    gl.uniform1f(program.uAmbient, this.AMBIENT);
 };
 
 /**
@@ -75,6 +81,6 @@ PatternShape.prototype.createShader = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["centerPower", "shadePower", "lightPower", "radiusPower"],
+        ["centerPower", "shadePower", "lightPower", "radiusPower", "ambient"],
         ["position", "uv"]);
 };

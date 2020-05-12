@@ -49,22 +49,23 @@ uniform mediump vec2 size;
 uniform mediump vec2 waterSize;
 uniform mediump float time;
 
-mediump float get(int x, int y) {
-  mediump vec2 uv = gl_FragCoord.xy / size + vec2(float(x), float(y)) / waterSize;
+mediump float get(mediump vec2 delta) {
+  mediump vec2 uv = gl_FragCoord.xy / size + delta / waterSize;
   
   return mix(texture2D(waterBack, uv).r, texture2D(waterFront, uv).r, time);
 }
 
 void main() {
-  mediump float dx = get(1, 0) - get(-1, 0);
-  mediump float dy = get(0, 1) - get(0, -1);
-  mediump vec2 displacement = 40.0 * vec2(dx, dy) / size;
+  mediump float dx = get(vec2(1.0, 0.0)) - get(vec2(-1.0, 0.0));
+  mediump float dy = get(vec2(0.0, 1.0)) - get(vec2(0.0, -1.0));
+  mediump vec2 displacement = 12.0 * vec2(dx, dy) / size;
   mediump vec2 focus = vec2(-0.1, 0.1);
   mediump vec3 normal = vec3(displacement.xy * 80.0, sqrt(1.0 - dot(displacement.xy, displacement.xy)));
-  mediump float shiny = dot(normalize(vec3(-1.0, -1.0, 1.0)), normal) * 0.5;
+  mediump float shiny = dot(normalize(vec3(-1.0, -1.0, 0.0)), normal);
   
-  gl_FragColor = texture2D(background, gl_FragCoord.xy / size + displacement) * (0.7 + shiny);
-  // gl_FragColor = vec4(vec3(get(0, 0) * 0.05 + 0.5), 1.0);
+  mediump vec4 filter = vec4(0.93, 0.98, 1.0, 1.0);
+  
+  gl_FragColor = filter * texture2D(background, gl_FragCoord.xy / size + displacement) * (1.0 + shiny * 0.4);
 }
 `;
 
@@ -82,7 +83,7 @@ uniform mediump vec2 size;
 uniform mediump vec2 waterSize;
 
 void main() {
-  mediump float damping = 0.99;
+  mediump float damping = 0.98;
   mediump vec2 uv = (gl_FragCoord.xy) / size;
   mediump vec2 step = vec2(1.0 / size.x, 1.0 / size.y);
   mediump vec4 pixel = texture2D(source, uv);
@@ -115,7 +116,7 @@ Waves.prototype.SHADER_INFLUENCE_FRAGMENT = `#version 100
 varying mediump float intensity;
 
 void main() {
-  gl_FragColor = vec4(intensity, 0.0, 0.0, intensity);
+  gl_FragColor = vec4(1.0, 0.0, 0.0, intensity * 0.5);
 }
 `;
 
