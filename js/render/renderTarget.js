@@ -4,14 +4,15 @@
  * @param {Number} width The width in pixels
  * @param {Number} height The height in pixels
  * @param {GLenum} format The texture data format
+ * @param {GLenum} filter Texture filtering method, GL_NEAREST by default
  * @constructor
  */
-const RenderTarget = function(gl, width, height, format) {
+const RenderTarget = function(gl, width, height, format, filter) {
     this.gl = gl;
     this.width = width;
     this.height = height;
     this.framebuffer = gl.createFramebuffer();
-    this.texture = this.createTexture(format);
+    this.texture = this.createTexture(format, filter);
 };
 
 /**
@@ -25,14 +26,15 @@ RenderTarget.prototype.target = function() {
 /**
  * Create the texture for this underwater buffer
  * @param {GLenum} format The texture data format
+ * @param {GLenum} filter Texture filtering method, GL_NEAREST by default
  * @returns {WebGLTexture} A WebGL texture
  */
-RenderTarget.prototype.createTexture = function(format) {
+RenderTarget.prototype.createTexture = function(format, filter) {
     const texture = this.gl.createTexture();
 
     this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, filter);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, filter);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
     this.gl.texImage2D(

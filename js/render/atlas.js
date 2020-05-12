@@ -14,8 +14,7 @@ const Atlas = function(gl, patterns, capacity) {
     this.slotSize = new Vector2();
     this.pixelSize = new Vector2();
     this.available = null;
-    this.framebuffer = gl.createFramebuffer();
-    this.texture = this.createTexture(capacity);
+    this.renderTarget = this.createRenderTarget(capacity);
 };
 
 Atlas.prototype.RESOLUTION = 48;
@@ -56,12 +55,13 @@ Atlas.prototype.createSlots = function(blockResolution) {
  * Create the atlas texture
  * @param {Number} capacity The number of fish patterns this atlas must be able to contain
  */
-Atlas.prototype.createTexture = function(capacity) {
-    const texture = this.gl.createTexture();
+Atlas.prototype.createRenderTarget = function(capacity) {
     const blocks = Math.ceil(capacity / this.RATIO);
     const blockResolution = Math.ceil(Math.sqrt(blocks));
+    const size = this.nearestPow2(blockResolution * this.RESOLUTION * this.RATIO);
+    const renderTarget = new RenderTarget(this.gl, size, size, this.gl.RGBA, this.gl.LINEAR);
 
-    this.width = this.height = this.nearestPow2(blockResolution * this.RESOLUTION * this.RATIO);
+    this.width = this.height = size; // TODO: Necessary?
     this.pixelSize.x = 1 / this.width;
     this.pixelSize.y = 1 / this.height;
     this.slotSize.x = this.RESOLUTION * this.RATIO * this.pixelSize.x;
@@ -69,26 +69,7 @@ Atlas.prototype.createTexture = function(capacity) {
     this.available = this.createSlots(blockResolution);
     this.capacity = this.available.length;
 
-    this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
-    this.gl.texImage2D(
-        this.gl.TEXTURE_2D,
-        0,
-        this.gl.RGBA,
-        this.width,
-        this.height,
-        0,
-        this.gl.RGBA,
-        this.gl.UNSIGNED_BYTE,
-        null);
-
-    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.framebuffer);
-    this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, texture, 0);
-
-    return texture;
+    return renderTarget;
 };
 
 /**
@@ -115,9 +96,7 @@ Atlas.prototype.write = function(pattern) {
     pattern.slot = this.getSlot();
     pattern.size = this.slotSize;
 
-    this.gl.viewport(0, 0, this.width, this.height);
-    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.framebuffer);
-
+    this.renderTarget.target();
     this.patterns.write(pattern);
 };
 
@@ -125,6 +104,5 @@ Atlas.prototype.write = function(pattern) {
  * Free all resources maintained by the atlas
  */
 Atlas.prototype.free = function() {
-    this.gl.deleteFramebuffer(this.framebuffer);
-    this.gl.deleteTexture(this.texture);
+    this.renderTarget.free();
 };
