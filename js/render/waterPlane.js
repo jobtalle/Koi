@@ -11,10 +11,21 @@ const WaterPlane = function(gl, width, height) {
     this.front = 0;
     this.width = width;
     this.height = height;
+    this.flares = [];
     this.targets = [
-        new RenderTarget(gl, width, height, gl.RGBA, gl.LINEAR),
-        new RenderTarget(gl, width, height, gl.RGBA, gl.LINEAR)
+        new RenderTarget(gl, width, height, gl.RGB, gl.LINEAR, gl.FLOAT),
+        new RenderTarget(gl, width, height, gl.RGB, gl.LINEAR, gl.FLOAT)
     ];
+};
+
+/**
+ * Add a flare of wave height to the water plane
+ * @param {Number} x The X position of the flare
+ * @param {Number} y The Y position of the flare
+ * @param {Number} radius The flare radius
+ */
+WaterPlane.prototype.addFlare = function(x, y, radius) {
+    this.flares.push(x, y, radius);
 };
 
 /**
@@ -25,16 +36,16 @@ WaterPlane.prototype.flip = function() {
 };
 
 /**
- * Return the render target currently used as the front buffer
- * @returns {RenderTarget} The current front buffer
+ * Return the render target currently used as the front bufferQuad
+ * @returns {RenderTarget} The current front bufferQuad
  */
 WaterPlane.prototype.getFront = function() {
     return this.targets[this.front];
 };
 
 /**
- * Return the render target currently used as the back buffer
- * @returns {RenderTarget} The current back buffer
+ * Return the render target currently used as the back bufferQuad
+ * @returns {RenderTarget} The current back bufferQuad
  */
 WaterPlane.prototype.getBack = function() {
     return this.targets[1 - this.front];

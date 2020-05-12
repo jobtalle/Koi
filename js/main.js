@@ -8,6 +8,9 @@ let lastDate = null;
 let koi = null;
 let loaded = true;
 
+gl.getExtension("OES_texture_float");
+gl.getExtension("OES_texture_float_linear");
+
 const resize = () => {
     const wrapper = document.getElementById("wrapper");
 

@@ -5,18 +5,25 @@
  * @param {Number} height The height in pixels
  * @param {GLenum} format The texture data format
  * @param {GLenum} filter Texture filtering method, GL_NEAREST by default
+ * @param {GLenum} type The data type
  * @constructor
  */
-const RenderTarget = function(gl, width, height, format, filter) {
+const RenderTarget = function(
+    gl,
+    width,
+    height,
+    format,
+    filter,
+    type) {
     this.gl = gl;
     this.width = width;
     this.height = height;
     this.framebuffer = gl.createFramebuffer();
-    this.texture = this.createTexture(format, filter);
+    this.texture = this.createTexture(format, filter, type);
 };
 
 /**
- * Set this buffer as render target
+ * Set this bufferQuad as render target
  */
 RenderTarget.prototype.target = function() {
     this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.framebuffer);
@@ -24,12 +31,13 @@ RenderTarget.prototype.target = function() {
 };
 
 /**
- * Create the texture for this underwater buffer
+ * Create the texture for this underwater bufferQuad
  * @param {GLenum} format The texture data format
  * @param {GLenum} filter Texture filtering method, GL_NEAREST by default
+ * @param {GLenum} type The data type
  * @returns {WebGLTexture} A WebGL texture
  */
-RenderTarget.prototype.createTexture = function(format, filter) {
+RenderTarget.prototype.createTexture = function(format, filter, type) {
     const texture = this.gl.createTexture();
 
     this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
@@ -45,7 +53,7 @@ RenderTarget.prototype.createTexture = function(format, filter) {
         this.height,
         0,
         format,
-        this.gl.UNSIGNED_BYTE,
+        type,
         null);
 
     this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.framebuffer);
@@ -55,7 +63,7 @@ RenderTarget.prototype.createTexture = function(format, filter) {
 };
 
 /**
- * Free all resources maintained by this buffer
+ * Free all resources maintained by this bufferQuad
  */
 RenderTarget.prototype.free = function() {
     this.gl.deleteFramebuffer(this.framebuffer);

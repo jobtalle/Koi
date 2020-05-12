@@ -22,7 +22,7 @@ const Koi = function(systems, random) {
     this.createRenderables();
 
     // TODO: This is a debug warp
-    for (let i = 0; i < 1000; ++i)
+    for (let i = 0; i < 600; ++i)
         this.update();
 };
 
@@ -51,7 +51,8 @@ Koi.prototype.createRenderables = function() {
         this.systems.width,
         this.systems.height,
         this.systems.gl.RGB,
-        this.systems.gl.NEAREST);
+        this.systems.gl.LINEAR,
+        this.systems.gl.UNSIGNED_BYTE);
     this.water = new WaterPlane(
         this.systems.gl,
         this.systems.width,
@@ -78,6 +79,8 @@ Koi.prototype.touchStart = function(x, y) {
 
     if (fish)
         this.mover.pickUp(fish,x / this.scale, y / this.scale);
+    else
+        this.water.addFlare(x / this.scale, y /this.scale, 8.5); // TODO: Debug drops
 };
 
 /**
@@ -131,7 +134,7 @@ Koi.prototype.update = function() {
     this.constellation.update(this.atlas, this.random);
     this.mover.update();
 
-    this.systems.waves.propagate(this.water);
+    this.systems.waves.propagate(this.water, this.scale);
 };
 
 /**
@@ -149,7 +152,7 @@ Koi.prototype.render = function(deltaTime) {
 
     const timeFactor = this.time / this.UPDATE_RATE;
 
-    // Target underwater buffer
+    // Target underwater bufferQuad
     this.underwater.target();
     this.systems.primitives.setViewport(this.systems.width, this.systems.height);
 

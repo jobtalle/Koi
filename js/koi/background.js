@@ -8,7 +8,7 @@
  * @constructor
  */
 const Background = function(gl, sand, width, height, scale) {
-    this.bottom = new RenderTarget(gl, width, height, gl.RGB, gl.NEAREST);
+    this.bottom = new RenderTarget(gl, width, height, gl.RGB, gl.NEAREST, gl.UNSIGNED_BYTE);
     this.width = width;
     this.height = height;
 
