@@ -203,6 +203,7 @@ Waves.prototype.propagate = function(water, mesh) {
     water.flip();
     water.getFront().target();
 
+    this.gl.clearColor(0, 0, 0, 1);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
 
     this.gl.uniform2f(this.programPropagate.uSize, water.width, water.height);

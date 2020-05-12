@@ -180,6 +180,9 @@ Koi.prototype.render = function(deltaTime) {
     // Target window
     this.systems.targetMain();
 
+    this.systems.gl.clearColor(.5, .6, .5, 1);
+    this.systems.gl.clear(this.systems.gl.COLOR_BUFFER_BIT);
+
     // Render shaded water
     this.systems.waves.render(
         this.underwater.texture,
