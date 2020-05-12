@@ -5,7 +5,6 @@
  */
 const Waves = function(gl) {
     this.gl = gl;
-    this.bufferQuad = gl.createBuffer();
     this.bufferFlare = this.createBufferFlare();
     this.programDistort = new Shader(
         gl,
@@ -25,12 +24,6 @@ const Waves = function(gl) {
         this.SHADER_INFLUENCE_FRAGMENT,
         ["size", "origin", "radius"],
         ["vertex"]);
-
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.bufferQuad);
-    this.gl.bufferData(
-        this.gl.ARRAY_BUFFER,
-        new Float32Array([-1, -1, -1, 1, 1, 1, 1, -1]),
-        gl.STATIC_DRAW);
 };
 
 Waves.prototype.SHAPE_FLARE_PRECISION = 16;
@@ -157,15 +150,6 @@ Waves.prototype.createBufferFlare = function() {
 };
 
 /**
- * Set up the quad bufferQuad for rendering
- */
-Waves.prototype.useBuffer = function() {
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.bufferQuad);
-    this.gl.enableVertexAttribArray(this.programDistort.aPosition);
-    this.gl.vertexAttribPointer(this.programDistort.aPosition, 2, this.gl.FLOAT, false, 8, 0);
-};
-
-/**
  * Apply all influences to the water buffer
  * @param {WaterPlane} water A water plane
  */
@@ -286,7 +270,6 @@ Waves.prototype.render = function(
  * Free all resources maintained by this object
  */
 Waves.prototype.free = function() {
-    this.gl.deleteBuffer(this.bufferQuad);
     this.gl.deleteBuffer(this.bufferFlare);
     this.programDistort.free();
     this.programPropagate.free();

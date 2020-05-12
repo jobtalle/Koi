@@ -95,8 +95,6 @@ Pond.prototype.update = function(atlas, random) {
  * @param {Number} time The interpolation factor
  */
 Pond.prototype.render = function(primitives, time) {
-    this.constraint.render(primitives);
-
     for (const fish of this.fishes)
         fish.render(primitives, time);
 };

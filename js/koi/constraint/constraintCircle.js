@@ -93,23 +93,3 @@ ConstraintCircle.prototype.appendMesh = function(vertices, indices) {
             firstIndex + 1 + (step + 1) % steps);
     }
 };
-
-/**
- * Draw the circle
- * @param {Primitives} primitives The primitives renderer
- */
-ConstraintCircle.prototype.render = function(primitives) {
-    let x, y, xp, yp;
-
-    for (let i = 0; i <= 64; ++i) {
-        const angle = Math.PI * i / 32;
-
-        xp = x;
-        yp = y;
-        x = this.position.x + Math.cos(angle) * this.radius;
-        y = this.position.y + Math.sin(angle) * this.radius;
-
-        if (i !== 0)
-            primitives.drawLine(xp, yp, Color.WHITE, x, y, Color.WHITE);
-    }
-};

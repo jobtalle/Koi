@@ -6,12 +6,6 @@
  */
 const Primitives = function(gl) {
     this.gl = gl;
-    this.programLines = new Shader(
-        this.gl,
-        this.SHADER_LINES_VERTEX,
-        this.SHADER_LINES_FRAGMENT,
-        ["transform1", "transform2"],
-        ["position", "color"]);
     this.programStrip = new Shader(
         this.gl,
         this.SHADER_STRIP_VERTEX,
@@ -34,32 +28,12 @@ const Primitives = function(gl) {
     this.height = 0;
 };
 
-Primitives.prototype.MODE_LINES = 0;
 Primitives.prototype.MODE_STRIP = 1;
 Primitives.prototype.SHADER_POSITION = `
 gl_Position = vec4((position * mat2(transform1.xy, transform2.xy) + vec2(transform1.z, transform2.z)) *
   vec2(transform1.w, transform2.w) + vec2(-1, 1), 0, 1);
 `;
-Primitives.prototype.SHADER_LINES_VERTEX = `#version 100
-uniform vec4 transform1;
-uniform vec4 transform2;
 
-attribute vec2 position;
-attribute vec4 color;
-
-varying vec4 v_color;
-
-void main() {
-  v_color = color;` + Primitives.prototype.SHADER_POSITION + `
-}
-`;
-Primitives.prototype.SHADER_LINES_FRAGMENT = `#version 100
-varying mediump vec4 v_color;
-
-void main() {
-  gl_FragColor = v_color;
-}
-`;
 Primitives.prototype.SHADER_STRIP_VERTEX = `#version 100
 uniform vec4 transform1;
 uniform vec4 transform2;
@@ -73,6 +47,7 @@ void main() {
   v_uv = uv;` + Primitives.prototype.SHADER_POSITION + `
 }
 `;
+
 Primitives.prototype.SHADER_STRIP_FRAGMENT = `#version 100
 uniform sampler2D atlas;
 
@@ -145,21 +120,6 @@ Primitives.prototype.setProgram = function(program, mode) {
 };
 
 /**
- * Render all buffered lines
- */
-Primitives.prototype.renderLines = function() {
-    this.updateBuffers();
-
-    this.gl.enableVertexAttribArray(this.programLines.aPosition);
-    this.gl.vertexAttribPointer(this.programLines.aPosition, 2, this.gl.FLOAT, false, 24, 0);
-    this.gl.enableVertexAttribArray(this.programLines.aColor);
-    this.gl.vertexAttribPointer(this.programLines.aColor, 4, this.gl.FLOAT, false, 24, 8);
-    this.gl.drawArrays(this.gl.LINES, 0, this.vertices.length / 6);
-
-    this.vertices.length = 0;
-};
-
-/**
  * Render the buffered strip
  */
 Primitives.prototype.renderStrip = function() {
@@ -179,10 +139,6 @@ Primitives.prototype.renderStrip = function() {
  */
 Primitives.prototype.flush = function() {
     switch (this.mode) {
-        case this.MODE_LINES:
-            this.renderLines();
-
-            break;
         case this.MODE_STRIP:
             this.renderStrip();
 
@@ -217,23 +173,6 @@ Primitives.prototype.transformPop = function() {
     this.setProgram(null, -1);
 
     --this.transformIndex;
-};
-
-/**
- * Draw a line
- * @param {Number} x1 The start X coordinate
- * @param {Number} y1 The start Y coordinate
- * @param {Color} color1 The color at the line start
- * @param {Number} x2 The end X coordinate
- * @param {Number} y2 The end Y coordinate
- * @param {Color} color2 The color at the line end
- */
-Primitives.prototype.drawLine = function(x1, y1, color1, x2, y2, color2) {
-    this.setProgram(this.programLines, this.MODE_LINES);
-
-    this.vertices.push(
-        x1, y1, color1.r, color1.g, color1.b, color1.a,
-        x2, y2, color2.r, color2.g, color2.b, color2.a);
 };
 
 /**
@@ -303,7 +242,6 @@ Primitives.prototype.setTexture = function(texture) {
  * Free this primitives renderer
  */
 Primitives.prototype.free = function() {
-    this.programLines.free();
     this.programStrip.free();
 
     this.gl.deleteBuffer(this.bufferVertices);
