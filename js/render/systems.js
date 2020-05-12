@@ -12,6 +12,7 @@ const Systems = function(gl, width, height) {
     this.primitives = new Primitives(gl);
     this.patterns = new Patterns(gl);
     this.sand = new Sand(gl);
+    this.waves = new Waves(gl);
 };
 
 /**
@@ -39,4 +40,5 @@ Systems.prototype.free = function() {
     this.primitives.free();
     this.patterns.free();
     this.sand.free();
+    this.waves.free();
 };

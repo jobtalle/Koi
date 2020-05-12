@@ -149,7 +149,7 @@ Koi.prototype.render = function(deltaTime) {
 
     // Target underwater buffer
     this.underwater.target();
-    this.systems.primitives.setViewport(this.underwater.width, this.underwater.height);
+    this.systems.primitives.setViewport(this.systems.width, this.systems.height);
 
     // Render background
     this.background.render(this.systems.primitives);
@@ -161,12 +161,10 @@ Koi.prototype.render = function(deltaTime) {
     this.systems.targetMain();
 
     // Render shaded water
-    this.systems.primitives.setTexture(this.underwater.texture);
-    this.systems.primitives.setViewport(this.systems.width, this.systems.height);
-    this.systems.primitives.drawQuad(0, this.systems.height, this.systems.width, -this.systems.height);
-    this.systems.primitives.flush();
+    this.systems.waves.render(this.underwater.texture, this.water, this.systems.width, this.systems.height);
 
     // Render mover
+    this.systems.primitives.setViewport(this.systems.width, this.systems.height);
     this.mover.render(this.systems.primitives, this.atlas.renderTarget.texture, this.scale, timeFactor);
 };
 

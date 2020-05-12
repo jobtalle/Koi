@@ -15,6 +15,22 @@ const WaterPlane = function(gl, width, height) {
 };
 
 /**
+ * Return the render target currently used as the front buffer
+ * @returns {RenderTarget} The current front buffer
+ */
+WaterPlane.prototype.getFront = function() {
+    return this.targets[this.front];
+};
+
+/**
+ * Return the render target currently used as the back buffer
+ * @returns {RenderTarget} The current back buffer
+ */
+WaterPlane.prototype.getBack = function() {
+    return this.targets[1 - this.front];
+};
+
+/**
  * Free all resources maintained by this water plane
  */
 WaterPlane.prototype.free = function() {
