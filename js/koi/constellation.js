@@ -215,6 +215,22 @@ Constellation.prototype.drop = function(fish) {
 };
 
 /**
+ * Make a mask mesh overlapping all water area
+ * @param {WebGLRenderingContext} gl A WebGL context
+ * @returns {MeshMask} A mask mesh
+ */
+Constellation.prototype.makeMesh = function(gl) {
+    const vertices = [];
+    const indices = [];
+
+    this.big.constraint.appendMesh(vertices, indices);
+    this.small.constraint.appendMesh(vertices, indices);
+    this.river.constraint.appendMesh(vertices, indices);
+
+    return new MeshMask(gl, vertices, indices);
+};
+
+/**
  * Update the constellation
  * @param {Atlas} atlas The pattern atlas
  * @param {Random} random A randomizer

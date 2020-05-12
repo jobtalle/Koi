@@ -11,7 +11,7 @@ const Waves = function(gl) {
         gl,
         this.SHADER_DISTORT_VERTEX,
         this.SHADER_DISTORT_FRAGMENT,
-        ["background", "waterBack", "waterFront", "depth", "size", "waterSize", "time"],
+        ["scale", "background", "waterBack", "waterFront", "depth", "size", "waterSize", "time"],
         ["position"]);
     this.programPropagate = new Shader(
         gl,
@@ -33,11 +33,18 @@ const Waves = function(gl) {
         gl.STATIC_DRAW);
 };
 
+Waves.prototype.SHAPE_FLARE_PRECISION = 16;
+Waves.prototype.DAMPING = .99;
+Waves.prototype.DEPTH = 0.2;
+
 Waves.prototype.SHADER_DISTORT_VERTEX = `#version 100
+uniform mediump float scale;
+uniform mediump vec2 size;
+
 attribute vec2 position;
 
 void main() {
-  gl_Position = vec4(position, 0.0, 1.0);
+  gl_Position = vec4(vec2(2.0, -2.0) * position / size * scale + vec2(-1.0, 1.0), 0.0, 1.0);
 }
 `;
 
@@ -123,10 +130,6 @@ void main() {
   gl_FragColor = vec4(2.0, 0.0, 0.0, intensity * 0.5);
 }
 `;
-
-Waves.prototype.SHAPE_FLARE_PRECISION = 16;
-Waves.prototype.DAMPING = .99;
-Waves.prototype.DEPTH = 0.3;
 
 /**
  * Create a buffer containing a flare shape
@@ -228,6 +231,7 @@ Waves.prototype.propagate = function(water) {
 /**
  * Render waves
  * @param {WebGLTexture} background A background texture
+ * @param {MeshMask} mesh A mesh containing all water pixels
  * @param {WaterPlane} water A water plane to shade the background with
  * @param {Number} width The background width in pixels
  * @param {Number} height The background height in pixels
@@ -236,6 +240,7 @@ Waves.prototype.propagate = function(water) {
  */
 Waves.prototype.render = function(
     background,
+    mesh,
     water,
     width,
     height,
@@ -243,15 +248,20 @@ Waves.prototype.render = function(
     time) {
     this.programDistort.use();
 
+    this.gl.uniform1f(this.programDistort.uScale, scale);
     this.gl.uniform1i(this.programDistort.uBackground, 0);
     this.gl.uniform1i(this.programDistort.uWaterBack, 1);
     this.gl.uniform1i(this.programDistort.uWaterFront, 2);
     this.gl.uniform1f(this.programDistort.uDepth, this.DEPTH * scale);
     this.gl.uniform2f(this.programDistort.uSize, width, height);
-    this.gl.uniform2f(this.programDistort.uWaterSize, water.width, water.height);
+    this.gl.uniform2f(this.programDistort.uWaterSize, water.width, water.height); // TODO: Use inverse dimensions
     this.gl.uniform1f(this.programDistort.uTime, time);
 
-    this.useBuffer();
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, mesh.vertices);
+    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, mesh.indices);
+
+    this.gl.enableVertexAttribArray(this.programDistort.aPosition);
+    this.gl.vertexAttribPointer(this.programDistort.aPosition, 2, this.gl.FLOAT, false, 8, 0);
 
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, background);
@@ -260,6 +270,7 @@ Waves.prototype.render = function(
     this.gl.activeTexture(this.gl.TEXTURE2);
     this.gl.bindTexture(this.gl.TEXTURE_2D, water.getFront().texture);
 
+    this.gl.drawElements(this.gl.TRIANGLES, mesh.indexCount, this.gl.UNSIGNED_SHORT, 0);
     this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, 4);
 };
 

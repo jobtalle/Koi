@@ -16,6 +16,7 @@ const Koi = function(systems, random) {
     this.background = null;
     this.underwater = null;
     this.water = null;
+    this.constellationMesh = null;
     this.spawner = new Spawner(this.constellation);
     this.time = 0;
     this.touchDown = false;
@@ -58,6 +59,8 @@ Koi.prototype.createRenderables = function() {
         this.systems.gl,
         this.systems.width / this.scale,
         this.systems.height / this.scale);
+
+    this.constellationMesh = this.constellation.makeMesh(this.systems.gl);
 };
 
 /**
@@ -68,6 +71,8 @@ Koi.prototype.freeRenderables = function() {
     this.background.free();
     this.underwater.free();
     this.water.free();
+
+    this.constellationMesh.free();
 };
 
 /**
@@ -178,6 +183,7 @@ Koi.prototype.render = function(deltaTime) {
     // Render shaded water
     this.systems.waves.render(
         this.underwater.texture,
+        this.constellationMesh,
         this.water,
         this.systems.width,
         this.systems.height,

@@ -110,6 +110,40 @@ ConstraintArcPath.prototype.sample = function(position) {
 };
 
 /**
+ * Append a mesh
+ * @param {Number[]} vertices The vertex array
+ * @param {Number[]} indices The index array
+ */
+ConstraintArcPath.prototype.appendMesh = function(vertices, indices) {
+    for (let arc = this.arcs.length; arc-- > 0;) {
+        const firstIndex = vertices.length >> 1;
+
+        const steps = Math.ceil(
+            (this.arcs[arc].end - this.arcs[arc].start) * this.arcs[arc].radius /
+            this.rings[arc].MESH_RESOLUTION);
+
+        for (let step = 0; step <= steps; ++step) {
+            const radians = this.arcs[arc].start + (this.arcs[arc].end - this.arcs[arc].start) * step / steps;
+
+            vertices.push(
+                this.arcs[arc].center.x + Math.cos(radians) * (this.arcs[arc].radius - this.width * .5),
+                this.arcs[arc].center.y + Math.sin(radians) * (this.arcs[arc].radius - this.width * .5),
+                this.arcs[arc].center.x + Math.cos(radians) * (this.arcs[arc].radius + this.width * .5),
+                this.arcs[arc].center.y + Math.sin(radians) * (this.arcs[arc].radius + this.width * .5));
+
+            if (step !== steps)
+                indices.push(
+                    firstIndex + (step << 1),
+                    firstIndex + (step << 1) + 1,
+                    firstIndex + (step << 1) + 2,
+                    firstIndex + (step << 1) + 2,
+                    firstIndex + (step << 1) + 3,
+                    firstIndex + (step << 1) + 1);
+        }
+    }
+};
+
+/**
  * Draw the circle
  * @param {Primitives} primitives The primitives renderer
  */

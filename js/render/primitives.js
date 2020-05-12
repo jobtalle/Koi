@@ -1,3 +1,4 @@
+// TODO: Just phase the whole thing out, won't be needed when fish have their own mesh renderer
 /**
  * The primitives renderer
  * @param {WebGLRenderingContext} gl A WebGL context

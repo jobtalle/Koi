@@ -70,6 +70,29 @@ ConstraintCircle.prototype.sample = function(position) {
         return (distance - innerRadius) / this.border;
     }
 };
+/**
+ * Append a mesh
+ * @param {Number[]} vertices The vertex array
+ * @param {Number[]} indices The index array
+ */
+ConstraintCircle.prototype.appendMesh = function(vertices, indices) {
+    const firstIndex = vertices.length >> 1;
+    const steps = Math.ceil(2 * Math.PI * this.radius / this.MESH_RESOLUTION);
+
+    vertices.push(this.position.x, this.position.y);
+
+    for (let step = 0; step < steps; ++step) {
+        const radians = Math.PI * 2 * step / steps;
+
+        vertices.push(
+            this.position.x + Math.cos(radians) * this.radius,
+            this.position.y + Math.sin(radians) * this.radius);
+        indices.push(
+            firstIndex,
+            firstIndex + step + 1,
+            firstIndex + 1 + (step + 1) % steps);
+    }
+};
 
 /**
  * Draw the circle

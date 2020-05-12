@@ -9,3 +9,4 @@ const Constraint = function(border = this.BORDER) {
 };
 
 Constraint.prototype.BORDER = 1.1;
+Constraint.prototype.MESH_RESOLUTION = 0.5;
