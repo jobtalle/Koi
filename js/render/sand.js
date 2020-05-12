@@ -29,14 +29,11 @@ void main() {
 `;
 
 Sand.prototype.SHADER_FRAGMENT = `#version 100
+` + CommonShaders.cubicNoise + `
 uniform mediump float scale;
 
-mediump float random(mediump vec2 n) { 
-  return fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);
-}
-
 void main() {
-  mediump float lightness = 0.4 + 0.2 * pow(random(gl_FragCoord.xy / scale), 9.5);
+  mediump float lightness = 0.4 + 0.2 * cubicNoise(vec3(2.0 * gl_FragCoord.xy / scale, 0.0));
   
   gl_FragColor = vec4(vec3(lightness), 1.0);
 }

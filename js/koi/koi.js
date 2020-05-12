@@ -12,11 +12,14 @@ const Koi = function(systems, random) {
         systems.width / this.scale,
         systems.height / this.scale);
     this.mover = new Mover(this.constellation);
-    this.atlas = new Atlas(systems.gl, systems.patterns, this.constellation.getCapacity());
-    this.background = new Background(systems.gl, systems.sand, systems.width, systems.height, this.scale);
-    this.underwater = new RenderTarget(systems.gl, systems.width, systems.height, systems.gl.RGB, systems.gl.NEAREST);
+    this.atlas = null;
+    this.background = null;
+    this.underwater = null;
+    this.water = null;
     this.spawner = new Spawner(this.constellation);
     this.time = 0;
+
+    this.createRenderables();
 
     // TODO: This is a debug warp
     for (let i = 0; i < 1000; ++i)
@@ -28,6 +31,42 @@ Koi.prototype.UPDATE_RATE = 1 / 15;
 Koi.prototype.PREFERRED_SCALE = 80;
 Koi.prototype.SIZE_MIN = 11;
 Koi.prototype.SIZE_MAX = 13;
+
+/**
+ * Create all renderable objects
+ */
+Koi.prototype.createRenderables = function() {
+    this.atlas = new Atlas(
+        this.systems.gl,
+        this.systems.patterns,
+        this.constellation.getCapacity());
+    this.background = new Background(
+        this.systems.gl,
+        this.systems.sand,
+        this.systems.width,
+        this.systems.height,
+        this.scale);
+    this.underwater = new RenderTarget(
+        this.systems.gl,
+        this.systems.width,
+        this.systems.height,
+        this.systems.gl.RGB,
+        this.systems.gl.NEAREST);
+    this.water = new WaterPlane(
+        this.systems.gl,
+        this.systems.width,
+        this.systems.height);
+};
+
+/**
+ * Free all renderable objects
+ */
+Koi.prototype.freeRenderables = function() {
+    this.atlas.free();
+    this.background.free();
+    this.underwater.free();
+    this.water.free();
+};
 
 /**
  * Start a touch event
@@ -69,16 +108,6 @@ Koi.prototype.getScale = function(width, height) {
 };
 
 /**
- * Replace the atlas by a new one, the old one was too small
- */
-Koi.prototype.replaceAtlas = function() {
-    this.atlas.free();
-    this.atlas = new Atlas(this.systems.gl, this.systems.patterns, this.constellation.getCapacity());
-
-    this.constellation.updateAtlas(this.atlas);
-};
-
-/**
  * Notify that the renderer has resized
  */
 Koi.prototype.resize = function() {
@@ -88,19 +117,10 @@ Koi.prototype.resize = function() {
         this.systems.height / this.scale,
         this.atlas);
 
-    if (this.constellation.getCapacity() > this.atlas.capacity)
-        this.replaceAtlas();
+    this.freeRenderables();
+    this.createRenderables();
 
-    this.underwater.free();
-    this.underwater = new RenderTarget(
-        this.systems.gl,
-        this.systems.width,
-        this.systems.height,
-        this.systems.gl.RGB,
-        this.systems.gl.NEAREST);
-
-    this.background.free();
-    this.background = new Background(systems.gl, systems.sand, systems.width, systems.height, this.scale);
+    this.constellation.updateAtlas(this.atlas);
 };
 
 /**
@@ -154,7 +174,5 @@ Koi.prototype.render = function(deltaTime) {
  * Free all resources maintained by the simulation
  */
 Koi.prototype.free = function() {
-    this.background.free();
-    this.atlas.free();
-    this.underwater.free();
+    this.freeRenderables();
 };
