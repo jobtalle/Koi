@@ -91,7 +91,12 @@ Koi.prototype.resize = function() {
         this.replaceAtlas();
 
     this.underwater.free();
-    this.underwater = new RenderTarget(this.systems.gl, this.systems.width, this.systems.height, this.systems.gl.RGB);
+    this.underwater = new RenderTarget(
+        this.systems.gl,
+        this.systems.width,
+        this.systems.height,
+        this.systems.gl.RGB,
+        this.systems.gl.NEAREST);
 };
 
 /**

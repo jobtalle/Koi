@@ -9,10 +9,7 @@ const Atlas = function(gl, patterns, capacity) {
     this.gl = gl;
     this.patterns = patterns;
     this.capacity = 0;
-    this.width = 0;
-    this.height = 0;
     this.slotSize = new Vector2();
-    this.pixelSize = new Vector2();
     this.available = null;
     this.renderTarget = this.createRenderTarget(capacity);
 };
@@ -37,16 +34,18 @@ Atlas.prototype.nearestPow2 = function(number) {
 /**
  * Create all texture slots on the atlas
  * @param {Number} blockResolution The square root of the number of slot blocks on this atlas
+ * @param {Number} width The width in pixels
+ * @param {Number} height The height in pixels
  * @returns {Vector2[]} The positions of all available texture slots
  */
-Atlas.prototype.createSlots = function(blockResolution) {
+Atlas.prototype.createSlots = function(blockResolution, width, height) {
     const available = [];
 
     for (let y = 0; y < blockResolution; ++y) for (let x = 0; x < blockResolution; ++x)
         for (let row = 0; row < this.RATIO; ++row)
             available.push(new Vector2(
-                (x * this.RATIO * this.RESOLUTION) / this.width,
-                ((y * this.RATIO + row) * this.RESOLUTION) / this.height))
+                (x * this.RATIO * this.RESOLUTION) / width,
+                ((y * this.RATIO + row) * this.RESOLUTION) / height))
 
     return available;
 };
@@ -61,12 +60,9 @@ Atlas.prototype.createRenderTarget = function(capacity) {
     const size = this.nearestPow2(blockResolution * this.RESOLUTION * this.RATIO);
     const renderTarget = new RenderTarget(this.gl, size, size, this.gl.RGBA, this.gl.LINEAR);
 
-    this.width = this.height = size; // TODO: Necessary?
-    this.pixelSize.x = 1 / this.width;
-    this.pixelSize.y = 1 / this.height;
-    this.slotSize.x = this.RESOLUTION * this.RATIO * this.pixelSize.x;
-    this.slotSize.y = this.RESOLUTION * this.pixelSize.y;
-    this.available = this.createSlots(blockResolution);
+    this.slotSize.x = this.RESOLUTION * this.RATIO / size;
+    this.slotSize.y = this.RESOLUTION / size;
+    this.available = this.createSlots(blockResolution, size, size);
     this.capacity = this.available.length;
 
     return renderTarget;
