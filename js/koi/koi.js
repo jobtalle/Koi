@@ -13,7 +13,7 @@ const Koi = function(systems, random) {
         systems.height / this.scale);
     this.mover = new Mover(this.constellation);
     this.atlas = new Atlas(systems.gl, systems.patterns, this.constellation.getCapacity());
-    this.underwater = new Underwater(systems.gl, systems.width, systems.height);
+    this.underwater = new RenderTarget(systems.gl, systems.width, systems.height, systems.gl.RGB);
     this.spawner = new Spawner(this.constellation);
     this.time = 0;
 
@@ -91,7 +91,7 @@ Koi.prototype.resize = function() {
         this.replaceAtlas();
 
     this.underwater.free();
-    this.underwater = new Underwater(this.systems.gl, this.systems.width, this.systems.height);
+    this.underwater = new RenderTarget(this.systems.gl, this.systems.width, this.systems.height, this.systems.gl.RGB);
 };
 
 /**
@@ -101,8 +101,6 @@ Koi.prototype.update = function() {
     this.spawner.update(this.UPDATE_RATE, this.atlas, this.random);
     this.constellation.update(this.atlas, this.random);
     this.mover.update();
-
-    this.lastUpdate = new Date();
 };
 
 /**
@@ -121,6 +119,7 @@ Koi.prototype.render = function(deltaTime) {
     const timeFactor = this.time / this.UPDATE_RATE;
 
     this.underwater.target();
+    this.systems.gl.clearColor(.2, .3, .4, 1);
     this.systems.gl.clear(this.systems.gl.COLOR_BUFFER_BIT); // TODO: Not needed when background is texture
 
     this.systems.primitives.setViewport(this.underwater.width, this.underwater.height);

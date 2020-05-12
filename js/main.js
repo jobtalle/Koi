@@ -4,7 +4,7 @@ const gl =
     canvas.getContext("experimental-webgl", {alpha: false, antialias: false});
 const systems = new Systems(gl, canvas.width, canvas.height);
 const random = new Random();
-let lastDate = new Date();
+let lastDate = null;
 let koi = null;
 let loaded = true;
 
@@ -25,6 +25,7 @@ window.onresize = resize;
 resize();
 
 koi = new Koi(systems, random);
+lastDate = new Date();
 
 const loop = () => {
     if (loaded) {

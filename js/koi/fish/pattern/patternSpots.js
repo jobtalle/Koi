@@ -88,7 +88,7 @@ void main() {
   mediump vec2 at = size * (iUv - vec2(0.5)) * scale;
   mediump float noise = cubicNoise(anchor + vec3(at, 0.0) * rotate);
 
-  if (noise < 0.55)
+  if (noise < 0.5)
     discard;
     
   gl_FragColor = vec4(color, 1.0);

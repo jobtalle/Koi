@@ -17,7 +17,7 @@ const Primitives = function(gl) {
         this.SHADER_STRIP_FRAGMENT,
         ["transform1", "transform2"],
         ["position", "uv"]);
-    this.transformBase = new Transform(2, 0, 0, 0, -2, 0);
+    this.transformBase = new Transform(2, 0, 0, 0, -2, 0); // TODO: Maybe this doesn't need to be a matrix
     this.transformStack = [this.transformBase];
     this.vertices = [];
     this.indices = [];
