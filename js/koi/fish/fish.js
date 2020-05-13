@@ -31,6 +31,7 @@ Fish.prototype.NIBBLE_TIME_MIN = 20;
 Fish.prototype.NIBBLE_TIME_MAX = 40;
 Fish.prototype.NIBBLE_RADIUS = .1;
 Fish.prototype.NIBBLE_DISPLACEMENT = -1;
+Fish.prototype.NIBBLE_TURN_FORCE = .07;
 Fish.prototype.SPEED_MIN = .015;
 Fish.prototype.SPEED_NIBBLE = .0155;
 Fish.prototype.SPEED_SLOW = .04;
@@ -237,26 +238,29 @@ Fish.prototype.update = function(constraint, water, random) {
     }
 
     this.direction.set(this.velocity).normalize();
-    this.velocity.set(this.direction).multiply(this.speed);
+    this.velocity.set(this.direction);
 
     if (this.speed < this.SPEED_SLOW) {
         if (this.boost === 0 && random.getFloat() < this.BOOST_CHANCE)
             this.boostSpeed(random);
-
-        if (this.turnForce === 0 && random.getFloat() < this.TURN_CHANCE)
+        else if (this.turnForce === 0 && random.getFloat() < this.TURN_CHANCE)
             this.turn(random);
-    }
+        else if (this.speed < this.SPEED_NIBBLE) if ((--this.nibbleTime === 0)) {
+            this.nibbleTime = this.NIBBLE_TIME_MIN +
+                Math.floor((this.NIBBLE_TIME_MAX - this.NIBBLE_TIME_MIN) * random.getFloat());
 
+            water.addFlare(this.position.x, this.position.y, this.NIBBLE_RADIUS, this.NIBBLE_DISPLACEMENT);
+
+            const turnForce = 2 * (Math.random() - .5) * this.NIBBLE_TURN_FORCE;
+
+            this.velocity.x += this.direction.y * turnForce;
+            this.velocity.y -= this.direction.x * turnForce;
+            this.velocity.normalize();
+        }
+    }
     this.positionPrevious.set(this.position);
-    this.position.add(this.velocity);
+    this.position.add(this.velocity.multiply(this.speed));
     this.body.update(this.position, this.direction, this.speed, water);
-
-    if (this.speed < this.SPEED_NIBBLE) if ((--this.nibbleTime === 0)) {
-        this.nibbleTime = this.NIBBLE_TIME_MIN +
-            Math.floor((this.NIBBLE_TIME_MAX - this.NIBBLE_TIME_MIN) * random.getFloat());
-
-        water.addFlare(this.position.x, this.position.y, this.NIBBLE_RADIUS, this.NIBBLE_DISPLACEMENT);
-    }
 
     return false;
 };

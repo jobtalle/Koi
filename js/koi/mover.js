@@ -12,8 +12,8 @@ const Mover = function(constellation) {
     this.cursorOffset = new Vector2();
 };
 
-Mover.prototype.SPLASH_DROP_RADIUS = 0.18;
-Mover.prototype.SPLASH_DROP_AMPLITUDE = -1.5;
+Mover.prototype.SPLASH_DROP_RADIUS = 0.13;
+Mover.prototype.SPLASH_DROP_AMPLITUDE = -1.7;
 Mover.prototype.SPLASH_DROP_DISTANCE = 0.2;
 
 /**

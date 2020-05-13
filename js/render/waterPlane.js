@@ -6,7 +6,7 @@
  * @constructor
  */
 const WaterPlane = function(gl, width, height) {
-    // TODO: The B channel is not used right now, use for depth?
+    // TODO: The B channel is not used right now. Maybe for shade or depth?
     this.front = 0;
     this.width = Math.ceil(width * this.SCALE);
     this.height = Math.ceil(height * this.SCALE);
