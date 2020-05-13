@@ -26,7 +26,7 @@ attribute vec3 vertex;
 varying mediump float alpha;
 
 void main() {
-  alpha = vertex.z;
+  alpha = sqrt(vertex.z);
   
   gl_Position = vec4(vec2(2.0, -2.0) * (vertex.xy * radius + origin) / size + vec2(-1.0, 1.0), 0.0, 1.0);
 }
@@ -38,7 +38,7 @@ uniform mediump float displacement;
 varying mediump float alpha;
 
 void main() {
-  gl_FragColor = vec4(displacement, 0.0, 0.0, alpha);
+  gl_FragColor = vec4(0.0, displacement, 0.0, alpha);
 }
 `;
 

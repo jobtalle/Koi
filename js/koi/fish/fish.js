@@ -15,6 +15,7 @@ const Fish = function(body, position, direction) {
     this.boost = 0;
     this.turnDirection = new Vector2();
     this.turnForce = 0;
+    this.nibbleTime = this.NIBBLE_TIME_MIN;
 
     this.body.initializeSpine(position, direction);
 };
@@ -26,7 +27,12 @@ Fish.prototype.FORCE_ATTRACTION = .05;
 Fish.prototype.RADIUS_REPULSION = .8;
 Fish.prototype.RADIUS_ALIGNMENT = 1.25;
 Fish.prototype.RADIUS_ATTRACTION = 1.5;
-Fish.prototype.SPEED_MIN = .025;
+Fish.prototype.NIBBLE_TIME_MIN = 20;
+Fish.prototype.NIBBLE_TIME_MAX = 40;
+Fish.prototype.NIBBLE_RADIUS = .1;
+Fish.prototype.NIBBLE_DISPLACEMENT = -1;
+Fish.prototype.SPEED_MIN = .015;
+Fish.prototype.SPEED_NIBBLE = .0155;
 Fish.prototype.SPEED_SLOW = .04;
 Fish.prototype.SPEED_DROP = .06;
 Fish.prototype.SPEED_DECAY = .996;
@@ -209,10 +215,11 @@ Fish.prototype.boostSpeed = function(random) {
 /**
  * Update the fish
  * @param {Constraint} constraint A constraint
+ * @param {WaterPlane} water A water plane to disturb
  * @param {Random} random A randomizer
  * @returns {Boolean} A boolean indicating whether the fish left the scene
  */
-Fish.prototype.update = function(constraint, random) {
+Fish.prototype.update = function(constraint, water, random) {
     if (this.constrain(constraint))
         return true;
 
@@ -242,7 +249,14 @@ Fish.prototype.update = function(constraint, random) {
 
     this.positionPrevious.set(this.position);
     this.position.add(this.velocity);
-    this.body.update(this.position, this.direction, this.speed);
+    this.body.update(this.position, this.direction, this.speed, water);
+
+    if (this.speed < this.SPEED_NIBBLE) if ((--this.nibbleTime === 0)) {
+        this.nibbleTime = this.NIBBLE_TIME_MIN +
+            Math.floor((this.NIBBLE_TIME_MAX - this.NIBBLE_TIME_MIN) * random.getFloat());
+
+        water.addFlare(this.position.x, this.position.y, this.NIBBLE_RADIUS, this.NIBBLE_DISPLACEMENT);
+    }
 
     return false;
 };

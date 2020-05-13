@@ -20,7 +20,7 @@ const Waves = function(gl) {
 };
 
 Waves.prototype.DAMPING = .99;
-Waves.prototype.DEPTH = 0.15;
+Waves.prototype.DEPTH = 0.1;
 
 Waves.prototype.SHADER_DISTORT_VERTEX = `#version 100
 uniform mediump float scale;
@@ -59,11 +59,13 @@ void main() {
   
   if (shiny < 0.0)
     shiny *= 0.5;
-  else if (shiny > 0.5) // TODO: Specular hack
-    shiny *= 1.5;
+  else {
+    if (shiny > 0.5) // TODO: Specular hack
+      shiny *= 1.5;
+  }
   
   mediump vec4 filter = vec4(0.93, 0.98, 1.0, 1.0) * vec4(0.92, 0.97, 1.0, 1.0);
-  mediump vec4 sky = vec4(0.8, 0.9, 1.0, 1.0);
+  mediump vec4 sky = vec4(0.88, 0.96, 1.0, 1.0);
   
   gl_FragColor = mix(
     filter * texture2D(background, gl_FragCoord.xy / size - displacement),

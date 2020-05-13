@@ -22,8 +22,35 @@ Body.prototype.SPRING_END = .3;
 Body.prototype.SPRING_POWER = 1.7;
 Body.prototype.SWIM_AMPLITUDE = 8.5;
 Body.prototype.SWIM_SPEED = 6.5;
-Body.prototype.SPEED_THRESHOLD = .02;
+Body.prototype.SPEED_SWING_THRESHOLD = .01;
+Body.prototype.SPEED_WAVE_THRESHOLD = .065;
 Body.prototype.OVERLAP_PADDING = 1.8;
+Body.prototype.WAVE_RADIUS = .15;
+Body.prototype.WAVE_INTENSITY_MIN = .2;
+Body.prototype.WAVE_INTENSITY_MULTIPLIER = 25;
+
+/**
+ * Disturb water while swimming
+ * @param {WaterPlane} water A water plane to disturb
+ */
+Body.prototype.disturbWater = function(water) {
+    const tailIndex = this.spine.length - 2;
+    const dx = this.spine[tailIndex].x - this.spinePrevious[tailIndex].x;
+    const dy = this.spine[tailIndex].y - this.spinePrevious[tailIndex].y;
+    const tailSpeedSquared = dx * dx + dy * dy;
+
+    if (tailSpeedSquared > this.SPEED_WAVE_THRESHOLD * this.SPEED_WAVE_THRESHOLD) {
+        const tailSpeed = Math.sqrt(tailSpeedSquared);
+        const intensity = this.WAVE_INTENSITY_MIN + (tailSpeed - this.SPEED_WAVE_THRESHOLD) *
+            this.WAVE_INTENSITY_MULTIPLIER;
+
+        water.addFlare(
+            this.spine[tailIndex].x,
+            this.spine[tailIndex].y,
+            this.WAVE_RADIUS,
+            intensity);
+    }
+};
 
 /**
  * Instantly move the body to the given position
@@ -109,12 +136,13 @@ Body.prototype.storePreviousState = function() {
  * @param {Vector2} head The new head position
  * @param {Vector2} direction The normalized head direction
  * @param {Number} speed The fish speed
+ * @param {WaterPlane} water A water plane to disturb
  */
-Body.prototype.update = function(head, direction, speed) {
+Body.prototype.update = function(head, direction, speed, water) {
     this.storePreviousState();
     this.spine[0].set(head);
 
-    const speedFactor = speed - this.SPEED_THRESHOLD;
+    const speedFactor = speed - this.SPEED_SWING_THRESHOLD;
     const angle = direction.angle() + Math.PI + Math.cos(this.phase) * speedFactor * this.SWIM_AMPLITUDE;
 
     let xDir = Math.cos(angle);
@@ -143,6 +171,9 @@ Body.prototype.update = function(head, direction, speed) {
 
     if ((this.phase += this.SWIM_SPEED * speed) > Math.PI * 2)
         this.phase -= Math.PI * 2;
+
+    if (water)
+        this.disturbWater(water);
 };
 
 /**

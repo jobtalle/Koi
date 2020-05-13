@@ -19,12 +19,11 @@ const Koi = function(systems, random) {
     this.constellationMesh = null;
     this.spawner = new Spawner(this.constellation);
     this.time = 0;
-    this.touchDown = false;
 
     this.createRenderables();
 
     // TODO: This is a debug warp
-    for (let i = 0; i < 600; ++i)
+    for (let i = 0; i < 1500; ++i)
         this.update();
 };
 
@@ -85,8 +84,6 @@ Koi.prototype.touchStart = function(x, y) {
 
     if (fish)
         this.mover.pickUp(fish,x / this.scale, y / this.scale, this.water, this.random);
-
-    this.touchDown = true;
 };
 
 /**
@@ -103,8 +100,6 @@ Koi.prototype.touchMove = function(x, y) {
  */
 Koi.prototype.touchEnd = function() {
     this.mover.drop(this.water, this.random);
-
-    this.touchDown = false;
 };
 
 /**
@@ -139,7 +134,7 @@ Koi.prototype.resize = function() {
  */
 Koi.prototype.update = function() {
     this.spawner.update(this.UPDATE_RATE, this.atlas, this.random);
-    this.constellation.update(this.atlas, this.random);
+    this.constellation.update(this.atlas, this.water, this.random);
     this.mover.update();
 
     this.systems.waves.propagate(this.water, this.systems.wavePainter, this.constellationMesh);
