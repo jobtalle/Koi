@@ -26,8 +26,8 @@ Body.prototype.SPEED_SWING_THRESHOLD = .01;
 Body.prototype.SPEED_WAVE_THRESHOLD = .065;
 Body.prototype.OVERLAP_PADDING = 1.8;
 Body.prototype.WAVE_RADIUS = .15;
-Body.prototype.WAVE_INTENSITY_MIN = .1;
-Body.prototype.WAVE_INTENSITY_MULTIPLIER = 7;
+Body.prototype.WAVE_INTENSITY_MIN = .05;
+Body.prototype.WAVE_INTENSITY_MULTIPLIER = 3.5;
 
 /**
  * Disturb water while swimming

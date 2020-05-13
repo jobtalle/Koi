@@ -45,7 +45,7 @@ uniform mediump float time;
 mediump float get(mediump vec2 delta) {
   mediump vec2 uv = gl_FragCoord.xy / size + delta / waterSize;
   
-  return mix(texture2D(waterBack, uv).r, texture2D(waterFront, uv).r, time) * 4.0 - 2.0;
+  return mix(texture2D(waterBack, uv).r, texture2D(waterFront, uv).r, time) * 6.0 - 3.0;
 }
 
 void main() {
@@ -67,11 +67,15 @@ void main() {
   mediump vec4 filter = vec4(0.93, 0.98, 1.0, 1.0) * vec4(0.92, 0.97, 1.0, 1.0);
   mediump vec4 sky = vec4(0.88, 0.96, 1.0, 1.0);
   
+  mediump vec4 pixel = texture2D(background, gl_FragCoord.xy / size - displacement);
+  
+  if (pixel.a == 0.0)
+    pixel = vec4(1.0);
+  
   gl_FragColor = mix(
-    filter * texture2D(background, gl_FragCoord.xy / size - displacement),
+    filter * pixel,
     sky,
     shiny);
-  // gl_FragColor = vec4(texture2D(waterFront, gl_FragCoord.xy / size).bbb, 1.0);
 }
 `;
 
@@ -95,18 +99,17 @@ void main() {
   mediump vec2 uv = gl_FragCoord.xy / size;
   mediump vec2 step = vec2(1.0 / size.x, 1.0 / size.y);
   mediump vec3 state = texture2D(source, uv).rgb;
-  mediump float hLeft = texture2D(source, vec2(uv.x - step.x, uv.y)).r * 2.0 - 1.0;
-  mediump float hRight = texture2D(source, vec2(uv.x + step.x, uv.y)).r * 2.0 - 1.0;
-  mediump float hUp = texture2D(source, vec2(uv.x, uv.y - step.y)).r * 2.0 - 1.0;
-  mediump float hDown = texture2D(source, vec2(uv.x, uv.y + step.y)).r * 2.0 - 1.0;
+  mediump float hLeft = texture2D(source, vec2(uv.x - step.x, uv.y)).r;
+  mediump float hRight = texture2D(source, vec2(uv.x + step.x, uv.y)).r;
+  mediump float hUp = texture2D(source, vec2(uv.x, uv.y - step.y)).r;
+  mediump float hDown = texture2D(source, vec2(uv.x, uv.y + step.y)).r;
   mediump float momentum = (state.g + state.b) * 2.0 - 1.0;
-  mediump float oldHeight = state.r * 2.0 - 1.0;
-  mediump float newHeight = (hLeft + hUp + hRight + hDown) * 0.5;
+  mediump float newHeight = (hLeft + hUp + hRight + hDown) - 2.0;
   
   gl_FragColor = vec4(
     ((newHeight - momentum) * damping) * 0.5 + 0.5,
-    oldHeight * 0.5 + 0.5,
-    0,
+    state.r,
+    0.0,
     0.0);
 }
 `;

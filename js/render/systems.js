@@ -14,6 +14,7 @@ const Systems = function(gl, width, height) {
     this.sand = new Sand(gl);
     this.waves = new Waves(gl);
     this.wavePainter = new WavePainter(gl);
+    this.bodies = new Bodies(gl);
 };
 
 /**
@@ -43,4 +44,5 @@ Systems.prototype.free = function() {
     this.sand.free();
     this.waves.free();
     this.wavePainter.free();
+    this.bodies.free();
 };

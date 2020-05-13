@@ -13,8 +13,8 @@ const Mover = function(constellation) {
 };
 
 Mover.prototype.SPLASH_DROP_RADIUS = 0.2;
-Mover.prototype.SPLASH_DROP_AMPLITUDE = 0.9;
-Mover.prototype.SPLASH_DROP_DISTANCE = 0.2;
+Mover.prototype.SPLASH_DROP_AMPLITUDE = 0.2;
+Mover.prototype.SPLASH_DROP_DISTANCE = 0.25;
 
 /**
  * Update the mover

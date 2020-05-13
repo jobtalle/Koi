@@ -38,7 +38,7 @@ uniform mediump float displacement;
 varying mediump float alpha;
 
 void main() {
-  gl_FragColor = vec4(0.0, 0.0, alpha * displacement * 0.5, 0.0);
+  gl_FragColor = vec4(0.0, 0.0, alpha * displacement, 0.0);
 }
 `;
 
