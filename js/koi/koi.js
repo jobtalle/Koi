@@ -145,7 +145,7 @@ Koi.prototype.update = function() {
     this.constellation.update(this.atlas, this.random);
     this.mover.update();
 
-    this.systems.waves.propagate(this.water, this.constellationMesh);
+    this.systems.waves.propagate(this.water, this.systems.wavePainter, this.constellationMesh);
 };
 
 /**

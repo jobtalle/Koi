@@ -6,11 +6,12 @@
  * @constructor
  */
 const WaterPlane = function(gl, width, height) {
-    // TODO: The B channel is not used right now
+    // TODO: The B channel is not used right now, use for depth?
     this.front = 0;
     this.width = Math.ceil(width * this.SCALE);
     this.height = Math.ceil(height * this.SCALE);
     this.flares = [];
+    this.hasInfluences = false;
     this.targets = [
         new RenderTarget(gl, this.width, this.height, gl.RGB, gl.LINEAR, gl.FLOAT),
         new RenderTarget(gl, this.width, this.height, gl.RGB, gl.LINEAR, gl.FLOAT)
@@ -28,6 +29,7 @@ WaterPlane.prototype.SCALE = 16;
  */
 WaterPlane.prototype.addFlare = function(x, y, radius, displacement) {
     this.flares.push(x, y, radius, displacement);
+    this.hasInfluences = true;
 };
 
 /**
