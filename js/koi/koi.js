@@ -84,7 +84,7 @@ Koi.prototype.touchStart = function(x, y) {
     const fish = this.constellation.pick(x / this.scale, y / this.scale);
 
     if (fish)
-        this.mover.pickUp(fish,x / this.scale, y / this.scale);
+        this.mover.pickUp(fish,x / this.scale, y / this.scale, this.water, this.random);
 
     this.touchDown = true;
 };
@@ -96,16 +96,13 @@ Koi.prototype.touchStart = function(x, y) {
  */
 Koi.prototype.touchMove = function(x, y) {
     this.mover.touchMove(x / this.scale, y / this.scale);
-
-    if (this.touchDown && !this.mover.move)
-        this.water.addFlare(x / this.scale, y /this.scale, 0.1, -2);
 };
 
 /**
  * End a touch event
  */
 Koi.prototype.touchEnd = function() {
-    this.mover.drop();
+    this.mover.drop(this.water, this.random);
 
     this.touchDown = false;
 };
