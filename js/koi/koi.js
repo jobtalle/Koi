@@ -98,7 +98,7 @@ Koi.prototype.touchMove = function(x, y) {
     this.mover.touchMove(x / this.scale, y / this.scale);
 
     if (this.touchDown && !this.mover.move)
-        this.water.addFlare(x / this.scale, y /this.scale, 0.1);
+        this.water.addFlare(x / this.scale, y /this.scale, 0.1, -2);
 };
 
 /**
@@ -180,7 +180,7 @@ Koi.prototype.render = function(deltaTime) {
     // Target window
     this.systems.targetMain();
 
-    this.systems.gl.clearColor(.5, .6, .5, 1);
+    this.systems.gl.clearColor(.8, .7, .5, 1);
     this.systems.gl.clear(this.systems.gl.COLOR_BUFFER_BIT);
 
     // Render shaded water

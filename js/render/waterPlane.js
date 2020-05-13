@@ -6,8 +6,7 @@
  * @constructor
  */
 const WaterPlane = function(gl, width, height) {
-    // TODO: Use LUMINANCE_ALPHA 2 channel format, you don't need more
-    // TODO: Downscale for performance & wave speed
+    // TODO: The B channel is not used right now
     this.front = 0;
     this.width = Math.ceil(width * this.SCALE);
     this.height = Math.ceil(height * this.SCALE);
@@ -25,9 +24,10 @@ WaterPlane.prototype.SCALE = 16;
  * @param {Number} x The X position of the flare
  * @param {Number} y The Y position of the flare
  * @param {Number} radius The flare radius
+ * @param {Number} displacement The amount of displacement
  */
-WaterPlane.prototype.addFlare = function(x, y, radius) {
-    this.flares.push(x, y, radius);
+WaterPlane.prototype.addFlare = function(x, y, radius, displacement) {
+    this.flares.push(x, y, radius, displacement);
 };
 
 /**

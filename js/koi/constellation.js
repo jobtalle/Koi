@@ -227,7 +227,7 @@ Constellation.prototype.makeMesh = function(gl) {
     this.small.constraint.appendMesh(vertices, indices);
     this.river.constraint.appendMesh(vertices, indices);
 
-    return new MeshMask(gl, vertices, indices);
+    return new Mesh(gl, vertices, indices);
 };
 
 /**

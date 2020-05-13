@@ -22,7 +22,7 @@ const Waves = function(gl) {
         gl,
         this.SHADER_INFLUENCE_VERTEX,
         this.SHADER_INFLUENCE_FRAGMENT,
-        ["size", "origin", "radius"],
+        ["size", "origin", "radius", "displacement"],
         ["vertex"]);
 };
 
@@ -62,15 +62,21 @@ void main() {
   mediump vec3 normal = cross(
     normalize(vec3(2.0, dyx, 0.0)),
     normalize(vec3(0.0, dyz, 2.0)));
-  mediump vec2 displacement = (depth * normal.xz) / size;
+  mediump vec2 displacement = depth * normal.xz / size;
   mediump float shiny = dot(normalize(vec3(1.0, 0.0, 1.0)), normal);
   
   if (shiny < 0.0)
     shiny *= 0.5;
+  else if (shiny > 0.6) // TODO: Specular hack
+    shiny *= 3.0;
   
-  mediump vec4 filter = vec4(0.93, 0.98, 1.0, 1.0);
+  mediump vec4 filter = vec4(0.93, 0.98, 1.0, 1.0) * vec4(0.92, 0.97, 1.0, 1.0);
+  mediump vec4 sky = vec4(0.8, 0.9, 1.0, 1.0);
   
-  gl_FragColor = filter * texture2D(background, gl_FragCoord.xy / size + displacement) * (1.0 + shiny * 0.5);
+  gl_FragColor = mix(
+    filter * texture2D(background, gl_FragCoord.xy / size - displacement),
+    sky,
+    shiny);
 }
 `;
 
@@ -93,13 +99,17 @@ uniform mediump float damping;
 void main() {
   mediump vec2 uv = gl_FragCoord.xy / size;
   mediump vec2 step = vec2(1.0 / size.x, 1.0 / size.y);
-  mediump vec4 pixel = texture2D(source, uv);
-  mediump vec4 pixelLeft = texture2D(source, vec2(uv.x - step.x, uv.y));
-  mediump vec4 pixelRight = texture2D(source, vec2(uv.x + step.x, uv.y));
-  mediump vec4 pixelUp = texture2D(source, vec2(uv.x, uv.y - step.y));
-  mediump vec4 pixelDown = texture2D(source, vec2(uv.x, uv.y + step.y));
+  mediump vec2 state = texture2D(source, uv).rg;
+  mediump float hLeft = texture2D(source, vec2(uv.x - step.x, uv.y)).r;
+  mediump float hRight = texture2D(source, vec2(uv.x + step.x, uv.y)).r;
+  mediump float hUp = texture2D(source, vec2(uv.x, uv.y - step.y)).r;
+  mediump float hDown = texture2D(source, vec2(uv.x, uv.y + step.y)).r;
   
-  gl_FragColor = vec4(((pixelLeft.r + pixelUp.r + pixelRight.r + pixelDown.r) / 2.0 - pixel.g) * damping, pixel.r, 0.0, 1.0);
+  gl_FragColor = vec4(
+    ((hLeft + hUp + hRight + hDown) * 0.5 - state.g) * damping,
+    state.r,
+    0.0,
+    1.0);
 }
 `;
 
@@ -110,20 +120,22 @@ uniform float radius;
 
 attribute vec3 vertex;
 
-varying mediump float intensity;
+varying mediump float alpha;
 
 void main() {
-  intensity = vertex.z;
+  alpha = vertex.z;
   
   gl_Position = vec4(vec2(2.0, -2.0) * (vertex.xy * radius + origin) / size + vec2(-1.0, 1.0), 0.0, 1.0);
 }
 `;
 
 Waves.prototype.SHADER_INFLUENCE_FRAGMENT = `#version 100
-varying mediump float intensity;
+uniform mediump float displacement;
+
+varying mediump float alpha;
 
 void main() {
-  gl_FragColor = vec4(2.0, 0.0, 0.0, intensity * 0.5);
+  gl_FragColor = vec4(displacement, 0.0, 0.0, alpha);
 }
 `;
 
@@ -162,7 +174,7 @@ Waves.prototype.applyInfluences = function(water) {
     this.gl.uniform2f(this.programInfluence.uSize, water.width, water.height);
 
     if (water.flares.length !== 0) { // TODO: Put different shapes in different functions, array as argument
-        const flareCount = water.flares.length / 3;
+        const flareCount = water.flares.length >> 2;
 
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.bufferFlare);
         this.gl.enableVertexAttribArray(this.programInfluence.aVertex);
@@ -175,13 +187,15 @@ Waves.prototype.applyInfluences = function(water) {
             0);
 
         for (let flare = 0; flare < flareCount; ++flare) {
-            const index = flare + flare + flare;
+            const index = flare + flare + flare + flare;
 
             this.gl.uniform2f(this.programInfluence.uOrigin,
                 water.flares[index] * WaterPlane.prototype.SCALE,
                 water.flares[index + 1] * WaterPlane.prototype.SCALE);
             this.gl.uniform1f(this.programInfluence.uRadius,
                 water.flares[index + 2] * WaterPlane.prototype.SCALE);
+            this.gl.uniform1f(this.programInfluence.uDisplacement,
+                water.flares[index + 3]);
 
             this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, this.SHAPE_FLARE_PRECISION + 2);
         }
@@ -195,7 +209,7 @@ Waves.prototype.applyInfluences = function(water) {
 /**
  * Propagate the waves on a water plane
  * @param {WaterPlane} water A water plane
- * @param {MeshMask} mesh A mesh containing all water pixels
+ * @param {Mesh} mesh A mesh containing all water pixels
  */
 Waves.prototype.propagate = function(water, mesh) {
     this.programPropagate.use();
@@ -227,7 +241,7 @@ Waves.prototype.propagate = function(water, mesh) {
 /**
  * Render waves
  * @param {WebGLTexture} background A background texture
- * @param {MeshMask} mesh A mesh containing all water pixels
+ * @param {Mesh} mesh A mesh containing all water pixels
  * @param {WaterPlane} water A water plane to shade the background with
  * @param {Number} width The background width in pixels
  * @param {Number} height The background height in pixels

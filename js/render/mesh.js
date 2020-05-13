@@ -1,11 +1,11 @@
 /**
- * An untextured mask mesh
+ * A mesh
  * @param {WebGLRenderingContext} gl A WebGL context
  * @param {Number[]} vertices An array of vertices
  * @param {Number[]} indices An array of indices
  * @constructor
  */
-const MeshMask = function(gl, vertices, indices) {
+const Mesh = function(gl, vertices, indices) {
     this.gl = gl;
     this.vertices = gl.createBuffer();
     this.indices = gl.createBuffer();
@@ -20,7 +20,7 @@ const MeshMask = function(gl, vertices, indices) {
 /**
  * Free all resources maintained by this mesh
  */
-MeshMask.prototype.free = function() {
+Mesh.prototype.free = function() {
     this.gl.deleteBuffer(this.vertices);
     this.gl.deleteBuffer(this.indices);
 };
