@@ -26,7 +26,7 @@ attribute vec3 vertex;
 varying mediump float alpha;
 
 void main() {
-  alpha = sqrt(vertex.z);
+  alpha = vertex.z;
   
   gl_Position = vec4(vec2(2.0, -2.0) * (vertex.xy * radius + origin) / size + vec2(-1.0, 1.0), 0.0, 1.0);
 }
@@ -38,7 +38,7 @@ uniform mediump float displacement;
 varying mediump float alpha;
 
 void main() {
-  gl_FragColor = vec4(0.0, displacement, 0.0, alpha);
+  gl_FragColor = vec4(0.0, 0.0, alpha * displacement * 0.5, 0.0);
 }
 `;
 
@@ -104,10 +104,9 @@ WavePainter.prototype.paintFlares = function(flares) {
  */
 WavePainter.prototype.applyInfluences = function(water) {
     if (water.hasInfluences) {
-        this.gl.enable(this.gl.BLEND);
-        this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
-
         this.program.use();
+        this.gl.enable(this.gl.BLEND);
+        this.gl.blendFunc(this.gl.ONE, this.gl.ONE);
 
         this.gl.uniform2f(this.program.uSize, water.width, water.height);
 

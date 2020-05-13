@@ -30,26 +30,26 @@ Fish.prototype.RADIUS_ATTRACTION = 1.5;
 Fish.prototype.NIBBLE_TIME_MIN = 20;
 Fish.prototype.NIBBLE_TIME_MAX = 40;
 Fish.prototype.NIBBLE_RADIUS = .1;
-Fish.prototype.NIBBLE_DISPLACEMENT = -1;
+Fish.prototype.NIBBLE_DISPLACEMENT = 0.5;
 Fish.prototype.NIBBLE_TURN_FORCE = .07;
 Fish.prototype.SPEED_MIN = .015;
 Fish.prototype.SPEED_NIBBLE = .0155;
 Fish.prototype.SPEED_SLOW = .04;
 Fish.prototype.SPEED_DROP = .06;
 Fish.prototype.SPEED_DECAY = .996;
-Fish.prototype.SPEED_CATCH_UP = .003;
-Fish.prototype.BOOST_CHANCE = .0035;
+Fish.prototype.SPEED_CATCH_UP = .0045;
+Fish.prototype.BOOST_CHANCE = .0025;
 Fish.prototype.BOOST_POWER = .0015;
 Fish.prototype.BOOST_MIN = 5;
 Fish.prototype.BOOST_MAX = 30;
-Fish.prototype.TURN_CHANCE = .0015;
+Fish.prototype.TURN_CHANCE = .0013;
 Fish.prototype.TURN_FORCE = .06;
 Fish.prototype.TURN_POWER = .4;
 Fish.prototype.TURN_DECAY = .94;
 Fish.prototype.TURN_THRESHOLD = .005;
 Fish.prototype.TURN_CARRY = .95;
 Fish.prototype.TURN_FOLLOW_CHANCE = .025;
-Fish.prototype.TURN_AMPLITUDE = Math.PI * .25;
+Fish.prototype.TURN_AMPLITUDE = Math.PI * .4;
 
 /**
  * Move the fish to a given position

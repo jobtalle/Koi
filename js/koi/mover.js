@@ -12,8 +12,8 @@ const Mover = function(constellation) {
     this.cursorOffset = new Vector2();
 };
 
-Mover.prototype.SPLASH_DROP_RADIUS = 0.13;
-Mover.prototype.SPLASH_DROP_AMPLITUDE = -1.7;
+Mover.prototype.SPLASH_DROP_RADIUS = 0.2;
+Mover.prototype.SPLASH_DROP_AMPLITUDE = 0.9;
 Mover.prototype.SPLASH_DROP_DISTANCE = 0.2;
 
 /**
@@ -70,10 +70,9 @@ Mover.prototype.touchMove = function(x, y) {
  * Create a fish body shaped splash
  * @param {Body} body A fish body
  * @param {WaterPlane} waterPlane A water plane to splash on
- * @param {Number} direction The drop direction, -1 for up and 1 for down
  * @param {Random} random A randomizer
  */
-Mover.prototype.createBodySplash = function(body, waterPlane, direction, random) {
+Mover.prototype.createBodySplash = function(body, waterPlane, random) {
     for (let segment = body.spine.length; segment-- > 0;) {
         const angle = Math.PI * 2 * random.getFloat();
         const intensity = body.pattern.shape.sample(segment / (body.spine.length - 1));
@@ -83,7 +82,7 @@ Mover.prototype.createBodySplash = function(body, waterPlane, direction, random)
             body.spine[segment].x + Math.cos(angle) * distance,
             body.spine[segment].y + Math.sin(angle) * distance,
             this.SPLASH_DROP_RADIUS * intensity,
-            this.SPLASH_DROP_AMPLITUDE * intensity * direction);
+            this.SPLASH_DROP_AMPLITUDE * intensity);
     }
 };
 
@@ -102,7 +101,7 @@ Mover.prototype.pickUp = function(fish, x, y, waterPlane, random) {
     this.offset.x = fish.position.x - this.cursor.x;
     this.offset.y = fish.position.y - this.cursor.y;
 
-    this.createBodySplash(fish.body, waterPlane, 1, random);
+    this.createBodySplash(fish.body, waterPlane, random);
 };
 
 /**
@@ -113,7 +112,7 @@ Mover.prototype.pickUp = function(fish, x, y, waterPlane, random) {
 Mover.prototype.drop = function(waterPlane, random) {
     if (this.move) {
         this.constellation.drop(this.move);
-        this.createBodySplash(this.move.body, waterPlane, -1, random);
+        this.createBodySplash(this.move.body, waterPlane, random);
         this.move = null;
     }
 };
