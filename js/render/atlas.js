@@ -17,20 +17,6 @@ Atlas.prototype.RESOLUTION = 64;
 Atlas.prototype.RATIO = 4;
 
 /**
- * Find the nearest power of 2 which is bigger than or equal to a number
- * @param {Number} number A number
- * @returns {Number} The biggest power of 2 larger than that number
- */
-Atlas.prototype.nearestPow2 = function(number) {
-    let n = 1;
-
-    while (n < number)
-        n <<= 1;
-
-    return n;
-};
-
-/**
  * Create all texture slots on the atlas
  * @param {Number} blockResolution The square root of the number of slot blocks on this atlas
  * @param {Number} width The width in pixels
@@ -54,14 +40,13 @@ Atlas.prototype.createSlots = function(blockResolution, width, height) {
  * @param {Number} capacity The number of fish patterns this atlas must be able to contain
  */
 Atlas.prototype.createRenderTarget = function(capacity) {
-    // TODO: Is padding really needed?
     const blocks = Math.ceil(capacity / (this.RATIO + 1));
     const blockResolution = Math.ceil(Math.sqrt(blocks));
-    const size = this.nearestPow2(blockResolution * this.RESOLUTION * (this.RATIO + 1));
+    const size = blockResolution * this.RESOLUTION * (this.RATIO + 1);
     const renderTarget = new RenderTarget(this.gl, size, size, this.gl.RGBA, this.gl.LINEAR, this.gl.UNSIGNED_BYTE);
 
     this.slotSize.x = this.RESOLUTION * this.RATIO / size;
-    this.slotSize.y = this.RESOLUTION / size; // TODO: Factor out slot size
+    this.slotSize.y = this.RESOLUTION / size;
     this.available = this.createSlots(blockResolution, size, size);
 
     return renderTarget;
