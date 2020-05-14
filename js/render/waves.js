@@ -19,7 +19,7 @@ const Waves = function(gl) {
         ["position"]);
 };
 
-Waves.prototype.DAMPING = .995;
+Waves.prototype.DAMPING = .992;
 Waves.prototype.DEPTH = 0.1;
 
 Waves.prototype.SHADER_DISTORT_VERTEX = `#version 100

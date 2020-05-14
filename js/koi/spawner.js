@@ -29,8 +29,8 @@ Spawner.prototype.update = function(timeStep, atlas, random) {
                     new PatternSpots(
                         1.5,
                         new Color(0.8, 0.3, 0.2),
-                        new Vector3(Math.random() * 64, Math.random() * 64, Math.random() * 64),
-                        new Vector3(Math.random() - .5, Math.random() - .5, Math.random() - .5).normalize()
+                        new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),
+                        new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()
                     )
                 ],
                 new PatternShapeBody(0.6, 0.8),
@@ -39,7 +39,14 @@ Spawner.prototype.update = function(timeStep, atlas, random) {
             atlas.write(pattern);
 
             this.constellation.river.addFish(new Fish(
-                new Body(pattern, [new Fin(.2, .8)], 1.2, .3),
+                new Body(
+                    pattern,
+                    [
+                        new Fin(.2, 1.4, true), new Fin(.2, 1.4, false),
+                        new Fin(.5, .8, true), new Fin(.5, .8, false)
+                    ],
+                    1.2,
+                    .3),
                 this.constellation.spawnPoint,
                 this.constellation.spawnDirection));
         }

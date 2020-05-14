@@ -11,15 +11,12 @@ const Body = function(pattern, fins, length, thickness) {
     this.fins = fins;
     this.radius = thickness * .5;
     this.spine = new Array(Math.ceil(length / this.RESOLUTION));
+    this.finGroups = this.assignFins(fins, this.spine.length);
     this.spinePrevious = new Array(this.spine.length);
     this.spacing = length / (this.spine.length - 1);
     this.inverseSpacing = 1 / this.spacing;
     this.springs = this.makeSprings(this.SPRING_START, this.SPRING_END, this.SPRING_POWER);
     this.phase = 0;
-
-    for (const fin of fins)
-        fin.connect(this.spine, pattern, this.radius);
-    // TODO: if length to thickness ratio does not match atlas ratio, write shorter textures
 };
 
 Body.prototype.RESOLUTION = .12;
@@ -29,12 +26,35 @@ Body.prototype.SPRING_POWER = 1.7;
 Body.prototype.SWIM_AMPLITUDE = 8.5;
 Body.prototype.SWIM_SPEED = 6.5;
 Body.prototype.SPEED_SWING_THRESHOLD = .01;
-Body.prototype.SPEED_WAVE_THRESHOLD = .065;
+Body.prototype.SPEED_WAVE_THRESHOLD = .055;
 Body.prototype.OVERLAP_PADDING = 1.8;
 Body.prototype.WAVE_RADIUS = .15;
 Body.prototype.WAVE_INTENSITY_MIN = .05;
-Body.prototype.WAVE_INTENSITY_MULTIPLIER = 3.5;
+Body.prototype.WAVE_INTENSITY_MULTIPLIER = 2;
 Body.prototype.WAVE_TURBULENCE = .4;
+
+/**
+ * Assign fins to an array matching the vertebrae
+ * @param {Fin[]} fins All fins
+ * @param {Number} spineLength The length of the spine
+ * @returns {Fin[][]} An array containing an array of fins per vertebrae
+ */
+Body.prototype.assignFins = function(fins, spineLength) {
+    const spineFins = new Array(spineLength).fill(null);
+
+    for (const fin of fins) {
+        const index = fin.getVertebraIndex(spineLength);
+
+        if (!spineFins[index])
+            spineFins[index] = [];
+
+        spineFins[index].push(fin);
+
+        fin.connect(this.pattern, this.pattern.shapeBody.sample(index / (spineLength - 1)) * this.radius);
+    }
+
+    return spineFins;
+};
 
 /**
  * Disturb water while swimming
@@ -167,33 +187,32 @@ Body.prototype.update = function(
     let xDir = Math.cos(angle);
     let yDir = Math.sin(angle);
 
-    for (let segment = 1; segment < this.spine.length; ++segment) {
-        let dx = this.spine[segment].x - this.spine[segment - 1].x;
-        let dy = this.spine[segment].y - this.spine[segment - 1].y;
+    for (let vertebra = 1; vertebra < this.spine.length; ++vertebra) {
+        let dx = this.spine[vertebra].x - this.spine[vertebra - 1].x;
+        let dy = this.spine[vertebra].y - this.spine[vertebra - 1].y;
         let distance = Math.sqrt(dx * dx + dy * dy);
 
-        const dxc = this.spine[segment - 1].x + xDir * this.spacing - this.spine[segment].x;
-        const dyc = this.spine[segment - 1].y + yDir * this.spacing - this.spine[segment].y;
+        const dxc = this.spine[vertebra - 1].x + xDir * this.spacing - this.spine[vertebra].x;
+        const dyc = this.spine[vertebra - 1].y + yDir * this.spacing - this.spine[vertebra].y;
 
         xDir = dx / distance;
         yDir = dy / distance;
 
-        dx += dxc * this.springs[segment - 1];
-        dy += dyc * this.springs[segment - 1];
+        if (this.finGroups[vertebra - 1]) for (const fin of this.finGroups[vertebra - 1])
+            fin.update(this.spine[vertebra - 1], xDir, yDir);
+
+        dx += dxc * this.springs[vertebra - 1];
+        dy += dyc * this.springs[vertebra - 1];
 
         distance = Math.sqrt(dx * dx + dy * dy);
 
-        this.spine[segment].set(this.spine[segment - 1]);
-        this.spine[segment].x += this.spacing * dx / distance;
-        this.spine[segment].y += this.spacing * dy / distance;
+        this.spine[vertebra].set(this.spine[vertebra - 1]);
+        this.spine[vertebra].x += this.spacing * dx / distance;
+        this.spine[vertebra].y += this.spacing * dy / distance;
     }
 
     if ((this.phase += this.SWIM_SPEED * speed) > Math.PI * 2)
         this.phase -= Math.PI * 2;
-
-    // TODO: Update in segment loop to recycle deltas
-    for (const fin of this.fins)
-        fin.update(this.spine, this.spacing);
 
     if (water)
         this.disturbWater(water, random);

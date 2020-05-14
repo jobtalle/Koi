@@ -26,7 +26,7 @@ void main() {
   if (length(iUv) > 1.0)
     gl_FragColor = vec4(0.0);
   else
-    gl_FragColor = vec4(1.0);
+    gl_FragColor = vec4(0.7);
 }
 `;
 
@@ -50,5 +50,5 @@ PatternShapeFin.prototype.createShader = function(gl) {
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
         [],
-        []);
+        ["position", "uv"]);
 };

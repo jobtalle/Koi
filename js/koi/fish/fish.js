@@ -251,7 +251,7 @@ Fish.prototype.update = function(constraint, water, random) {
 
             water.addFlare(this.position.x, this.position.y, this.NIBBLE_RADIUS, this.NIBBLE_DISPLACEMENT);
 
-            const turnForce = 2 * (Math.random() - .5) * this.NIBBLE_TURN_FORCE;
+            const turnForce = 2 * (random.getFloat() - .5) * this.NIBBLE_TURN_FORCE;
 
             this.velocity.x += this.direction.y * turnForce;
             this.velocity.y -= this.direction.x * turnForce;

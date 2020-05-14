@@ -2,34 +2,44 @@
  * A fin
  * @param {Number} at The position on the body in the range [0, 1]
  * @param {Number} radius The radius as a factor of body width
+ * @param {Boolean} side The side to which this fin is attached, true for right
  * @constructor
  */
-const Fin = function(at, radius) {
+const Fin = function(at, radius, side) {
     this.at = at;
     this.radius = radius;
+    this.side = side;
     this.anchor = new Vector2();
     this.anchorPrevious = this.anchor.copy();
     this.start = new Vector2();
     this.startPrevious = this.start.copy();
     this.end = new Vector2();
     this.endPrevious = new Vector2();
-    this.vertebraIndex = -1;
     this.anchorRadius = 0;
+    this.finRadius = 0;
     this.pattern = null;
 };
 
 Fin.prototype.ANCHOR_INSET = 1;
 
 /**
- * Connect the fin to a spine
- * @param {Vector2[]} spine A spine
- * @param {Pattern} pattern A pattern
- * @param {Number} radius The maximum body radius
+ * Get the index of the vertebra this fin is connected to
+ * @param {Number} spineLength The length of the spine to assign this fin to
+ * @returns {Number} The vertebrae index to connect the fin to
  */
-Fin.prototype.connect = function(spine, pattern, radius) {
-    this.vertebraIndex = Math.max(1, Math.round(spine.length * this.at));
-    this.anchorRadius = this.ANCHOR_INSET * pattern.shapeBody.sample(this.vertebraIndex / (spine.length - 1)) * radius;
+Fin.prototype.getVertebraIndex = function(spineLength) {
+    return Math.max(1, Math.round(spineLength * this.at));
+};
+
+/**
+ * Connect the fin to a spine
+ * @param {Pattern} pattern A pattern
+ * @param {Number} radius The body radius at the connection point
+ */
+Fin.prototype.connect = function(pattern, radius) {
     this.pattern = pattern;
+    this.anchorRadius = this.ANCHOR_INSET * radius;
+    this.finRadius = this.radius * radius;
 };
 
 /**
@@ -57,29 +67,35 @@ Fin.prototype.storePreviousState = function() {
 
 /**
  * Update the fin state
- * @param {Vector2[]} spine A spine
- * @param {Number} spacing The spacing between the vertebrae
+ * @param {Vector2} vertebra The connected vertebra location
+ * @param {Number} dx The normalized X direction of the vertebra
+ * @param {Number} dy The normalized Y direction of the vertebra
  */
-Fin.prototype.update = function(spine, spacing) {
-    const r = 0.3;
-
+Fin.prototype.update = function(vertebra, dx, dy) {
     this.storePreviousState();
 
-    this.anchor.set(spine[this.vertebraIndex]);
+    this.anchor.set(vertebra);
 
-    const dx = (this.anchor.x - spine[this.vertebraIndex - 1].x) / spacing;
-    const dy = (this.anchor.y - spine[this.vertebraIndex - 1].y) / spacing;
+    if (this.side) {
+        this.anchor.x += dy * this.anchorRadius;
+        this.anchor.y -= dx * this.anchorRadius;
 
-    this.anchor.x += dy * this.anchorRadius;
-    this.anchor.y -= dx * this.anchorRadius;
+        this.start.set(this.anchor);
+        this.start.x += dy * this.finRadius;
+        this.start.y -= dx * this.finRadius;
+    }
+    else {
+        this.anchor.x -= dy * this.anchorRadius;
+        this.anchor.y += dx * this.anchorRadius;
 
-    this.start.set(this.anchor);
-    this.start.x += dy * r;
-    this.start.y -= dx * r;
+        this.start.set(this.anchor);
+        this.start.x -= dy * this.finRadius;
+        this.start.y += dx * this.finRadius;
+    }
 
     this.end.set(this.anchor);
-    this.end.x += dx * r;
-    this.end.y += dy * r;
+    this.end.x += dx * this.finRadius;
+    this.end.y += dy * this.finRadius;
 };
 
 /**

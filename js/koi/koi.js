@@ -29,8 +29,8 @@ const Koi = function(systems, random) {
 
 Koi.prototype.FRAME_TIME_MAX = 1;
 Koi.prototype.UPDATE_RATE = 1 / 14;
-Koi.prototype.PREFERRED_SCALE = 80;
-Koi.prototype.SIZE_MIN = 11;
+Koi.prototype.PREFERRED_SCALE = 85;
+Koi.prototype.SIZE_MIN = 8;
 Koi.prototype.SIZE_MAX = 13;
 
 /**
@@ -201,13 +201,13 @@ Koi.prototype.render = function(deltaTime) {
     this.systems.gl.bindTexture(this.systems.gl.TEXTURE_2D, this.atlas.renderTarget.texture);
 
     // Debug atlas preview
-    this.systems.primitives.cutStrip(0, 0, 0, 0);
-    this.systems.primitives.drawStrip(0, 800,0, 1);
-    this.systems.primitives.cutStrip(800, 800,1, 1);
-    this.systems.primitives.cutStrip(0, 0, 0, 0);
-    this.systems.primitives.drawStrip(800, 0,1, 0);
-    this.systems.primitives.cutStrip(800, 800,1, 1);
-    this.systems.primitives.flush();
+    // this.systems.primitives.cutStrip(0, 0, 0, 0);
+    // this.systems.primitives.drawStrip(0, 800,0, 1);
+    // this.systems.primitives.cutStrip(800, 800,1, 1);
+    // this.systems.primitives.cutStrip(0, 0, 0, 0);
+    // this.systems.primitives.drawStrip(800, 0,1, 0);
+    // this.systems.primitives.cutStrip(800, 800,1, 1);
+    // this.systems.primitives.flush();
 };
 
 /**

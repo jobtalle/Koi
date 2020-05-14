@@ -5,6 +5,7 @@
  */
 const PatternBase = function(color) {
     this.color = color;
+    // TODO: Wouldn't a glClear with scissor not suffice here? Doesn't warrant a shader.
 };
 
 PatternBase.prototype.SHADER_VERTEX = `#version 100
