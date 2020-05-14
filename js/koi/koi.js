@@ -196,6 +196,18 @@ Koi.prototype.render = function(deltaTime) {
         this.systems.height,
         this.scale,
         timeFactor);
+
+    this.systems.gl.activeTexture(this.systems.gl.TEXTURE0);
+    this.systems.gl.bindTexture(this.systems.gl.TEXTURE_2D, this.atlas.renderTarget.texture);
+
+    // Debug atlas preview
+    this.systems.primitives.cutStrip(0, 0, 0, 0);
+    this.systems.primitives.drawStrip(0, 800,0, 1);
+    this.systems.primitives.cutStrip(800, 800,1, 1);
+    this.systems.primitives.cutStrip(0, 0, 0, 0);
+    this.systems.primitives.drawStrip(800, 0,1, 0);
+    this.systems.primitives.cutStrip(800, 800,1, 1);
+    this.systems.primitives.flush();
 };
 
 /**

@@ -43,7 +43,7 @@ void main() {
 `;
 
 /**
- * Create a buffer containing a flare shape
+ * Create a buffer containing a flare shapeBody
  */
 WavePainter.prototype.createBufferFlare = function() {
     const buffer = this.gl.createBuffer();

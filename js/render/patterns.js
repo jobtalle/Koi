@@ -8,7 +8,8 @@ const Patterns = function(gl) {
     this.buffer = gl.createBuffer();
     this.programBase = PatternBase.prototype.createShader(gl);
     this.programSpots = PatternSpots.prototype.createShader(gl);
-    this.programShape = PatternShape.prototype.createShader(gl);
+    this.programShapeBody = PatternShapeBody.prototype.createShader(gl);
+    this.programShapeFin = PatternShapeFin.prototype.createShader(gl);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
     gl.bufferData(gl.ARRAY_BUFFER, 64, gl.DYNAMIC_DRAW);
@@ -41,21 +42,40 @@ Patterns.prototype.writeLayer = function(layer, program) {
 /**
  * Write a pattern
  * @param {Pattern} pattern A pattern
+ * @param {AtlasRegion} region A region on the atlas on which the pattern may be written
  */
-Patterns.prototype.write = function(pattern) {
+Patterns.prototype.write = function(pattern, region) {
+    // TODO: Pass actual coordinates instead of UV's that need transforming
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
     this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array([
-        2 * pattern.slot.x - 1,
-        2 * pattern.slot.y - 1,
+        2 * region.uBodyStart - 1,
+        2 * region.vStart - 1,
         0, 0,
-        2 * pattern.slot.x - 1,
-        2 * (pattern.slot.y + pattern.size.y) - 1,
+        2 * region.uBodyStart - 1,
+        2 * region.vEnd - 1,
         0, 1,
-        2 * (pattern.slot.x + pattern.size.x) - 1,
-        2 * (pattern.slot.y + pattern.size.y) - 1,
+        2 * region.uFinEnd - 1,
+        2 * region.vEnd - 1,
         1, 1,
-        2 * (pattern.slot.x + pattern.size.x) - 1,
-        2 * pattern.slot.y - 1,
+        2 * region.uFinEnd - 1,
+        2 * region.vStart - 1,
+        1, 0
+    ]));
+
+    this.writeLayer(pattern.base, this.programBase);
+
+    this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array([
+        2 * region.uBodyStart - 1,
+        2 * region.vStart - 1,
+        0, 0,
+        2 * region.uBodyStart - 1,
+        2 * region.vEnd - 1,
+        0, 1,
+        2 * region.uBodyEnd - 1,
+        2 * region.vEnd - 1,
+        1, 1,
+        2 * region.uBodyEnd - 1,
+        2 * region.vStart - 1,
         1, 0
     ]));
 
@@ -63,10 +83,6 @@ Patterns.prototype.write = function(pattern) {
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
 
     for (const layer of pattern.layers) switch (layer.constructor) {
-        case PatternBase:
-            this.writeLayer(layer, this.programBase);
-
-            break;
         case PatternSpots:
             this.writeLayer(layer, this.programSpots);
 
@@ -74,7 +90,26 @@ Patterns.prototype.write = function(pattern) {
     }
 
     this.gl.blendFunc(this.gl.ZERO, this.gl.SRC_COLOR)
-    this.writeLayer(pattern.shape, this.programShape);
+
+    this.writeLayer(pattern.shapeBody, this.programShapeBody);
+
+    this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array([
+        2 * region.uFinStart - 1,
+        2 * region.vStart - 1,
+        0, 0,
+        2 * region.uFinStart - 1,
+        2 * region.vEnd - 1,
+        0, 1,
+        2 * region.uFinEnd - 1,
+        2 * region.vEnd - 1,
+        1, 1,
+        2 * region.uFinEnd - 1,
+        2 * region.vStart - 1,
+        1, 0
+    ]));
+
+    this.writeLayer(pattern.shapeFin, this.programShapeFin);
+
     this.gl.disable(this.gl.BLEND);
 };
 
@@ -84,7 +119,8 @@ Patterns.prototype.write = function(pattern) {
 Patterns.prototype.free = function() {
     this.programBase.free();
     this.programSpots.free();
-    this.programShape.free();
+    this.programShapeBody.free();
+    this.programShapeFin.free();
 
     this.gl.deleteBuffer(this.buffer);
 };

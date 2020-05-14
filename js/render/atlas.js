@@ -41,10 +41,10 @@ Atlas.prototype.createSlots = function(blockResolution, width, height) {
     const available = [];
 
     for (let y = 0; y < blockResolution; ++y) for (let x = 0; x < blockResolution; ++x)
-        for (let row = 0; row < this.RATIO; ++row)
+        for (let row = 0; row <= this.RATIO; ++row)
             available.push(new Vector2(
-                (x * this.RATIO * this.RESOLUTION) / width,
-                ((y * this.RATIO + row) * this.RESOLUTION) / height))
+                (x * (this.RATIO + 1) * this.RESOLUTION) / width,
+                ((y * (this.RATIO + 1) + row) * this.RESOLUTION) / height))
 
     return available;
 };
@@ -54,13 +54,14 @@ Atlas.prototype.createSlots = function(blockResolution, width, height) {
  * @param {Number} capacity The number of fish patterns this atlas must be able to contain
  */
 Atlas.prototype.createRenderTarget = function(capacity) {
-    const blocks = Math.ceil(capacity / this.RATIO);
+    // TODO: Is padding really needed?
+    const blocks = Math.ceil(capacity / (this.RATIO + 1));
     const blockResolution = Math.ceil(Math.sqrt(blocks));
-    const size = this.nearestPow2(blockResolution * this.RESOLUTION * this.RATIO);
+    const size = this.nearestPow2(blockResolution * this.RESOLUTION * (this.RATIO + 1));
     const renderTarget = new RenderTarget(this.gl, size, size, this.gl.RGBA, this.gl.LINEAR, this.gl.UNSIGNED_BYTE);
 
     this.slotSize.x = this.RESOLUTION * this.RATIO / size;
-    this.slotSize.y = this.RESOLUTION / size;
+    this.slotSize.y = this.RESOLUTION / size; // TODO: Factor out slot size
     this.available = this.createSlots(blockResolution, size, size);
 
     return renderTarget;
@@ -75,11 +76,11 @@ Atlas.prototype.getSlot = function() {
 };
 
 /**
- * Return an atlas slot that is no longer being used
- * @param {Vector2} slot The origin of the atlas slot
+ * Return an atlas region that is no longer being used
+ * @param {AtlasRegion} region The atlas region
  */
-Atlas.prototype.returnSlot = function(slot) {
-    this.available.unshift(slot);
+Atlas.prototype.returnRegion = function(region) {
+    this.available.unshift(region.slot);
 };
 
 /**
@@ -87,11 +88,10 @@ Atlas.prototype.returnSlot = function(slot) {
  * @param {Pattern} pattern The pattern to write to the atlas
  */
 Atlas.prototype.write = function(pattern) {
-    pattern.slot = this.getSlot();
-    pattern.size = this.slotSize;
+    pattern.region = new AtlasRegion(this.getSlot(), this.slotSize);
 
     this.renderTarget.target();
-    this.patterns.write(pattern);
+    this.patterns.write(pattern, pattern.region);
 };
 
 /**

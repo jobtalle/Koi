@@ -83,7 +83,9 @@ Body.prototype.moveTo = function(position) {
  * @param {Number} y The Y position
  * @returns {Boolean} A boolean indicating whether this body has been hit
  */
-Body.prototype.atPosition = function(x, y) { // TODO: Use a better method which allows padding
+Body.prototype.atPosition = function(x, y) {
+    // TODO: Use a better method which allows padding
+    // TODO: Also check fins
     let dx = x - this.spine[0].x;
     let dy = y - this.spine[0].y;
     let radius = this.spacing * (this.spine.length - 1);
@@ -94,7 +96,7 @@ Body.prototype.atPosition = function(x, y) { // TODO: Use a better method which 
     for (let segment = 1; segment < this.spine.length - 1; ++segment) {
         dx = x - this.spine[segment].x;
         dy = y - this.spine[segment].y;
-        radius = this.pattern.shape.sample(segment / (this.spine.length - 1)) * this.radius * this.OVERLAP_PADDING;
+        radius = this.pattern.shapeBody.sample(segment / (this.spine.length - 1)) * this.radius * this.OVERLAP_PADDING;
 
         if (dx * dx + dy * dy < radius * radius)
             return true;
@@ -206,9 +208,6 @@ Body.prototype.render = function(bodies, time) {
     for (const fin of this.fins)
         fin.render(bodies, time);
 
-    const uStart = this.pattern.slot.x;
-    const uLength = this.pattern.slot.x + this.pattern.size.x - uStart;
-
     let xp, x = this.spinePrevious[0].x + (this.spine[0].x - this.spinePrevious[0].x) * time;
     let yp, y = this.spinePrevious[0].y + (this.spine[0].y - this.spinePrevious[0].y) * time;
     let dxp, dx;
@@ -234,17 +233,18 @@ Body.prototype.render = function(bodies, time) {
 
         const dxAveraged = (dx + dxp) * .5;
         const dyAveraged = (dy + dyp) * .5;
-        const u = uStart + uLength * (segment - 1) / (this.spine.length - 1);
+        const u = this.pattern.region.uBodyStart + (this.pattern.region.uBodyEnd - this.pattern.region.uBodyStart) *
+            (segment - 1) / (segments - 1);
 
         bodies.vertices.push(
             xp - this.radius * dyAveraged * this.inverseSpacing,
             yp + this.radius * dxAveraged * this.inverseSpacing,
             u,
-            this.pattern.slot.y,
+            this.pattern.region.vStart,
             xp + this.radius * dyAveraged * this.inverseSpacing,
             yp - this.radius * dxAveraged * this.inverseSpacing,
             u,
-            this.pattern.slot.y + this.pattern.size.y);
+            this.pattern.region.vEnd);
 
         if (segment === segments - 1)
             bodies.indices.push(
@@ -268,8 +268,8 @@ Body.prototype.render = function(bodies, time) {
             (this.spine[this.spine.length - 1].x - this.spinePrevious[this.spine.length - 1].x) * time,
         this.spinePrevious[this.spine.length - 1].y +
             (this.spine[this.spine.length - 1].y - this.spinePrevious[this.spine.length - 1].y) * time,
-        uStart + uLength,
-        this.pattern.slot.y + this.pattern.size.y * .5);
+        this.pattern.region.uBodyEnd,
+        (this.pattern.region.vStart + this.pattern.region.vEnd) * .5);
 };
 
 /**

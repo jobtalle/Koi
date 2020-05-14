@@ -28,7 +28,7 @@ Fin.prototype.ANCHOR_INSET = 1;
  */
 Fin.prototype.connect = function(spine, pattern, radius) {
     this.vertebraIndex = Math.max(1, Math.round(spine.length * this.at));
-    this.anchorRadius = this.ANCHOR_INSET * pattern.shape.sample(this.vertebraIndex / (spine.length - 1)) * radius;
+    this.anchorRadius = this.ANCHOR_INSET * pattern.shapeBody.sample(this.vertebraIndex / (spine.length - 1)) * radius;
     this.pattern = pattern;
 };
 
@@ -100,20 +100,20 @@ Fin.prototype.render = function(bodies, time) {
     bodies.vertices.push(
         ax,
         ay,
-        this.pattern.slot.x + this.pattern.size.x * .5,
-        this.pattern.slot.y + this.pattern.size.y * .5,
+        this.pattern.region.uFinStart,
+        this.pattern.region.vStart,
         sx,
         sy,
-        this.pattern.slot.x + this.pattern.size.x * .5,
-        this.pattern.slot.y + this.pattern.size.y * .5,
+        this.pattern.region.uFinEnd,
+        this.pattern.region.vStart,
         ex,
         ey,
-        this.pattern.slot.x + this.pattern.size.x * .5,
-        this.pattern.slot.y + this.pattern.size.y * .5,
+        this.pattern.region.uFinStart,
+        this.pattern.region.vEnd,
         sx + (ex - ax),
         sy + (ey - ay),
-        this.pattern.slot.x + this.pattern.size.x * .5,
-        this.pattern.slot.y + this.pattern.size.y * .5);
+        this.pattern.region.uFinEnd,
+        this.pattern.region.vEnd);
     bodies.indices.push(
         startIndex,
         startIndex + 1,

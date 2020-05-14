@@ -1,14 +1,17 @@
 /**
  * A fish pattern
  * @param {Object[]} layers The layers making up this pattern
- * @param {PatternShape} shape The fish shape for this pattern
+ * @param {PatternBase} base The base color pattern, also applied to fins
+ * @param {PatternShapeBody} shapeBody The body shape for this pattern
+ * @param {PatternShapeFin} shapeFin The fin shape for this pattern
  * @constructor
  */
-const Pattern = function(layers, shape) {
+const Pattern = function(base, layers, shapeBody, shapeFin) {
+    this.base = base;
     this.layers = layers;
-    this.shape = shape;
-    this.slot = null;
-    this.size = null;
+    this.shapeBody = shapeBody;
+    this.shapeFin = shapeFin;
+    this.region = null;
 };
 
 /**
@@ -16,5 +19,6 @@ const Pattern = function(layers, shape) {
  * @param {Atlas} atlas The texture atlas
  */
 Pattern.prototype.free = function(atlas) {
-    atlas.returnSlot(this.slot);
+    if (this.region)
+        atlas.returnRegion(this.region);
 };

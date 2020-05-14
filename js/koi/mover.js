@@ -75,7 +75,7 @@ Mover.prototype.touchMove = function(x, y) {
 Mover.prototype.createBodySplash = function(body, waterPlane, random) {
     for (let segment = body.spine.length; segment-- > 0;) {
         const angle = Math.PI * 2 * random.getFloat();
-        const intensity = body.pattern.shape.sample(segment / (body.spine.length - 1));
+        const intensity = body.pattern.shapeBody.sample(segment / (body.spine.length - 1));
         const distance = this.SPLASH_DROP_DISTANCE * intensity;
 
         waterPlane.addFlare(
