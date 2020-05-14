@@ -38,7 +38,7 @@ Spawner.prototype.update = function(timeStep, atlas, random) {
             atlas.write(pattern);
 
             this.constellation.river.addFish(new Fish(
-                new Body(pattern, 1.2, .3),
+                new Body(pattern, [new Fin(.2, .8)], 1.2, .3),
                 this.constellation.spawnPoint,
                 this.constellation.spawnDirection));
         }

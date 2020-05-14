@@ -12,9 +12,9 @@ const Mover = function(constellation) {
     this.cursorOffset = new Vector2();
 };
 
-Mover.prototype.SPLASH_DROP_RADIUS = 0.2;
-Mover.prototype.SPLASH_DROP_AMPLITUDE = 0.2;
-Mover.prototype.SPLASH_DROP_DISTANCE = 0.25;
+Mover.prototype.SPLASH_DROP_RADIUS = 0.1;
+Mover.prototype.SPLASH_DROP_AMPLITUDE = 0.4;
+Mover.prototype.SPLASH_DROP_DISTANCE = 0.1;
 
 /**
  * Update the mover
@@ -24,8 +24,7 @@ Mover.prototype.update = function() {
         this.move.body.update(
             this.move.position,
             this.move.direction,
-            this.move.speed,
-            null);
+            this.move.speed);
 };
 
 /**
@@ -45,16 +44,6 @@ Mover.prototype.render = function(
     scale,
     time) {
     if (this.move) {
-        // primitives.transformPush();
-        // primitives.getTransform().scale(scale, scale);
-        // primitives.setTexture(atlas);
-        // primitives.gl.enable(primitives.gl.BLEND);
-        // primitives.gl.blendFunc(primitives.gl.SRC_ALPHA, primitives.gl.ONE_MINUS_SRC_ALPHA);
-        //
-        // this.move.render(primitives, time);
-        //
-        // primitives.transformPop();
-        // primitives.gl.disable(primitives.gl.BLEND);
         this.move.render(bodies, time);
 
         bodies.render(atlas, width, height, scale);
@@ -87,7 +76,7 @@ Mover.prototype.createBodySplash = function(body, waterPlane, random) {
     for (let segment = body.spine.length; segment-- > 0;) {
         const angle = Math.PI * 2 * random.getFloat();
         const intensity = body.pattern.shape.sample(segment / (body.spine.length - 1));
-        const distance = Math.sqrt(random.getFloat()) * this.SPLASH_DROP_DISTANCE * intensity;
+        const distance = this.SPLASH_DROP_DISTANCE * intensity;
 
         waterPlane.addFlare(
             body.spine[segment].x + Math.cos(angle) * distance,

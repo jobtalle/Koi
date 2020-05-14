@@ -258,19 +258,6 @@ Constellation.prototype.render = function(
     height,
     scale,
     time) {
-    // primitives.transformPush();
-    // primitives.getTransform().scale(scale, scale);
-    // primitives.setTexture(atlas);
-    // primitives.gl.enable(primitives.gl.BLEND);
-    // primitives.gl.blendFunc(primitives.gl.SRC_ALPHA, primitives.gl.ONE_MINUS_SRC_ALPHA);
-    //
-    // this.small.render(primitives, time);
-    // this.big.render(primitives, time);
-    // this.river.render(primitives, time);
-    //
-    // primitives.transformPop();
-    // primitives.gl.disable(primitives.gl.BLEND);
-
     this.big.render(bodies, time);
     this.small.render(bodies, time);
     this.river.render(bodies, time);

@@ -28,7 +28,7 @@ const Koi = function(systems, random) {
 };
 
 Koi.prototype.FRAME_TIME_MAX = 1;
-Koi.prototype.UPDATE_RATE = 1 / 15;
+Koi.prototype.UPDATE_RATE = 1 / 14;
 Koi.prototype.PREFERRED_SCALE = 80;
 Koi.prototype.SIZE_MIN = 11;
 Koi.prototype.SIZE_MAX = 13;
@@ -150,7 +150,7 @@ Koi.prototype.render = function(deltaTime) {
     while (this.time > this.UPDATE_RATE) {
         this.time -= this.UPDATE_RATE;
 
-        this.update();
+        this.update(); // TODO: Add separate update step to spread out processing?
     }
 
     const timeFactor = this.time / this.UPDATE_RATE;

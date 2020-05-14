@@ -1,22 +1,28 @@
 /**
  * A fish body
- * @param {Pattern} pattern A body pattern=
+ * @param {Pattern} pattern A body pattern
+ * @param {Fin[]} fins The fins
  * @param {Number} length The body length
  * @param {Number} thickness The body thickness
  * @constructor
  */
-const Body = function(pattern, length, thickness) {
+const Body = function(pattern, fins, length, thickness) {
     this.pattern = pattern;
+    this.fins = fins;
     this.radius = thickness * .5;
-    this.spine = new Array(this.RESOLUTION);
+    this.spine = new Array(Math.ceil(length / this.RESOLUTION));
     this.spinePrevious = new Array(this.spine.length);
     this.spacing = length / (this.spine.length - 1);
     this.inverseSpacing = 1 / this.spacing;
     this.springs = this.makeSprings(this.SPRING_START, this.SPRING_END, this.SPRING_POWER);
     this.phase = 0;
+
+    for (const fin of fins)
+        fin.connect(this.spine, pattern, this.radius);
+    // TODO: if length to thickness ratio does not match atlas ratio, write shorter textures
 };
 
-Body.prototype.RESOLUTION = 10;
+Body.prototype.RESOLUTION = .12;
 Body.prototype.SPRING_START = .9;
 Body.prototype.SPRING_END = .3;
 Body.prototype.SPRING_POWER = 1.7;
@@ -62,10 +68,13 @@ Body.prototype.moveTo = function(position) {
     const dx = position.x - this.spine[0].x;
     const dy = position.y - this.spine[0].y;
 
-    for (const point of this.spine) {
-        point.x += dx;
-        point.y += dy;
+    for (const vertebra of this.spine) {
+        vertebra.x += dx;
+        vertebra.y += dy;
     }
+
+    for (const fin of this.fins)
+        fin.shift(dx, dy);
 };
 
 /**
@@ -138,10 +147,15 @@ Body.prototype.storePreviousState = function() {
  * @param {Vector2} head The new head position
  * @param {Vector2} direction The normalized head direction
  * @param {Number} speed The fish speed
- * @param {WaterPlane} water A water plane to disturb
- * @param {Random} random A randomizer
+ * @param {WaterPlane} [water] A water plane to disturb
+ * @param {Random} [random] A randomizer
  */
-Body.prototype.update = function(head, direction, speed, water, random) {
+Body.prototype.update = function(
+    head,
+    direction,
+    speed,
+    water = null,
+    random = null) {
     this.storePreviousState();
     this.spine[0].set(head);
 
@@ -175,6 +189,10 @@ Body.prototype.update = function(head, direction, speed, water, random) {
     if ((this.phase += this.SWIM_SPEED * speed) > Math.PI * 2)
         this.phase -= Math.PI * 2;
 
+    // TODO: Update in segment loop to recycle deltas
+    for (const fin of this.fins)
+        fin.update(this.spine, this.spacing);
+
     if (water)
         this.disturbWater(water, random);
 };
@@ -185,7 +203,9 @@ Body.prototype.update = function(head, direction, speed, water, random) {
  * @param {Number} time The interpolation factor
  */
 Body.prototype.render = function(bodies, time) {
-    const indexOffset = bodies.getIndexOffset();
+    for (const fin of this.fins)
+        fin.render(bodies, time);
+
     const uStart = this.pattern.slot.x;
     const uLength = this.pattern.slot.x + this.pattern.size.x - uStart;
 
@@ -193,11 +213,9 @@ Body.prototype.render = function(bodies, time) {
     let yp, y = this.spinePrevious[0].y + (this.spine[0].y - this.spinePrevious[0].y) * time;
     let dxp, dx;
     let dyp, dy;
+    let startIndex = bodies.getIndexOffset();
 
-    // bodies.vertices.push(x, y, uStart, this.pattern.slot.y + this.pattern.size.y * .5);
-    // primitives.cutStrip(x, y, 0, 0);
-
-    for (let segment = 1; segment < this.spine.length; ++segment) { // TODO: Reverse loop?
+    for (let segment = 1, segments = this.spine.length; segment < segments; ++segment) {
         xp = x;
         yp = y;
 
@@ -214,7 +232,6 @@ Body.prototype.render = function(bodies, time) {
         dx = x - xp;
         dy = y - yp;
 
-        const startIndex = indexOffset + ((segment - 1) << 1);
         const dxAveraged = (dx + dxp) * .5;
         const dyAveraged = (dy + dyp) * .5;
         const u = uStart + uLength * (segment - 1) / (this.spine.length - 1);
@@ -229,7 +246,7 @@ Body.prototype.render = function(bodies, time) {
             u,
             this.pattern.slot.y + this.pattern.size.y);
 
-        if (segment === this.spine.length - 1)
+        if (segment === segments - 1)
             bodies.indices.push(
                 startIndex,
                 startIndex + 1,
@@ -242,6 +259,8 @@ Body.prototype.render = function(bodies, time) {
                 startIndex + 3,
                 startIndex + 2,
                 startIndex);
+
+        startIndex += 2;
     }
 
     bodies.vertices.push(
@@ -251,7 +270,6 @@ Body.prototype.render = function(bodies, time) {
             (this.spine[this.spine.length - 1].y - this.spinePrevious[this.spine.length - 1].y) * time,
         uStart + uLength,
         this.pattern.slot.y + this.pattern.size.y * .5);
-    // TODO: Tail
 };
 
 /**
