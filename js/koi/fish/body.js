@@ -28,12 +28,14 @@ Body.prototype.OVERLAP_PADDING = 1.8;
 Body.prototype.WAVE_RADIUS = .15;
 Body.prototype.WAVE_INTENSITY_MIN = .05;
 Body.prototype.WAVE_INTENSITY_MULTIPLIER = 3.5;
+Body.prototype.WAVE_TURBULENCE = .4;
 
 /**
  * Disturb water while swimming
  * @param {WaterPlane} water A water plane to disturb
+ * @param {Random} random A randomizer
  */
-Body.prototype.disturbWater = function(water) {
+Body.prototype.disturbWater = function(water, random) {
     const tailIndex = this.spine.length - 2;
     const dx = this.spine[tailIndex].x - this.spinePrevious[tailIndex].x;
     const dy = this.spine[tailIndex].y - this.spinePrevious[tailIndex].y;
@@ -48,7 +50,7 @@ Body.prototype.disturbWater = function(water) {
             this.spine[tailIndex].x,
             this.spine[tailIndex].y,
             this.WAVE_RADIUS,
-            intensity);
+            intensity * (random.getFloat() * this.WAVE_TURBULENCE + (1 - this.WAVE_TURBULENCE)));
     }
 };
 
@@ -137,8 +139,9 @@ Body.prototype.storePreviousState = function() {
  * @param {Vector2} direction The normalized head direction
  * @param {Number} speed The fish speed
  * @param {WaterPlane} water A water plane to disturb
+ * @param {Random} random A randomizer
  */
-Body.prototype.update = function(head, direction, speed, water) {
+Body.prototype.update = function(head, direction, speed, water, random) {
     this.storePreviousState();
     this.spine[0].set(head);
 
@@ -173,15 +176,16 @@ Body.prototype.update = function(head, direction, speed, water) {
         this.phase -= Math.PI * 2;
 
     if (water)
-        this.disturbWater(water);
+        this.disturbWater(water, random);
 };
 
 /**
  * Render the body
- * @param {Primitives} primitives The primitives renderer
+ * @param {Bodies} bodies The bodies renderer
  * @param {Number} time The interpolation factor
  */
-Body.prototype.render = function(primitives, time) {
+Body.prototype.render = function(bodies, time) {
+    const indexOffset = bodies.getIndexOffset();
     const uStart = this.pattern.slot.x;
     const uLength = this.pattern.slot.x + this.pattern.size.x - uStart;
 
@@ -190,9 +194,10 @@ Body.prototype.render = function(primitives, time) {
     let dxp, dx;
     let dyp, dy;
 
-    primitives.cutStrip(x, y, 0, 0);
+    // bodies.vertices.push(x, y, uStart, this.pattern.slot.y + this.pattern.size.y * .5);
+    // primitives.cutStrip(x, y, 0, 0);
 
-    for (let segment = 1; segment < this.spine.length; ++segment) {
+    for (let segment = 1; segment < this.spine.length; ++segment) { // TODO: Reverse loop?
         xp = x;
         yp = y;
 
@@ -209,29 +214,44 @@ Body.prototype.render = function(primitives, time) {
         dx = x - xp;
         dy = y - yp;
 
+        const startIndex = indexOffset + ((segment - 1) << 1);
         const dxAveraged = (dx + dxp) * .5;
         const dyAveraged = (dy + dyp) * .5;
         const u = uStart + uLength * (segment - 1) / (this.spine.length - 1);
 
-        primitives.drawStrip(
+        bodies.vertices.push(
             xp - this.radius * dyAveraged * this.inverseSpacing,
             yp + this.radius * dxAveraged * this.inverseSpacing,
             u,
-            this.pattern.slot.y);
-        primitives.drawStrip(
+            this.pattern.slot.y,
             xp + this.radius * dyAveraged * this.inverseSpacing,
             yp - this.radius * dxAveraged * this.inverseSpacing,
             u,
             this.pattern.slot.y + this.pattern.size.y);
+
+        if (segment === this.spine.length - 1)
+            bodies.indices.push(
+                startIndex,
+                startIndex + 1,
+                startIndex + 2);
+        else
+            bodies.indices.push(
+                startIndex,
+                startIndex + 1,
+                startIndex + 3,
+                startIndex + 3,
+                startIndex + 2,
+                startIndex);
     }
 
-    primitives.cutStrip(
+    bodies.vertices.push(
         this.spinePrevious[this.spine.length - 1].x +
             (this.spine[this.spine.length - 1].x - this.spinePrevious[this.spine.length - 1].x) * time,
         this.spinePrevious[this.spine.length - 1].y +
             (this.spine[this.spine.length - 1].y - this.spinePrevious[this.spine.length - 1].y) * time,
         uStart + uLength,
         this.pattern.slot.y + this.pattern.size.y * .5);
+    // TODO: Tail
 };
 
 /**

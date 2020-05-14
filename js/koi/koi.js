@@ -164,8 +164,10 @@ Koi.prototype.render = function(deltaTime) {
 
     // Render fishes
     this.constellation.render(
-        this.systems.primitives,
-        this.atlas.renderTarget.texture,
+        this.systems.bodies,
+        this.atlas,
+        this.systems.width,
+        this.systems.height,
         this.scale,
         timeFactor);
 
@@ -187,7 +189,13 @@ Koi.prototype.render = function(deltaTime) {
 
     // Render mover
     this.systems.primitives.setViewport(this.systems.width, this.systems.height);
-    this.mover.render(this.systems.primitives, this.atlas.renderTarget.texture, this.scale, timeFactor);
+    this.mover.render(
+        this.systems.bodies,
+        this.atlas,
+        this.systems.width,
+        this.systems.height,
+        this.scale,
+        timeFactor);
 };
 
 /**

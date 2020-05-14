@@ -92,10 +92,10 @@ Pond.prototype.update = function(atlas, water, random) {
 
 /**
  * Render this pond and its contents
- * @param {Primitives} primitives The primitives renderer
+ * @param {Bodies} bodies The bodies renderer
  * @param {Number} time The interpolation factor
  */
-Pond.prototype.render = function(primitives, time) {
+Pond.prototype.render = function(bodies, time) {
     for (const fish of this.fishes)
-        fish.render(primitives, time);
+        fish.render(bodies, time);
 };

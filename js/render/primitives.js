@@ -147,35 +147,6 @@ Primitives.prototype.flush = function() {
 };
 
 /**
- * Get the current transform
- * @returns {Transform} The currently active transform which may be modified
- */
-Primitives.prototype.getTransform = function() {
-    return this.transformStack[this.transformIndex];
-};
-
-/**
- * Save the current transform & push a new one on the stack
- */
-Primitives.prototype.transformPush = function() {
-    this.setProgram(null, -1);
-
-    if (++this.transformIndex === this.transformStack.length)
-        this.transformStack.push(this.transformStack[this.transformIndex - 1].copy());
-    else
-        this.transformStack[this.transformIndex].set(this.transformStack[this.transformIndex - 1]);
-};
-
-/**
- * Pop the current transform from the stack, restoring the previously pushed one
- */
-Primitives.prototype.transformPop = function() {
-    this.setProgram(null, -1);
-
-    --this.transformIndex;
-};
-
-/**
  * Add a point to the textured strip
  * @param {Number} x The X coordinate
  * @param {Number} y The Y coordinate

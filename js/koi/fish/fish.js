@@ -260,7 +260,7 @@ Fish.prototype.update = function(constraint, water, random) {
     }
     this.positionPrevious.set(this.position);
     this.position.add(this.velocity.multiply(this.speed));
-    this.body.update(this.position, this.direction, this.speed, water);
+    this.body.update(this.position, this.direction, this.speed, water, random);
 
     return false;
 };

@@ -30,23 +30,34 @@ Mover.prototype.update = function() {
 
 /**
  * Render the mover
- * @param {Primitives} primitives The primitives renderer
- * @param {WebGLTexture} atlas The atlas texture
+ * @param {Bodies} bodies The bodies renderer
+ * @param {Atlas} atlas The atlas containing the fish textures
+ * @param {Number} width The render target width
+ * @param {Number} height The render target height
  * @param {Number} scale The render scale
  * @param {Number} time The interpolation factor since the last update
  */
-Mover.prototype.render = function(primitives, atlas, scale, time) {
+Mover.prototype.render = function(
+    bodies,
+    atlas,
+    width,
+    height,
+    scale,
+    time) {
     if (this.move) {
-        primitives.transformPush();
-        primitives.getTransform().scale(scale, scale);
-        primitives.setTexture(atlas);
-        primitives.gl.enable(primitives.gl.BLEND);
-        primitives.gl.blendFunc(primitives.gl.SRC_ALPHA, primitives.gl.ONE_MINUS_SRC_ALPHA);
+        // primitives.transformPush();
+        // primitives.getTransform().scale(scale, scale);
+        // primitives.setTexture(atlas);
+        // primitives.gl.enable(primitives.gl.BLEND);
+        // primitives.gl.blendFunc(primitives.gl.SRC_ALPHA, primitives.gl.ONE_MINUS_SRC_ALPHA);
+        //
+        // this.move.render(primitives, time);
+        //
+        // primitives.transformPop();
+        // primitives.gl.disable(primitives.gl.BLEND);
+        this.move.render(bodies, time);
 
-        this.move.render(primitives, time);
-
-        primitives.transformPop();
-        primitives.gl.disable(primitives.gl.BLEND);
+        bodies.render(atlas, width, height, scale);
     }
 };
 
