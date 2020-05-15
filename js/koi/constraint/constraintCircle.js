@@ -14,11 +14,37 @@ const ConstraintCircle = function(position, radius) {
 ConstraintCircle.prototype = Object.create(Constraint.prototype);
 
 /**
- * Get the fish capacity of this constraint
- * @returns {Number} The maximum number of fish that fit within this constraint
+ * Constrain a vector to make sure it is inside the constraint
+ * @param {Vector2} vector The vector to constrain
+ * @returns {Boolean} A boolean indicating whether the vector could be constrained, always true for circles
  */
-ConstraintCircle.prototype.getCapacity = function() {
-    return Math.floor(Math.PI * this.radius * this.radius / this.AREA_PER_FISH);
+ConstraintCircle.prototype.constrain = function(vector) {
+    const dx = vector.x - this.position.x;
+    const dy = vector.y - this.position.y;
+    const distanceSquared = dx * dx + dy * dy;
+
+    if (distanceSquared < this.radius * this.radius)
+        return true;
+
+    const distance = Math.sqrt(distanceSquared);
+
+    vector.x = this.position.x + this.radius * dx / distance;
+    vector.y = this.position.y + this.radius * dy / distance;
+
+    return true;
+};
+
+/**
+ * Check whether a given point is contained within this constraint
+ * @param {Number} x The X position
+ * @param {Number} y The Y position
+ * @returns {Boolean} A boolean indicating whether the given point is inside this constraint
+ */
+ConstraintCircle.prototype.contains = function(x, y) {
+    const dx = x - this.position.x;
+    const dy = y - this.position.y;
+
+    return dx * dx + dy * dy < this.radius * this.radius;
 };
 
 /**
@@ -44,23 +70,26 @@ ConstraintCircle.prototype.sample = function(position) {
         return (distance - innerRadius) / this.border;
     }
 };
-
 /**
- * Draw the circle
- * @param {Renderer} renderer The renderer
+ * Append a mesh
+ * @param {Number[]} vertices The vertex array
+ * @param {Number[]} indices The index array
  */
-ConstraintCircle.prototype.render = function(renderer) {
-    let x, y, xp, yp;
+ConstraintCircle.prototype.appendMesh = function(vertices, indices) {
+    const firstIndex = vertices.length >> 1;
+    const steps = Math.ceil(2 * Math.PI * this.radius / this.MESH_RESOLUTION);
 
-    for (let i = 0; i <= 64; ++i) {
-        const angle = Math.PI * i / 32;
+    vertices.push(this.position.x, this.position.y);
 
-        xp = x;
-        yp = y;
-        x = this.position.x + Math.cos(angle) * this.radius;
-        y = this.position.y + Math.sin(angle) * this.radius;
+    for (let step = 0; step < steps; ++step) {
+        const radians = Math.PI * 2 * step / steps;
 
-        if (i !== 0)
-            renderer.drawLine(xp, yp, Color.WHITE, x, y, Color.WHITE);
+        vertices.push(
+            this.position.x + Math.cos(radians) * this.radius,
+            this.position.y + Math.sin(radians) * this.radius);
+        indices.push(
+            firstIndex,
+            firstIndex + step + 1,
+            firstIndex + 1 + (step + 1) % steps);
     }
 };

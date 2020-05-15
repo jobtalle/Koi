@@ -17,19 +17,31 @@ const Constellation = function(width, height) {
 };
 
 Constellation.prototype.FACTOR_PADDING = .1;
-Constellation.prototype.FACTOR_SMALL = .6;
+Constellation.prototype.FACTOR_SMALL = .7;
 Constellation.prototype.FACTOR_RIVER = .6;
+Constellation.prototype.FISH_PER_AREA = 1;
+
+/**
+ * Update the atlas, write all fish textures again
+ * @param {Atlas} atlas The atlas
+ */
+Constellation.prototype.updateAtlas = function(atlas) {
+    this.big.updateAtlas(atlas);
+    this.small.updateAtlas(atlas);
+    this.river.updateAtlas(atlas);
+};
 
 /**
  * Resize the constellation
  * @param {Number} width The scene width
  * @param {Number} height The scene height
+ * @param {Atlas} atlas The texture atlas
  */
-Constellation.prototype.resize = function(width, height) {
+Constellation.prototype.resize = function(width, height, atlas) {
     this.width = width;
     this.height = height;
 
-    this.fit();
+    this.fit(atlas);
 };
 
 /**
@@ -37,29 +49,47 @@ Constellation.prototype.resize = function(width, height) {
  * @returns {Number} The total fish capacity
  */
 Constellation.prototype.getCapacity = function() {
-    return this.big.capacity + this.small.capacity + this.river.capacity;
+    return Math.ceil(this.FISH_PER_AREA * Math.PI * (
+        this.big.constraint.radius * this.big.constraint.radius +
+        this.small.constraint.radius * this.small.constraint.radius));
+};
+
+/**
+ * Get the number of fish existing in the constellation
+ * @returns {Number}
+ */
+Constellation.prototype.getFishCount = function() {
+    return this.big.fishes.length + this.small.fishes.length + this.river.fishes.length;
+};
+
+/**
+ * Calculate the radius of the big pond which makes all elements fit optimally
+ * @param {Number} width The scene width
+ * @param {Number} height The scene height
+ */
+Constellation.prototype.getBigPondRadius = function(width, height) {
+    const p1 = this.FACTOR_SMALL + 1;
+    const a = (this.FACTOR_RIVER + p1) * (this.FACTOR_RIVER + p1) - 2 * p1 * p1;
+    const b = (p1 + p1) * (height + width);
+    const c = height * height + width * width;
+
+    return (Math.sqrt(b * b + 4 * a * c) - b) / (a + a);
 };
 
 /**
  * Calculate the constellation layout
+ * @param {Atlas} [atlas] The texture atlas, required when fish exist in the constellation
  */
-Constellation.prototype.fit = function() {
-    const p = this.FACTOR_SMALL;
-    const q = this.FACTOR_RIVER;
-    const w = this.width;
-    const h = this.height;
-
-    const radiusBig = Math.min((Math.sqrt(
-        ((p + 1) * (p + 1) * (h + w) * (h + w) + (h * h + w * w) * (q * (2 * p + q + 2) - p * (p + 2) - 1))) -
-        (p + 1) * (h + w)) /
-        (p * (2 * q - p - 2) + q * (q + 2) - 1),
-        Math.min(this.width, this.height) * .5);
+Constellation.prototype.fit = function(atlas = null) {
+    const radiusBigMax = Math.min(this.width, this.height) * .5;
+    const radiusBig = Math.min(this.getBigPondRadius(this.width, this.height), radiusBigMax);
     const radiusSmall = this.FACTOR_SMALL * radiusBig;
     const centerBig = new Vector2(radiusBig, radiusBig);
     const centerSmall = new Vector2(this.width - radiusSmall, this.height - radiusSmall);
     const riverWidth = centerSmall.copy().subtract(centerBig).length() - radiusBig - radiusSmall;
     const riverTurn = Math.atan((centerSmall.y - centerBig.y) / (centerSmall.x - centerBig.x));
 
+    const fullTurn = radiusBig !== radiusBigMax;
     const constraintBig = new ConstraintCircle(
         centerBig,
         radiusBig * (1 - this.FACTOR_PADDING));
@@ -75,7 +105,7 @@ Constellation.prototype.fit = function() {
                     centerBig,
                     radiusBig + riverWidth * .5,
                     riverTurn,
-                    Math.PI),
+                    fullTurn ? Math.PI : Math.PI * .5),
                 new ConstraintArcPath.Arc(
                     centerSmall,
                     radiusSmall + riverWidth * .5,
@@ -84,8 +114,14 @@ Constellation.prototype.fit = function() {
             ],
             radiusBig * this.FACTOR_RIVER);
 
-        this.spawnPoint = new Vector2(riverWidth * -.5, radiusBig + .000001);
-        this.spawnDirection = new Vector2(0, 1);
+        if (fullTurn) {
+            this.spawnPoint = new Vector2(riverWidth * -.5, radiusBig + .000001);
+            this.spawnDirection = new Vector2(0, 1);
+        }
+        else {
+            this.spawnPoint = new Vector2(radiusBig + .000001, this.height + riverWidth * .5);
+            this.spawnDirection = new Vector2(1, 0);
+        }
     }
     else {
         constraintRiver = new ConstraintArcPath(
@@ -93,8 +129,8 @@ Constellation.prototype.fit = function() {
                 new ConstraintArcPath.Arc(
                     centerBig,
                     radiusBig + riverWidth * .5,
-                    Math.PI * 1.5,
-                    Math.PI * 2 + riverTurn),
+                    fullTurn ? Math.PI * 1.5 : 0,
+                    fullTurn ? Math.PI * 2 + riverTurn : riverTurn),
                 new ConstraintArcPath.Arc(
                     centerSmall,
                     radiusSmall + riverWidth * .5,
@@ -103,14 +139,20 @@ Constellation.prototype.fit = function() {
             ],
             radiusBig * this.FACTOR_RIVER);
 
-        this.spawnPoint = new Vector2(radiusBig + .000001, riverWidth * -.5);
-        this.spawnDirection = new Vector2(0, 1);
+        if (fullTurn) {
+            this.spawnPoint = new Vector2(radiusBig + .000001, riverWidth * -.5);
+            this.spawnDirection = new Vector2(1, 0);
+        }
+        else {
+            this.spawnPoint = new Vector2(this.width + riverWidth * .5, radiusBig + .000001);
+            this.spawnDirection = new Vector2(0, 1);
+        }
     }
 
     if (this.big) {
-        this.big.replaceConstraint(constraintBig);
-        this.small.replaceConstraint(constraintSmall);
-        this.river.replaceConstraint(constraintRiver);
+        this.big.replaceConstraint(constraintBig, atlas);
+        this.small.replaceConstraint(constraintSmall, atlas);
+        this.river.replaceConstraint(constraintRiver, atlas);
     }
     else {
         this.big = new Pond(constraintBig);
@@ -120,24 +162,105 @@ Constellation.prototype.fit = function() {
 };
 
 /**
+ * Pick up a fish at given coordinates
+ * @param {Number} x The X position
+ * @param {Number} y The Y position
+ * @returns {Fish} The fish at the given position, or null if no fish exists there
+ */
+Constellation.prototype.pick = function(x, y) {
+    return this.big.pick(x, y) || this.small.pick(x, y) || this.river.pick(x, y) || null;
+};
+
+/**
+ * Drop a fish in the nearest suitable location of this constellation
+ * @param {Fish} fish A fish
+ */
+Constellation.prototype.drop = function(fish) {
+    if (this.big.constraint.contains(fish.position.x, fish.position.y))
+        this.big.addFish(fish);
+    else if (this.small.constraint.contains(fish.position.x, fish.position.y))
+        this.small.addFish(fish);
+    else if (this.river.constraint.contains(fish.position.x, fish.position.y))
+        this.river.addFish(fish);
+    else {
+        const nearestBig = fish.position.copy();
+        const nearestSmall = fish.position.copy();
+        const nearestRiver = fish.position.copy();
+
+        this.big.constraint.constrain(nearestBig);
+        this.small.constraint.constrain(nearestSmall);
+
+        let nearestDist = fish.position.copy().subtract(nearestBig).length();
+        let nearestPosition = nearestBig;
+        let nearest = this.big;
+
+        const smallDist = fish.position.copy().subtract(nearestSmall).length();
+
+        if (smallDist < nearestDist) {
+            nearestDist = smallDist;
+            nearestPosition = nearestSmall;
+            nearest = this.small;
+        }
+
+        if (this.river.constraint.constrain(nearestRiver)) {
+            if (fish.position.copy().subtract(nearestRiver).length() < nearestDist) {
+                nearestPosition = nearestRiver;
+                nearest = this.river;
+            }
+        }
+
+        fish.drop(nearestPosition);
+        nearest.addFish(fish);
+    }
+};
+
+/**
+ * Make a mask mesh overlapping all water area
+ * @param {WebGLRenderingContext} gl A WebGL context
+ * @returns {Mesh} A mesh
+ */
+Constellation.prototype.makeMesh = function(gl) {
+    const vertices = [];
+    const indices = [];
+
+    this.big.constraint.appendMesh(vertices, indices);
+    this.small.constraint.appendMesh(vertices, indices);
+    this.river.constraint.appendMesh(vertices, indices);
+
+    return new Mesh(gl, vertices, indices);
+};
+
+/**
  * Update the constellation
  * @param {Atlas} atlas The pattern atlas
+ * @param {WaterPlane} water A water plane to disturb
  * @param {Random} random A randomizer
  */
-Constellation.prototype.update = function(atlas, random) {
-    this.small.update(atlas, random);
-    this.big.update(atlas, random);
-    this.river.update(atlas, random);
+Constellation.prototype.update = function(atlas, water, random) {
+    this.small.update(atlas, water, random);
+    this.big.update(atlas, water, random);
+    this.river.update(atlas, water, random);
 };
 
 /**
  * Render the constellation
- * @param {Renderer} renderer The renderer
+ * @param {Bodies} bodies The bodies renderer
+ * @param {Atlas} atlas The atlas containing the fish textures
+ * @param {Number} width The render target width
+ * @param {Number} height The render target height
+ * @param {Number} scale The render scale
  * @param {Number} time The amount of time since the last update
  */
-Constellation.prototype.render = function(renderer, time) {
-    // TODO: Track last update time per pond
-    this.small.render(renderer, time);
-    this.big.render(renderer, time);
-    this.river.render(renderer, time);
+Constellation.prototype.render = function(
+    bodies,
+    atlas,
+    width,
+    height,
+    scale,
+    time) {
+    this.big.render(bodies, time);
+    this.small.render(bodies, time);
+    this.river.render(bodies, time);
+
+    bodies.render(atlas, width, height, scale);
 };

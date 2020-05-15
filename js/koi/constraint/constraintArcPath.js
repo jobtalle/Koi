@@ -23,8 +23,6 @@ ConstraintArcPath.Arc = function(center, radius, start, end) {
     this.center = center;
     this.radius = radius;
     this.radians = end - start;
-
-    // TODO: Start and end do not need to be stored if nothing is drawn
     this.start = start;
     this.end = end;
 
@@ -46,16 +44,44 @@ ConstraintArcPath.prototype.makeRings = function(arcs) {
 };
 
 /**
- * Get the fish capacity of this constraint
- * @returns {Number} The maximum number of fish that fit within this constraint
+ * Constrain a vector to make sure it is inside the constraint
+ * @param {Vector2} vector The vector to constrain
+ * @returns {Boolean} A boolean indicating whether the vector could be constrained
  */
-ConstraintArcPath.prototype.getCapacity = function() {
-    let capacity = 0;
+ConstraintArcPath.prototype.constrain = function(vector) {
+    for (let arc = 0; arc < this.arcs.length; ++arc) {
+        const dx = vector.x - this.arcs[arc].center.x;
+        const dy = vector.y - this.arcs[arc].center.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
 
-    for (let arc = 0; arc < this.arcs.length; ++arc)
-        capacity += this.rings[arc].getCapacity() * this.arcs[arc].radians * .5 / Math.PI;
+        if (dx * this.arcs[arc].direction.x + dy * this.arcs[arc].direction.y >= this.arcs[arc].cone * distance) {
+            this.rings[arc].constrain(vector, dx, dy, distance);
 
-    return Math.floor(capacity);
+            return true;
+        }
+    }
+
+    return false;
+};
+
+/**
+ * Check whether a given point is contained within this constraint
+ * @param {Number} x The X position
+ * @param {Number} y The Y position
+ * @returns {Boolean} A boolean indicating whether the given point is inside this constraint
+ */
+ConstraintArcPath.prototype.contains = function(x, y) {
+    for (let arc = 0; arc < this.arcs.length; ++arc) {
+        const dx = x - this.arcs[arc].center.x;
+        const dy = y - this.arcs[arc].center.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (dx * this.arcs[arc].direction.x + dy * this.arcs[arc].direction.y >= this.arcs[arc].cone * distance)
+            if (this.rings[arc].contains(x, y))
+                return true;
+    }
+
+    return false;
 };
 
 /**
@@ -82,31 +108,35 @@ ConstraintArcPath.prototype.sample = function(position) {
 };
 
 /**
- * Draw the circle
- * @param {Renderer} renderer The renderer
+ * Append a mesh
+ * @param {Number[]} vertices The vertex array
+ * @param {Number[]} indices The index array
  */
-ConstraintArcPath.prototype.render = function(renderer) {
-    for (const arc of this.arcs) {
-        const steps = Math.floor((arc.end - arc.start) / .05);
+ConstraintArcPath.prototype.appendMesh = function(vertices, indices) {
+    for (let arc = this.arcs.length; arc-- > 0;) {
+        const firstIndex = vertices.length >> 1;
 
-        for (let i = 0; i < steps; ++i) {
-            const radiansStart = arc.start + (arc.end - arc.start) * i / steps;
-            const radiansEnd = arc.start + (arc.end - arc.start) * (i + 1) / steps;
+        const steps = Math.ceil(
+            (this.arcs[arc].end - this.arcs[arc].start) * this.arcs[arc].radius /
+            this.rings[arc].MESH_RESOLUTION);
 
-            renderer.drawLine(
-                arc.center.x + Math.cos(radiansStart) * (arc.radius - this.width * .5),
-                arc.center.y + Math.sin(radiansStart) * (arc.radius - this.width * .5),
-                Color.WHITE,
-                arc.center.x + Math.cos(radiansEnd) * (arc.radius - this.width * .5),
-                arc.center.y + Math.sin(radiansEnd) * (arc.radius - this.width * .5),
-                Color.WHITE);
-            renderer.drawLine(
-                arc.center.x + Math.cos(radiansStart) * (arc.radius + this.width * .5),
-                arc.center.y + Math.sin(radiansStart) * (arc.radius + this.width * .5),
-                Color.WHITE,
-                arc.center.x + Math.cos(radiansEnd) * (arc.radius + this.width * .5),
-                arc.center.y + Math.sin(radiansEnd) * (arc.radius + this.width * .5),
-                Color.WHITE);
+        for (let step = 0; step <= steps; ++step) {
+            const radians = this.arcs[arc].start + (this.arcs[arc].end - this.arcs[arc].start) * step / steps;
+
+            vertices.push(
+                this.arcs[arc].center.x + Math.cos(radians) * (this.arcs[arc].radius - this.width * .5),
+                this.arcs[arc].center.y + Math.sin(radians) * (this.arcs[arc].radius - this.width * .5),
+                this.arcs[arc].center.x + Math.cos(radians) * (this.arcs[arc].radius + this.width * .5),
+                this.arcs[arc].center.y + Math.sin(radians) * (this.arcs[arc].radius + this.width * .5));
+
+            if (step !== steps)
+                indices.push(
+                    firstIndex + (step << 1),
+                    firstIndex + (step << 1) + 1,
+                    firstIndex + (step << 1) + 2,
+                    firstIndex + (step << 1) + 2,
+                    firstIndex + (step << 1) + 3,
+                    firstIndex + (step << 1) + 1);
         }
     }
 };

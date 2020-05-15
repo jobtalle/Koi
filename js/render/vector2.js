@@ -108,6 +108,15 @@ Vector2.prototype.angle = function() {
 };
 
 /**
+ * Check if this vector equals another vector
+ * @param {Vector2} vector Another vector
+ * @returns {Boolean} True if the vectors are equal
+ */
+Vector2.prototype.equals = function(vector) {
+    return this.x === vector.x && this.y === vector.y;
+};
+
+/**
  * Make this vector point towards a given angle
  * @param {Number} angle The angle in radians
  */

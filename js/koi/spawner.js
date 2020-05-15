@@ -10,6 +10,7 @@ const Spawner = function(constellation) {
 
 Spawner.prototype.SPAWN_TIME_MIN = 1;
 Spawner.prototype.SPAWN_TIME_MAX = 5;
+Spawner.prototype.SPAWN_OVERHEAD = 8;
 
 /**
  * Update the spawner
@@ -21,23 +22,31 @@ Spawner.prototype.update = function(timeStep, atlas, random) {
     if ((this.time -= timeStep) < 0) {
         this.time += this.SPAWN_TIME_MIN + (this.SPAWN_TIME_MAX - this.SPAWN_TIME_MIN) * random.getFloat();
 
-        if (this.constellation.river.canSpawn()) {
+        if (this.constellation.getFishCount() < this.constellation.getCapacity() - this.SPAWN_OVERHEAD) {
             const pattern = new Pattern(
+                new PatternBase(new Color(.9, .9, .9)),
                 [
-                    new PatternBase(new Color(.9, .9, .9)),
                     new PatternSpots(
                         1.5,
                         new Color(0.8, 0.3, 0.2),
-                        new Vector3(Math.random() * 64, Math.random() * 64, Math.random() * 64),
-                        new Vector3(Math.random() - .5, Math.random() - .5, Math.random() - .5).normalize()
+                        new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),
+                        new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()
                     )
                 ],
-                new PatternShape(0.6, 0.8));
+                new PatternShapeBody(0.6, 0.8),
+                new PatternShapeFin());
 
             atlas.write(pattern);
 
             this.constellation.river.addFish(new Fish(
-                new Body(pattern, atlas.pixelSize, 1.2, .3),
+                new Body(
+                    pattern,
+                    [
+                        new Fin(.2, 1.4, true), new Fin(.2, 1.4, false),
+                        new Fin(.5, .8, true), new Fin(.5, .8, false)
+                    ],
+                    1.2,
+                    .3),
                 this.constellation.spawnPoint,
                 this.constellation.spawnDirection));
         }
