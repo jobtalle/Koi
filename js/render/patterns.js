@@ -45,7 +45,6 @@ Patterns.prototype.writeLayer = function(layer, program) {
  * @param {AtlasRegion} region A region on the atlas on which the pattern may be written
  */
 Patterns.prototype.write = function(pattern, region) {
-    // TODO: Pass actual coordinates instead of UV's that need transforming
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
     this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array([
         2 * region.uBodyStart - 1,

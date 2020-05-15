@@ -23,8 +23,6 @@ ConstraintArcPath.Arc = function(center, radius, start, end) {
     this.center = center;
     this.radius = radius;
     this.radians = end - start;
-
-    // TODO: Start and end do not need to be stored if nothing is drawn
     this.start = start;
     this.end = end;
 

@@ -69,9 +69,6 @@ void main() {
   
   mediump vec4 pixel = texture2D(background, gl_FragCoord.xy / size - displacement);
   
-  if (pixel.a == 0.0)
-    pixel = vec4(1.0);
-  
   gl_FragColor = mix(
     filter * pixel,
     sky,
