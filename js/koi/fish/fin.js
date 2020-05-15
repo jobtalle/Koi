@@ -2,13 +2,14 @@
  * A fin
  * @param {Number} at The position on the body in the range [0, 1]
  * @param {Number} radius The radius as a factor of body width
- * @param {Boolean} side The side to which this fin is attached, true for right
+ * @param {Number} sign The sign of the fin direction, 1 or -1
  * @constructor
  */
-const Fin = function(at, radius, side) {
+const Fin = function(at, radius, sign) {
     this.at = at;
     this.radius = radius;
-    this.side = side;
+    this.sign = sign;
+    this.phase = 0;
     this.anchor = new Vector2();
     this.anchorPrevious = this.anchor.copy();
     this.start = new Vector2();
@@ -21,6 +22,11 @@ const Fin = function(at, radius, side) {
 };
 
 Fin.prototype.ANCHOR_INSET = 1;
+Fin.prototype.FIN_SKEW_BASE = .2;
+Fin.prototype.FIN_SKEW_WAVE = .2;
+Fin.prototype.FIN_WAVE_SPEED = .4;
+Fin.prototype.FIN_X_SCALE = .6;
+Fin.prototype.FIN_SPRING = .4;
 
 /**
  * Get the index of the vertebra this fin is connected to
@@ -74,28 +80,24 @@ Fin.prototype.storePreviousState = function() {
 Fin.prototype.update = function(vertebra, dx, dy) {
     this.storePreviousState();
 
-    this.anchor.set(vertebra);
+    if ((this.phase -= this.FIN_WAVE_SPEED) < 0)
+        this.phase += Math.PI + Math.PI;
 
-    if (this.side) {
-        this.anchor.x += dy * this.anchorRadius;
-        this.anchor.y -= dx * this.anchorRadius;
+    const dxSide = this.sign * dy;
+    const dySide = this.sign * -dx;
+    let dxStart = dxSide * this.finRadius * this.FIN_X_SCALE;
+    let dyStart = dySide * this.finRadius * this.FIN_X_SCALE;
 
-        this.start.set(this.anchor);
-        this.start.x += dy * this.finRadius;
-        this.start.y -= dx * this.finRadius;
-    }
-    else {
-        this.anchor.x -= dy * this.anchorRadius;
-        this.anchor.y += dx * this.anchorRadius;
+    this.anchor.x = vertebra.x + dxSide * this.anchorRadius;
+    this.anchor.y = vertebra.y + dySide * this.anchorRadius;
 
-        this.start.set(this.anchor);
-        this.start.x -= dy * this.finRadius;
-        this.start.y += dx * this.finRadius;
-    }
+    const skew = Math.sin(this.phase + this.at) * this.FIN_SKEW_WAVE + this.FIN_SKEW_BASE;
 
-    this.end.set(this.anchor);
-    this.end.x += dx * this.finRadius;
-    this.end.y += dy * this.finRadius;
+    this.start.x += (this.anchor.x + dxStart + this.finRadius * dx * skew - this.start.x) * this.FIN_SPRING;
+    this.start.y += (this.anchor.y + dyStart + this.finRadius * dy * skew - this.start.y) * this.FIN_SPRING;
+
+    this.end.x = this.anchor.x + this.finRadius * dx;
+    this.end.y = this.anchor.y + this.finRadius * dy;
 };
 
 /**

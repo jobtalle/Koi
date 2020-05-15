@@ -138,6 +138,8 @@ Body.prototype.initializeSpine = function(head, direction) {
         this.spine[segment] = this.spine[segment - 1].copy().subtract(direction.copy().multiply(this.spacing));
         this.spinePrevious[segment] = this.spine[segment].copy();
     }
+
+    // TODO: Move fins to their initial positions
 };
 
 /**
@@ -170,7 +172,7 @@ Body.prototype.storePreviousState = function() {
  * @param {Vector2} direction The normalized head direction
  * @param {Number} speed The fish speed
  * @param {WaterPlane} [water] A water plane to disturb
- * @param {Random} [random] A randomizer
+ * @param {Random} [random] A randomizer, required when water is supplied
  */
 Body.prototype.update = function(
     head,
@@ -195,11 +197,11 @@ Body.prototype.update = function(
         const dxc = this.spine[vertebra - 1].x + xDir * this.spacing - this.spine[vertebra].x;
         const dyc = this.spine[vertebra - 1].y + yDir * this.spacing - this.spine[vertebra].y;
 
-        xDir = dx / distance;
-        yDir = dy / distance;
-
         if (this.finGroups[vertebra - 1]) for (const fin of this.finGroups[vertebra - 1])
             fin.update(this.spine[vertebra - 1], xDir, yDir);
+
+        xDir = dx / distance;
+        yDir = dy / distance;
 
         dx += dxc * this.springs[vertebra - 1];
         dy += dyc * this.springs[vertebra - 1];
