@@ -8,8 +8,8 @@ const Spawner = function(constellation) {
     this.time = 0;
 };
 
-Spawner.prototype.SPAWN_TIME_MIN = 1;
-Spawner.prototype.SPAWN_TIME_MAX = 5;
+Spawner.prototype.SPAWN_TIME_MIN = 2;
+Spawner.prototype.SPAWN_TIME_MAX = 8;
 Spawner.prototype.SPAWN_OVERHEAD = 8;
 
 /**

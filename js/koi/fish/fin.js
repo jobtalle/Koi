@@ -50,6 +50,16 @@ Fin.prototype.connect = function(pattern, radius) {
 };
 
 /**
+ * Initialize the fin position
+ * @param {Vector2} position The initial position
+ */
+Fin.prototype.initializePosition = function(position) {
+    this.anchor.set(position);
+    this.start.set(position);
+    this.end.set(position);
+};
+
+/**
  * Instantly shift the fin position
  * @param {Number} dx The X delta
  * @param {Number} dy The Y delta
@@ -81,6 +91,7 @@ Fin.prototype.storePreviousState = function() {
 Fin.prototype.update = function(vertebra, dx, dy) {
     this.storePreviousState();
 
+    // TODO: Make phase a property of body, there are too many duplicates now
     if ((this.phase -= this.WAVE_SPEED) < 0)
         this.phase += Math.PI + Math.PI;
 

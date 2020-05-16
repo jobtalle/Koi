@@ -134,12 +134,13 @@ Body.prototype.initializeSpine = function(head, direction) {
     this.spine[0] = head.copy();
     this.spinePrevious[0] = head.copy();
 
-    for (let segment = 1; segment < this.spine.length; ++segment) {
-        this.spine[segment] = this.spine[segment - 1].copy().subtract(direction.copy().multiply(this.spacing));
-        this.spinePrevious[segment] = this.spine[segment].copy();
-    }
+    for (let vertebra = 1; vertebra < this.spine.length; ++vertebra) {
+        this.spine[vertebra] = this.spine[vertebra - 1].copy().subtract(direction.copy().multiply(this.spacing));
+        this.spinePrevious[vertebra] = this.spine[vertebra].copy();
 
-    // TODO: Move fins to their initial positions
+        if (this.finGroups[vertebra]) for (const fin of this.finGroups[vertebra])
+            fin.initializePosition(this.spine[vertebra]);
+    }
 };
 
 /**
@@ -197,8 +198,8 @@ Body.prototype.update = function(
         const dxc = this.spine[vertebra - 1].x + xDir * this.spacing - this.spine[vertebra].x;
         const dyc = this.spine[vertebra - 1].y + yDir * this.spacing - this.spine[vertebra].y;
 
-        if (this.finGroups[vertebra - 1]) for (const fin of this.finGroups[vertebra - 1])
-            fin.update(this.spine[vertebra - 1], xDir, yDir);
+        if (this.finGroups[vertebra]) for (const fin of this.finGroups[vertebra])
+            fin.update(this.spine[vertebra], xDir, yDir);
 
         xDir = dx / distance;
         yDir = dy / distance;
