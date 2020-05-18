@@ -4,8 +4,10 @@
 const CommonShaders = {};
 
 CommonShaders.cubicNoise = `
-mediump float random(mediump vec3 x) {
-  return fract(sin(x.x + x.y * 211.081 + x.z * 937.016) * 991.012);
+mediump float random(mediump vec3 p3) {
+    p3  = fract(p3 * .1031);
+    p3 += dot(p3, p3.yzx + 33.33);
+    return fract((p3.x + p3.y) * p3.z);
 }
 
 mediump float interpolate(mediump float a, mediump float b, mediump float c, mediump float d, mediump float x) {

@@ -1,11 +1,12 @@
 /**
  * A container for all persistent rendering systems
  * @param {WebGLRenderingContext} gl A WebGL context
+ * @param {Random} random A randomizer
  * @param {Number} width The WebGL context width in pixels
  * @param {Number} height The WebGL context height in pixels
  * @constructor
  */
-const Systems = function(gl, width, height) {
+const Systems = function(gl, random, width, height) {
     this.gl = gl;
     this.width = width;
     this.height = height;
@@ -15,6 +16,7 @@ const Systems = function(gl, width, height) {
     this.waves = new Waves(gl);
     this.wavePainter = new WavePainter(gl);
     this.bodies = new Bodies(gl);
+    this.randomSource = new RandomSource(gl, random);
 };
 
 /**
@@ -45,4 +47,5 @@ Systems.prototype.free = function() {
     this.waves.free();
     this.wavePainter.free();
     this.bodies.free();
+    this.randomSource.free();
 };
