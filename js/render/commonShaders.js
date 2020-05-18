@@ -3,13 +3,17 @@
  */
 const CommonShaders = {};
 
-CommonShaders.cubicNoise = `
+// Randomizers
+CommonShaders.random = `
 uniform sampler2D noise;
 
-mediump float random(highp vec3 p3) {
-    return texture2D(noise, p3.xy * 12.03 + p3.z * 0.1).r;
+mediump float random(highp vec3 x) {
+    return texture2D(noise, x.xy * 12.03 + x.z * 0.1).r;
 }
+`;
 
+// Cubic noise
+CommonShaders.cubicNoise = CommonShaders.random + `
 mediump float interpolate(mediump float a, mediump float b, mediump float c, mediump float d, mediump float x) {
   mediump float p = (d - c) - (a - b);
 

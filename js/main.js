@@ -2,7 +2,7 @@ const canvas = document.getElementById("renderer");
 const gl =
     canvas.getContext("webgl", {alpha: false, antialias: false}) ||
     canvas.getContext("experimental-webgl", {alpha: false, antialias: false});
-const random = new Random();
+const random = new Random(42);
 const systems = new Systems(gl, random, canvas.width, canvas.height);
 let lastDate = null;
 let koi = null;

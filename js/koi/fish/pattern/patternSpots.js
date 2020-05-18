@@ -34,8 +34,8 @@ PatternSpots.prototype.SHADER_FRAGMENT = `#version 100
 uniform mediump float scale;
 uniform mediump vec2 size;
 uniform lowp vec3 color;
-uniform mediump vec3 anchor;
-uniform mediump mat3 rotate;
+uniform highp vec3 anchor;
+uniform highp mat3 rotate;
 
 varying mediump vec2 iUv;
 
