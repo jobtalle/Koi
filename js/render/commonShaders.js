@@ -4,10 +4,10 @@
 const CommonShaders = {};
 
 CommonShaders.cubicNoise = `
+uniform sampler2D noise;
+
 mediump float random(mediump vec3 p3) {
-    p3  = fract(p3 * .1031);
-    p3 += dot(p3, p3.yzx + 33.33);
-    return fract((p3.x + p3.y) * p3.z);
+    return texture2D(noise, p3.xy * 124.03 + p3.z * 0.1).r;
 }
 
 mediump float interpolate(mediump float a, mediump float b, mediump float c, mediump float d, mediump float x) {

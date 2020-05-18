@@ -1,10 +1,12 @@
 /**
  * A sand synthesizer
  * @param {WebGLRenderingContext} gl A WebGL rendering context
+ * @param {RandomSource} randomSource A random source
  * @constructor
  */
-const Sand = function(gl) {
+const Sand = function(gl, randomSource) {
     this.gl = gl;
+    this.randomSource = randomSource;
     this.buffer = gl.createBuffer();
     this.program = new Shader(
         gl,
@@ -46,6 +48,9 @@ void main() {
  */
 Sand.prototype.write = function(scale) {
     this.program.use();
+
+    this.gl.activeTexture(this.gl.TEXTURE0);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, this.randomSource.texture);
 
     this.gl.uniform1f(this.program.uScale, scale);
 

@@ -1,10 +1,12 @@
 /**
  * The pattern renderer
  * @param {WebGLRenderingContext} gl A webGL context
+ * @param {RandomSource} randomSource A random source
  * @constructor
  */
-const Patterns = function(gl) {
+const Patterns = function(gl, randomSource) {
     this.gl = gl;
+    this.randomSource = randomSource;
     this.buffer = gl.createBuffer();
     this.programBase = PatternBase.prototype.createShader(gl);
     this.programSpots = PatternSpots.prototype.createShader(gl);
@@ -77,6 +79,9 @@ Patterns.prototype.write = function(pattern, region) {
         2 * region.vStart - 1,
         1, 0
     ]));
+
+    this.gl.activeTexture(this.gl.TEXTURE0);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, this.randomSource.texture);
 
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
