@@ -40,7 +40,7 @@ uniform highp mat3 rotate;
 varying mediump vec2 iUv;
 
 void main() {
-  mediump vec2 at = (iUv - vec2(0.5)) * size * scale;
+  highp vec2 at = (iUv - vec2(0.5)) * size * scale;
   mediump float noise = cubicNoise(anchor + vec3(at, 0.0) * rotate);
 
   if (noise < 0.5)

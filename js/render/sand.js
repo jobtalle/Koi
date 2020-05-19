@@ -35,10 +35,9 @@ Sand.prototype.SHADER_FRAGMENT = `#version 100
 uniform mediump float scale;
 
 void main() {
-  mediump float lightness = 0.55 + 0.15 * (cubicNoise(vec3(4.0 * gl_FragCoord.xy / scale, 0.0)));
-  mediump vec3 sandy = vec3(0.2, 0.23, 0.12) * 1.5;
+  mediump vec3 sandy = vec3(196.0 / 255.0, 147.0 / 255.0, 74.0 / 255.0);
   
-  gl_FragColor = vec4(vec3(lightness) * sandy, 1.0);
+  gl_FragColor = vec4(sandy * (pow(random2(gl_FragCoord.xy), 9.0) * 0.4 * cubicNoise(vec3(1.5 * gl_FragCoord.xy / scale, 0.0)) + 0.9), 1.0);
 }
 `;
 
