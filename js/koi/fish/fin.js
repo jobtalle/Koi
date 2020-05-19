@@ -9,7 +9,6 @@ const Fin = function(at, radius, sign) {
     this.at = at;
     this.radius = radius;
     this.sign = sign;
-    this.phase = 0;
     this.anchor = new Vector2();
     this.anchorPrevious = this.anchor.copy();
     this.start = new Vector2();
@@ -24,7 +23,6 @@ const Fin = function(at, radius, sign) {
 Fin.prototype.ANCHOR_INSET = 1;
 Fin.prototype.SKEW = .1;
 Fin.prototype.WAVE_SKEW = .2;
-Fin.prototype.WAVE_SPEED = .4;
 Fin.prototype.X_SCALE = .6;
 Fin.prototype.SPRING = .4;
 Fin.prototype.PHASE_SHIFT = 2;
@@ -87,13 +85,10 @@ Fin.prototype.storePreviousState = function() {
  * @param {Vector2} vertebra The connected vertebra location
  * @param {Number} dx The normalized X direction of the vertebra
  * @param {Number} dy The normalized Y direction of the vertebra
+ * @param {Number} phase The fin phase
  */
-Fin.prototype.update = function(vertebra, dx, dy) {
+Fin.prototype.update = function(vertebra, dx, dy, phase) {
     this.storePreviousState();
-
-    // TODO: Make phase a property of body, there are too many duplicates now
-    if ((this.phase -= this.WAVE_SPEED) < 0)
-        this.phase += Math.PI + Math.PI;
 
     const dxSide = this.sign * dy;
     const dySide = this.sign * -dx;
@@ -103,7 +98,7 @@ Fin.prototype.update = function(vertebra, dx, dy) {
     this.anchor.x = vertebra.x + dxSide * this.anchorRadius;
     this.anchor.y = vertebra.y + dySide * this.anchorRadius;
 
-    const skew = Math.sin(this.phase + this.at * this.PHASE_SHIFT) * this.WAVE_SKEW + this.SKEW;
+    const skew = Math.sin(phase + this.at * this.PHASE_SHIFT) * this.WAVE_SKEW + this.SKEW;
 
     this.start.x += (this.anchor.x + dxStart + this.finRadius * dx * skew - this.start.x) * this.SPRING;
     this.start.y += (this.anchor.y + dyStart + this.finRadius * dy * skew - this.start.y) * this.SPRING;
