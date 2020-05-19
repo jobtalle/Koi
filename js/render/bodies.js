@@ -19,7 +19,7 @@ const Bodies = function(gl) {
         ["position", "uv"]);
 };
 
-Bodies.prototype.SHADOW_ALPHA = .25;
+Bodies.prototype.SHADOW_ALPHA = .2;
 Bodies.prototype.SHADOW_DEPTH = .2;
 
 Bodies.prototype.SHADER_VERTEX = `#version 100
@@ -35,7 +35,7 @@ varying vec2 iUv;
 void main() {
   iUv = uv;
   
-  gl_Position = vec4(vec2(2.0, -2.0) * (position + vec2(0.0, shadow.z)) / size * scale + vec2(-1.0, 1.0), 0.0, 1.0);
+  gl_Position = vec4(vec2(2.0, -2.0) * (position + vec2(shadow.z * -0.5, shadow.z)) / size * scale + vec2(-1.0, 1.0), 0.0, 1.0);
 }
 `;
 
