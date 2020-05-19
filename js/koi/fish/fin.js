@@ -20,7 +20,7 @@ const Fin = function(at, radius, sign) {
     this.pattern = null;
 };
 
-Fin.prototype.ANCHOR_INSET = 1;
+Fin.prototype.ANCHOR_INSET = .95;
 Fin.prototype.SKEW = .1;
 Fin.prototype.WAVE_SKEW = .2;
 Fin.prototype.X_SCALE = .6;

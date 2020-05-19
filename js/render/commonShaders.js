@@ -8,7 +8,7 @@ CommonShaders.random = `
 uniform sampler2D noise;
 
 mediump float random(highp vec3 x) {
-    return texture2D(noise, x.xy * 12.03 + x.z * 0.1).r;
+    return texture2D(noise, x.xy * 37.41 + x.z * 43.47).r;
 }
 `;
 

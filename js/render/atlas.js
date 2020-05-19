@@ -76,7 +76,7 @@ Atlas.prototype.write = function(pattern) {
     pattern.region = new AtlasRegion(this.getSlot(), this.slotSize);
 
     this.renderTarget.target();
-    this.patterns.write(pattern, pattern.region);
+    this.patterns.write(pattern, pattern.region, 1 / this.renderTarget.width);
 };
 
 /**

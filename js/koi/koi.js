@@ -27,6 +27,7 @@ const Koi = function(systems, random) {
         this.update();
 };
 
+Koi.prototype.BACKGROUND_COLOR = new Color(0.26, 0.49, 0.14);
 Koi.prototype.FRAME_TIME_MAX = 1;
 Koi.prototype.UPDATE_RATE = 1 / 14;
 Koi.prototype.PREFERRED_SCALE = 95;
@@ -174,7 +175,7 @@ Koi.prototype.render = function(deltaTime) {
     // Target window
     this.systems.targetMain();
 
-    this.systems.gl.clearColor(.8, .7, .5, 1);
+    this.systems.gl.clearColor(this.BACKGROUND_COLOR.r, this.BACKGROUND_COLOR.g, this.BACKGROUND_COLOR.b, 1);
     this.systems.gl.clear(this.systems.gl.COLOR_BUFFER_BIT);
 
     // Render shaded water

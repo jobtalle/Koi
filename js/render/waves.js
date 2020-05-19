@@ -58,10 +58,10 @@ void main() {
   mediump float shiny = dot(normalize(vec3(1.0, 0.0, 1.0)), normal);
   
   if (shiny < 0.0)
-    shiny *= 0.5;
+    shiny *= 0.2;
   else {
     if (shiny > 0.5) // TODO: Specular hack
-      shiny *= 1.5;
+      shiny *= 1.3;
   }
   
   mediump vec4 filter = vec4(0.93, 0.98, 1.0, 1.0) * vec4(0.92, 0.97, 1.0, 1.0);

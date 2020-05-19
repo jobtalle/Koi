@@ -45,38 +45,39 @@ Patterns.prototype.writeLayer = function(layer, program) {
  * Write a pattern
  * @param {Pattern} pattern A pattern
  * @param {AtlasRegion} region A region on the atlas on which the pattern may be written
+ * @param {Number} pixelSize The pixel size
  */
-Patterns.prototype.write = function(pattern, region) {
+Patterns.prototype.write = function(pattern, region, pixelSize) {
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
     this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array([
-        2 * region.uBodyStart - 1,
-        2 * region.vStart - 1,
+        2 * (region.uBodyStart + pixelSize) - 1,
+        2 * (region.vStart + pixelSize) - 1,
         0, 0,
-        2 * region.uBodyStart - 1,
-        2 * region.vEnd - 1,
+        2 * (region.uBodyStart + pixelSize) - 1,
+        2 * (region.vEnd - pixelSize) - 1,
         0, 1,
-        2 * region.uFinEnd - 1,
-        2 * region.vEnd - 1,
+        2 * (region.uFinEnd - pixelSize) - 1,
+        2 * (region.vEnd - pixelSize) - 1,
         1, 1,
-        2 * region.uFinEnd - 1,
-        2 * region.vStart - 1,
+        2 * (region.uFinEnd - pixelSize) - 1,
+        2 * (region.vStart + pixelSize) - 1,
         1, 0
     ]));
 
     this.writeLayer(pattern.base, this.programBase);
 
     this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array([
-        2 * region.uBodyStart - 1,
-        2 * region.vStart - 1,
+        2 * (region.uBodyStart + pixelSize) - 1,
+        2 * (region.vStart + pixelSize) - 1,
         0, 0,
-        2 * region.uBodyStart - 1,
-        2 * region.vEnd - 1,
+        2 * (region.uBodyStart + pixelSize) - 1,
+        2 * (region.vEnd - pixelSize) - 1,
         0, 1,
         2 * region.uBodyEnd - 1,
-        2 * region.vEnd - 1,
+        2 * (region.vEnd - pixelSize) - 1,
         1, 1,
         2 * region.uBodyEnd - 1,
-        2 * region.vStart - 1,
+        2 * (region.vStart + pixelSize) - 1,
         1, 0
     ]));
 
@@ -99,16 +100,16 @@ Patterns.prototype.write = function(pattern, region) {
 
     this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array([
         2 * region.uFinStart - 1,
-        2 * region.vStart - 1,
+        2 * (region.vStart + pixelSize) - 1,
         0, 0,
         2 * region.uFinStart - 1,
-        2 * region.vEnd - 1,
+        2 * (region.vEnd - pixelSize) - 1,
         0, 1,
-        2 * region.uFinEnd - 1,
-        2 * region.vEnd - 1,
+        2 * (region.uFinEnd - pixelSize) - 1,
+        2 * (region.vEnd - pixelSize) - 1,
         1, 1,
-        2 * region.uFinEnd - 1,
-        2 * region.vStart - 1,
+        2 * (region.uFinEnd - pixelSize) - 1,
+        2 * (region.vStart + pixelSize) - 1,
         1, 0
     ]));
 
