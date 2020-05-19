@@ -197,9 +197,8 @@ Body.prototype.update = function(
 
         const dxc = this.spine[vertebra - 1].x + xDir * this.spacing - this.spine[vertebra].x;
         const dyc = this.spine[vertebra - 1].y + yDir * this.spacing - this.spine[vertebra].y;
-
-        if (this.finGroups[vertebra]) for (const fin of this.finGroups[vertebra])
-            fin.update(this.spine[vertebra], xDir, yDir);
+        const xDirPrevious = xDir;
+        const yDirPrevious = yDir;
 
         xDir = dx / distance;
         yDir = dy / distance;
@@ -212,6 +211,9 @@ Body.prototype.update = function(
         this.spine[vertebra].set(this.spine[vertebra - 1]);
         this.spine[vertebra].x += this.spacing * dx / distance;
         this.spine[vertebra].y += this.spacing * dy / distance;
+
+        if (this.finGroups[vertebra]) for (const fin of this.finGroups[vertebra])
+            fin.update(this.spine[vertebra], xDirPrevious, yDirPrevious);
     }
 
     if ((this.phase += this.SWIM_SPEED * speed) > Math.PI * 2)

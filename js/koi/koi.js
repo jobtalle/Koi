@@ -29,7 +29,7 @@ const Koi = function(systems, random) {
 
 Koi.prototype.FRAME_TIME_MAX = 1;
 Koi.prototype.UPDATE_RATE = 1 / 14;
-Koi.prototype.PREFERRED_SCALE = 85;
+Koi.prototype.PREFERRED_SCALE = 95;
 Koi.prototype.SIZE_MIN = 8;
 Koi.prototype.SIZE_MAX = 13;
 
