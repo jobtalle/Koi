@@ -1,10 +1,12 @@
 /**
  * A sand synthesizer
  * @param {WebGLRenderingContext} gl A WebGL rendering context
+ * @param {RandomSource} randomSource A random source
  * @constructor
  */
-const Sand = function(gl) {
+const Sand = function(gl, randomSource) {
     this.gl = gl;
+    this.randomSource = randomSource;
     this.buffer = gl.createBuffer();
     this.program = new Shader(
         gl,
@@ -33,10 +35,9 @@ Sand.prototype.SHADER_FRAGMENT = `#version 100
 uniform mediump float scale;
 
 void main() {
-  mediump float lightness = 0.75 + 0.05 * (cubicNoise(vec3(4.0 * gl_FragCoord.xy / scale, 0.0)) > 0.5 ? 1.0 : 0.0);
-  mediump vec3 sandy = vec3(0.98, 0.87, 0.68);
+  mediump vec3 sandy = vec3(196.0 / 255.0, 147.0 / 255.0, 74.0 / 255.0);
   
-  gl_FragColor = vec4(vec3(lightness) * sandy, 1.0);
+  gl_FragColor = vec4(sandy * (pow(random2(gl_FragCoord.xy), 9.0) * 0.4 * cubicNoise(vec3(1.5 * gl_FragCoord.xy / scale, 0.0)) + 0.9), 1.0);
 }
 `;
 
@@ -46,6 +47,9 @@ void main() {
  */
 Sand.prototype.write = function(scale) {
     this.program.use();
+
+    this.gl.activeTexture(this.gl.TEXTURE0);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, this.randomSource.texture);
 
     this.gl.uniform1f(this.program.uScale, scale);
 

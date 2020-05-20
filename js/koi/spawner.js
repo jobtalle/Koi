@@ -8,8 +8,8 @@ const Spawner = function(constellation) {
     this.time = 0;
 };
 
-Spawner.prototype.SPAWN_TIME_MIN = 1;
-Spawner.prototype.SPAWN_TIME_MAX = 5;
+Spawner.prototype.SPAWN_TIME_MIN = 2;
+Spawner.prototype.SPAWN_TIME_MAX = 8;
 Spawner.prototype.SPAWN_OVERHEAD = 8;
 
 /**
@@ -42,8 +42,8 @@ Spawner.prototype.update = function(timeStep, atlas, random) {
                 new Body(
                     pattern,
                     [
-                        new Fin(.2, 1.4, true), new Fin(.2, 1.4, false),
-                        new Fin(.5, .8, true), new Fin(.5, .8, false)
+                        new Fin(.2, 1.4, 1), new Fin(.2, 1.4, -1),
+                        new Fin(.5, .8, 1), new Fin(.5, .8, -1)
                     ],
                     1.2,
                     .3),

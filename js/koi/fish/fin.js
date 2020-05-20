@@ -2,13 +2,13 @@
  * A fin
  * @param {Number} at The position on the body in the range [0, 1]
  * @param {Number} radius The radius as a factor of body width
- * @param {Boolean} side The side to which this fin is attached, true for right
+ * @param {Number} sign The sign of the fin direction, 1 or -1
  * @constructor
  */
-const Fin = function(at, radius, side) {
+const Fin = function(at, radius, sign) {
     this.at = at;
     this.radius = radius;
-    this.side = side;
+    this.sign = sign;
     this.anchor = new Vector2();
     this.anchorPrevious = this.anchor.copy();
     this.start = new Vector2();
@@ -20,7 +20,12 @@ const Fin = function(at, radius, side) {
     this.pattern = null;
 };
 
-Fin.prototype.ANCHOR_INSET = 1;
+Fin.prototype.ANCHOR_INSET = .95;
+Fin.prototype.SKEW = .1;
+Fin.prototype.WAVE_SKEW = .2;
+Fin.prototype.X_SCALE = .6;
+Fin.prototype.SPRING = .4;
+Fin.prototype.PHASE_SHIFT = 2;
 
 /**
  * Get the index of the vertebra this fin is connected to
@@ -40,6 +45,16 @@ Fin.prototype.connect = function(pattern, radius) {
     this.pattern = pattern;
     this.anchorRadius = this.ANCHOR_INSET * radius;
     this.finRadius = this.radius * radius;
+};
+
+/**
+ * Initialize the fin position
+ * @param {Vector2} position The initial position
+ */
+Fin.prototype.initializePosition = function(position) {
+    this.anchor.set(position);
+    this.start.set(position);
+    this.end.set(position);
 };
 
 /**
@@ -70,32 +85,26 @@ Fin.prototype.storePreviousState = function() {
  * @param {Vector2} vertebra The connected vertebra location
  * @param {Number} dx The normalized X direction of the vertebra
  * @param {Number} dy The normalized Y direction of the vertebra
+ * @param {Number} phase The fin phase
  */
-Fin.prototype.update = function(vertebra, dx, dy) {
+Fin.prototype.update = function(vertebra, dx, dy, phase) {
     this.storePreviousState();
 
-    this.anchor.set(vertebra);
+    const dxSide = this.sign * dy;
+    const dySide = this.sign * -dx;
+    let dxStart = dxSide * this.finRadius * this.X_SCALE;
+    let dyStart = dySide * this.finRadius * this.X_SCALE;
 
-    if (this.side) {
-        this.anchor.x += dy * this.anchorRadius;
-        this.anchor.y -= dx * this.anchorRadius;
+    this.anchor.x = vertebra.x + dxSide * this.anchorRadius;
+    this.anchor.y = vertebra.y + dySide * this.anchorRadius;
 
-        this.start.set(this.anchor);
-        this.start.x += dy * this.finRadius;
-        this.start.y -= dx * this.finRadius;
-    }
-    else {
-        this.anchor.x -= dy * this.anchorRadius;
-        this.anchor.y += dx * this.anchorRadius;
+    const skew = Math.sin(phase + this.at * this.PHASE_SHIFT) * this.WAVE_SKEW + this.SKEW;
 
-        this.start.set(this.anchor);
-        this.start.x -= dy * this.finRadius;
-        this.start.y += dx * this.finRadius;
-    }
+    this.start.x += (this.anchor.x + dxStart + this.finRadius * dx * skew - this.start.x) * this.SPRING;
+    this.start.y += (this.anchor.y + dyStart + this.finRadius * dy * skew - this.start.y) * this.SPRING;
 
-    this.end.set(this.anchor);
-    this.end.x += dx * this.finRadius;
-    this.end.y += dy * this.finRadius;
+    this.end.x = this.anchor.x + this.finRadius * dx;
+    this.end.y = this.anchor.y + this.finRadius * dy;
 };
 
 /**

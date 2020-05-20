@@ -23,7 +23,10 @@ PatternShapeFin.prototype.SHADER_FRAGMENT = `#version 100
 varying mediump vec2 iUv;
 
 void main() {
-  if (length(iUv) > 1.0)
+  mediump float angle = atan(iUv.y, iUv.x);
+  mediump float factor = pow(angle / 1.570796, 1.0);
+  
+  if (length(iUv) > pow(sin(3.141592 * factor), 0.05))
     gl_FragColor = vec4(0.0);
   else
     gl_FragColor = vec4(0.7);

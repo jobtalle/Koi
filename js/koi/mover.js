@@ -46,7 +46,7 @@ Mover.prototype.render = function(
     if (this.move) {
         this.move.render(bodies, time);
 
-        bodies.render(atlas, width, height, scale);
+        bodies.render(atlas, width, height, scale, false);
     }
 };
 

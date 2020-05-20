@@ -17,6 +17,7 @@ const Body = function(pattern, fins, length, thickness) {
     this.inverseSpacing = 1 / this.spacing;
     this.springs = this.makeSprings(this.SPRING_START, this.SPRING_END, this.SPRING_POWER);
     this.phase = 0;
+    this.finPhase = 0;
 };
 
 Body.prototype.RESOLUTION = .12;
@@ -32,6 +33,7 @@ Body.prototype.WAVE_RADIUS = .15;
 Body.prototype.WAVE_INTENSITY_MIN = .05;
 Body.prototype.WAVE_INTENSITY_MULTIPLIER = 2;
 Body.prototype.WAVE_TURBULENCE = .4;
+Body.prototype.FIN_PHASE_SPEED = .4;
 
 /**
  * Assign fins to an array matching the vertebrae
@@ -134,9 +136,12 @@ Body.prototype.initializeSpine = function(head, direction) {
     this.spine[0] = head.copy();
     this.spinePrevious[0] = head.copy();
 
-    for (let segment = 1; segment < this.spine.length; ++segment) {
-        this.spine[segment] = this.spine[segment - 1].copy().subtract(direction.copy().multiply(this.spacing));
-        this.spinePrevious[segment] = this.spine[segment].copy();
+    for (let vertebra = 1; vertebra < this.spine.length; ++vertebra) {
+        this.spine[vertebra] = this.spine[vertebra - 1].copy().subtract(direction.copy().multiply(this.spacing));
+        this.spinePrevious[vertebra] = this.spine[vertebra].copy();
+
+        if (this.finGroups[vertebra]) for (const fin of this.finGroups[vertebra])
+            fin.initializePosition(this.spine[vertebra]);
     }
 };
 
@@ -170,7 +175,7 @@ Body.prototype.storePreviousState = function() {
  * @param {Vector2} direction The normalized head direction
  * @param {Number} speed The fish speed
  * @param {WaterPlane} [water] A water plane to disturb
- * @param {Random} [random] A randomizer
+ * @param {Random} [random] A randomizer, required when water is supplied
  */
 Body.prototype.update = function(
     head,
@@ -194,12 +199,11 @@ Body.prototype.update = function(
 
         const dxc = this.spine[vertebra - 1].x + xDir * this.spacing - this.spine[vertebra].x;
         const dyc = this.spine[vertebra - 1].y + yDir * this.spacing - this.spine[vertebra].y;
+        const xDirPrevious = xDir;
+        const yDirPrevious = yDir;
 
         xDir = dx / distance;
         yDir = dy / distance;
-
-        if (this.finGroups[vertebra - 1]) for (const fin of this.finGroups[vertebra - 1])
-            fin.update(this.spine[vertebra - 1], xDir, yDir);
 
         dx += dxc * this.springs[vertebra - 1];
         dy += dyc * this.springs[vertebra - 1];
@@ -209,10 +213,16 @@ Body.prototype.update = function(
         this.spine[vertebra].set(this.spine[vertebra - 1]);
         this.spine[vertebra].x += this.spacing * dx / distance;
         this.spine[vertebra].y += this.spacing * dy / distance;
+
+        if (this.finGroups[vertebra]) for (const fin of this.finGroups[vertebra])
+            fin.update(this.spine[vertebra], xDirPrevious, yDirPrevious, this.finPhase);
     }
 
-    if ((this.phase += this.SWIM_SPEED * speed) > Math.PI * 2)
-        this.phase -= Math.PI * 2;
+    if ((this.phase += this.SWIM_SPEED * speed) > Math.PI + Math.PI)
+        this.phase -= Math.PI + Math.PI;
+
+    if ((this.finPhase -= this.FIN_PHASE_SPEED) < 0)
+        this.phase += Math.PI + Math.PI;
 
     if (water)
         this.disturbWater(water, random);
