@@ -10,13 +10,13 @@ const Systems = function(gl, random, width, height) {
     this.gl = gl;
     this.width = width;
     this.height = height;
-    this.primitives = new Primitives(gl);
     this.randomSource = new RandomSource(gl, random);
     this.patterns = new Patterns(gl, this.randomSource);
     this.sand = new Sand(gl, this.randomSource);
     this.waves = new Waves(gl);
     this.wavePainter = new WavePainter(gl);
     this.bodies = new Bodies(gl);
+    this.quad = new Quad(gl);
 };
 
 /**
@@ -41,11 +41,11 @@ Systems.prototype.targetMain = function() {
  * Free all rendering systems
  */
 Systems.prototype.free = function() {
-    this.primitives.free();
     this.randomSource.free();
     this.patterns.free();
     this.sand.free();
     this.waves.free();
     this.wavePainter.free();
     this.bodies.free();
+    this.quad.free();
 };

@@ -8,9 +8,10 @@
  * @constructor
  */
 const Background = function(gl, sand, width, height, scale) {
-    this.bottom = new RenderTarget(gl, width, height, gl.RGB, gl.NEAREST, gl.UNSIGNED_BYTE);
+    this.gl = gl;
     this.width = width;
     this.height = height;
+    this.bottom = new RenderTarget(gl, width, height, gl.RGB, gl.NEAREST, gl.UNSIGNED_BYTE);
 
     this.paintSand(sand, scale);
 };
@@ -28,12 +29,13 @@ Background.prototype.paintSand = function(sand, scale) {
 
 /**
  * Render the background
- * @param {Primitives} primitives The primitives renderer
+ * @param {Quad} quad The quad renderer
  */
-Background.prototype.render = function(primitives) {
-    primitives.setTexture(this.bottom.texture);
-    primitives.drawQuad(0, 0, this.width, this.height);
-    primitives.flush();
+Background.prototype.render = function(quad) {
+    this.gl.activeTexture(this.gl.TEXTURE0);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, this.bottom.texture);
+
+    quad.render();
 };
 
 /**

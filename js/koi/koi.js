@@ -158,10 +158,9 @@ Koi.prototype.render = function(deltaTime) {
 
     // Target underwater bufferQuad
     this.underwater.target();
-    this.systems.primitives.setViewport(this.systems.width, this.systems.height);
 
     // Render background
-    this.background.render(this.systems.primitives);
+    this.background.render(this.systems.quad);
 
     // Render fishes
     this.constellation.render(
@@ -189,7 +188,6 @@ Koi.prototype.render = function(deltaTime) {
         timeFactor);
 
     // Render mover
-    this.systems.primitives.setViewport(this.systems.width, this.systems.height);
     this.mover.render(
         this.systems.bodies,
         this.atlas,
@@ -200,15 +198,6 @@ Koi.prototype.render = function(deltaTime) {
 
     this.systems.gl.activeTexture(this.systems.gl.TEXTURE0);
     this.systems.gl.bindTexture(this.systems.gl.TEXTURE_2D, this.atlas.renderTarget.texture);
-
-    // Debug atlas preview
-    // this.systems.primitives.cutStrip(0, 0, 0, 0);
-    // this.systems.primitives.drawStrip(0, 800,0, 1);
-    // this.systems.primitives.cutStrip(800, 800,1, 1);
-    // this.systems.primitives.cutStrip(0, 0, 0, 0);
-    // this.systems.primitives.drawStrip(800, 0,1, 0);
-    // this.systems.primitives.cutStrip(800, 800,1, 1);
-    // this.systems.primitives.flush();
 };
 
 /**
