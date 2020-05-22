@@ -172,6 +172,16 @@ Constellation.prototype.pick = function(x, y) {
 };
 
 /**
+ * Check if the constellation water contains a given point
+ * @param {Number} x The X coordinate
+ * @param {Number} y The Y coordinate
+ * @returns {Boolean} A boolean indicating whether the given coordinates are inside water
+ */
+Constellation.prototype.contains = function(x, y) {
+    return this.big.constraint.contains(x, y) || this.small.constraint.contains(x, y) || this.river.constraint.contains(x, y);
+};
+
+/**
  * Drop a fish in the nearest suitable location of this constellation
  * @param {Fish} fish A fish
  */

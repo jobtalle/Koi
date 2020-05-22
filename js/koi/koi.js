@@ -28,12 +28,12 @@ const Koi = function(systems, random) {
         this.update();
 };
 
-Koi.prototype.BACKGROUND_COLOR = new Color(0.26, 0.49, 0.14);
 Koi.prototype.FRAME_TIME_MAX = 1;
 Koi.prototype.UPDATE_RATE = 1 / 14;
 Koi.prototype.PREFERRED_SCALE = 95;
 Koi.prototype.SIZE_MIN = 8;
 Koi.prototype.SIZE_MAX = 13;
+Koi.prototype.BACKGROUND_COLOR = Color.fromCSS("background");
 
 /**
  * Create all renderable objects
@@ -51,7 +51,8 @@ Koi.prototype.createRenderables = function() {
         this.scale);
     this.foreground = new Foreground(
         this.systems.gl,
-        this.constellation);
+        this.constellation,
+        this.random);
     this.underwater = new RenderTarget(
         this.systems.gl,
         this.systems.width,
@@ -192,6 +193,13 @@ Koi.prototype.render = function(deltaTime) {
         this.scale,
         timeFactor);
 
+    // Render foreground
+    this.foreground.render(
+        this.systems.vegetation,
+        this.systems.width,
+        this.systems.height,
+        this.scale);
+
     // Render mover
     this.mover.render(
         this.systems.bodies,
@@ -200,9 +208,6 @@ Koi.prototype.render = function(deltaTime) {
         this.systems.height,
         this.scale,
         timeFactor);
-
-    this.systems.gl.activeTexture(this.systems.gl.TEXTURE0);
-    this.systems.gl.bindTexture(this.systems.gl.TEXTURE_2D, this.atlas.renderTarget.texture);
 };
 
 /**

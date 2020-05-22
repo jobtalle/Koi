@@ -130,8 +130,7 @@ Waves.prototype.propagate = function(water, wavePainter, mesh) {
     this.gl.uniform1f(this.programPropagate.uScale, water.SCALE);
     this.gl.uniform1f(this.programPropagate.uDamping, this.DAMPING);
 
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, mesh.vertices);
-    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, mesh.indices);
+    mesh.bindBuffers();
 
     this.gl.enableVertexAttribArray(this.programPropagate.aPosition);
     this.gl.vertexAttribPointer(this.programPropagate.aPosition, 2, this.gl.FLOAT, false, 8, 0);
@@ -178,8 +177,7 @@ Waves.prototype.render = function(
     this.gl.uniform2f(this.programDistort.uWaterSize, water.width, water.height); // TODO: Use inverse dimensions
     this.gl.uniform1f(this.programDistort.uTime, time);
 
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, mesh.vertices);
-    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, mesh.indices);
+    mesh.bindBuffers();
 
     this.gl.enableVertexAttribArray(this.programDistort.aPosition);
     this.gl.vertexAttribPointer(this.programDistort.aPosition, 2, this.gl.FLOAT, false, 8, 0);

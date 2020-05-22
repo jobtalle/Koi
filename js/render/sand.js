@@ -32,13 +32,17 @@ void main() {
 }
 `;
 
+// TODO: Use 2D cubic noise
 Sand.prototype.SHADER_FRAGMENT = `#version 100
 ` + CommonShaders.cubicNoise + `
 uniform mediump float scale;
 uniform lowp vec3 color;
 
 void main() {
-  gl_FragColor = vec4(color * (pow(random2(gl_FragCoord.xy), 9.0) * 0.4 * cubicNoise(vec3(1.5 * gl_FragCoord.xy / scale, 0.0)) + 0.9), 1.0);
+  lowp float noise = pow(random2(gl_FragCoord.xy), 9.0);
+  lowp float hill = cubicNoise(vec3(1.5 * gl_FragCoord.xy / scale, 0.0));
+  
+  gl_FragColor = vec4(color * (noise * 0.4 * hill + 0.9), 1.0);
 }
 `;
 

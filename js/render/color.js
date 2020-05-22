@@ -14,7 +14,7 @@ const Color = function(r, g, b, a = 1) {
 };
 
 /**
- * Make a color from a CSS file
+ * Make a color from a CSS variable
  * @param name
  */
 Color.fromCSS = function(name) {

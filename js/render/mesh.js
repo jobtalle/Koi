@@ -1,5 +1,5 @@
 /**
- * A generic mesh
+ * A generic indexed mesh
  * @param {WebGLRenderingContext} gl A WebGL context
  * @param {Number[]} vertices An array of vertices
  * @param {Number[]} indices An array of indices
@@ -15,6 +15,14 @@ const Mesh = function(gl, vertices, indices) {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indices);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+};
+
+/**
+ * Bind the buffers
+ */
+Mesh.prototype.bindBuffers = function() {
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertices);
+    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.indices);
 };
 
 /**

@@ -222,7 +222,7 @@ Body.prototype.update = function(
         this.phase -= Math.PI + Math.PI;
 
     if ((this.finPhase -= this.FIN_PHASE_SPEED) < 0)
-        this.phase += Math.PI + Math.PI;
+        this.finPhase += Math.PI + Math.PI;
 
     if (water)
         this.disturbWater(water, random);
