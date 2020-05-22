@@ -11,6 +11,8 @@ const Vegetation = function(gl) {
         this.SHADER_FRAGMENT,
         ["size", "scale"],
         ["color", "position", "flexibility"]);
+    this.indexCount = -1;
+    this.vao = gl.vao.createVertexArrayOES();
 };
 
 Vegetation.prototype.SHADER_VERTEX = `#version 100
@@ -39,17 +41,13 @@ void main() {
 `;
 
 /**
- * Render a mesh as vegetation
- * @param {Mesh} mesh A mesh containing vegetation attributes
- * @param {Number} width The render target width
- * @param {Number} height The render target height
- * @param {Number} scale The scale
+ * Set the mesh
+ * @param {Mesh} mesh The mesh
  */
-Vegetation.prototype.render = function(mesh, width, height, scale) {
-    this.program.use();
+Vegetation.prototype.setMesh = function(mesh) {
+    this.indexCount = mesh.indexCount;
 
-    this.gl.uniform2f(this.program.uSize, width, height);
-    this.gl.uniform1f(this.program.uScale, scale);
+    this.gl.vao.bindVertexArrayOES(this.vao);
 
     mesh.bindBuffers();
 
@@ -59,8 +57,22 @@ Vegetation.prototype.render = function(mesh, width, height, scale) {
     this.gl.vertexAttribPointer(this.program.aPosition, 2, this.gl.FLOAT, false, 24, 12);
     // this.gl.enableVertexAttribArray(this.program.aFlexibility);
     // this.gl.vertexAttribPointer(this.program.aFlexibility, 1, this.gl.FLOAT, false, 24, 16);
+};
 
-    this.gl.drawElements(this.gl.TRIANGLES, mesh.indexCount, this.gl.UNSIGNED_SHORT, 0);
+/**
+ * Render a mesh as vegetation
+ * @param {Number} width The render target width
+ * @param {Number} height The render target height
+ * @param {Number} scale The scale
+ */
+Vegetation.prototype.render = function(width, height, scale) {
+    this.program.use();
+    this.gl.vao.bindVertexArrayOES(this.vao);
+
+    this.gl.uniform2f(this.program.uSize, width, height);
+    this.gl.uniform1f(this.program.uScale, scale);
+
+    this.gl.drawElements(this.gl.TRIANGLES, this.indexCount, this.gl.UNSIGNED_SHORT, 0);
 };
 
 /**
@@ -68,4 +80,5 @@ Vegetation.prototype.render = function(mesh, width, height, scale) {
  */
 Vegetation.prototype.free = function() {
     this.program.free();
+    this.gl.vao.deleteVertexArrayOES(this.vao);
 };

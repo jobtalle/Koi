@@ -1,86 +1,88 @@
-{
-    const glParameters = {
-        alpha: false,
-        antialias: true,
-        preserveDrawingBuffer: true
-    };
-    const canvas = document.getElementById("renderer");
-    const gl =
-        canvas.getContext("webgl", glParameters) ||
-        canvas.getContext("experimental-webgl", glParameters);
-    const random = new Random();
-    const systems = new Systems(gl, random, canvas.width, canvas.height);
-    let lastDate = null;
-    let koi = null;
-    let loaded = true;
+const glParameters = {
+    alpha: false,
+    antialias: true,
+    preserveDrawingBuffer: true
+};
+const canvas = document.getElementById("renderer");
+const gl =
+    canvas.getContext("webgl", glParameters) ||
+    canvas.getContext("experimental-webgl", glParameters);
 
-    const resize = () => {
-        const wrapper = document.getElementById("wrapper");
+// Enable VAO
+gl.vao = gl.getExtension("OES_vertex_array_object");
 
-        canvas.width = wrapper.offsetWidth;
-        canvas.height = wrapper.offsetHeight;
+const random = new Random();
+const systems = new Systems(gl, random, canvas.width, canvas.height);
+let lastDate = null;
+let koi = null;
+let loaded = true;
 
-        systems.resize(canvas.width, canvas.height);
+const resize = () => {
+    const wrapper = document.getElementById("wrapper");
 
-        if (koi)
-            koi.resize();
-    };
+    canvas.width = wrapper.offsetWidth;
+    canvas.height = wrapper.offsetHeight;
 
-    window.onresize = resize;
+    systems.resize(canvas.width, canvas.height);
 
-    resize();
+    if (koi)
+        koi.resize();
+};
 
-    koi = new Koi(systems, random);
-    lastDate = new Date();
+window.onresize = resize;
 
-    const loop = () => {
-        if (loaded) {
-            const date = new Date();
+resize();
 
-            koi.render(.001 * (date - lastDate));
-            lastDate = date;
+koi = new Koi(systems, random);
+lastDate = new Date();
 
-            requestAnimationFrame(loop);
-        }
-    };
+const loop = () => {
+    if (loaded) {
+        const date = new Date();
 
-    requestAnimationFrame(loop);
+        koi.render(.001 * (date - lastDate));
+        lastDate = date;
 
-    canvas.addEventListener("mousedown", event => {
-        event.preventDefault();
+        requestAnimationFrame(loop);
+    }
+};
 
-        koi.touchStart(event.clientX, event.clientY);
-    });
+requestAnimationFrame(loop);
 
-    canvas.addEventListener("touchstart", event => {
-        event.preventDefault();
+canvas.addEventListener("mousedown", event => {
+    event.preventDefault();
 
-        koi.touchStart(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
-    });
+    koi.touchStart(event.clientX, event.clientY);
+});
 
-    canvas.addEventListener("mousemove", event => {
-        koi.touchMove(event.clientX, event.clientY);
-    });
+canvas.addEventListener("touchstart", event => {
+    event.preventDefault();
 
-    canvas.addEventListener("touchmove", event => {
-        event.preventDefault();
+    koi.touchStart(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+});
 
-        koi.touchMove(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
-    })
+canvas.addEventListener("mousemove", event => {
+    koi.touchMove(event.clientX, event.clientY);
+});
 
-    canvas.addEventListener("mouseup", () => {
-        koi.touchEnd();
-    });
+canvas.addEventListener("touchmove", event => {
+    event.preventDefault();
 
-    canvas.addEventListener("touchend", event => {
-        event.preventDefault();
+    koi.touchMove(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+})
 
-        koi.touchEnd();
-    });
+canvas.addEventListener("mouseup", () => {
+    koi.touchEnd();
+});
 
-    window.onbeforeunload = () => {
-        koi.free();
-        systems.free();
-        loaded = false;
-    };
-}
+canvas.addEventListener("touchend", event => {
+    event.preventDefault();
+
+    koi.touchEnd();
+});
+
+window.onbeforeunload = () => {
+    koi.free();
+    systems.free();
+    loaded = false;
+};

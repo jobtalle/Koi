@@ -11,6 +11,7 @@ const Mesh = function(gl, vertices, indices) {
     this.indices = gl.createBuffer();
     this.indexCount = indices.length;
 
+    gl.vao.bindVertexArrayOES(null);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vertices);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indices);

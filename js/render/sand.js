@@ -14,12 +14,18 @@ const Sand = function(gl, randomSource) {
         this.SHADER_FRAGMENT,
         ["scale", "color"],
         ["position"]);
+    this.vao = gl.vao.createVertexArrayOES();
 
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
-    this.gl.bufferData(
-        this.gl.ARRAY_BUFFER,
+    this.gl.vao.bindVertexArrayOES(this.vao);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
         new Float32Array([-1, -1, -1, 1, 1, 1, 1, -1]),
         gl.STATIC_DRAW);
+
+    this.gl.enableVertexAttribArray(this.program.aPosition);
+    this.gl.vertexAttribPointer(this.program.aPosition, 2, gl.FLOAT, false, 8, 0);
 };
 
 Sand.prototype.COLOR = Color.fromCSS("sand");
@@ -52,16 +58,13 @@ void main() {
  */
 Sand.prototype.write = function(scale) {
     this.program.use();
+    this.gl.vao.bindVertexArrayOES(this.vao);
 
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, this.randomSource.texture);
 
     this.gl.uniform1f(this.program.uScale, scale);
     this.gl.uniform3f(this.program.uColor, this.COLOR.r, this.COLOR.g, this.COLOR.b);
-
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
-    this.gl.enableVertexAttribArray(this.program.aPosition);
-    this.gl.vertexAttribPointer(this.program.aPosition, 2, this.gl.FLOAT, false, 8, 0);
 
     this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, 4);
 };
@@ -71,5 +74,6 @@ Sand.prototype.write = function(scale) {
  */
 Sand.prototype.free = function() {
     this.gl.deleteBuffer(this.buffer);
+    this.gl.vao.deleteVertexArrayOES(this.vao);
     this.program.free();
 };

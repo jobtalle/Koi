@@ -5,18 +5,21 @@
  */
 const Waves = function(gl) {
     this.gl = gl;
-    this.programDistort = new Shader(
-        gl,
-        this.SHADER_DISTORT_VERTEX,
-        this.SHADER_DISTORT_FRAGMENT,
-        ["scale", "background", "waterBack", "waterFront", "depth", "size", "waterSize", "time"],
-        ["position"]);
     this.programPropagate = new Shader(
         gl,
         this.SHADER_PROPAGATE_VERTEX,
         this.SHADER_PROPAGATE_FRAGMENT,
         ["size", "scale", "damping"],
         ["position"]);
+    this.vaoPropagate = gl.vao.createVertexArrayOES();
+    this.programDistort = new Shader(
+        gl,
+        this.SHADER_DISTORT_VERTEX,
+        this.SHADER_DISTORT_FRAGMENT,
+        ["scale", "background", "waterBack", "waterFront", "depth", "size", "waterSize", "time"],
+        ["position"]);
+    this.vaoDistort = gl.vao.createVertexArrayOES();
+    this.indexCount = -1;
 };
 
 Waves.prototype.DAMPING = .992;
@@ -112,13 +115,35 @@ void main() {
 `;
 
 /**
+ * Set the mesh
+ * @param {Mesh} mesh The mesh
+ */
+Waves.prototype.setMesh = function(mesh) {
+    this.indexCount = mesh.indexCount;
+
+    this.gl.vao.bindVertexArrayOES(this.vaoPropagate);
+
+    mesh.bindBuffers();
+
+    this.gl.enableVertexAttribArray(this.programPropagate.aPosition);
+    this.gl.vertexAttribPointer(this.programPropagate.aPosition, 2, this.gl.FLOAT, false, 8, 0);
+
+    this.gl.vao.bindVertexArrayOES(this.vaoDistort);
+
+    mesh.bindBuffers();
+
+    this.gl.enableVertexAttribArray(this.programDistort.aPosition);
+    this.gl.vertexAttribPointer(this.programDistort.aPosition, 2, this.gl.FLOAT, false, 8, 0);
+};
+
+/**
  * Propagate the waves on a water plane
  * @param {WaterPlane} water A water plane
  * @param {WavePainter} wavePainter A wave painter to render wave influences
- * @param {Mesh} mesh A mesh containing all water pixels
  */
-Waves.prototype.propagate = function(water, wavePainter, mesh) {
+Waves.prototype.propagate = function(water, wavePainter) {
     this.programPropagate.use();
+    this.gl.vao.bindVertexArrayOES(this.vaoPropagate);
 
     water.flip();
     water.getFront().target();
@@ -130,17 +155,12 @@ Waves.prototype.propagate = function(water, wavePainter, mesh) {
     this.gl.uniform1f(this.programPropagate.uScale, water.SCALE);
     this.gl.uniform1f(this.programPropagate.uDamping, this.DAMPING);
 
-    mesh.bindBuffers();
-
-    this.gl.enableVertexAttribArray(this.programPropagate.aPosition);
-    this.gl.vertexAttribPointer(this.programPropagate.aPosition, 2, this.gl.FLOAT, false, 8, 0);
-
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, water.getBack().texture);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
 
-    this.gl.drawElements(this.gl.TRIANGLES, mesh.indexCount, this.gl.UNSIGNED_SHORT, 0);
+    this.gl.drawElements(this.gl.TRIANGLES, this.indexCount, this.gl.UNSIGNED_SHORT, 0);
 
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
@@ -151,7 +171,6 @@ Waves.prototype.propagate = function(water, wavePainter, mesh) {
 /**
  * Render waves
  * @param {WebGLTexture} background A background texture
- * @param {Mesh} mesh A mesh containing all water pixels
  * @param {WaterPlane} water A water plane to shade the background with
  * @param {Number} width The background width in pixels
  * @param {Number} height The background height in pixels
@@ -160,13 +179,13 @@ Waves.prototype.propagate = function(water, wavePainter, mesh) {
  */
 Waves.prototype.render = function(
     background,
-    mesh,
     water,
     width,
     height,
     scale,
     time) {
     this.programDistort.use();
+    this.gl.vao.bindVertexArrayOES(this.vaoDistort);
 
     this.gl.uniform1f(this.programDistort.uScale, scale);
     this.gl.uniform1i(this.programDistort.uBackground, 0);
@@ -177,11 +196,6 @@ Waves.prototype.render = function(
     this.gl.uniform2f(this.programDistort.uWaterSize, water.width, water.height); // TODO: Use inverse dimensions
     this.gl.uniform1f(this.programDistort.uTime, time);
 
-    mesh.bindBuffers();
-
-    this.gl.enableVertexAttribArray(this.programDistort.aPosition);
-    this.gl.vertexAttribPointer(this.programDistort.aPosition, 2, this.gl.FLOAT, false, 8, 0);
-
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, background);
     this.gl.activeTexture(this.gl.TEXTURE1);
@@ -189,7 +203,7 @@ Waves.prototype.render = function(
     this.gl.activeTexture(this.gl.TEXTURE2);
     this.gl.bindTexture(this.gl.TEXTURE_2D, water.getFront().texture);
 
-    this.gl.drawElements(this.gl.TRIANGLES, mesh.indexCount, this.gl.UNSIGNED_SHORT, 0);
+    this.gl.drawElements(this.gl.TRIANGLES, this.indexCount, this.gl.UNSIGNED_SHORT, 0);
 };
 
 /**
@@ -198,4 +212,6 @@ Waves.prototype.render = function(
 Waves.prototype.free = function() {
     this.programDistort.free();
     this.programPropagate.free();
+    this.gl.vao.deleteVertexArrayOES(this.vaoPropagate);
+    this.gl.vao.deleteVertexArrayOES(this.vaoDistort);
 };

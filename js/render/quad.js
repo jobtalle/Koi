@@ -12,9 +12,14 @@ const Quad = function(gl) {
         this.SHADER_FRAGMENT,
         [],
         ["position"]);
+    this.vao = gl.vao.createVertexArrayOES();
+
+    gl.vao.bindVertexArrayOES(this.vao);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, -1, 1, 1, 1, 1, -1]), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(this.program.aPosition);
+    gl.vertexAttribPointer(this.program.aPosition, 2, this.gl.FLOAT, false, 8, 0);
 };
 
 Quad.prototype.SHADER_VERTEX = `#version 100
@@ -45,10 +50,7 @@ void main() {
 Quad.prototype.render = function() {
     this.program.use();
 
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
-
-    this.gl.enableVertexAttribArray(this.program.aPosition);
-    this.gl.vertexAttribPointer(this.program.aPosition, 2, this.gl.FLOAT, false, 8, 0);
+    this.gl.vao.bindVertexArrayOES(this.vao);
 
     this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, 4);
 };
@@ -60,4 +62,5 @@ Quad.prototype.free = function() {
     this.program.free();
 
     this.gl.deleteBuffer(this.buffer);
+    this.gl.vao.deleteVertexArrayOES(this.vao);
 };

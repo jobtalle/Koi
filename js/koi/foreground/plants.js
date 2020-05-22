@@ -39,7 +39,7 @@ Plants.prototype.makeMesh = function(gl, constellation, random) {
  */
 Plants.prototype.makeBlade = function(x, y, vertices, indices) {
     const firstIndex = vertices.length / 6;
-    const height = 1;
+    const height = .5;
     const radius = .05;
     const steps = 4;
     const color = Color.fromCSS("grass");
@@ -95,7 +95,7 @@ Plants.prototype.makeBlade = function(x, y, vertices, indices) {
  * @param {Number} scale The scale
  */
 Plants.prototype.render = function(vegetation, width, height, scale) {
-    vegetation.render(this.mesh, width, height, scale);
+    vegetation.render(width, height, scale);
 };
 
 /**

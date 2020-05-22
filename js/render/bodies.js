@@ -17,6 +17,16 @@ const Bodies = function(gl) {
         this.SHADER_FRAGMENT,
         ["size", "scale", "shadow"],
         ["position", "uv"]);
+    this.vao = gl.vao.createVertexArrayOES();
+
+    gl.vao.bindVertexArrayOES(this.vao);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferVertices);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferIndices);
+    gl.enableVertexAttribArray(this.program.aPosition);
+    gl.vertexAttribPointer(this.program.aPosition, 2, gl.FLOAT, false, 16, 0);
+    gl.enableVertexAttribArray(this.program.aUv);
+    gl.vertexAttribPointer(this.program.aUv, 2, gl.FLOAT, false, 16, 8);
 };
 
 Bodies.prototype.SHADOW_ALPHA = .2;
@@ -89,6 +99,8 @@ Bodies.prototype.upload = function() {
  * @param {Boolean} [shadows] Shadow rendering, on by default
  */
 Bodies.prototype.render = function(atlas, width, height, scale, shadows = true) {
+    this.gl.vao.bindVertexArrayOES(this.vao);
+
     this.upload();
 
     this.program.use();
@@ -99,11 +111,6 @@ Bodies.prototype.render = function(atlas, width, height, scale, shadows = true) 
     // TODO: Would be nice to wrap this into a 3D vector
     this.gl.uniform2f(this.program.uSize, width, height);
     this.gl.uniform1f(this.program.uScale, scale);
-
-    this.gl.enableVertexAttribArray(this.program.aPosition);
-    this.gl.vertexAttribPointer(this.program.aPosition, 2, this.gl.FLOAT, false, 16, 0);
-    this.gl.enableVertexAttribArray(this.program.aUv);
-    this.gl.vertexAttribPointer(this.program.aUv, 2, this.gl.FLOAT, false, 16, 8);
 
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
@@ -130,4 +137,5 @@ Bodies.prototype.free = function() {
     this.gl.deleteBuffer(this.bufferVertices);
     this.gl.deleteBuffer(this.bufferIndices);
     this.program.free();
+    this.gl.vao.deleteVertexArrayOES(this.vao);
 };

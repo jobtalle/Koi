@@ -66,6 +66,9 @@ Koi.prototype.createRenderables = function() {
         this.systems.height / this.scale);
 
     this.constellationMesh = this.constellation.makeMesh(this.systems.gl);
+
+    this.systems.waves.setMesh(this.constellationMesh);
+    this.systems.vegetation.setMesh(this.foreground.plants.mesh); // TODO: This can be better
 };
 
 /**
@@ -144,7 +147,7 @@ Koi.prototype.update = function() {
     this.constellation.update(this.atlas, this.water, this.random);
     this.mover.update();
 
-    this.systems.waves.propagate(this.water, this.systems.wavePainter, this.constellationMesh);
+    this.systems.waves.propagate(this.water, this.systems.wavePainter);
 };
 
 /**
@@ -180,13 +183,13 @@ Koi.prototype.render = function(deltaTime) {
     // Target window
     this.systems.targetMain();
 
+    // Clear background
     this.systems.gl.clearColor(this.BACKGROUND_COLOR.r, this.BACKGROUND_COLOR.g, this.BACKGROUND_COLOR.b, 1);
     this.systems.gl.clear(this.systems.gl.COLOR_BUFFER_BIT);
 
     // Render shaded water
     this.systems.waves.render(
         this.underwater.texture,
-        this.constellationMesh,
         this.water,
         this.systems.width,
         this.systems.height,

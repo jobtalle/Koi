@@ -20,6 +20,7 @@ const WaterPlane = function(gl, width, height) {
 
     for (const target of this.targets) {
         this.targets[0].target();
+
         gl.clear(gl.COLOR_BUFFER_BIT);
     }
 };

@@ -5,13 +5,20 @@
  */
 const WavePainter = function(gl) {
     this.gl = gl;
-    this.bufferFlare = this.createBufferFlare();
     this.program = new Shader(
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
         ["size", "origin", "radius", "displacement"],
         ["vertex"]);
+    this.vao = gl.vao.createVertexArrayOES();
+
+    gl.vao.bindVertexArrayOES(this.vao);
+
+    this.bufferFlare = this.createBufferFlare();
+
+    gl.enableVertexAttribArray(this.program.aVertex);
+    gl.vertexAttribPointer(this.program.aVertex,3, gl.FLOAT, false, 12, 0);
 };
 
 WavePainter.prototype.SHAPE_FLARE_PRECISION = 16;
@@ -71,15 +78,7 @@ WavePainter.prototype.createBufferFlare = function() {
 WavePainter.prototype.paintFlares = function(flares) {
     const flareCount = flares.length >> 2;
 
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.bufferFlare);
-    this.gl.enableVertexAttribArray(this.program.aVertex);
-    this.gl.vertexAttribPointer(
-        this.program.aVertex,
-        3,
-        this.gl.FLOAT,
-        false,
-        12,
-        0);
+    this.gl.vao.bindVertexArrayOES(this.vao);
 
     for (let flare = 0; flare < flareCount; ++flare) {
         const index = flare + flare + flare + flare;
@@ -124,5 +123,6 @@ WavePainter.prototype.applyInfluences = function(water) {
  */
 WavePainter.prototype.free = function() {
     this.gl.deleteBuffer(this.bufferFlare);
+    this.gl.vao.deleteVertexArrayOES(this.vao);
     this.program.free();
 };
