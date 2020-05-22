@@ -16,7 +16,7 @@ const Sand = function(gl, randomSource) {
         ["position"]);
     this.vao = gl.vao.createVertexArrayOES();
 
-    this.gl.vao.bindVertexArrayOES(this.vao);
+    gl.vao.bindVertexArrayOES(this.vao);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
     gl.bufferData(
@@ -24,8 +24,8 @@ const Sand = function(gl, randomSource) {
         new Float32Array([-1, -1, -1, 1, 1, 1, 1, -1]),
         gl.STATIC_DRAW);
 
-    this.gl.enableVertexAttribArray(this.program.aPosition);
-    this.gl.vertexAttribPointer(this.program.aPosition, 2, gl.FLOAT, false, 8, 0);
+    gl.enableVertexAttribArray(this.program.aPosition);
+    gl.vertexAttribPointer(this.program.aPosition, 2, gl.FLOAT, false, 8, 0);
 };
 
 Sand.prototype.COLOR = Color.fromCSS("sand");

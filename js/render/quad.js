@@ -7,7 +7,7 @@ const Quad = function(gl) {
     this.gl = gl;
     this.buffer = gl.createBuffer();
     this.program = new Shader(
-        this.gl,
+        gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
         [],
@@ -19,7 +19,7 @@ const Quad = function(gl) {
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, -1, 1, 1, 1, 1, -1]), gl.STATIC_DRAW);
     gl.enableVertexAttribArray(this.program.aPosition);
-    gl.vertexAttribPointer(this.program.aPosition, 2, this.gl.FLOAT, false, 8, 0);
+    gl.vertexAttribPointer(this.program.aPosition, 2, gl.FLOAT, false, 8, 0);
 };
 
 Quad.prototype.SHADER_VERTEX = `#version 100
