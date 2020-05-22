@@ -17,6 +17,7 @@ const Systems = function(gl, random, width, height) {
     this.wavePainter = new WavePainter(gl);
     this.bodies = new Bodies(gl);
     this.quad = new Quad(gl);
+    this.vegetation = new Vegetation(gl);
 };
 
 /**
@@ -48,4 +49,5 @@ Systems.prototype.free = function() {
     this.wavePainter.free();
     this.bodies.free();
     this.quad.free();
+    this.vegetation.free();
 };

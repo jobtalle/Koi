@@ -14,6 +14,7 @@ const Koi = function(systems, random) {
     this.mover = new Mover(this.constellation);
     this.atlas = null;
     this.background = null;
+    this.foreground = null;
     this.underwater = null;
     this.water = null;
     this.constellationMesh = null;
@@ -48,6 +49,9 @@ Koi.prototype.createRenderables = function() {
         this.systems.width,
         this.systems.height,
         this.scale);
+    this.foreground = new Foreground(
+        this.systems.gl,
+        this.constellation);
     this.underwater = new RenderTarget(
         this.systems.gl,
         this.systems.width,
@@ -69,6 +73,7 @@ Koi.prototype.createRenderables = function() {
 Koi.prototype.freeRenderables = function() {
     this.atlas.free();
     this.background.free();
+    this.foreground.free();
     this.underwater.free();
     this.water.free();
 

@@ -1,5 +1,5 @@
 /**
- * A mesh
+ * A generic mesh
  * @param {WebGLRenderingContext} gl A WebGL context
  * @param {Number[]} vertices An array of vertices
  * @param {Number[]} indices An array of indices
