@@ -13,6 +13,7 @@ const Koi = function(systems, random) {
         systems.height / this.scale);
     this.mover = new Mover(this.constellation);
     this.atlas = null;
+    this.rocks = null;
     this.background = null;
     this.foreground = null;
     this.underwater = null;
@@ -43,6 +44,9 @@ Koi.prototype.createRenderables = function() {
         this.systems.gl,
         this.systems.patterns,
         this.constellation.getCapacity());
+    this.rocks = new Rocks(
+        this.systems.gl,
+        this.constellation);
     this.background = new Background(
         this.systems.gl,
         this.systems.sand,
@@ -76,6 +80,7 @@ Koi.prototype.createRenderables = function() {
  */
 Koi.prototype.freeRenderables = function() {
     this.atlas.free();
+    this.rocks.free();
     this.background.free();
     this.foreground.free();
     this.underwater.free();
@@ -195,6 +200,9 @@ Koi.prototype.render = function(deltaTime) {
         this.systems.height,
         this.scale,
         timeFactor);
+
+    // Render rocks
+    this.rocks.render();
 
     // Render foreground
     this.foreground.render(

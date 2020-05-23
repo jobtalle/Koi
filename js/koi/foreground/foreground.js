@@ -6,7 +6,6 @@
  * @constructor
  */
 const Foreground = function(gl, constellation, random) {
-    this.rocks = new Rocks(constellation);
     this.plants = new Plants(gl, constellation, random);
 };
 
