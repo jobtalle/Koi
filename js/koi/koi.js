@@ -47,9 +47,14 @@ Koi.prototype.createRenderables = function() {
         this.systems.gl,
         this.constellation,
         this.random);
+
+    this.systems.stone.setMesh(this.rocks.mesh);
+
     this.background = new Background(
         this.systems.gl,
         this.systems.sand,
+        this.systems.stone,
+        this.rocks,
         this.systems.width,
         this.systems.height,
         this.scale);
@@ -72,7 +77,6 @@ Koi.prototype.createRenderables = function() {
     this.constellationMesh = this.constellation.makeMesh(this.systems.gl); // TODO: Get part without rocks
 
     this.systems.waves.setMesh(this.constellationMesh);
-    this.systems.stone.setMesh(this.rocks.mesh);
     this.systems.vegetation.setMesh(this.foreground.plants.mesh); // TODO: This can be better
 };
 
@@ -206,11 +210,11 @@ Koi.prototype.render = function(deltaTime) {
         this.scale);
 
     // Render foreground
-    // this.foreground.render(
-    //     this.systems.vegetation,
-    //     this.systems.width,
-    //     this.systems.height,
-    //     this.scale);
+    this.foreground.render(
+        this.systems.vegetation,
+        this.systems.width,
+        this.systems.height,
+        this.scale);
 
     // Render mover
     this.mover.render(
