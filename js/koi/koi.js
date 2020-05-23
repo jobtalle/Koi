@@ -72,6 +72,7 @@ Koi.prototype.createRenderables = function() {
     this.constellationMesh = this.constellation.makeMesh(this.systems.gl);
 
     this.systems.waves.setMesh(this.constellationMesh);
+    this.systems.stone.setMesh(this.rocks.mesh);
     this.systems.vegetation.setMesh(this.foreground.plants.mesh); // TODO: This can be better
 };
 
@@ -202,7 +203,11 @@ Koi.prototype.render = function(deltaTime) {
         timeFactor);
 
     // Render rocks
-    this.rocks.render();
+    this.rocks.render(
+        this.systems.stone,
+        this.systems.width,
+        this.systems.height,
+        this.scale);
 
     // Render foreground
     this.foreground.render(
