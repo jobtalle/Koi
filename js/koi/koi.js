@@ -46,7 +46,8 @@ Koi.prototype.createRenderables = function() {
         this.constellation.getCapacity());
     this.rocks = new Rocks(
         this.systems.gl,
-        this.constellation);
+        this.constellation,
+        this.random);
     this.background = new Background(
         this.systems.gl,
         this.systems.sand,
@@ -69,7 +70,7 @@ Koi.prototype.createRenderables = function() {
         this.systems.width / this.scale,
         this.systems.height / this.scale);
 
-    this.constellationMesh = this.constellation.makeMesh(this.systems.gl);
+    this.constellationMesh = this.constellation.makeMesh(this.systems.gl); // TODO: Get part without rocks
 
     this.systems.waves.setMesh(this.constellationMesh);
     this.systems.stone.setMesh(this.rocks.mesh);
@@ -188,10 +189,6 @@ Koi.prototype.render = function(deltaTime) {
 
     // Target window
     this.systems.targetMain();
-
-    // Clear background
-    this.systems.gl.clearColor(this.BACKGROUND_COLOR.r, this.BACKGROUND_COLOR.g, this.BACKGROUND_COLOR.b, 1);
-    this.systems.gl.clear(this.systems.gl.COLOR_BUFFER_BIT);
 
     // Render shaded water
     this.systems.waves.render(

@@ -10,7 +10,7 @@ const Stone = function(gl) {
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
         ["size", "scale"],
-        ["position"]);
+        ["color", "position"]);
     this.vao = gl.vao.createVertexArrayOES();
     this.indexCount = -1;
 };
@@ -19,16 +19,23 @@ Stone.prototype.SHADER_VERTEX = `#version 100
 uniform vec2 size;
 uniform float scale;
 
+attribute vec3 color;
 attribute vec2 position;
 
+varying vec3 iColor;
+
 void main() {
+  iColor = color;
+
   gl_Position = vec4(vec2(2.0, -2.0) * position / size * scale + vec2(-1.0, 1.0), 0.0, 1.0);
 }
 `;
 
 Stone.prototype.SHADER_FRAGMENT = `#version 100
+varying lowp vec3 iColor;
+
 void main() {
-  gl_FragColor = vec4(vec3(0.7), 1.0);
+  gl_FragColor = vec4(iColor, 1.0);
 }
 `;
 
@@ -43,8 +50,10 @@ Stone.prototype.setMesh = function(mesh) {
 
     mesh.bindBuffers();
 
+    this.gl.enableVertexAttribArray(this.program.aColor);
+    this.gl.vertexAttribPointer(this.program.aColor, 3, this.gl.FLOAT, false, 20, 0);
     this.gl.enableVertexAttribArray(this.program.aPosition);
-    this.gl.vertexAttribPointer(this.program.aPosition, 2, this.gl.FLOAT, false, 8, 0);
+    this.gl.vertexAttribPointer(this.program.aPosition, 2, this.gl.FLOAT, false, 20, 12);
 };
 
 /**
