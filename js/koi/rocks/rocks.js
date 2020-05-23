@@ -70,7 +70,7 @@ Rocks.prototype.filterCells = function(constellation, cells) {
             if (constraint) {
                 if (!inConstraint)
                     inConstraint = constraint;
-                else if (constraint !== inConstraint)
+                else if (Object.getPrototypeOf(constraint) !== Object.getPrototypeOf(inConstraint))
                     touchesLand = true;
             }
             else {
