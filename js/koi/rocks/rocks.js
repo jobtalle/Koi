@@ -19,13 +19,15 @@ Rocks.prototype.createMesh = function(gl, constellation, random) {
     const vertices = [];
     const indices = [];
 
+    const underwater = new Map();
     const cells = this.filterCells(
         constellation,
         this.createCells(
             constellation,
             this.createCenters(
                 constellation,
-                random)));
+                random)),
+        underwater);
 
     for (const cell of cells) {
         const firstIndex = vertices.length / 5;
@@ -55,12 +57,14 @@ Rocks.prototype.createMesh = function(gl, constellation, random) {
 /**
  * Filter Voronoi cells to make fitting rocks for the scene
  * @param {Constellation} constellation The constellation
+ * @param {Map} underwater A map where all underwater points per constraint should be stored
  * @param {Voronoi.Vertex[][]} cells An array of Voronoi cells
  */
-Rocks.prototype.filterCells = function(constellation, cells) {
+Rocks.prototype.filterCells = function(constellation, cells, underwater) {
     const filtered = [];
 
     for (const cell of cells) {
+        let submerged = null;
         let touchesLand = false;
         let inConstraint = null;
 
@@ -72,16 +76,28 @@ Rocks.prototype.filterCells = function(constellation, cells) {
                     inConstraint = constraint;
                 else if (Object.getPrototypeOf(constraint) !== Object.getPrototypeOf(inConstraint))
                     touchesLand = true;
-            }
-            else {
-                touchesLand = true;
 
-                break;
+                if (submerged === null)
+                    submerged = new Map();
+
+                if (!submerged.has(constraint))
+                    submerged.set(constraint, []);
+
+                submerged.get(constraint).push(point);
             }
+            else
+                touchesLand = true;
         }
 
         if (!touchesLand)
             continue;
+
+        if (submerged !== null) for (const constraint of submerged.keys()) {
+            if (!underwater.has(constraint))
+                underwater.set(constraint, []);
+
+            underwater.get(constraint).push(...submerged.get(constraint));
+        }
 
         filtered.push(cell);
     }
