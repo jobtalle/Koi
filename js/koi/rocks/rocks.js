@@ -23,11 +23,22 @@ Rocks.prototype.createMesh = function(gl, constellation, random) {
 
     for (const cell of triangulation) {
         let touchesLand = false;
+        let inConstraint = null;
 
-        for (const point of cell) if (!constellation.contains(point.x, point.y)) {
-            touchesLand = true;
+        for (const point of cell) {
+            const constraint = constellation.contains(point.x, point.y);
 
-            break;
+            if (constraint) {
+                if (!inConstraint)
+                    inConstraint = constraint;
+                else if (constraint !== inConstraint)
+                    touchesLand = true;
+            }
+            else {
+                touchesLand = true;
+
+                break;
+            }
         }
 
         if (!touchesLand)
@@ -64,7 +75,7 @@ Rocks.prototype.createMesh = function(gl, constellation, random) {
 Rocks.prototype.createTriangulation = function(constellation, random) {
     const points = [];
 
-    for (let i = 0; i < 2000; ++i)
+    for (let i = 0; i < 1000; ++i)
         points.push(new Vector2(constellation.width * random.getFloat(), constellation.height * random.getFloat()));
 
     const triangulation = new Voronoi().compute(
@@ -81,7 +92,7 @@ Rocks.prototype.createTriangulation = function(constellation, random) {
     for (const cell of triangulation.cells) if (!cell.closeMe) {
         const shape = [cell.halfedges[0].getStartpoint()];
 
-        for (let edge = 0; edge < cell.halfedges.length; ++edge)
+        for (let edge = 0, edgeCount = cell.halfedges.length; edge < edgeCount; ++edge)
             shape.push(cell.halfedges[edge].getEndpoint());
 
         cells.push(shape);

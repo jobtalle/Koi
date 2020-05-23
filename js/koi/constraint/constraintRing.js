@@ -40,14 +40,17 @@ ConstraintRing.prototype.constrain = function(vector, dx, dy, distance) {
  * Check whether a given point is contained within this constraint
  * @param {Number} x The X position
  * @param {Number} y The Y position
- * @returns {Boolean} A boolean indicating whether the given point is inside this constraint
+ * @returns {Constraint} This constraint if it contains the coordinates, null if it does not
  */
 ConstraintRing.prototype.contains = function(x, y) {
     const dx = x - this.position.x;
     const dy = y - this.position.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
 
-    return distance > this.radius - this.halfWidth && distance < this.radius + this.halfWidth;
+    if (distance > this.radius - this.halfWidth && distance < this.radius + this.halfWidth)
+        return this;
+
+    return null;
 };
 
 /**

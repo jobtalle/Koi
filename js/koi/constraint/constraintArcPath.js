@@ -68,7 +68,7 @@ ConstraintArcPath.prototype.constrain = function(vector) {
  * Check whether a given point is contained within this constraint
  * @param {Number} x The X position
  * @param {Number} y The Y position
- * @returns {Boolean} A boolean indicating whether the given point is inside this constraint
+ * @returns {ConstraintArcPath} This constraint if it contains the coordinates, null if it does not
  */
 ConstraintArcPath.prototype.contains = function(x, y) {
     for (let arc = 0; arc < this.arcs.length; ++arc) {
@@ -78,10 +78,10 @@ ConstraintArcPath.prototype.contains = function(x, y) {
 
         if (dx * this.arcs[arc].direction.x + dy * this.arcs[arc].direction.y >= this.arcs[arc].cone * distance)
             if (this.rings[arc].contains(x, y))
-                return true;
+                return this;
     }
 
-    return false;
+    return null;
 };
 
 /**

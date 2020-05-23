@@ -34,7 +34,6 @@ Koi.prototype.UPDATE_RATE = 1 / 14;
 Koi.prototype.PREFERRED_SCALE = 95;
 Koi.prototype.SIZE_MIN = 8;
 Koi.prototype.SIZE_MAX = 13;
-Koi.prototype.BACKGROUND_COLOR = Color.fromCSS("background");
 
 /**
  * Create all renderable objects
@@ -207,11 +206,11 @@ Koi.prototype.render = function(deltaTime) {
         this.scale);
 
     // Render foreground
-    this.foreground.render(
-        this.systems.vegetation,
-        this.systems.width,
-        this.systems.height,
-        this.scale);
+    // this.foreground.render(
+    //     this.systems.vegetation,
+    //     this.systems.width,
+    //     this.systems.height,
+    //     this.scale);
 
     // Render mover
     this.mover.render(
