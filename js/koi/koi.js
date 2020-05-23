@@ -193,6 +193,13 @@ Koi.prototype.render = function(deltaTime) {
     // Target window
     this.systems.targetMain();
 
+    // Render rocks
+    this.rocks.render(
+        this.systems.stone,
+        this.systems.width,
+        this.systems.height,
+        this.scale);
+
     // Render shaded water
     this.systems.waves.render(
         this.underwater.texture,
@@ -201,13 +208,6 @@ Koi.prototype.render = function(deltaTime) {
         this.systems.height,
         this.scale,
         timeFactor);
-
-    // Render rocks
-    this.rocks.render(
-        this.systems.stone,
-        this.systems.width,
-        this.systems.height,
-        this.scale);
 
     // Render foreground
     this.foreground.render(
