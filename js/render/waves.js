@@ -22,7 +22,7 @@ const Waves = function(gl) {
     this.indexCount = -1;
 };
 
-Waves.prototype.DAMPING = .992;
+Waves.prototype.DAMPING = .994;
 Waves.prototype.DEPTH = 0.1;
 
 Waves.prototype.SHADER_DISTORT_VERTEX = `#version 100
