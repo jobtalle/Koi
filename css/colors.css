@@ -1,4 +1,6 @@
 :root {
-    --color-sand: #c29d5d;
+    /* Environment colors */
+    --color-sand: #5e8da5;
     --color-grass: #588758;
+    --color-earth: #6f6156;
 }

@@ -120,8 +120,6 @@ Bodies.prototype.render = function(atlas, width, height, scale, shadows = true) 
         this.gl.drawElements(this.gl.TRIANGLES, this.indices.length, this.gl.UNSIGNED_SHORT, 0);
     }
 
-    this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
-
     this.gl.uniform3f(this.program.uShadow, 1, 1, 0);
     this.gl.drawElements(this.gl.TRIANGLES, this.indices.length, this.gl.UNSIGNED_SHORT, 0);
 

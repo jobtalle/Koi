@@ -16,7 +16,7 @@ const Constellation = function(width, height) {
     this.fit();
 };
 
-Constellation.prototype.FACTOR_PADDING = .1;
+Constellation.prototype.FACTOR_PADDING = .15;
 Constellation.prototype.FACTOR_SMALL = .7;
 Constellation.prototype.FACTOR_RIVER = .6;
 Constellation.prototype.FISH_PER_AREA = 1;
@@ -227,15 +227,16 @@ Constellation.prototype.drop = function(fish) {
 /**
  * Make a mask mesh overlapping all water area
  * @param {WebGLRenderingContext} gl A WebGL context
+ * @param {Random} random A randomizer
  * @returns {Mesh} A mesh
  */
-Constellation.prototype.makeMesh = function(gl) {
+Constellation.prototype.makeMesh = function(gl, random) {
     const vertices = [];
     const indices = [];
 
-    this.big.constraint.appendMesh(vertices, indices);
-    this.small.constraint.appendMesh(vertices, indices);
-    this.river.constraint.appendMesh(vertices, indices);
+    this.big.constraint.appendMesh(vertices, indices, random);
+    this.small.constraint.appendMesh(vertices, indices, random);
+    this.river.constraint.appendMesh(vertices, indices, random);
 
     return new Mesh(gl, vertices, indices);
 };

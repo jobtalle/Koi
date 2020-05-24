@@ -34,6 +34,7 @@ Koi.prototype.UPDATE_RATE = 1 / 14;
 Koi.prototype.PREFERRED_SCALE = 95;
 Koi.prototype.SIZE_MIN = 8;
 Koi.prototype.SIZE_MAX = 13;
+Koi.prototype.COLOR_BACKGROUND = Color.fromCSS("earth");
 
 /**
  * Create all renderable objects
@@ -53,8 +54,6 @@ Koi.prototype.createRenderables = function() {
     this.background = new Background(
         this.systems.gl,
         this.systems.sand,
-        this.systems.stone,
-        this.rocks,
         this.systems.width,
         this.systems.height,
         this.scale);
@@ -74,7 +73,7 @@ Koi.prototype.createRenderables = function() {
         this.systems.width / this.scale,
         this.systems.height / this.scale);
 
-    this.constellationMesh = this.constellation.makeMesh(this.systems.gl); // TODO: Get part without rocks
+    this.constellationMesh = this.constellation.makeMesh(this.systems.gl, this.random);
 
     this.systems.waves.setMesh(this.constellationMesh);
     this.systems.vegetation.setMesh(this.foreground.plants.mesh); // TODO: This can be better
@@ -193,12 +192,9 @@ Koi.prototype.render = function(deltaTime) {
     // Target window
     this.systems.targetMain();
 
-    // Render rocks
-    this.rocks.render(
-        this.systems.stone,
-        this.systems.width,
-        this.systems.height,
-        this.scale);
+    // Clear background
+    this.systems.gl.clearColor(this.COLOR_BACKGROUND.r, this.COLOR_BACKGROUND.g, this.COLOR_BACKGROUND.b, 1);
+    this.systems.gl.clear(this.systems.gl.COLOR_BUFFER_BIT);
 
     // Render shaded water
     this.systems.waves.render(
@@ -208,6 +204,13 @@ Koi.prototype.render = function(deltaTime) {
         this.systems.height,
         this.scale,
         timeFactor);
+
+    // Render rocks
+    this.rocks.render(
+        this.systems.stone,
+        this.systems.width,
+        this.systems.height,
+        this.scale);
 
     // Render foreground
     this.foreground.render(

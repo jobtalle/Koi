@@ -2,8 +2,6 @@
  * The background of the scene
  * @param {WebGLRenderingContext} gl A WebGL rendering context
  * @param {Sand} sand The sand renderer
- * @param {Stone} stone The stone renderer
- * @param {Rocks} rocks The rocks
  * @param {Number} width The width in pixels
  * @param {Number} height The height in pixels
  * @param {Number} scale The render scale
@@ -12,20 +10,17 @@
 const Background = function(
     gl,
     sand,
-    stone,
-    rocks,
     width,
     height,
     scale) {
     this.gl = gl;
     this.width = width;
     this.height = height;
-    this.bottom = new RenderTarget(gl, width, height, gl.RGB, gl.NEAREST, gl.UNSIGNED_BYTE);
+    this.bottom = new RenderTarget(gl, width, height, gl.RGBA, gl.NEAREST, gl.UNSIGNED_BYTE);
 
     this.bottom.target();
 
     sand.write(scale);
-    rocks.render(stone, width, height, scale);
 };
 
 /**

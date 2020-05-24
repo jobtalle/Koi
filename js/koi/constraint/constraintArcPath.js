@@ -114,8 +114,9 @@ ConstraintArcPath.prototype.sample = function(position) {
  * Append a mesh
  * @param {Number[]} vertices The vertex array
  * @param {Number[]} indices The index array
+ * @param {Random} random A randomizer
  */
-ConstraintArcPath.prototype.appendMesh = function(vertices, indices) {
+ConstraintArcPath.prototype.appendMesh = function(vertices, indices, random) {
     for (let arc = this.arcs.length; arc-- > 0;) {
         const firstIndex = vertices.length >> 1;
 
@@ -125,12 +126,15 @@ ConstraintArcPath.prototype.appendMesh = function(vertices, indices) {
 
         for (let step = 0; step <= steps; ++step) {
             const radians = this.arcs[arc].start + (this.arcs[arc].end - this.arcs[arc].start) * step / steps;
+            const offset = step === 0 || step === steps ? 0 : (random.getFloat() - .5) * this.rings[arc].MESH_ROUGHNESS;
+            const radiusInner = this.arcs[arc].radius - this.width * .5 + offset;
+            const radiusOuter = this.arcs[arc].radius + this.width * .5 + offset;
 
             vertices.push(
-                this.arcs[arc].center.x + Math.cos(radians) * (this.arcs[arc].radius - this.width * .5),
-                this.arcs[arc].center.y + Math.sin(radians) * (this.arcs[arc].radius - this.width * .5),
-                this.arcs[arc].center.x + Math.cos(radians) * (this.arcs[arc].radius + this.width * .5),
-                this.arcs[arc].center.y + Math.sin(radians) * (this.arcs[arc].radius + this.width * .5));
+                this.arcs[arc].center.x + Math.cos(radians) * radiusInner,
+                this.arcs[arc].center.y + Math.sin(radians) * radiusInner,
+                this.arcs[arc].center.x + Math.cos(radians) * radiusOuter,
+                this.arcs[arc].center.y + Math.sin(radians) * radiusOuter);
 
             if (step !== steps)
                 indices.push(

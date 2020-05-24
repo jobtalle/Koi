@@ -77,17 +77,19 @@ ConstraintCircle.prototype.sample = function(position) {
  * Append a mesh
  * @param {Number[]} vertices The vertex array
  * @param {Number[]} indices The index array
+ * @param {Random} random A randomizer
  */
-ConstraintCircle.prototype.appendMesh = function(vertices, indices) {
+ConstraintCircle.prototype.appendMesh = function(vertices, indices, random) {
     const firstIndex = vertices.length >> 1;
     const steps = Math.ceil(2 * Math.PI * this.radius / this.MESH_RESOLUTION);
 
     for (let step = 0; step < steps; ++step) {
         const radians = Math.PI * 2 * step / steps;
+        const radius = this.radius + (random.getFloat() - .5) * this.MESH_ROUGHNESS;
 
         vertices.push(
-            this.position.x + Math.cos(radians) * this.radius,
-            this.position.y + Math.sin(radians) * this.radius);
+            this.position.x + Math.cos(radians) * radius,
+            this.position.y + Math.sin(radians) * radius);
 
         if (step > 1)
             indices.push(

@@ -17,7 +17,7 @@ const Waves = function(gl) {
         this.SHADER_DISTORT_VERTEX,
         this.SHADER_DISTORT_FRAGMENT,
         ["scale", "background", "waterBack", "waterFront", "depth", "size", "waterSize", "time"],
-        ["position"]);
+        ["position", "depth"]);
     this.vaoDistort = gl.vao.createVertexArrayOES();
     this.indexCount = -1;
 };
