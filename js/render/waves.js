@@ -193,7 +193,7 @@ Waves.prototype.render = function(
     this.gl.uniform1i(this.programDistort.uWaterFront, 2);
     this.gl.uniform1f(this.programDistort.uDepth, this.DEPTH * scale);
     this.gl.uniform2f(this.programDistort.uSize, width, height);
-    this.gl.uniform2f(this.programDistort.uWaterSize, water.width, water.height); // TODO: Use inverse dimensions
+    this.gl.uniform2f(this.programDistort.uWaterSize, water.width, water.height);
     this.gl.uniform1f(this.programDistort.uTime, time);
 
     this.gl.activeTexture(this.gl.TEXTURE0);

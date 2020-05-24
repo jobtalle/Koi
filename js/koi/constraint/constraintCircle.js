@@ -12,6 +12,7 @@ const ConstraintCircle = function(position, radius) {
 };
 
 ConstraintCircle.prototype = Object.create(Constraint.prototype);
+ConstraintCircle.prototype.DEPTH = 1;
 
 /**
  * Constrain a vector to make sure it is inside the constraint
@@ -73,15 +74,26 @@ ConstraintCircle.prototype.sample = function(position) {
         return (distance - innerRadius) / this.border;
     }
 };
+
 /**
- * Append a mesh
+ * Get the number of steps a mesh for this constraint should have
+ * @returns {Number} The number of steps
+ */
+ConstraintCircle.prototype.getMeshSteps = function() {
+    return Math.ceil(2 * Math.PI * this.radius / this.MESH_RESOLUTION);
+};
+
+/**
+ * Append a water mesh
  * @param {Number[]} vertices The vertex array
  * @param {Number[]} indices The index array
  * @param {Random} random A randomizer
  */
-ConstraintCircle.prototype.appendMesh = function(vertices, indices, random) {
+ConstraintCircle.prototype.appendMeshWater = function(vertices, indices, random) {
     const firstIndex = vertices.length >> 1;
-    const steps = Math.ceil(2 * Math.PI * this.radius / this.MESH_RESOLUTION);
+    const steps = this.getMeshSteps();
+
+    vertices.push(this.position.x, this.position.y);
 
     for (let step = 0; step < steps; ++step) {
         const radians = Math.PI * 2 * step / steps;
@@ -91,10 +103,37 @@ ConstraintCircle.prototype.appendMesh = function(vertices, indices, random) {
             this.position.x + Math.cos(radians) * radius,
             this.position.y + Math.sin(radians) * radius);
 
-        if (step > 1)
-            indices.push(
-                firstIndex,
-                firstIndex + step - 1,
-                firstIndex + step);
+        indices.push(
+            firstIndex,
+            firstIndex + step + 1,
+            firstIndex + ((step + 1) % steps) + 1);
+    }
+};
+
+/**
+ * Append a depth mesh
+ * @param {Number[]} vertices The vertex array
+ * @param {Number[]} indices The index array
+ */
+ConstraintCircle.prototype.appendMeshDepth = function(vertices, indices) {
+    const firstIndex = vertices.length >> 2;
+    const steps = this.getMeshSteps();
+
+    vertices.push(this.position.x, this.position.y, 1, this.DEPTH);
+
+    for (let step = 0; step < steps; ++step) {
+        const radians = Math.PI * 2 * step / steps;
+        const radius = this.radius + this.MESH_DEPTH_PADDING;
+
+        vertices.push(
+            this.position.x + Math.cos(radians) * radius,
+            this.position.y + Math.sin(radians) * radius,
+            0,
+            this.DEPTH);
+
+        indices.push(
+            firstIndex,
+            firstIndex + step + 1,
+            firstIndex + ((step + 1) % steps) + 1);
     }
 };

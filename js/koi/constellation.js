@@ -230,13 +230,29 @@ Constellation.prototype.drop = function(fish) {
  * @param {Random} random A randomizer
  * @returns {Mesh} A mesh
  */
-Constellation.prototype.makeMesh = function(gl, random) {
+Constellation.prototype.makeMeshWater = function(gl, random) {
     const vertices = [];
     const indices = [];
 
-    this.big.constraint.appendMesh(vertices, indices, random);
-    this.small.constraint.appendMesh(vertices, indices, random);
-    this.river.constraint.appendMesh(vertices, indices, random);
+    this.big.constraint.appendMeshWater(vertices, indices, random);
+    this.small.constraint.appendMeshWater(vertices, indices, random);
+    this.river.constraint.appendMeshWater(vertices, indices, random);
+
+    return new Mesh(gl, vertices, indices);
+};
+
+/**
+ * Make a mesh for the bottom of the water bodies
+ * @param {WebGLRenderingContext} gl A WebGL context
+ * @returns {Mesh} A mesh
+ */
+Constellation.prototype.makeMeshDepth = function(gl) {
+    const vertices = [];
+    const indices = [];
+
+    this.big.constraint.appendMeshDepth(vertices, indices);
+    this.small.constraint.appendMeshDepth(vertices, indices);
+    this.river.constraint.appendMeshDepth(vertices, indices);
 
     return new Mesh(gl, vertices, indices);
 };

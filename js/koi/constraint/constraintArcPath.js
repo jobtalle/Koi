@@ -111,18 +111,23 @@ ConstraintArcPath.prototype.sample = function(position) {
 };
 
 /**
- * Append a mesh
+ * Get the number of steps a mesh for this constraint should have
+ * @param {Number} arc The index of the arc to get the number of steps for
+ */
+ConstraintArcPath.prototype.getMeshSteps = function(arc) {
+    return Math.ceil((this.arcs[arc].end - this.arcs[arc].start) * this.arcs[arc].radius / this.rings[arc].MESH_RESOLUTION);
+};
+
+/**
+ * Append a water mesh
  * @param {Number[]} vertices The vertex array
  * @param {Number[]} indices The index array
  * @param {Random} random A randomizer
  */
-ConstraintArcPath.prototype.appendMesh = function(vertices, indices, random) {
+ConstraintArcPath.prototype.appendMeshWater = function(vertices, indices, random) {
     for (let arc = this.arcs.length; arc-- > 0;) {
         const firstIndex = vertices.length >> 1;
-
-        const steps = Math.ceil(
-            (this.arcs[arc].end - this.arcs[arc].start) * this.arcs[arc].radius /
-            this.rings[arc].MESH_RESOLUTION);
+        const steps = this.getMeshSteps(arc);
 
         for (let step = 0; step <= steps; ++step) {
             const radians = this.arcs[arc].start + (this.arcs[arc].end - this.arcs[arc].start) * step / steps;
@@ -144,6 +149,54 @@ ConstraintArcPath.prototype.appendMesh = function(vertices, indices, random) {
                     firstIndex + (step << 1) + 2,
                     firstIndex + (step << 1) + 3,
                     firstIndex + (step << 1) + 1);
+        }
+    }
+};
+
+/**
+ * Append a depth mesh
+ * @param {Number[]} vertices The vertex array
+ * @param {Number[]} indices The index array
+ */
+ConstraintArcPath.prototype.appendMeshDepth = function(vertices, indices) {
+    for (let arc = this.arcs.length; arc-- > 0;) {
+        const firstIndex = vertices.length >> 2;
+        const steps = this.getMeshSteps(arc);
+
+        for (let step = 0; step <= steps; ++step) {
+            const radians = this.arcs[arc].start + (this.arcs[arc].end - this.arcs[arc].start) * step / steps;
+            const radiusInner = this.arcs[arc].radius - this.width * .5 - this.rings[arc].MESH_DEPTH_PADDING;
+            const radiusCenter = this.arcs[arc].radius;
+            const radiusOuter = this.arcs[arc].radius + this.width * .5 + this.rings[arc].MESH_DEPTH_PADDING;
+
+            vertices.push(
+                this.arcs[arc].center.x + Math.cos(radians) * radiusInner,
+                this.arcs[arc].center.y + Math.sin(radians) * radiusInner,
+                0,
+                this.rings[arc].DEPTH,
+                this.arcs[arc].center.x + Math.cos(radians) * radiusCenter,
+                this.arcs[arc].center.y + Math.sin(radians) * radiusCenter,
+                1,
+                this.rings[arc].DEPTH,
+                this.arcs[arc].center.x + Math.cos(radians) * radiusOuter,
+                this.arcs[arc].center.y + Math.sin(radians) * radiusOuter,
+                0,
+                this.rings[arc].DEPTH);
+
+            if (step !== steps)
+                indices.push(
+                    firstIndex + step * 3,
+                    firstIndex + step * 3 + 1,
+                    firstIndex + step * 3 + 4,
+                    firstIndex + step * 3 + 4,
+                    firstIndex + step * 3 + 3,
+                    firstIndex + step * 3,
+                    firstIndex + step * 3 + 1,
+                    firstIndex + step * 3 + 2,
+                    firstIndex + step * 3 + 5,
+                    firstIndex + step * 3 + 5,
+                    firstIndex + step * 3 + 4,
+                    firstIndex + step * 3 + 1);
         }
     }
 };

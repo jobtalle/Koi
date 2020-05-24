@@ -20,7 +20,7 @@ const Background = function(
 
     this.bottom.target();
 
-    sand.write(scale);
+    sand.write(width, height, scale);
 };
 
 /**

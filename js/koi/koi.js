@@ -18,7 +18,8 @@ const Koi = function(systems, random) {
     this.foreground = null;
     this.underwater = null;
     this.water = null;
-    this.constellationMesh = null;
+    this.constellationMeshWater = null;
+    this.constellationMeshDepth = null;
     this.spawner = new Spawner(this.constellation);
     this.time = 0;
 
@@ -40,6 +41,9 @@ Koi.prototype.COLOR_BACKGROUND = Color.fromCSS("earth");
  * Create all renderable objects
  */
 Koi.prototype.createRenderables = function() {
+    this.constellationMeshWater = this.constellation.makeMeshWater(this.systems.gl, this.random);
+    this.constellationMeshDepth = this.constellation.makeMeshDepth(this.systems.gl);
+
     this.atlas = new Atlas(
         this.systems.gl,
         this.systems.patterns,
@@ -49,7 +53,8 @@ Koi.prototype.createRenderables = function() {
         this.constellation,
         this.random);
 
-    this.systems.stone.setMesh(this.rocks.mesh);
+    this.systems.stone.setMesh(this.rocks.mesh); // TODO: Still required?
+    this.systems.sand.setMesh(this.constellationMeshDepth);
 
     this.background = new Background(
         this.systems.gl,
@@ -73,9 +78,7 @@ Koi.prototype.createRenderables = function() {
         this.systems.width / this.scale,
         this.systems.height / this.scale);
 
-    this.constellationMesh = this.constellation.makeMesh(this.systems.gl, this.random);
-
-    this.systems.waves.setMesh(this.constellationMesh);
+    this.systems.waves.setMesh(this.constellationMeshWater);
     this.systems.vegetation.setMesh(this.foreground.plants.mesh); // TODO: This can be better
 };
 
@@ -90,7 +93,8 @@ Koi.prototype.freeRenderables = function() {
     this.underwater.free();
     this.water.free();
 
-    this.constellationMesh.free();
+    this.constellationMeshWater.free();
+    this.constellationMeshDepth.free();
 };
 
 /**

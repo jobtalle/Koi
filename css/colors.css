@@ -1,6 +1,7 @@
 :root {
     /* Environment colors */
-    --color-sand: #2F6883;
+    --color-water-deep: #0A4064;
+    --color-water-shallow: #CBF2DD;
     --color-grass: #8DC56C;
     --color-earth: #7F795F;
 }

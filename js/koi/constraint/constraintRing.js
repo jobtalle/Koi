@@ -14,6 +14,7 @@ const ConstraintRing = function(position, radius, width) {
 };
 
 ConstraintRing.prototype = Object.create(Constraint.prototype);
+ConstraintRing.prototype.DEPTH = .5;
 
 /**
  * Constrain a vector to make sure it is inside the constraint
