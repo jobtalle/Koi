@@ -38,7 +38,7 @@ uniform mediump vec2 direction;
 
 lowp vec4 get(int delta) {
   return texture2D(source, (gl_FragCoord.xy + direction * float(delta)) / size);
-}S
+}
 
 void main() {
   gl_FragColor = (get(-2) + get(2)) * 0.06136 + (get(-1) + get(1)) * 0.24477 + get(0) * 0.38774;

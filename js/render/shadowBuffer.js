@@ -1,8 +1,8 @@
 /**
  * A shadow buffer
  * @param {WebGLRenderingContext} gl A WebGL rendering context
- * @param {Number} width The screen width in pixels
- * @param {Number} height The screen height in pixels
+ * @param {Number} width The scene width
+ * @param {Number} height The scene height
  * @constructor
  */
 const ShadowBuffer = function(gl, width, height) {
@@ -13,7 +13,7 @@ const ShadowBuffer = function(gl, width, height) {
     this.intermediate = new RenderTarget(gl, this.width, this.height, gl.RGBA, gl.NEAREST);
 };
 
-ShadowBuffer.prototype.SCALE = .2;
+ShadowBuffer.prototype.SCALE = 20;
 
 /**
  * Target this shadow buffer

@@ -47,8 +47,8 @@ Koi.prototype.createRenderables = function() {
 
     this.shadowBuffer = new ShadowBuffer(
         this.systems.gl,
-        this.systems.width,
-        this.systems.height);
+        this.systems.width / this.scale,
+        this.systems.height / this.scale);
     this.atlas = new Atlas(
         this.systems.gl,
         this.systems.patterns,
@@ -196,7 +196,9 @@ Koi.prototype.render = function(deltaTime) {
         true);
 
     // Blur shadows
-    this.systems.blur.apply(this.shadowBuffer.renderTarget, this.shadowBuffer.intermediate);
+    this.systems.blur.apply(
+        this.shadowBuffer.renderTarget,
+        this.shadowBuffer.intermediate);
 
     // Target underwater buffer
     this.underwater.target();
