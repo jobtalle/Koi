@@ -9,7 +9,7 @@ const Shadows = function(gl) {
         gl,
         this.VERTEX_SHADER,
         this.FRAGMENT_SHADER,
-        ["size", "scale", "depthPower", "shadowDepth"],
+        ["size", "scale", "shadowDepth"],
         ["position", "depth"]);
     this.vao = gl.vao.createVertexArrayOES();
     this.indexCount = -1;
@@ -35,20 +35,19 @@ Shadows.prototype.FRAGMENT_SHADER = `#version 100
 uniform sampler2D source;
 uniform mediump vec2 size;
 uniform mediump float scale;
-uniform mediump float depthPower;
 uniform mediump float shadowDepth;
 
 varying mediump vec2 iDepth;
 
 void main() {
   mediump float meter = scale / size.y;
-  mediump float depth = iDepth.y * (0.5 - 0.5 * cos(3.141592 * pow(iDepth.x, depthPower))) * meter * shadowDepth;
+  mediump float depth = iDepth.y * (0.5 - 0.5 * cos(3.141592 * sqrt(iDepth.x))) * meter * shadowDepth;
 
   gl_FragColor = texture2D(source, gl_FragCoord.xy / size + vec2(depth * 0.5, depth));
 }
 `;
 
-Shadows.prototype.SHADOW_DEPTH = .3;
+Shadows.prototype.SHADOW_DEPTH = .35;
 
 /**
  * Set the mesh for the shadows renderer
@@ -84,7 +83,6 @@ Shadows.prototype.render = function(buffer, width, height, scale) {
 
     this.gl.uniform2f(this.program.uSize, width, height);
     this.gl.uniform1f(this.program.uScale, scale);
-    this.gl.uniform1f(this.program.uDepthPower, Sand.prototype.DEPTH_POWER);
     this.gl.uniform1f(this.program.uShadowDepth, this.SHADOW_DEPTH);
 
     this.gl.vao.bindVertexArrayOES(this.vao);

@@ -42,6 +42,12 @@ Koi.prototype.COLOR_BACKGROUND = Color.fromCSS("earth");
  * Create all renderable objects
  */
 Koi.prototype.createRenderables = function() {
+    // Create rocks
+    this.rocks = new Rocks(
+        this.systems.gl,
+        this.constellation,
+        this.random);
+
     // Create constellation meshes
     this.constellationMeshWater = this.constellation.makeMeshWater(this.systems.gl, this.random);
     this.constellationMeshDepth = this.constellation.makeMeshDepth(this.systems.gl);
@@ -61,10 +67,6 @@ Koi.prototype.createRenderables = function() {
         this.systems.gl,
         this.systems.patterns,
         this.constellation.getCapacity());
-    this.rocks = new Rocks(
-        this.systems.gl,
-        this.constellation,
-        this.random);
     this.background = new Background(
         this.systems.gl,
         this.systems.sand,
