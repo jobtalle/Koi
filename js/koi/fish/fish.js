@@ -22,7 +22,7 @@ const Fish = function(body, position, direction) {
 
 Fish.prototype.FORCE_CONSTRAINT = .5;
 Fish.prototype.FORCE_REPULSION  = .25;
-Fish.prototype.FORCE_ALIGNMENT = .04;
+Fish.prototype.FORCE_ALIGNMENT = .05;
 Fish.prototype.FORCE_ATTRACTION = .05;
 Fish.prototype.RADIUS_REPULSION = .8;
 Fish.prototype.RADIUS_ALIGNMENT = 1.25;
