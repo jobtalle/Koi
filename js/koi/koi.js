@@ -42,9 +42,17 @@ Koi.prototype.COLOR_BACKGROUND = Color.fromCSS("earth");
  * Create all renderable objects
  */
 Koi.prototype.createRenderables = function() {
+    // Create constellation meshes
     this.constellationMeshWater = this.constellation.makeMeshWater(this.systems.gl, this.random);
     this.constellationMeshDepth = this.constellation.makeMeshDepth(this.systems.gl);
 
+    // Assign constellation meshes
+    this.systems.sand.setMesh(this.constellationMeshDepth);
+    this.systems.shadows.setMesh(this.constellationMeshDepth);
+    this.systems.blur.setMesh(this.constellationMeshDepth);
+    this.systems.waves.setMesh(this.constellationMeshWater);
+
+    // Create scene objects
     this.shadowBuffer = new ShadowBuffer(
         this.systems.gl,
         this.systems.width / this.scale,
@@ -57,11 +65,6 @@ Koi.prototype.createRenderables = function() {
         this.systems.gl,
         this.constellation,
         this.random);
-
-    this.systems.stone.setMesh(this.rocks.mesh); // TODO: Still required?
-    this.systems.sand.setMesh(this.constellationMeshDepth);
-    this.systems.shadows.setMesh(this.constellationMeshDepth);
-
     this.background = new Background(
         this.systems.gl,
         this.systems.sand,
@@ -83,7 +86,8 @@ Koi.prototype.createRenderables = function() {
         this.systems.width / this.scale,
         this.systems.height / this.scale);
 
-    this.systems.waves.setMesh(this.constellationMeshWater);
+    // Assign scene object meshes
+    this.systems.stone.setMesh(this.rocks.mesh); // TODO: Still required?
     this.systems.vegetation.setMesh(this.foreground.plants.mesh); // TODO: This can be better
 };
 
@@ -197,6 +201,9 @@ Koi.prototype.render = function(deltaTime) {
 
     // Blur shadows
     this.systems.blur.apply(
+        this.systems.width,
+        this.systems.height,
+        this.scale,
         this.shadowBuffer.renderTarget,
         this.shadowBuffer.intermediate);
 
