@@ -29,13 +29,11 @@ const Bodies = function(gl) {
     gl.vertexAttribPointer(this.program.aUv, 2, gl.FLOAT, false, 16, 8);
 };
 
-Bodies.prototype.SHADOW_ALPHA = .2;
-Bodies.prototype.SHADOW_DEPTH = .2;
+Bodies.prototype.SHADOW_ALPHA = .3;
 
 Bodies.prototype.SHADER_VERTEX = `#version 100
 uniform mediump float scale;
 uniform mediump vec2 size;
-uniform mediump vec3 shadow;
 
 attribute vec2 position;
 attribute vec2 uv;
@@ -45,13 +43,13 @@ varying vec2 iUv;
 void main() {
   iUv = uv;
   
-  gl_Position = vec4(vec2(2.0, -2.0) * (position + vec2(shadow.z * -0.5, shadow.z)) / size * scale + vec2(-1.0, 1.0), 0.0, 1.0);
+  gl_Position = vec4(vec2(2.0, -2.0) * position / size * scale + vec2(-1.0, 1.0), 0.0, 1.0);
 }
 `;
 
 Bodies.prototype.SHADER_FRAGMENT = `#version 100
 uniform sampler2D atlas;
-uniform mediump vec3 shadow;
+uniform mediump vec2 shadow;
 
 varying mediump vec2 iUv;
 
@@ -96,9 +94,9 @@ Bodies.prototype.upload = function() {
  * @param {Number} width The render target width
  * @param {Number} height The render target height
  * @param {Number} scale The render scale
- * @param {Boolean} [shadows] Shadow rendering, on by default
+ * @param {Boolean} shadows A boolean indicating whether shadows or actual bodies should be rendered
  */
-Bodies.prototype.render = function(atlas, width, height, scale, shadows = true) {
+Bodies.prototype.render = function(atlas, width, height, scale, shadows) {
     this.gl.vao.bindVertexArrayOES(this.vao);
 
     this.upload();
@@ -115,17 +113,17 @@ Bodies.prototype.render = function(atlas, width, height, scale, shadows = true) 
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
 
-    if (shadows) {
-        this.gl.uniform3f(this.program.uShadow, 0, this.SHADOW_ALPHA,this.SHADOW_DEPTH);
-        this.gl.drawElements(this.gl.TRIANGLES, this.indices.length, this.gl.UNSIGNED_SHORT, 0);
-    }
+    if (shadows)
+        this.gl.uniform2f(this.program.uShadow, 0, this.SHADOW_ALPHA);
+    else
+        this.gl.uniform2f(this.program.uShadow, 1, 1);
 
-    this.gl.uniform3f(this.program.uShadow, 1, 1, 0);
     this.gl.drawElements(this.gl.TRIANGLES, this.indices.length, this.gl.UNSIGNED_SHORT, 0);
 
     this.gl.disable(this.gl.BLEND);
 
-    this.vertices.length = this.indices.length = 0;
+    if (!shadows)
+        this.vertices.length = this.indices.length = 0;
 };
 
 /**

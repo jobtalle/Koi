@@ -19,6 +19,8 @@ const Systems = function(gl, random, width, height) {
     this.quad = new Quad(gl);
     this.vegetation = new Vegetation(gl);
     this.stone = new Stone(gl);
+    this.shadows = new Shadows(gl);
+    this.blur = new Blur(gl);
 };
 
 /**
@@ -52,4 +54,6 @@ Systems.prototype.free = function() {
     this.quad.free();
     this.vegetation.free();
     this.stone.free();
+    this.shadows.free();
+    this.blur.free();
 };

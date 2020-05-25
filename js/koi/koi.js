@@ -60,6 +60,7 @@ Koi.prototype.createRenderables = function() {
 
     this.systems.stone.setMesh(this.rocks.mesh); // TODO: Still required?
     this.systems.sand.setMesh(this.constellationMeshDepth);
+    this.systems.shadows.setMesh(this.constellationMeshDepth);
 
     this.background = new Background(
         this.systems.gl,
@@ -183,20 +184,44 @@ Koi.prototype.render = function(deltaTime) {
 
     const timeFactor = this.time / this.UPDATE_RATE;
 
-    // Target underwater bufferQuad
-    this.underwater.target();
-
-    // Render background
-    this.background.render(this.systems.quad);
-
-    // Render fishes
+    // Render shadows
+    this.shadowBuffer.target();
     this.constellation.render(
         this.systems.bodies,
         this.atlas,
         this.systems.width,
         this.systems.height,
         this.scale,
-        timeFactor);
+        timeFactor,
+        true);
+
+    // Blur shadows
+    this.systems.blur.apply(this.shadowBuffer.renderTarget, this.shadowBuffer.intermediate);
+
+    // Target underwater buffer
+    this.underwater.target();
+
+    // Render background
+    this.background.render(
+        this.systems.quad);
+
+    // Render shadows
+    this.systems.shadows.render(
+        this.shadowBuffer,
+        this.systems.width,
+        this.systems.height,
+        this.scale);
+
+    // Render pond contents
+    this.constellation.render(
+        this.systems.bodies,
+        this.atlas,
+        this.systems.width,
+        this.systems.height,
+        this.scale,
+        timeFactor,
+        false,
+        false);
 
     // Target window
     this.systems.targetMain();

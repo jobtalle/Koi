@@ -277,6 +277,8 @@ Constellation.prototype.update = function(atlas, water, random) {
  * @param {Number} height The render target height
  * @param {Number} scale The render scale
  * @param {Number} time The amount of time since the last update
+ * @param {Boolean} shadows A boolean indicating whether shadows or actual bodies should be rendered
+ * @param {Boolean} [firstPass] A boolean indicating whether this was the first pass, true by default
  */
 Constellation.prototype.render = function(
     bodies,
@@ -284,10 +286,14 @@ Constellation.prototype.render = function(
     width,
     height,
     scale,
-    time) {
-    this.big.render(bodies, time);
-    this.small.render(bodies, time);
-    this.river.render(bodies, time);
+    time,
+    shadows,
+    firstPass = true) {
+    if (firstPass) {
+        this.big.render(bodies, time);
+        this.small.render(bodies, time);
+        this.river.render(bodies, time);
+    }
 
-    bodies.render(atlas, width, height, scale);
+    bodies.render(atlas, width, height, scale, shadows);
 };

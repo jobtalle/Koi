@@ -28,12 +28,10 @@ uniform mediump float scale;
 attribute vec2 position;
 attribute vec2 depth;
 
-varying float iDepth;
-varying float iMaxDepth;
+varying vec2 iDepth;
 
 void main() {
-  iDepth = depth.x;
-  iMaxDepth = depth.y;
+  iDepth = depth;
 
   gl_Position = vec4(vec2(2.0, -2.0) * position / size * scale + vec2(-1.0, 1.0), 0.0, 1.0);
 }
@@ -47,13 +45,12 @@ uniform mediump float depthPower;
 uniform lowp vec3 colorDeep;
 uniform lowp vec3 colorShallow;
 
-varying mediump float iDepth;
-varying mediump float iMaxDepth;
+varying mediump vec2 iDepth;
 
 void main() {
   lowp float noise = pow(random2(gl_FragCoord.xy), 9.0);
   lowp float hill = cubicNoise(vec3(1.5 * gl_FragCoord.xy / scale, 0.0));
-  lowp vec3 color = mix(colorShallow, colorDeep, iMaxDepth * (0.5 - 0.5 * cos(3.141592 * pow(iDepth, depthPower))));
+  lowp vec3 color = mix(colorShallow, colorDeep, iDepth.y * (0.5 - 0.5 * cos(3.141592 * pow(iDepth.x, depthPower))));
   
   gl_FragColor = vec4(color * (noise * 0.3 * hill + 0.85), 1.0);
 }
