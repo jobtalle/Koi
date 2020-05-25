@@ -12,8 +12,8 @@ const WaterPlane = function(gl, width, height) {
     this.flares = [];
     this.hasInfluences = false;
     this.targets = [
-        new RenderTarget(gl, this.width, this.height, gl.RGB, gl.LINEAR, gl.UNSIGNED_BYTE),
-        new RenderTarget(gl, this.width, this.height, gl.RGB, gl.LINEAR, gl.UNSIGNED_BYTE)
+        new RenderTarget(gl, this.width, this.height, gl.RGB, gl.LINEAR),
+        new RenderTarget(gl, this.width, this.height, gl.RGB, gl.LINEAR)
     ];
 
     gl.clearColor(.5, .5, 0, 0);

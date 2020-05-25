@@ -1,7 +1,11 @@
 :root {
     /* Environment colors */
-    --color-water-deep: #0a5c64;
-    --color-water-shallow: #f2eacb;
-    --color-grass: #75ad59;
-    --color-earth: #7e846d;
+    --color-water-deep: #2A353F;
+    --color-water-shallow: #3b6971;
+    --color-grass: #758A4F;
+    --color-earth: #D5C28E;
+
+    /* Fish colors */
+    --color-fish-base: #ececec;
+    --color-fish-spots-orange: #cd3712;
 }

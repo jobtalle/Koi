@@ -67,6 +67,8 @@ void main() {
       shiny *= 1.3;
   }
   
+  shiny *= 0.3;
+  
   mediump vec4 filter = vec4(0.93, 0.98, 1.0, 1.0) * vec4(0.92, 0.97, 1.0, 1.0);
   mediump vec4 sky = vec4(0.88, 0.96, 1.0, 1.0);
   

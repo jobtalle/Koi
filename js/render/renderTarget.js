@@ -5,21 +5,14 @@
  * @param {Number} height The height in pixels
  * @param {GLenum} format The texture data format
  * @param {GLenum} filter Texture filtering method
- * @param {GLenum} type The data type
  * @constructor
  */
-const RenderTarget = function(
-    gl,
-    width,
-    height,
-    format,
-    filter,
-    type) {
+const RenderTarget = function(gl, width, height, format, filter) {
     this.gl = gl;
     this.width = width;
     this.height = height;
     this.framebuffer = gl.createFramebuffer();
-    this.texture = this.createTexture(format, filter, type);
+    this.texture = this.createTexture(format, filter);
 };
 
 /**
@@ -34,10 +27,9 @@ RenderTarget.prototype.target = function() {
  * Create the texture for this underwater bufferQuad
  * @param {GLenum} format The texture data format
  * @param {GLenum} filter Texture filtering method
- * @param {GLenum} type The data type
  * @returns {WebGLTexture} A WebGL texture
  */
-RenderTarget.prototype.createTexture = function(format, filter, type) {
+RenderTarget.prototype.createTexture = function(format, filter) {
     const texture = this.gl.createTexture();
 
     this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
@@ -53,7 +45,7 @@ RenderTarget.prototype.createTexture = function(format, filter, type) {
         this.height,
         0,
         format,
-        type,
+        this.gl.UNSIGNED_BYTE,
         null);
 
     this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.framebuffer);
