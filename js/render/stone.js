@@ -20,14 +20,17 @@ uniform vec2 size;
 uniform float scale;
 
 attribute vec3 color;
-attribute vec2 position;
+attribute vec3 position;
 
 varying vec3 iColor;
 
 void main() {
   iColor = color;
 
-  gl_Position = vec4(vec2(2.0, -2.0) * position / size * scale + vec2(-1.0, 1.0), 0.0, 1.0);
+  gl_Position = vec4(
+    vec2(2.0, -2.0) * (position.xy - vec2(0.0, position.z)) / size * scale + vec2(-1.0, 1.0),
+    1.0 - position.y / size.y * scale,
+    1.0);
 }
 `;
 
@@ -51,9 +54,9 @@ Stone.prototype.setMesh = function(mesh) {
     mesh.bindBuffers();
 
     this.gl.enableVertexAttribArray(this.program.aColor);
-    this.gl.vertexAttribPointer(this.program.aColor, 3, this.gl.FLOAT, false, 20, 0);
+    this.gl.vertexAttribPointer(this.program.aColor, 3, this.gl.FLOAT, false, 24, 0);
     this.gl.enableVertexAttribArray(this.program.aPosition);
-    this.gl.vertexAttribPointer(this.program.aPosition, 2, this.gl.FLOAT, false, 20, 12);
+    this.gl.vertexAttribPointer(this.program.aPosition, 3, this.gl.FLOAT, false, 24, 12);
 };
 
 /**

@@ -131,9 +131,8 @@ ConstraintArcPath.prototype.appendMeshWater = function(vertices, indices, random
 
         for (let step = 0; step <= steps; ++step) {
             const radians = this.arcs[arc].start + (this.arcs[arc].end - this.arcs[arc].start) * step / steps;
-            const offset = step === 0 || step === steps ? 0 : (random.getFloat() - .5) * this.rings[arc].MESH_ROUGHNESS;
-            const radiusInner = this.arcs[arc].radius - this.width * .5 + offset;
-            const radiusOuter = this.arcs[arc].radius + this.width * .5 + offset;
+            const radiusInner = this.arcs[arc].radius - this.width * .5;
+            const radiusOuter = this.arcs[arc].radius + this.width * .5;
 
             vertices.push(
                 this.arcs[arc].center.x + Math.cos(radians) * radiusInner,

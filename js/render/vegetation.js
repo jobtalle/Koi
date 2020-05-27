@@ -28,7 +28,7 @@ varying vec3 iColor;
 void main() {
   iColor = color;
   
-  gl_Position = vec4(vec2(2.0, -2.0) * position / size * scale + vec2(-1.0, 1.0), 0.0, 1.0);
+  gl_Position = vec4(vec2(2.0, -2.0) * position / size * scale + vec2(-1.0, 1.0), 0.999998, 1.0);
 }
 `;
 

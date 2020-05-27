@@ -10,8 +10,8 @@ const ShadowBuffer = function(gl, width, height) {
     this.width = Math.round(width * this.SCALE);
     this.height = Math.round(height * this.SCALE);
 
-    this.renderTarget = new RenderTarget(gl, this.width, this.height, gl.RGBA, gl.NEAREST);
-    this.intermediate = new RenderTarget(gl, this.width, this.height, gl.RGBA, gl.NEAREST);
+    this.renderTarget = new RenderTarget(gl, this.width, this.height, gl.RGBA);
+    this.intermediate = new RenderTarget(gl, this.width, this.height, gl.RGBA);
 };
 
 ShadowBuffer.prototype.SCALE = 26;

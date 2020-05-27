@@ -48,6 +48,7 @@ Koi.prototype.createRenderables = function() {
         this.constellation,
         this.random);
 
+    // TODO: These meshes can be in the [-1, 1] range, because they are refreshed on every resize
     // Create constellation meshes
     this.constellationMeshWater = this.constellation.makeMeshWater(this.systems.gl, this.random);
     this.constellationMeshDepth = this.constellation.makeMeshDepth(this.systems.gl);
@@ -239,7 +240,10 @@ Koi.prototype.render = function(deltaTime) {
 
     // Clear background
     this.systems.gl.clearColor(this.COLOR_BACKGROUND.r, this.COLOR_BACKGROUND.g, this.COLOR_BACKGROUND.b, 1);
-    this.systems.gl.clear(this.systems.gl.COLOR_BUFFER_BIT);
+    this.systems.gl.clear(this.systems.gl.COLOR_BUFFER_BIT | this.systems.gl.DEPTH_BUFFER_BIT);
+
+    // Enable Z buffer
+    this.systems.gl.enable(this.systems.gl.DEPTH_TEST);
 
     // Render shaded water
     this.systems.waves.render(
@@ -263,6 +267,9 @@ Koi.prototype.render = function(deltaTime) {
         this.systems.width,
         this.systems.height,
         this.scale);
+
+    // Disable Z buffer
+    this.systems.gl.disable(this.systems.gl.DEPTH_TEST);
 
     // Render mover
     this.mover.render(

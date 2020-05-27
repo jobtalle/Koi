@@ -4,10 +4,15 @@
  * @param {Number} width The width in pixels
  * @param {Number} height The height in pixels
  * @param {GLenum} format The texture data format
- * @param {GLenum} filter Texture filtering method
+ * @param {GLenum} [filter] Texture filtering method
  * @constructor
  */
-const RenderTarget = function(gl, width, height, format, filter) {
+const RenderTarget = function(
+    gl,
+    width,
+    height,
+    format,
+    filter = null) {
     this.gl = gl;
     this.width = width;
     this.height = height;
@@ -33,8 +38,12 @@ RenderTarget.prototype.createTexture = function(format, filter) {
     const texture = this.gl.createTexture();
 
     this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, filter);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, filter);
+
+    if (filter !== null) {
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, filter);
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, filter);
+    }
+
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
     this.gl.texImage2D(

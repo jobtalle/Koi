@@ -97,11 +97,10 @@ ConstraintCircle.prototype.appendMeshWater = function(vertices, indices, random)
 
     for (let step = 0; step < steps; ++step) {
         const radians = Math.PI * 2 * step / steps;
-        const radius = this.radius + (random.getFloat() - .5) * this.MESH_ROUGHNESS;
 
         vertices.push(
-            this.position.x + Math.cos(radians) * radius,
-            this.position.y + Math.sin(radians) * radius);
+            this.position.x + Math.cos(radians) * this.radius,
+            this.position.y + Math.sin(radians) * this.radius);
 
         indices.push(
             firstIndex,
