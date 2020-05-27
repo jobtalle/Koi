@@ -11,6 +11,7 @@ const Rocks = function(gl, constellation, random) {
 
 Rocks.prototype.COLOR_TOP = Color.fromCSS("rock-top");
 Rocks.prototype.COLOR_SIDE = Color.fromCSS("rock-side");
+Rocks.prototype.RESOLUTION = .1;
 
 /**
  * Create the rocks mesh
@@ -23,14 +24,18 @@ Rocks.prototype.createMesh = function(gl, constellation, random) {
     const indices = [];
 
     // TODO: Rocks
-    for (let i = 0; i < 50; ++i) {
+    for (let i = 0; i < 40; ++i) {
+        const angle = Math.PI * 2 * random.getFloat();
+
         this.createPillar(
             vertices,
             indices,
-            random.getFloat() * constellation.width,
-            random.getFloat() * constellation.height,
-            .5 + .5 * random.getFloat(),
-            1 + .5 * random.getFloat());
+            constellation.big.constraint.position.x + Math.cos(angle) * constellation.big.constraint.radius *
+                (1 + .2 * Constellation.prototype.FACTOR_PADDING),
+            constellation.big.constraint.position.y + Math.sin(angle) * constellation.big.constraint.radius *
+                (1 + .2 * Constellation.prototype.FACTOR_PADDING),
+            .2 + .2 * random.getFloat(),
+            .2 + .3 * random.getFloat());
     }
 
     return new Mesh(gl, vertices, indices);
@@ -52,34 +57,50 @@ Rocks.prototype.createPillar = function(
     y,
     radius,
     height) {
-    const firstIndex = vertices.length / 6;
-    const precision = 10; // TODO: Depends on radius
+    const top = 1.1;
+    const squish = .65;
+    const firstIndex = vertices.length / 7;
+    const precision = Math.ceil(2 * Math.PI * radius / this.RESOLUTION);
+    const zShift = (-.5 + random.getFloat()) * .5;
+    const lightTop = .8 - zShift * .4;
     let lastStep = precision - 1;
+    // TODO: Skip back faces
 
     for (let step = 0; step < precision; ++step) {
         const radians = Math.PI * 2 * step / precision;
         const dx = Math.cos(radians) * radius;
-        const dy = Math.sin(radians) * radius;
+        const dy = Math.sin(radians) * radius * squish;
+        const l = Math.sqrt(dx * dx + dy * dy);
+        const lx = 1 / Math.sqrt(2);
+        const ly = 1 / Math.sqrt(2);
+        const nx = dx / l;
+        const ny = dy / l;
+        const baseLight = 1;
+        const ambient = .6;
+        const light = ambient + (1 - ambient) * Math.max(0, nx * lx + ny * ly);
 
         vertices.push(
             this.COLOR_SIDE.r,
             this.COLOR_SIDE.g,
             this.COLOR_SIDE.b,
+            light * baseLight,
             x + dx,
             y + dy,
             0,
             this.COLOR_SIDE.r,
             this.COLOR_SIDE.g,
             this.COLOR_SIDE.b,
-            x + dx,
-            y + dy,
-            height,
+            light,
+            x + dx * top,
+            y + dy * top,
+            height + dx * zShift * top,
             this.COLOR_TOP.r,
             this.COLOR_TOP.g,
             this.COLOR_TOP.b,
-            x + dx,
-            y + dy,
-            height);
+            lightTop,
+            x + dx * top,
+            y + dy * top,
+            height + dx * zShift * top);
         indices.push(
             firstIndex + lastStep * 3,
             firstIndex + lastStep * 3 + 1,
@@ -98,6 +119,7 @@ Rocks.prototype.createPillar = function(
         this.COLOR_TOP.r,
         this.COLOR_TOP.g,
         this.COLOR_TOP.b,
+        lightTop,
         x,
         y,
         height);

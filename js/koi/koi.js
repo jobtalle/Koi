@@ -245,15 +245,6 @@ Koi.prototype.render = function(deltaTime) {
     // Enable Z buffer
     this.systems.gl.enable(this.systems.gl.DEPTH_TEST);
 
-    // Render shaded water
-    this.systems.waves.render(
-        this.underwater.texture,
-        this.water,
-        this.systems.width,
-        this.systems.height,
-        this.scale,
-        timeFactor);
-
     // Render rocks
     this.rocks.render(
         this.systems.stone,
@@ -267,6 +258,15 @@ Koi.prototype.render = function(deltaTime) {
         this.systems.width,
         this.systems.height,
         this.scale);
+
+    // Render shaded water
+    this.systems.waves.render(
+        this.underwater.texture,
+        this.water,
+        this.systems.width,
+        this.systems.height,
+        this.scale,
+        timeFactor);
 
     // Disable Z buffer
     this.systems.gl.disable(this.systems.gl.DEPTH_TEST);

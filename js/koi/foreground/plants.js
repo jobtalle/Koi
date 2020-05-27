@@ -38,7 +38,7 @@ Plants.prototype.makeMesh = function(gl, constellation, random) {
  * @param {Number[]} indices The index array
  */
 Plants.prototype.makeBlade = function(x, y, vertices, indices) {
-    const firstIndex = vertices.length / 6;
+    const firstIndex = vertices.length / 7;
     const height = .5;
     const radius = .05;
     const steps = 4;
@@ -53,14 +53,16 @@ Plants.prototype.makeBlade = function(x, y, vertices, indices) {
             color.g,
             color.b,
             x - r,
-            y - height * f,
+            y,
+            height * f,
             f);
         vertices.push(
             color.r,
             color.g,
             color.b,
             x + r,
-            y - height * f,
+            y,
+            height * f,
             f);
 
         if (step !== steps - 2)
@@ -83,7 +85,8 @@ Plants.prototype.makeBlade = function(x, y, vertices, indices) {
         color.g,
         color.b,
         x,
-        y - height,
+        y,
+        height,
         1);
 };
 

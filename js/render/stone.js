@@ -10,7 +10,7 @@ const Stone = function(gl) {
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
         ["size", "scale"],
-        ["color", "position"]);
+        ["color", "lightness", "position"]);
     this.vao = gl.vao.createVertexArrayOES();
     this.indexCount = -1;
 };
@@ -20,12 +20,13 @@ uniform vec2 size;
 uniform float scale;
 
 attribute vec3 color;
+attribute float lightness;
 attribute vec3 position;
 
 varying vec3 iColor;
 
 void main() {
-  iColor = color;
+  iColor = color * lightness;
 
   gl_Position = vec4(
     vec2(2.0, -2.0) * (position.xy - vec2(0.0, position.z)) / size * scale + vec2(-1.0, 1.0),
@@ -54,9 +55,11 @@ Stone.prototype.setMesh = function(mesh) {
     mesh.bindBuffers();
 
     this.gl.enableVertexAttribArray(this.program.aColor);
-    this.gl.vertexAttribPointer(this.program.aColor, 3, this.gl.FLOAT, false, 24, 0);
+    this.gl.vertexAttribPointer(this.program.aColor, 3, this.gl.FLOAT, false, 28, 0);
+    this.gl.enableVertexAttribArray(this.program.aLightness);
+    this.gl.vertexAttribPointer(this.program.aLightness, 1, this.gl.FLOAT, false, 28, 12);
     this.gl.enableVertexAttribArray(this.program.aPosition);
-    this.gl.vertexAttribPointer(this.program.aPosition, 3, this.gl.FLOAT, false, 24, 12);
+    this.gl.vertexAttribPointer(this.program.aPosition, 3, this.gl.FLOAT, false, 28, 16);
 };
 
 /**
