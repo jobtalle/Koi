@@ -297,7 +297,7 @@ Rocks.prototype.createPillar = function(
  * @param {Number} scale The render scale
  */
 Rocks.prototype.render = function(stone, width, height, scale) {
-    stone.render(width, height, scale);
+    stone.render(width, height, scale, -1);
 };
 
 /**
