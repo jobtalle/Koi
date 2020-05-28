@@ -70,6 +70,8 @@ Koi.prototype.createRenderables = function() {
         this.scale);
     this.foreground = new Foreground(
         this.systems.gl,
+        this.systems.stone,
+        this.systems.vegetation,
         this.constellation,
         this.random);
     this.underwater = new RenderTarget(
@@ -86,7 +88,15 @@ Koi.prototype.createRenderables = function() {
 
     // Assign scene object meshes
     this.systems.stone.setMesh(this.foreground.rocks.mesh);
-    this.systems.vegetation.setMesh(this.foreground.plants.mesh); // TODO: This can be better
+    this.systems.vegetation.setMesh(this.foreground.plants.mesh);
+
+    // Buffer foreground reflections
+    this.foreground.makeReflections(
+        this.systems.stone,
+        this.systems.vegetation,
+        this.systems.width,
+        this.systems.height,
+        this.scale);
 };
 
 /**
@@ -250,6 +260,7 @@ Koi.prototype.render = function(deltaTime) {
     // Render shaded water
     this.systems.waves.render(
         this.underwater.texture,
+        this.foreground.reflections.texture,
         this.water,
         this.systems.width,
         this.systems.height,
@@ -267,6 +278,10 @@ Koi.prototype.render = function(deltaTime) {
         this.systems.height,
         this.scale,
         timeFactor);
+
+    // this.systems.gl.activeTexture(this.systems.gl.TEXTURE0);
+    // this.systems.gl.bindTexture(this.systems.gl.TEXTURE_2D, this.foreground.reflections.texture);
+    // this.systems.quad.render();
 };
 
 /**

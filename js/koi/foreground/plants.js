@@ -91,17 +91,6 @@ Plants.prototype.makeBlade = function(x, y, vertices, indices) {
 };
 
 /**
- * Render the plants
- * @param {Vegetation} vegetation The vegetation renderer
- * @param {Number} width The render target width
- * @param {Number} height The render target height
- * @param {Number} scale The scale
- */
-Plants.prototype.render = function(vegetation, width, height, scale) {
-    vegetation.render(width, height, scale);
-};
-
-/**
  * Free all resources maintained by plants
  */
 Plants.prototype.free = function() {

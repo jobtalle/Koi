@@ -16,7 +16,7 @@ const Waves = function(gl) {
         gl,
         this.SHADER_DISTORT_VERTEX,
         this.SHADER_DISTORT_FRAGMENT,
-        ["scale", "background", "waterBack", "waterFront", "depth", "size", "waterSize", "time"],
+        ["scale", "background", "reflections", "waterBack", "waterFront", "depth", "size", "waterSize", "time"],
         ["position", "depth"]);
     this.vaoDistort = gl.vao.createVertexArrayOES();
     this.indexCount = -1;
@@ -38,6 +38,7 @@ void main() {
 
 Waves.prototype.SHADER_DISTORT_FRAGMENT = `#version 100
 uniform sampler2D background;
+uniform sampler2D reflections;
 uniform sampler2D waterBack;
 uniform sampler2D waterFront;
 uniform mediump float depth;
@@ -72,10 +73,11 @@ void main() {
   mediump vec4 filter = vec4(0.93, 0.98, 1.0, 1.0) * vec4(0.92, 0.97, 1.0, 1.0);
   mediump vec4 sky = vec4(0.88, 0.96, 1.0, 1.0);
   
-  mediump vec4 pixel = texture2D(background, gl_FragCoord.xy / size - displacement);
+  lowp vec4 pixel = texture2D(background, gl_FragCoord.xy / size - displacement);
+  lowp vec4 reflected = texture2D(reflections, gl_FragCoord.xy / size + displacement);
   
   gl_FragColor = mix(
-    filter * pixel,
+    filter * (pixel + 0.1 * reflected),
     sky,
     shiny);
 }
@@ -173,6 +175,7 @@ Waves.prototype.propagate = function(water, wavePainter) {
 /**
  * Render waves
  * @param {WebGLTexture} background A background texture
+ * @param {WebGLTexture} reflections A texture containing the reflections
  * @param {WaterPlane} water A water plane to shade the background with
  * @param {Number} width The background width in pixels
  * @param {Number} height The background height in pixels
@@ -181,6 +184,7 @@ Waves.prototype.propagate = function(water, wavePainter) {
  */
 Waves.prototype.render = function(
     background,
+    reflections,
     water,
     width,
     height,
@@ -191,8 +195,9 @@ Waves.prototype.render = function(
 
     this.gl.uniform1f(this.programDistort.uScale, scale);
     this.gl.uniform1i(this.programDistort.uBackground, 0);
-    this.gl.uniform1i(this.programDistort.uWaterBack, 1);
-    this.gl.uniform1i(this.programDistort.uWaterFront, 2);
+    this.gl.uniform1i(this.programDistort.uReflections, 1);
+    this.gl.uniform1i(this.programDistort.uWaterBack, 2);
+    this.gl.uniform1i(this.programDistort.uWaterFront, 3);
     this.gl.uniform1f(this.programDistort.uDepth, this.DEPTH * scale);
     this.gl.uniform2f(this.programDistort.uSize, width, height);
     this.gl.uniform2f(this.programDistort.uWaterSize, water.width, water.height);
@@ -201,8 +206,10 @@ Waves.prototype.render = function(
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, background);
     this.gl.activeTexture(this.gl.TEXTURE1);
-    this.gl.bindTexture(this.gl.TEXTURE_2D, water.getBack().texture);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, reflections);
     this.gl.activeTexture(this.gl.TEXTURE2);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, water.getBack().texture);
+    this.gl.activeTexture(this.gl.TEXTURE3);
     this.gl.bindTexture(this.gl.TEXTURE_2D, water.getFront().texture);
 
     this.gl.drawElements(this.gl.TRIANGLES, this.indexCount, this.gl.UNSIGNED_SHORT, 0);

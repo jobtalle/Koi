@@ -115,6 +115,22 @@ Stone.prototype.render = function(width, height, scale) {
 };
 
 /**
+ * Render the stone reflections
+ * @param {Number} width The background width in pixels
+ * @param {Number} height The background height in pixels
+ * @param {Number} scale The render scale
+ */
+Stone.prototype.renderReflections = function(width, height, scale) {
+    this.programReflect.use();
+    this.gl.vao.bindVertexArrayOES(this.vao);
+
+    this.gl.uniform2f(this.programReflect.uSize, width, height);
+    this.gl.uniform1f(this.programReflect.uScale, scale);
+
+    this.gl.drawElements(this.gl.TRIANGLES, this.indexCount, this.gl.UNSIGNED_SHORT, 0);
+};
+
+/**
  * Free all resources maintained by the stone renderer
  */
 Stone.prototype.free = function() {

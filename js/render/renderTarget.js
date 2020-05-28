@@ -96,6 +96,8 @@ RenderTarget.prototype.createDepth = function(width, height) {
 
     this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, buffer);
     this.gl.renderbufferStorage(this.gl.RENDERBUFFER, this.gl.DEPTH_COMPONENT16, width, height);
+
+    return buffer;
 };
 
 /**
