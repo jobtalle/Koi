@@ -71,14 +71,13 @@ void main() {
   shiny *= 0.4;
   
   mediump vec4 filter = vec4(0.93, 0.98, 1.0, 1.0) * vec4(0.92, 0.97, 1.0, 1.0);
-  mediump vec4 sky = vec4(0.88, 0.96, 1.0, 1.0);
   
   lowp vec4 pixel = texture2D(background, gl_FragCoord.xy / size - displacement);
-  lowp vec4 reflected = texture2D(reflections, gl_FragCoord.xy / size + displacement);
+  lowp vec4 reflected = texture2D(reflections, gl_FragCoord.xy / size + displacement * 2.0);
   
   gl_FragColor = mix(
     filter * (pixel + 0.1 * reflected),
-    sky,
+    reflected,
     shiny);
 }
 `;

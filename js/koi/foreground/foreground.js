@@ -20,17 +20,18 @@ const Foreground = function(
         gl,
         Math.round(constellation.width * this.REFLECTION_SCALE),
         Math.round(constellation.height * this.REFLECTION_SCALE),
-        gl.RGBA,
-        true,
-        gl.NEAREST);
+        gl.RGB,
+        true);
 };
 
-Foreground.prototype.REFLECTION_SCALE = 80;
+Foreground.prototype.REFLECTION_SCALE = 60;
+Foreground.prototype.SKY_COLOR = Color.fromCSS("sky");
 
 /**
  * Make the reflections
  * @param {Stone} stone The stone renderer
  * @param {Vegetation} vegetation The vegetation renderer
+ * @param {Blur} blur The blur system
  * @param {Number} width The render target width
  * @param {Number} height The render target height
  * @param {Number} scale The scale
@@ -38,12 +39,13 @@ Foreground.prototype.REFLECTION_SCALE = 80;
 Foreground.prototype.makeReflections = function(
     stone,
     vegetation,
+    blur,
     width,
     height,
     scale) {
     this.reflections.target();
 
-    this.gl.clearColor(1, 1, 1, 1);
+    this.gl.clearColor(this.SKY_COLOR.r, this.SKY_COLOR.g, this.SKY_COLOR.b, this.SKY_COLOR.a);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
     this.gl.enable(this.gl.DEPTH_TEST);
 
@@ -51,6 +53,27 @@ Foreground.prototype.makeReflections = function(
     vegetation.renderReflections(width, height, scale);
 
     this.gl.disable(this.gl.DEPTH_TEST);
+
+    this.blurReflections(blur, width, height, scale);
+
+    this.gl.bindTexture(this.gl.TEXTURE_2D, this.reflections.texture);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
+};
+
+/**
+ * Blur the reflections
+ * @param {Blur} blur The blur system
+ * @param {Number} width The render target width
+ * @param {Number} height The render target height
+ * @param {Number} scale The scale
+ */
+Foreground.prototype.blurReflections = function(blur, width, height, scale) {
+    const intermediate = new RenderTarget(this.gl, this.reflections.width, this.reflections.height, this.gl.RGB, false);
+
+    blur.apply(width, height, scale, this.reflections, intermediate);
+
+    intermediate.free();
 };
 
 /**

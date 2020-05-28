@@ -94,6 +94,7 @@ Koi.prototype.createRenderables = function() {
     this.foreground.makeReflections(
         this.systems.stone,
         this.systems.vegetation,
+        this.systems.blur,
         this.systems.width,
         this.systems.height,
         this.scale);
