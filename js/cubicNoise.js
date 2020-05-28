@@ -7,10 +7,23 @@
  */
 const CubicNoise = function(width, height, randomizer) {
     this.width = width;
+    this.height = height;
+    this.randomizer = randomizer;
     this.values = new Array((width + 2) * (height + 2));
 
     for (let i = 0; i < this.values.length; ++i)
         this.values[i] = randomizer.getFloat();
+};
+
+/**
+ * Create a new cubic noise with the same parameters, but different values
+ * @returns {CubicNoise} A cubic noise
+ */
+CubicNoise.prototype.createSimilar = function() {
+    return new CubicNoise(
+        this.width,
+        this.height,
+        this.randomizer);
 };
 
 /**
