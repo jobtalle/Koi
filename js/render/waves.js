@@ -24,7 +24,7 @@ const Waves = function(gl) {
 
 Waves.prototype.DAMPING = .994;
 Waves.prototype.DEPTH = .1;
-Waves.prototype.HEIGHT = .6;
+Waves.prototype.HEIGHT = .5;
 
 Waves.prototype.SHADER_DISTORT_VERTEX = `#version 100
 uniform mediump float scale;

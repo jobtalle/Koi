@@ -52,11 +52,11 @@ Blur.prototype.setMesh = function(mesh) {
     mesh.bindBuffers();
 
     this.gl.enableVertexAttribArray(this.program.aPosition);
-    this.gl.vertexAttribPointer(this.program.aPosition, 2, this.gl.FLOAT, false, 16, 0);
+    this.gl.vertexAttribPointer(this.program.aPosition, 2, this.gl.FLOAT, false, 8, 0);
 };
 
 /**
- * Apply blur
+ * Apply blur to the currently set mesh
  * @param {Number} width The render target width
  * @param {Number} height The render target height
  * @param {Number} scale The render scale
