@@ -42,12 +42,6 @@ Koi.prototype.COLOR_BACKGROUND = Color.fromCSS("earth");
  * Create all renderable objects
  */
 Koi.prototype.createRenderables = function() {
-    // Create rocks
-    this.rocks = new Rocks(
-        this.systems.gl,
-        this.constellation,
-        this.random);
-
     // TODO: These meshes can be in the [-1, 1] range, because they are refreshed on every resize
     // Create constellation meshes
     this.constellationMeshWater = this.constellation.makeMeshWater(this.systems.gl, this.random);
@@ -90,7 +84,7 @@ Koi.prototype.createRenderables = function() {
         this.systems.height / this.scale);
 
     // Assign scene object meshes
-    this.systems.stone.setMesh(this.rocks.mesh); // TODO: Still required?
+    this.systems.stone.setMesh(this.foreground.rocks.mesh);
     this.systems.vegetation.setMesh(this.foreground.plants.mesh); // TODO: This can be better
 };
 
@@ -100,7 +94,6 @@ Koi.prototype.createRenderables = function() {
 Koi.prototype.freeRenderables = function() {
     this.shadowBuffer.free();
     this.atlas.free();
-    this.rocks.free();
     this.background.free();
     this.foreground.free();
     this.underwater.free();
@@ -245,16 +238,10 @@ Koi.prototype.render = function(deltaTime) {
     // Enable Z buffer
     this.systems.gl.enable(this.systems.gl.DEPTH_TEST);
 
-    // Render rocks
-    this.rocks.render(
-        this.systems.stone,
-        this.systems.width,
-        this.systems.height,
-        this.scale);
-
     // Render foreground
     this.foreground.render(
         this.systems.vegetation,
+        this.systems.stone,
         this.systems.width,
         this.systems.height,
         this.scale);

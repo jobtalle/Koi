@@ -7,16 +7,19 @@
  */
 const Foreground = function(gl, constellation, random) {
     this.plants = new Plants(gl, constellation, random);
+    this.rocks = new Rocks(gl, constellation, random);
 };
 
 /**
  * Render foreground graphics
  * @param {Vegetation} vegetation The vegetation renderer
+ * @param {Stone} stone The stone renderer
  * @param {Number} width The render target width
  * @param {Number} height The render target height
  * @param {Number} scale The scale
  */
-Foreground.prototype.render = function(vegetation, width, height, scale) {
+Foreground.prototype.render = function(vegetation, stone, width, height, scale) {
+    this.rocks.render(stone, width, height, scale);
     this.plants.render(vegetation, width, height, scale);
 };
 
@@ -25,4 +28,5 @@ Foreground.prototype.render = function(vegetation, width, height, scale) {
  */
 Foreground.prototype.free = function() {
     this.plants.free();
+    this.rocks.free();
 };

@@ -14,25 +14,30 @@ const Rocks = function(gl, constellation, random) {
  * @param {Number} x The X coordinate
  * @param {Number} y The Y coordinate
  * @param {Number} radius The radius
+ * @param {Number} height The height
  * @constructor
  */
-Rocks.Plan = function(x, y, radius) {
+Rocks.Plan = function(x, y, radius, height) {
     this.x = x;
     this.y = y;
     this.radius = radius;
+    this.height = height;
 };
 
 Rocks.prototype.COLOR_TOP = Color.fromCSS("rock-top");
 Rocks.prototype.COLOR_SIDE = Color.fromCSS("rock-side");
 Rocks.prototype.PILLAR_RESOLUTION = .15;
-Rocks.prototype.PILLAR_RADIUS_MIN = .1;
-Rocks.prototype.PILLAR_RADIUS_MAX = .6;
-Rocks.prototype.PILLAR_RADIUS_POWER = 1.2;
-Rocks.prototype.PILLAR_SPACING_MIN = 1;
-Rocks.prototype.PILLAR_SPACING_MAX = 1.7;
+Rocks.prototype.PILLAR_RADIUS_MIN = .15;
+Rocks.prototype.PILLAR_RADIUS_MAX = .5;
+Rocks.prototype.PILLAR_RADIUS_POWER = 1.5;
+Rocks.prototype.PILLAR_SPACING_MIN = 1.2;
+Rocks.prototype.PILLAR_SPACING_MAX = 1.6;
 Rocks.prototype.PILLAR_HEIGHT_MIN = 1;
 Rocks.prototype.PILLAR_HEIGHT_MAX = 2;
+Rocks.prototype.PILLAR_HEIGHT_DELTA = .07;
 Rocks.prototype.PILLAR_SHIFT_AMPLITUDE = .06;
+Rocks.prototype.PILLAR_SQUISH = .6;
+Rocks.prototype.PILLAR_SKEW = 1.25;
 Rocks.prototype.NOISE_SCALE = .7;
 Rocks.prototype.NOISE_THRESHOLD = .36;
 
@@ -43,10 +48,11 @@ Rocks.prototype.NOISE_THRESHOLD = .36;
  * @param {Random} random A randomizer
  */
 Rocks.prototype.createMesh = function(gl, constellation, random) {
-    const noise = new CubicNoise(
+    const noisePonds = new CubicNoise(
         Math.ceil(constellation.width * this.NOISE_SCALE),
         Math.ceil(constellation.height * this.NOISE_SCALE),
         random);
+    const noiseRiver = noisePonds.createSimilar();
     const vertices = [];
     const indices = [];
     const plans = [];
@@ -62,7 +68,7 @@ Rocks.prototype.createMesh = function(gl, constellation, random) {
         constellation.width,
         0,
         constellation.height,
-        noise,
+        noisePonds,
         random);
 
     this.planArc(
@@ -76,7 +82,7 @@ Rocks.prototype.createMesh = function(gl, constellation, random) {
         constellation.width,
         0,
         constellation.height,
-        noise,
+        noisePonds,
         random);
 
     for (const arc of constellation.river.constraint.arcs) {
@@ -91,7 +97,7 @@ Rocks.prototype.createMesh = function(gl, constellation, random) {
             constellation.width,
             0,
             constellation.height,
-            noise,
+            noiseRiver,
             random);
 
         this.planArc(
@@ -105,7 +111,7 @@ Rocks.prototype.createMesh = function(gl, constellation, random) {
             constellation.width,
             0,
             constellation.height,
-            noise,
+            noiseRiver,
             random);
     }
 
@@ -119,8 +125,8 @@ Rocks.prototype.createMesh = function(gl, constellation, random) {
             plan.x,
             plan.y,
             plan.radius,
-            plan.radius *
-                (this.PILLAR_HEIGHT_MIN + (this.PILLAR_HEIGHT_MAX - this.PILLAR_HEIGHT_MIN) * random.getFloat()));
+            plan.height,
+            random);
     
     return new Mesh(gl, vertices, indices);
 };
@@ -155,6 +161,7 @@ Rocks.prototype.planArc = function(
     random) {
     const circumference = Math.PI * 2 * radius;
     let radiansLeft = end - start;
+    let pillarHeightPrevious = -1;
 
     for (let radians = start; radiansLeft > 0;) {
         const shift = (random.getFloat() * 2 - 1) * this.PILLAR_SHIFT_AMPLITUDE;
@@ -177,16 +184,23 @@ Rocks.prototype.planArc = function(
 
         intensity = (intensity - this.NOISE_THRESHOLD) / (1 - this.NOISE_THRESHOLD);
 
-        const rockRadius = this.PILLAR_RADIUS_MIN +
+        const pillarRadius = this.PILLAR_RADIUS_MIN +
             (this.PILLAR_RADIUS_MAX - this.PILLAR_RADIUS_MIN) *
             Math.pow(random.getFloat(), this.PILLAR_RADIUS_POWER) * intensity;
-        const radiansStep = Math.PI * 2 * rockRadius / circumference *
+        let pillarHeight = pillarRadius *
+            (this.PILLAR_HEIGHT_MIN + (this.PILLAR_HEIGHT_MAX - this.PILLAR_HEIGHT_MIN) * random.getFloat());
+
+        if (Math.abs(pillarHeight - pillarHeightPrevious) < this.PILLAR_HEIGHT_DELTA)
+            pillarHeight = pillarHeightPrevious + Math.sign(pillarHeight - pillarHeightPrevious) * this.PILLAR_HEIGHT_DELTA;
+
+        const radiansStep = Math.PI * 2 * pillarRadius / circumference *
             (this.PILLAR_SPACING_MIN + (this.PILLAR_SPACING_MAX - this.PILLAR_SPACING_MIN) * random.getFloat());
 
-        plans.push(new Rocks.Plan(rockX, rockY, rockRadius));
+        plans.push(new Rocks.Plan(rockX, rockY, pillarRadius, pillarHeight));
 
         radians += radiansStep;
         radiansLeft -= radiansStep;
+        pillarHeightPrevious = pillarHeight;
     }
 };
 
@@ -198,6 +212,7 @@ Rocks.prototype.planArc = function(
  * @param {Number} y The Y position in meters
  * @param {Number} radius The pillar radius
  * @param {Number} height The pillar height
+ * @param {Random} random A randomizer
  */
 Rocks.prototype.createPillar = function(
     vertices,
@@ -205,20 +220,20 @@ Rocks.prototype.createPillar = function(
     x,
     y,
     radius,
-    height) {
-    const top = 1.1;
-    const squish = .65;
+    height,
+    random) {
     const firstIndex = vertices.length / 7;
     const precision = Math.ceil(2 * Math.PI * radius / this.PILLAR_RESOLUTION);
+    const offset = random.getFloat() * 2 * Math.PI / precision;
     const zShift = (-.5 + random.getFloat()) * .5;
     const lightTop = .8 - zShift * .4;
     let lastStep = precision - 1;
     // TODO: Skip back faces
 
     for (let step = 0; step < precision; ++step) {
-        const radians = Math.PI * 2 * step / precision;
+        const radians = Math.PI * 2 * step / precision + offset;
         const dx = Math.cos(radians) * radius;
-        const dy = Math.sin(radians) * radius * squish;
+        const dy = Math.sin(radians) * radius * this.PILLAR_SQUISH;
         const l = Math.sqrt(dx * dx + dy * dy);
         const lx = 1 / Math.sqrt(2);
         const ly = 1 / Math.sqrt(2);
@@ -240,16 +255,16 @@ Rocks.prototype.createPillar = function(
             this.COLOR_SIDE.g,
             this.COLOR_SIDE.b,
             light,
-            x + dx * top,
-            y + dy * top,
-            height + dx * zShift * top,
+            x + dx * this.PILLAR_SKEW,
+            y + dy * this.PILLAR_SKEW,
+            height + dx * zShift * this.PILLAR_SKEW,
             this.COLOR_TOP.r,
             this.COLOR_TOP.g,
             this.COLOR_TOP.b,
             lightTop,
-            x + dx * top,
-            y + dy * top,
-            height + dx * zShift * top);
+            x + dx * this.PILLAR_SKEW,
+            y + dy * this.PILLAR_SKEW,
+            height + dx * zShift * this.PILLAR_SKEW);
         indices.push(
             firstIndex + lastStep * 3,
             firstIndex + lastStep * 3 + 1,
