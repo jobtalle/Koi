@@ -8,7 +8,15 @@
 const Foreground = function(gl, constellation, random) {
     this.plants = new Plants(gl, constellation, random);
     this.rocks = new Rocks(gl, constellation, random);
+    this.reflections = new RenderTarget(
+        gl,
+        constellation.width * this.REFLECTION_SCALE,
+        constellation.height * this.REFLECTION_SCALE,
+        gl.RGBA,
+        true);
 };
+
+Foreground.prototype.REFLECTION_SCALE = 32;
 
 /**
  * Render foreground graphics
@@ -29,4 +37,5 @@ Foreground.prototype.render = function(vegetation, stone, width, height, scale) 
 Foreground.prototype.free = function() {
     this.plants.free();
     this.rocks.free();
+    this.reflections.free();
 };

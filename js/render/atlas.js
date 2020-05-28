@@ -43,7 +43,7 @@ Atlas.prototype.createRenderTarget = function(capacity) {
     const blocks = Math.ceil(capacity / (this.RATIO + 1));
     const blockResolution = Math.ceil(Math.sqrt(blocks));
     const size = blockResolution * this.RESOLUTION * (this.RATIO + 1);
-    const renderTarget = new RenderTarget(this.gl, size, size, this.gl.RGBA, this.gl.LINEAR);
+    const renderTarget = new RenderTarget(this.gl, size, size, this.gl.RGBA, false, this.gl.LINEAR);
 
     this.slotSize.x = this.RESOLUTION * this.RATIO / size;
     this.slotSize.y = this.RESOLUTION / size;

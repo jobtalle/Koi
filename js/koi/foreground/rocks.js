@@ -163,7 +163,7 @@ Rocks.prototype.planArc = function(
     let radiansLeft = end - start;
     let pillarHeightPrevious = -1;
 
-    for (let radians = start; radiansLeft > 0;) {
+    for (let radians = start + Math.PI * 2 * this.PILLAR_RADIUS_MIN / circumference; radiansLeft > 0;) {
         const shift = (random.getFloat() * 2 - 1) * this.PILLAR_SHIFT_AMPLITUDE;
         const rockX = x + Math.cos(radians) * (radius + shift);
         const rockY = y + Math.sin(radians) * (radius + shift);
@@ -297,7 +297,7 @@ Rocks.prototype.createPillar = function(
  * @param {Number} scale The render scale
  */
 Rocks.prototype.render = function(stone, width, height, scale) {
-    stone.render(width, height, scale, -1);
+    stone.render(width, height, scale);
 };
 
 /**

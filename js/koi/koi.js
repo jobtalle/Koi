@@ -77,6 +77,7 @@ Koi.prototype.createRenderables = function() {
         this.systems.width,
         this.systems.height,
         this.systems.gl.RGB,
+        false,
         this.systems.gl.LINEAR);
     this.water = new WaterPlane(
         this.systems.gl,

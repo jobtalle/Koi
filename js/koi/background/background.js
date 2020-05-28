@@ -16,7 +16,7 @@ const Background = function(
     this.gl = gl;
     this.width = width;
     this.height = height;
-    this.bottom = new RenderTarget(gl, width, height, gl.RGBA, gl.NEAREST);
+    this.bottom = new RenderTarget(gl, width, height, gl.RGBA, false, gl.NEAREST);
 
     this.bottom.target();
 
@@ -30,7 +30,7 @@ const Background = function(
 Background.prototype.render = function(quad) {
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, this.bottom.texture);
-
+    // TODO: This can be done with a mesh to reduce the number of fragments
     quad.render();
 };
 

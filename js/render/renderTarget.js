@@ -4,6 +4,7 @@
  * @param {Number} width The width in pixels
  * @param {Number} height The height in pixels
  * @param {GLenum} format The texture data format
+ * @param {Boolean} depth A boolean indicating whether to include a depth buffer
  * @param {GLenum} [filter] Texture filtering method
  * @constructor
  */
@@ -12,12 +13,16 @@ const RenderTarget = function(
     width,
     height,
     format,
+    depth,
     filter = null) {
     this.gl = gl;
     this.width = width;
     this.height = height;
     this.framebuffer = gl.createFramebuffer();
-    this.texture = this.createTexture(format, filter);
+    this.texture = this.createTexture(width, height, format, depth, filter);
+    this.depth = depth ? this.createDepth(width, height) : null;
+
+    this.setupFramebuffer(this.texture, this.depth);
 };
 
 /**
@@ -29,12 +34,33 @@ RenderTarget.prototype.target = function() {
 };
 
 /**
- * Create the texture for this underwater bufferQuad
+ * Set up the framebuffer
+ * @param {WebGLTexture} texture The color attachment
+ * @param {WebGLTexture} depth The depth attachment, may be null
+ */
+RenderTarget.prototype.setupFramebuffer = function(texture, depth) {
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.framebuffer);
+    this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, texture, 0);
+
+    if (depth !== null)
+        this.gl.framebufferRenderbuffer(this.gl.FRAMEBUFFER, this.gl.DEPTH_ATTACHMENT, this.gl.RENDERBUFFER, depth);
+};
+
+/**
+ * Create the texture for this buffer
+ * @param {Number} width The width in pixels
+ * @param {Number} height The height in pixels
  * @param {GLenum} format The texture data format
+ * @param {Boolean} depth A boolean indicating whether to include a depth buffer
  * @param {GLenum} filter Texture filtering method
  * @returns {WebGLTexture} A WebGL texture
  */
-RenderTarget.prototype.createTexture = function(format, filter) {
+RenderTarget.prototype.createTexture = function(
+    width,
+    height,
+    format,
+    depth,
+    filter) {
     const texture = this.gl.createTexture();
 
     this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
@@ -50,17 +76,26 @@ RenderTarget.prototype.createTexture = function(format, filter) {
         this.gl.TEXTURE_2D,
         0,
         format,
-        this.width,
-        this.height,
+        width,
+        height,
         0,
         format,
         this.gl.UNSIGNED_BYTE,
         null);
 
-    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.framebuffer);
-    this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, texture, 0);
-
     return texture;
+};
+
+/**
+ * Create a depth texture
+ * @param {Number} width The width in pixels
+ * @param {Number} height The height in pixels
+ */
+RenderTarget.prototype.createDepth = function(width, height) {
+    const buffer = this.gl.createRenderbuffer();
+
+    this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, buffer);
+    this.gl.renderbufferStorage(this.gl.RENDERBUFFER, this.gl.DEPTH_COMPONENT16, width, height);
 };
 
 /**
@@ -69,4 +104,7 @@ RenderTarget.prototype.createTexture = function(format, filter) {
 RenderTarget.prototype.free = function() {
     this.gl.deleteFramebuffer(this.framebuffer);
     this.gl.deleteTexture(this.texture);
+
+    if (this.depth !== null)
+        this.gl.deleteRenderbuffer(this.depth);
 };
