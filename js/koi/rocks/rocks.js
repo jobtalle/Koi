@@ -23,7 +23,8 @@ Rocks.prototype.createMesh = function(gl, constellation, random) {
     const vertices = [];
     const indices = [];
 
-    // TODO: Rocks
+    // TODO: Sort bottom to top
+    // TODO: Cull rocks outside view
     for (let i = 0; i < 40; ++i) {
         const angle = Math.PI * 2 * random.getFloat();
 
@@ -37,7 +38,7 @@ Rocks.prototype.createMesh = function(gl, constellation, random) {
             .2 + .2 * random.getFloat(),
             .2 + .3 * random.getFloat());
     }
-
+    
     return new Mesh(gl, vertices, indices);
 };
 
