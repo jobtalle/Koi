@@ -29,7 +29,7 @@ const Bodies = function(gl) {
     gl.vertexAttribPointer(this.program.aUv, 2, gl.FLOAT, false, 16, 8);
 };
 
-Bodies.prototype.SHADOW_ALPHA = .3;
+Bodies.prototype.SHADOW_ALPHA = .4;
 
 Bodies.prototype.SHADER_VERTEX = `#version 100
 uniform mediump float scale;

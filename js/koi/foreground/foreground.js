@@ -24,7 +24,7 @@ const Foreground = function(
         true);
 };
 
-Foreground.prototype.REFLECTION_SCALE = 60;
+Foreground.prototype.REFLECTION_SCALE = 50;
 Foreground.prototype.SKY_COLOR = Color.fromCSS("sky");
 
 /**
@@ -45,7 +45,7 @@ Foreground.prototype.makeReflections = function(
     scale) {
     this.reflections.target();
 
-    this.gl.clearColor(this.SKY_COLOR.r, this.SKY_COLOR.g, this.SKY_COLOR.b, this.SKY_COLOR.a);
+    this.gl.clearColor(this.SKY_COLOR.r, this.SKY_COLOR.g, this.SKY_COLOR.b, 0);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
     this.gl.enable(this.gl.DEPTH_TEST);
 

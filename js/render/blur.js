@@ -52,7 +52,7 @@ Blur.prototype.setMesh = function(mesh) {
     mesh.bindBuffers();
 
     this.gl.enableVertexAttribArray(this.program.aPosition);
-    this.gl.vertexAttribPointer(this.program.aPosition, 2, this.gl.FLOAT, false, 8, 0);
+    this.gl.vertexAttribPointer(this.program.aPosition, 2, this.gl.FLOAT, false, 16, 0);
 };
 
 /**

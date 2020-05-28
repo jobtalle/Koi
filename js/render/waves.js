@@ -16,14 +16,15 @@ const Waves = function(gl) {
         gl,
         this.SHADER_DISTORT_VERTEX,
         this.SHADER_DISTORT_FRAGMENT,
-        ["scale", "background", "reflections", "waterBack", "waterFront", "depth", "size", "waterSize", "time"],
+        ["scale", "background", "reflections", "waterBack", "waterFront", "depth", "height", "size", "waterSize", "time"],
         ["position", "depth"]);
     this.vaoDistort = gl.vao.createVertexArrayOES();
     this.indexCount = -1;
 };
 
 Waves.prototype.DAMPING = .994;
-Waves.prototype.DEPTH = 0.1;
+Waves.prototype.DEPTH = .1;
+Waves.prototype.HEIGHT = .6;
 
 Waves.prototype.SHADER_DISTORT_VERTEX = `#version 100
 uniform mediump float scale;
@@ -42,6 +43,7 @@ uniform sampler2D reflections;
 uniform sampler2D waterBack;
 uniform sampler2D waterFront;
 uniform mediump float depth;
+uniform mediump float height;
 uniform mediump vec2 size;
 uniform mediump vec2 waterSize;
 uniform mediump float time;
@@ -58,7 +60,6 @@ void main() {
   mediump vec3 normal = cross(
     normalize(vec3(2.0, dyx, 0.0)),
     normalize(vec3(0.0, dyz, 2.0)));
-  mediump vec2 displacement = depth * normal.xz / size;
   mediump float shiny = dot(normalize(vec3(1.0, 0.0, 1.0)), normal);
   
   if (shiny < 0.0)
@@ -72,11 +73,11 @@ void main() {
   
   mediump vec4 filter = vec4(0.93, 0.98, 1.0, 1.0) * vec4(0.92, 0.97, 1.0, 1.0);
   
-  lowp vec4 pixel = texture2D(background, gl_FragCoord.xy / size - displacement);
-  lowp vec4 reflected = texture2D(reflections, gl_FragCoord.xy / size + displacement * 2.0);
+  lowp vec4 pixel = texture2D(background, gl_FragCoord.xy / size - depth * normal.xz / size);
+  lowp vec4 reflected = texture2D(reflections, gl_FragCoord.xy / size + height * normal.xz / size);
   
   gl_FragColor = mix(
-    filter * (pixel + 0.1 * reflected),
+    filter * mix(pixel, reflected, 0.16),
     reflected,
     shiny);
 }
@@ -198,6 +199,7 @@ Waves.prototype.render = function(
     this.gl.uniform1i(this.programDistort.uWaterBack, 2);
     this.gl.uniform1i(this.programDistort.uWaterFront, 3);
     this.gl.uniform1f(this.programDistort.uDepth, this.DEPTH * scale);
+    this.gl.uniform1f(this.programDistort.uHeight, this.HEIGHT * scale);
     this.gl.uniform2f(this.programDistort.uSize, width, height);
     this.gl.uniform2f(this.programDistort.uWaterSize, water.width, water.height);
     this.gl.uniform1f(this.programDistort.uTime, time);

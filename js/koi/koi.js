@@ -50,7 +50,7 @@ Koi.prototype.createRenderables = function() {
     // Assign constellation meshes
     this.systems.sand.setMesh(this.constellationMeshDepth);
     this.systems.shadows.setMesh(this.constellationMeshDepth);
-    this.systems.blur.setMesh(this.constellationMeshWater);
+    this.systems.blur.setMesh(this.constellationMeshDepth);
     this.systems.waves.setMesh(this.constellationMeshWater);
 
     // Create scene objects
