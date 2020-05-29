@@ -10,4 +10,4 @@ const Constraint = function(border = this.BORDER) {
 
 Constraint.prototype.BORDER = 1.1;
 Constraint.prototype.MESH_RESOLUTION = .3;
-Constraint.prototype.MESH_DEPTH_PADDING = Waves.prototype.DEPTH;
+Constraint.prototype.MESH_DEPTH_PADDING = Ponds.prototype.DEPTH;

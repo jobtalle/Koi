@@ -24,6 +24,14 @@ const Air = function(gl, width, height) {
 Air.prototype.SCALE = 2;
 
 /**
+ * Propagate wind gusts through air
+ * @param {Air} air An air plane
+ */
+Air.prototype.propagate = function(air) {
+
+};
+
+/**
  * Free all resources maintained by this air buffer
  */
 Air.prototype.free = function() {

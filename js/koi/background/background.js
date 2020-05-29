@@ -16,7 +16,7 @@ const Background = function(
     this.gl = gl;
     this.width = width;
     this.height = height;
-    this.bottom = new RenderTarget(gl, width, height, gl.RGBA, false, gl.NEAREST);
+    this.bottom = new RenderTarget(gl, width, height, gl.RGB, false, gl.NEAREST);
 
     this.bottom.target();
 

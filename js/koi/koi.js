@@ -52,6 +52,7 @@ Koi.prototype.createRenderables = function() {
     this.systems.shadows.setMesh(this.constellationMeshDepth);
     this.systems.blur.setMesh(this.constellationMeshWater);
     this.systems.waves.setMesh(this.constellationMeshWater);
+    this.systems.ponds.setMesh(this.constellationMeshWater);
 
     // Create scene objects
     this.shadowBuffer = new ShadowBuffer(
@@ -265,7 +266,7 @@ Koi.prototype.render = function(deltaTime) {
         this.scale);
 
     // Render shaded water
-    this.systems.waves.render(
+    this.systems.ponds.render(
         this.underwater.texture,
         this.foreground.reflections.texture,
         this.water,
@@ -286,8 +287,8 @@ Koi.prototype.render = function(deltaTime) {
         this.scale,
         timeFactor);
 
-    // this.systems.gl.activeTexture(this.systems.gl.TEXTURE0);
-    // this.systems.gl.bindTexture(this.systems.gl.TEXTURE_2D, this.foreground.reflections.texture);
+    this.systems.gl.activeTexture(this.systems.gl.TEXTURE0);
+    this.systems.gl.bindTexture(this.systems.gl.TEXTURE_2D, this.background.bottom.texture);
     // this.systems.quad.render();
 };
 
