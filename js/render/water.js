@@ -5,7 +5,7 @@
  * @param {Number} height The scene height
  * @constructor
  */
-const WaterPlane = function(gl, width, height) {
+const Water = function(gl, width, height) {
     this.front = 0;
     this.width = Math.ceil(width * this.SCALE);
     this.height = Math.ceil(height * this.SCALE);
@@ -13,19 +13,18 @@ const WaterPlane = function(gl, width, height) {
     this.hasInfluences = false;
     this.targets = [
         new RenderTarget(gl, this.width, this.height, gl.RGB, false),
-        new RenderTarget(gl, this.width, this.height, gl.RGB, false)
-    ];
+        new RenderTarget(gl, this.width, this.height, gl.RGB, false)];
 
     gl.clearColor(.5, .5, 0, 0);
 
     for (const target of this.targets) {
-        this.targets[0].target();
+        target.target();
 
         gl.clear(gl.COLOR_BUFFER_BIT);
     }
 };
 
-WaterPlane.prototype.SCALE = 18;
+Water.prototype.SCALE = 18;
 
 /**
  * Add a flare of wave height to the water plane
@@ -34,7 +33,7 @@ WaterPlane.prototype.SCALE = 18;
  * @param {Number} radius The flare radius
  * @param {Number} displacement The amount of displacement in the range [0, 1]
  */
-WaterPlane.prototype.addFlare = function(x, y, radius, displacement) {
+Water.prototype.addFlare = function(x, y, radius, displacement) {
     this.flares.push(x, y, radius, displacement);
     this.hasInfluences = true;
 };
@@ -42,7 +41,7 @@ WaterPlane.prototype.addFlare = function(x, y, radius, displacement) {
 /**
  * Flip the buffers after propagating
  */
-WaterPlane.prototype.flip = function() {
+Water.prototype.flip = function() {
     this.front = 1 - this.front;
 };
 
@@ -50,7 +49,7 @@ WaterPlane.prototype.flip = function() {
  * Return the render target currently used as the front bufferQuad
  * @returns {RenderTarget} The current front bufferQuad
  */
-WaterPlane.prototype.getFront = function() {
+Water.prototype.getFront = function() {
     return this.targets[this.front];
 };
 
@@ -58,14 +57,14 @@ WaterPlane.prototype.getFront = function() {
  * Return the render target currently used as the back bufferQuad
  * @returns {RenderTarget} The current back bufferQuad
  */
-WaterPlane.prototype.getBack = function() {
+Water.prototype.getBack = function() {
     return this.targets[1 - this.front];
 };
 
 /**
  * Free all resources maintained by this water plane
  */
-WaterPlane.prototype.free = function() {
+Water.prototype.free = function() {
     for (const target of this.targets)
         target.free();
 };

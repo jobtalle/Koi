@@ -84,10 +84,10 @@ WavePainter.prototype.paintFlares = function(flares) {
         const index = flare + flare + flare + flare;
 
         this.gl.uniform2f(this.program.uOrigin,
-            flares[index] * WaterPlane.prototype.SCALE,
-            flares[index + 1] * WaterPlane.prototype.SCALE);
+            flares[index] * Water.prototype.SCALE,
+            flares[index + 1] * Water.prototype.SCALE);
         this.gl.uniform1f(this.program.uRadius,
-            flares[index + 2] * WaterPlane.prototype.SCALE);
+            flares[index + 2] * Water.prototype.SCALE);
         this.gl.uniform1f(this.program.uDisplacement,
             flares[index + 3]);
 
@@ -99,7 +99,7 @@ WavePainter.prototype.paintFlares = function(flares) {
 
 /**
  * Apply the influences written to a water plane
- * @param {WaterPlane} water A water plane
+ * @param {Water} water A water plane
  */
 WavePainter.prototype.applyInfluences = function(water) {
     if (water.hasInfluences) {

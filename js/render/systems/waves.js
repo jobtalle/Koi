@@ -22,7 +22,7 @@ const Waves = function(gl) {
     this.indexCount = -1;
 };
 
-Waves.prototype.DAMPING = .994;
+Waves.prototype.DAMPING = .997;
 Waves.prototype.DEPTH = .1;
 Waves.prototype.HEIGHT = .5;
 
@@ -142,7 +142,7 @@ Waves.prototype.setMesh = function(mesh) {
 
 /**
  * Propagate the waves on a water plane
- * @param {WaterPlane} water A water plane
+ * @param {Water} water A water plane
  * @param {WavePainter} wavePainter A wave painter to render wave influences
  */
 Waves.prototype.propagate = function(water, wavePainter) {
@@ -176,7 +176,7 @@ Waves.prototype.propagate = function(water, wavePainter) {
  * Render waves
  * @param {WebGLTexture} background A background texture
  * @param {WebGLTexture} reflections A texture containing the reflections
- * @param {WaterPlane} water A water plane to shade the background with
+ * @param {Water} water A water plane to shade the background with
  * @param {Number} width The background width in pixels
  * @param {Number} height The background height in pixels
  * @param {Number} scale The render scale

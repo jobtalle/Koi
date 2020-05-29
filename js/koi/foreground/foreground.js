@@ -25,7 +25,7 @@ const Foreground = function(
         gl.LINEAR);
 };
 
-Foreground.prototype.REFLECTION_SCALE = 50;
+Foreground.prototype.REFLECTION_SCALE = 40;
 Foreground.prototype.SKY_COLOR = Color.fromCSS("sky");
 
 /**
@@ -70,9 +70,7 @@ Foreground.prototype.renderReflections = function(stone, vegetation, width, heig
 
     this.gl.enable(this.gl.DEPTH_TEST);
 
-    stone.render(width, height, scale);
     stone.renderReflections(width, height, scale);
-    vegetation.render(width, height, scale);
     vegetation.renderReflections(width, height, scale);
 
     this.gl.disable(this.gl.DEPTH_TEST);

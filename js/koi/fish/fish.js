@@ -216,7 +216,7 @@ Fish.prototype.boostSpeed = function(random) {
 /**
  * Update the fish
  * @param {Constraint} constraint A constraint
- * @param {WaterPlane} water A water plane to disturb
+ * @param {Water} water A water plane to disturb
  * @param {Random} random A randomizer
  * @returns {Boolean} A boolean indicating whether the fish left the scene
  */

@@ -69,7 +69,7 @@ Mover.prototype.touchMove = function(x, y) {
 /**
  * Create a fish body shaped splash
  * @param {Body} body A fish body
- * @param {WaterPlane} waterPlane A water plane to splash on
+ * @param {Water} waterPlane A water plane to splash on
  * @param {Random} random A randomizer
  */
 Mover.prototype.createBodySplash = function(body, waterPlane, random) {
@@ -91,7 +91,7 @@ Mover.prototype.createBodySplash = function(body, waterPlane, random) {
  * @param {Fish} fish The fish that needs to be moved
  * @param {Number} x The X position in meters
  * @param {Number} y The Y position in meters
- * @param {WaterPlane} waterPlane A water plane to splash on
+ * @param {Water} waterPlane A water plane to splash on
  * @param {Random} random A randomizer
  */
 Mover.prototype.pickUp = function(fish, x, y, waterPlane, random) {
@@ -106,7 +106,7 @@ Mover.prototype.pickUp = function(fish, x, y, waterPlane, random) {
 
 /**
  * Release any move
- * @param {WaterPlane} waterPlane A water plane to splash on
+ * @param {Water} waterPlane A water plane to splash on
  * @param {Random} random A randomizer
  */
 Mover.prototype.drop = function(waterPlane, random) {

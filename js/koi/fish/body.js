@@ -60,7 +60,7 @@ Body.prototype.assignFins = function(fins, spineLength) {
 
 /**
  * Disturb water while swimming
- * @param {WaterPlane} water A water plane to disturb
+ * @param {Water} water A water plane to disturb
  * @param {Random} random A randomizer
  */
 Body.prototype.disturbWater = function(water, random) {
@@ -174,7 +174,7 @@ Body.prototype.storePreviousState = function() {
  * @param {Vector2} head The new head position
  * @param {Vector2} direction The normalized head direction
  * @param {Number} speed The fish speed
- * @param {WaterPlane} [water] A water plane to disturb
+ * @param {Water} [water] A water plane to disturb
  * @param {Random} [random] A randomizer, required when water is supplied
  */
 Body.prototype.update = function(

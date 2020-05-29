@@ -77,7 +77,7 @@ Pond.prototype.pick = function(x, y) {
 /**
  * Update this pond and its contents
  * @param {Atlas} atlas The texture atlas
- * @param {WaterPlane} water A water plane to disturb
+ * @param {Water} water A water plane to disturb
  * @param {Random} random A randomizer
  */
 Pond.prototype.update = function(atlas, water, random) {

@@ -81,7 +81,11 @@ Koi.prototype.createRenderables = function() {
         this.systems.gl.RGB,
         false,
         this.systems.gl.LINEAR);
-    this.water = new WaterPlane(
+    this.water = new Water(
+        this.systems.gl,
+        this.systems.width / this.scale,
+        this.systems.height / this.scale);
+    this.air = new Air(
         this.systems.gl,
         this.systems.width / this.scale,
         this.systems.height / this.scale);
@@ -111,6 +115,7 @@ Koi.prototype.freeRenderables = function() {
     this.foreground.free();
     this.underwater.free();
     this.water.free();
+    this.air.free();
 
     this.constellationMeshWater.free();
     this.constellationMeshDepth.free();

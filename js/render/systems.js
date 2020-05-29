@@ -21,6 +21,7 @@ const Systems = function(gl, random, width, height) {
     this.stone = new Stone(gl);
     this.shadows = new Shadows(gl);
     this.blur = new Blur(gl);
+    this.wind = new Wind(gl);
 };
 
 /**
@@ -56,4 +57,5 @@ Systems.prototype.free = function() {
     this.stone.free();
     this.shadows.free();
     this.blur.free();
+    this.wind.free();
 };
