@@ -70,7 +70,9 @@ Foreground.prototype.renderReflections = function(stone, vegetation, width, heig
 
     this.gl.enable(this.gl.DEPTH_TEST);
 
+    stone.render(width, height, scale);
     stone.renderReflections(width, height, scale);
+    vegetation.render(width, height, scale);
     vegetation.renderReflections(width, height, scale);
 
     this.gl.disable(this.gl.DEPTH_TEST);
