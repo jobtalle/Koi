@@ -94,7 +94,7 @@ Foreground.prototype.blurReflections = function(blur, quad, width, height, scale
 
     quad.render();
 
-    blur.apply(width, height, scale, this.reflections, intermediate);
+    blur.applyQuad(this.reflections, intermediate);
 
     intermediate.free();
 };

@@ -186,6 +186,7 @@ Koi.prototype.update = function() {
     this.mover.update();
 
     this.systems.waves.propagate(this.water, this.systems.wavePainter);
+    this.systems.wind.propagate(this.air);
 };
 
 /**
@@ -215,7 +216,7 @@ Koi.prototype.render = function(deltaTime) {
         true);
 
     // Blur shadows
-    this.systems.blur.apply(
+    this.systems.blur.applyMesh(
         this.systems.width,
         this.systems.height,
         this.scale,
@@ -287,8 +288,8 @@ Koi.prototype.render = function(deltaTime) {
         this.scale,
         timeFactor);
 
-    this.systems.gl.activeTexture(this.systems.gl.TEXTURE0);
-    this.systems.gl.bindTexture(this.systems.gl.TEXTURE_2D, this.background.bottom.texture);
+    // this.systems.gl.activeTexture(this.systems.gl.TEXTURE0);
+    // this.systems.gl.bindTexture(this.systems.gl.TEXTURE_2D, this.foreground.reflections.texture);
     // this.systems.quad.render();
 };
 

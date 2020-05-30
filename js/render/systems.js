@@ -10,6 +10,7 @@ const Systems = function(gl, random, width, height) {
     this.gl = gl;
     this.width = width;
     this.height = height;
+    this.quad = new Quad(gl);
     this.randomSource = new RandomSource(gl, random);
     this.patterns = new Patterns(gl, this.randomSource);
     this.sand = new Sand(gl, this.randomSource);
@@ -17,12 +18,11 @@ const Systems = function(gl, random, width, height) {
     this.ponds = new Ponds(gl);
     this.wavePainter = new WavePainter(gl);
     this.bodies = new Bodies(gl);
-    this.quad = new Quad(gl);
     this.vegetation = new Vegetation(gl);
     this.stone = new Stone(gl);
     this.shadows = new Shadows(gl);
-    this.blur = new Blur(gl);
-    this.wind = new Wind(gl);
+    this.blur = new Blur(gl, this.quad);
+    this.wind = new Wind(gl, this.quad);
 };
 
 /**

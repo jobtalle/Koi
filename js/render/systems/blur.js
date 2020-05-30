@@ -1,21 +1,35 @@
 /**
  * A blur shader
  * @param {WebGLRenderingContext} gl A WebGL rendering context
+ * @param {Quad} quad The quad renderer to borrow the quad mesh from
  * @constructor
  */
-const Blur = function(gl) {
+const Blur = function(gl, quad) {
     this.gl = gl;
-    this.program = new Shader(
+    this.programMesh = new Shader(
         gl,
-        this.SHADER_VERTEX,
+        this.SHADER_VERTEX_MESH,
         this.SHADER_FRAGMENT,
         ["size", "scale", "targetSize", "direction"],
         ["position"]);
-    this.vao = gl.vao.createVertexArrayOES();
+    this.programQuad = new Shader(
+        gl,
+        this.SHADER_VERTEX_QUAD,
+        this.SHADER_FRAGMENT,
+        ["targetSize", "direction"],
+        ["position"]);
+    this.vaoMesh = gl.vao.createVertexArrayOES();
+    this.vaoQuad = gl.vao.createVertexArrayOES();
     this.indexCount = -1;
+
+    gl.vao.bindVertexArrayOES(this.vaoQuad);
+    gl.bindBuffer(gl.ARRAY_BUFFER, quad.buffer);
+
+    gl.enableVertexAttribArray(this.programQuad.aPosition);
+    gl.vertexAttribPointer(this.programQuad.aPosition, 2, gl.FLOAT, false, 8, 0);
 };
 
-Blur.prototype.SHADER_VERTEX = `#version 100
+Blur.prototype.SHADER_VERTEX_MESH = `#version 100
 uniform vec2 size;
 uniform float scale;
 
@@ -23,6 +37,14 @@ attribute vec2 position;
 
 void main() {
   gl_Position = vec4(vec2(2.0, -2.0) * position / size * scale + vec2(-1.0, 1.0), 0.0, 1.0);
+}
+`;
+
+Blur.prototype.SHADER_VERTEX_QUAD = `#version 100
+attribute vec2 position;
+
+void main() {
+  gl_Position = vec4(vec2(2.0, -2.0) * position + vec2(-1.0, 1.0), 0.0, 1.0);
 }
 `;
 
@@ -47,33 +69,33 @@ void main() {
 Blur.prototype.setMesh = function(mesh) {
     this.indexCount = mesh.indexCount;
 
-    this.gl.vao.bindVertexArrayOES(this.vao);
+    this.gl.vao.bindVertexArrayOES(this.vaoMesh);
 
     mesh.bindBuffers();
 
-    this.gl.enableVertexAttribArray(this.program.aPosition);
-    this.gl.vertexAttribPointer(this.program.aPosition, 2, this.gl.FLOAT, false, 8, 0);
+    this.gl.enableVertexAttribArray(this.programMesh.aPosition);
+    this.gl.vertexAttribPointer(this.programMesh.aPosition, 2, this.gl.FLOAT, false, 8, 0);
 };
 
 /**
- * Apply blur to the currently set mesh
+ * Apply 5x5 gaussian blur to the currently set mesh
  * @param {Number} width The render target width
  * @param {Number} height The render target height
  * @param {Number} scale The render scale
  * @param {RenderTarget} target A render target to blur
  * @param {RenderTarget} intermediate An intermediate render target with the same properties as target
  */
-Blur.prototype.apply = function(width, height, scale, target, intermediate) {
+Blur.prototype.applyMesh = function(width, height, scale, target, intermediate) {
     intermediate.target();
 
-    this.program.use();
+    this.programMesh.use();
 
-    this.gl.vao.bindVertexArrayOES(this.vao);
+    this.gl.vao.bindVertexArrayOES(this.vaoMesh);
 
-    this.gl.uniform2f(this.program.uSize, width, height);
-    this.gl.uniform1f(this.program.uScale, scale);
-    this.gl.uniform2f(this.program.uTargetSize, target.width, target.height);
-    this.gl.uniform2f(this.program.uDirection, 1, 0);
+    this.gl.uniform2f(this.programMesh.uSize, width, height);
+    this.gl.uniform1f(this.programMesh.uScale, scale);
+    this.gl.uniform2f(this.programMesh.uTargetSize, target.width, target.height);
+    this.gl.uniform2f(this.programMesh.uDirection, 1, 0);
 
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, target.texture);
@@ -84,7 +106,7 @@ Blur.prototype.apply = function(width, height, scale, target, intermediate) {
 
     target.target();
 
-    this.gl.uniform2f(this.program.uDirection, 0, 1);
+    this.gl.uniform2f(this.programMesh.uDirection, 0, 1);
 
     this.gl.bindTexture(this.gl.TEXTURE_2D, intermediate.texture);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
@@ -94,9 +116,44 @@ Blur.prototype.apply = function(width, height, scale, target, intermediate) {
 };
 
 /**
+ * Apply 5x5 gaussian blur to a fullscreen quad
+ * @param {RenderTarget} target A render target to blur
+ * @param {RenderTarget} intermediate An intermediate render target with the same properties as target
+ */
+Blur.prototype.applyQuad = function(target, intermediate) {
+    intermediate.target();
+
+    this.programQuad.use();
+
+    this.gl.vao.bindVertexArrayOES(this.vaoQuad);
+
+    this.gl.uniform2f(this.programQuad.uTargetSize, target.width, target.height);
+    this.gl.uniform2f(this.programQuad.uDirection, 1, 0);
+
+    this.gl.activeTexture(this.gl.TEXTURE0);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, target.texture);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
+
+    this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, 4);
+
+    target.target();
+
+    this.gl.uniform2f(this.programQuad.uDirection, 0, 1);
+
+    this.gl.bindTexture(this.gl.TEXTURE_2D, intermediate.texture);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
+
+    this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, 4);
+};
+
+/**
  * Free all resources maintained by this blur shader
  */
 Blur.prototype.free = function() {
-    this.gl.vao.deleteVertexArrayOES(this.vao);
-    this.program.free();
+    this.gl.vao.deleteVertexArrayOES(this.vaoMesh);
+    this.gl.vao.deleteVertexArrayOES(this.vaoQuad);
+    this.programMesh.free();
+    this.programQuad.free();
 };

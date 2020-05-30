@@ -24,11 +24,26 @@ const Air = function(gl, width, height) {
 Air.prototype.SCALE = 2;
 
 /**
- * Propagate wind gusts through air
- * @param {Air} air An air plane
+ * Flip the buffers after propagating
  */
-Air.prototype.propagate = function(air) {
+Air.prototype.flip = function() {
+    this.front = 1 - this.front;
+};
 
+/**
+ * Return the render target currently used as the front buffer
+ * @returns {RenderTarget} The current front buffer
+ */
+Air.prototype.getFront = function() {
+    return this.targets[this.front];
+};
+
+/**
+ * Return the render target currently used as the back buffer
+ * @returns {RenderTarget} The current back buffer
+ */
+Air.prototype.getBack = function() {
+    return this.targets[1 - this.front];
 };
 
 /**

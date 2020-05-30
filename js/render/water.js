@@ -46,16 +46,16 @@ Water.prototype.flip = function() {
 };
 
 /**
- * Return the render target currently used as the front bufferQuad
- * @returns {RenderTarget} The current front bufferQuad
+ * Return the render target currently used as the front buffer
+ * @returns {RenderTarget} The current front buffer
  */
 Water.prototype.getFront = function() {
     return this.targets[this.front];
 };
 
 /**
- * Return the render target currently used as the back bufferQuad
- * @returns {RenderTarget} The current back bufferQuad
+ * Return the render target currently used as the back buffer
+ * @returns {RenderTarget} The current back buffer
  */
 Water.prototype.getBack = function() {
     return this.targets[1 - this.front];
