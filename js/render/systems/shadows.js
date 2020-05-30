@@ -44,7 +44,7 @@ void main() {
   mediump float depthFactor = iDepth.y * (0.5 - 0.5 * cos(3.141592 * sqrt(iDepth.x)));
   mediump float depth = depthFactor * meter * shadowDepth;
 
-  gl_FragColor = texture2D(source, gl_FragCoord.xy / size + vec2(0.0, depth));
+  gl_FragColor = texture2D(source, gl_FragCoord.xy / size + vec2(depth * 0.5, depth));
 }
 `;
 

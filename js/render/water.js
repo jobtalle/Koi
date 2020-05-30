@@ -9,8 +9,7 @@ const Water = function(gl, width, height) {
     this.front = 0;
     this.width = Math.ceil(width * this.SCALE);
     this.height = Math.ceil(height * this.SCALE);
-    this.flares = [];
-    this.hasInfluences = false;
+    this.influences = new InfluencePainter.Influences(this.width, this.height, this.SCALE);
     this.targets = [
         new RenderTarget(gl, this.width, this.height, gl.RGB, false),
         new RenderTarget(gl, this.width, this.height, gl.RGB, false)];
@@ -34,8 +33,7 @@ Water.prototype.SCALE = 18;
  * @param {Number} displacement The amount of displacement in the range [0, 1]
  */
 Water.prototype.addFlare = function(x, y, radius, displacement) {
-    this.flares.push(x, y, radius, displacement);
-    this.hasInfluences = true;
+    this.influences.addFlare(x, y, radius, 0, 0, displacement);
 };
 
 /**

@@ -9,19 +9,35 @@ const Air = function(gl, width, height) {
     this.front = 0;
     this.width = Math.ceil(width * this.SCALE);
     this.height = Math.ceil(height * this.SCALE);
+    this.influences = new InfluencePainter.Influences(this.width, this.height, this.SCALE);
     this.targets = [
         new RenderTarget(gl, this.width, this.height, gl.RGB, false),
         new RenderTarget(gl, this.width, this.height, gl.RGB, false)];
 
-    gl.clearColor(.5, .5, 0, 0);
+    gl.clearColor(.5, 0, 0, 0);
 
-    for (const target of this.targets)
+    for (const target of this.targets) {
         target.target();
 
-    gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+    }
 };
 
-Air.prototype.SCALE = 2;
+Air.prototype.SCALE = 8;
+
+/**
+ * Add displacement to the air
+ * @param {Number} x The X position
+ * @param {Number} y The Y position
+ * @param {Number} radius The displacement radius
+ * @param {Number} amount The amount of displacement in the range [-1, 1]
+ */
+Air.prototype.addDisplacement = function(x, y, radius, amount) {
+    if (amount > 0)
+        this.influences.addFlare(x, y, radius, 0, 0, amount);
+    else
+        this.influences.addFlare(x, y, radius, 0, -amount, 0);
+};
 
 /**
  * Flip the buffers after propagating

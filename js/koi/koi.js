@@ -140,7 +140,7 @@ Koi.prototype.touchStart = function(x, y) {
  * @param {Number} y The Y position in pixels
  */
 Koi.prototype.touchMove = function(x, y) {
-    this.mover.touchMove(x / this.scale, y / this.scale);
+    this.mover.touchMove(x / this.scale, y / this.scale, this.air);
 };
 
 /**
@@ -185,8 +185,8 @@ Koi.prototype.update = function() {
     this.constellation.update(this.atlas, this.water, this.random);
     this.mover.update();
 
-    this.systems.waves.propagate(this.water, this.systems.wavePainter);
-    this.systems.wind.propagate(this.air);
+    this.systems.waves.propagate(this.water, this.systems.influencePainter);
+    this.systems.wind.propagate(this.air, this.systems.influencePainter);
 };
 
 /**
@@ -262,9 +262,11 @@ Koi.prototype.render = function(deltaTime) {
     this.foreground.render(
         this.systems.vegetation,
         this.systems.stone,
+        this.air,
         this.systems.width,
         this.systems.height,
-        this.scale);
+        this.scale,
+        timeFactor);
 
     // Render shaded water
     this.systems.ponds.render(
@@ -288,9 +290,11 @@ Koi.prototype.render = function(deltaTime) {
         this.scale,
         timeFactor);
 
-    // this.systems.gl.activeTexture(this.systems.gl.TEXTURE0);
-    // this.systems.gl.bindTexture(this.systems.gl.TEXTURE_2D, this.foreground.reflections.texture);
-    // this.systems.quad.render();
+    // if (this.mover.move) {
+    //     this.systems.gl.activeTexture(this.systems.gl.TEXTURE0);
+    //     this.systems.gl.bindTexture(this.systems.gl.TEXTURE_2D, this.air.getFront().texture);
+    //     this.systems.quad.render();
+    // }
 };
 
 /**

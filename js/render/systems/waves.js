@@ -70,9 +70,9 @@ Waves.prototype.setMesh = function(mesh) {
 /**
  * Propagate the waves on a water plane
  * @param {Water} water A water plane
- * @param {WavePainter} wavePainter A wave painter to render wave influences
+ * @param {InfluencePainter} influencePainter An influence painter to render wave influences
  */
-Waves.prototype.propagate = function(water, wavePainter) {
+Waves.prototype.propagate = function(water, influencePainter) {
     this.program.use();
     this.gl.vao.bindVertexArrayOES(this.vao);
 
@@ -96,7 +96,7 @@ Waves.prototype.propagate = function(water, wavePainter) {
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
 
-    wavePainter.applyInfluences(water);
+    influencePainter.applyInfluences(water.influences);
 };
 
 /**

@@ -16,7 +16,7 @@ const Systems = function(gl, random, width, height) {
     this.sand = new Sand(gl, this.randomSource);
     this.waves = new Waves(gl);
     this.ponds = new Ponds(gl);
-    this.wavePainter = new WavePainter(gl);
+    this.influencePainter = new InfluencePainter(gl);
     this.bodies = new Bodies(gl);
     this.vegetation = new Vegetation(gl);
     this.stone = new Stone(gl);
@@ -52,7 +52,7 @@ Systems.prototype.free = function() {
     this.sand.free();
     this.waves.free();
     this.ponds.free();
-    this.wavePainter.free();
+    this.influencePainter.free();
     this.bodies.free();
     this.quad.free();
     this.vegetation.free();

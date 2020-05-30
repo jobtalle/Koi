@@ -103,13 +103,22 @@ Foreground.prototype.blurReflections = function(blur, quad, width, height, scale
  * Render foreground graphics
  * @param {Vegetation} vegetation The vegetation renderer
  * @param {Stone} stone The stone renderer
+ * @param {Air} air An air object
  * @param {Number} width The render target width
  * @param {Number} height The render target height
  * @param {Number} scale The scale
+ * @param {Number} time The time interpolation factor
  */
-Foreground.prototype.render = function(vegetation, stone, width, height, scale) {
+Foreground.prototype.render = function(
+    vegetation,
+    stone,
+    air,
+    width,
+    height,
+    scale,
+    time) {
     stone.render(width, height, scale);
-    vegetation.render(width, height, scale);
+    vegetation.render(air, width, height, scale, time);
 };
 
 /**

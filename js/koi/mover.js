@@ -54,8 +54,9 @@ Mover.prototype.render = function(
  * Move the cursor
  * @param {Number} x The X position in meters
  * @param {Number} y The Y position in meters
+ * @param {Air} air The air to displace
  */
-Mover.prototype.touchMove = function(x, y) {
+Mover.prototype.touchMove = function(x, y, air) {
     this.cursorPrevious.set(this.cursor);
     this.cursor.x = x;
     this.cursor.y = y;
@@ -63,22 +64,24 @@ Mover.prototype.touchMove = function(x, y) {
     if (this.move) {
         this.cursorOffset.set(this.cursor).add(this.offset);
         this.move.moveTo(this.cursorOffset);
+
+        air.addDisplacement(x, y, 1, this.cursor.x - this.cursorPrevious.x);
     }
 };
 
 /**
  * Create a fish body shaped splash
  * @param {Body} body A fish body
- * @param {Water} waterPlane A water plane to splash on
+ * @param {Water} water A water plane to splash on
  * @param {Random} random A randomizer
  */
-Mover.prototype.createBodySplash = function(body, waterPlane, random) {
+Mover.prototype.createBodySplash = function(body, water, random) {
     for (let segment = body.spine.length; segment-- > 0;) {
         const angle = Math.PI * 2 * random.getFloat();
         const intensity = body.pattern.shapeBody.sample(segment / (body.spine.length - 1));
         const distance = this.SPLASH_DROP_DISTANCE * intensity;
 
-        waterPlane.addFlare(
+        water.addFlare(
             body.spine[segment].x + Math.cos(angle) * distance,
             body.spine[segment].y + Math.sin(angle) * distance,
             this.SPLASH_DROP_RADIUS * intensity,
