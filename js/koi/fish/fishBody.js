@@ -6,7 +6,7 @@
  * @param {Number} thickness The body thickness
  * @constructor
  */
-const Body = function(pattern, fins, length, thickness) {
+const FishBody = function(pattern, fins, length, thickness) {
     this.pattern = pattern;
     this.fins = fins;
     this.radius = thickness * .5;
@@ -20,20 +20,20 @@ const Body = function(pattern, fins, length, thickness) {
     this.finPhase = 0;
 };
 
-Body.prototype.RESOLUTION = .12;
-Body.prototype.SPRING_START = .9;
-Body.prototype.SPRING_END = .3;
-Body.prototype.SPRING_POWER = 1.7;
-Body.prototype.SWIM_AMPLITUDE = 8.5;
-Body.prototype.SWIM_SPEED = 6.5;
-Body.prototype.SPEED_SWING_THRESHOLD = .01;
-Body.prototype.SPEED_WAVE_THRESHOLD = .055;
-Body.prototype.OVERLAP_PADDING = 1.8;
-Body.prototype.WAVE_RADIUS = .15;
-Body.prototype.WAVE_INTENSITY_MIN = .05;
-Body.prototype.WAVE_INTENSITY_MULTIPLIER = 2;
-Body.prototype.WAVE_TURBULENCE = .4;
-Body.prototype.FIN_PHASE_SPEED = .4;
+FishBody.prototype.RESOLUTION = .12;
+FishBody.prototype.SPRING_START = .9;
+FishBody.prototype.SPRING_END = .3;
+FishBody.prototype.SPRING_POWER = 1.7;
+FishBody.prototype.SWIM_AMPLITUDE = 8.5;
+FishBody.prototype.SWIM_SPEED = 6.5;
+FishBody.prototype.SPEED_SWING_THRESHOLD = .01;
+FishBody.prototype.SPEED_WAVE_THRESHOLD = .055;
+FishBody.prototype.OVERLAP_PADDING = 1.8;
+FishBody.prototype.WAVE_RADIUS = .15;
+FishBody.prototype.WAVE_INTENSITY_MIN = .05;
+FishBody.prototype.WAVE_INTENSITY_MULTIPLIER = 2;
+FishBody.prototype.WAVE_TURBULENCE = .4;
+FishBody.prototype.FIN_PHASE_SPEED = .4;
 
 /**
  * Assign fins to an array matching the vertebrae
@@ -41,7 +41,7 @@ Body.prototype.FIN_PHASE_SPEED = .4;
  * @param {Number} spineLength The length of the spine
  * @returns {Fin[][]} An array containing an array of fins per vertebrae
  */
-Body.prototype.assignFins = function(fins, spineLength) {
+FishBody.prototype.assignFins = function(fins, spineLength) {
     const spineFins = new Array(spineLength).fill(null);
 
     for (const fin of fins) {
@@ -63,7 +63,7 @@ Body.prototype.assignFins = function(fins, spineLength) {
  * @param {Water} water A water plane to disturb
  * @param {Random} random A randomizer
  */
-Body.prototype.disturbWater = function(water, random) {
+FishBody.prototype.disturbWater = function(water, random) {
     const tailIndex = this.spine.length - 2;
     const dx = this.spine[tailIndex].x - this.spinePrevious[tailIndex].x;
     const dy = this.spine[tailIndex].y - this.spinePrevious[tailIndex].y;
@@ -86,7 +86,7 @@ Body.prototype.disturbWater = function(water, random) {
  * Instantly move the body to the given position
  * @param {Vector2} position The position to move the spine head to
  */
-Body.prototype.moveTo = function(position) {
+FishBody.prototype.moveTo = function(position) {
     const dx = position.x - this.spine[0].x;
     const dy = position.y - this.spine[0].y;
 
@@ -105,7 +105,7 @@ Body.prototype.moveTo = function(position) {
  * @param {Number} y The Y position
  * @returns {Boolean} A boolean indicating whether this body has been hit
  */
-Body.prototype.atPosition = function(x, y) {
+FishBody.prototype.atPosition = function(x, y) {
     // TODO: Use a better method which allows padding
     // TODO: Also check fins
     let dx = x - this.spine[0].x;
@@ -132,7 +132,7 @@ Body.prototype.atPosition = function(x, y) {
  * @param {Vector2} head The head position
  * @param {Vector2} direction The initial body direction
  */
-Body.prototype.initializeSpine = function(head, direction) {
+FishBody.prototype.initializeSpine = function(head, direction) {
     this.spine[0] = head.copy();
     this.spinePrevious[0] = head.copy();
 
@@ -152,7 +152,7 @@ Body.prototype.initializeSpine = function(head, direction) {
  * @param {Number} power A power to apply to the spring strength attenuation
  * @returns {Number[]} An array of strings
  */
-Body.prototype.makeSprings = function(start, end, power) {
+FishBody.prototype.makeSprings = function(start, end, power) {
     const springs = new Array(this.spine.length - 1);
 
     for (let spring = 0; spring < this.spine.length - 1; ++spring)
@@ -164,7 +164,7 @@ Body.prototype.makeSprings = function(start, end, power) {
 /**
  * Store the current state into the previous state
  */
-Body.prototype.storePreviousState = function() {
+FishBody.prototype.storePreviousState = function() {
     for (let segment = 0; segment < this.spine.length; ++segment)
         this.spinePrevious[segment].set(this.spine[segment]);
 };
@@ -177,7 +177,7 @@ Body.prototype.storePreviousState = function() {
  * @param {Water} [water] A water plane to disturb
  * @param {Random} [random] A randomizer, required when water is supplied
  */
-Body.prototype.update = function(
+FishBody.prototype.update = function(
     head,
     direction,
     speed,
@@ -233,7 +233,7 @@ Body.prototype.update = function(
  * @param {Bodies} bodies The bodies renderer
  * @param {Number} time The interpolation factor
  */
-Body.prototype.render = function(bodies, time) {
+FishBody.prototype.render = function(bodies, time) {
     for (const fin of this.fins)
         fin.render(bodies, time);
 
@@ -305,6 +305,6 @@ Body.prototype.render = function(bodies, time) {
  * Free all resources maintained by this body
  * @param {Atlas} atlas The texture atlas
  */
-Body.prototype.free = function(atlas) {
+FishBody.prototype.free = function(atlas) {
     this.pattern.free(atlas);
 };

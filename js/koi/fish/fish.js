@@ -1,6 +1,6 @@
 /**
  * A fish
- * @param {Body} body The fish body
+ * @param {FishBody} body The fish body
  * @param {Vector2} position The initial position
  * @param {Vector2} direction The initial direction vector, which must be normalized
  * @constructor
