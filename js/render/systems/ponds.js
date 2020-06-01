@@ -57,7 +57,7 @@ void main() {
   if (shiny < 0.0)
     shiny *= 0.2;
   else {
-    if (shiny > 0.5) // TODO: Specular hack
+    if (shiny > 0.5)
       shiny *= 1.3;
   }
   
