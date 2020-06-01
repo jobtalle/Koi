@@ -6,6 +6,7 @@
  * @constructor
  */
 const Air = function(gl, width, height) {
+    // TODO: Create prototype that fits both air and wind
     this.front = 0;
     this.width = Math.ceil(width * this.SCALE);
     this.height = Math.ceil(height * this.SCALE);
@@ -14,7 +15,7 @@ const Air = function(gl, width, height) {
         new RenderTarget(gl, this.width, this.height, gl.RGB, false),
         new RenderTarget(gl, this.width, this.height, gl.RGB, false)];
 
-    gl.clearColor(.5, 0, 0, 0);
+    gl.clearColor(.5, 0, 0, 1);
 
     for (const target of this.targets) {
         target.target();
@@ -23,7 +24,7 @@ const Air = function(gl, width, height) {
     }
 };
 
-Air.prototype.SCALE = 8;
+Air.prototype.SCALE = 4;
 
 /**
  * Add displacement to the air

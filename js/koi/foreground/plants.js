@@ -47,6 +47,7 @@ Plants.prototype.makeBlade = function(x, y, vertices, indices) {
     for (let step = 0; step < steps - 1; ++step) {
         const f = step / (steps - 1);
         const r = radius * (1 - f);
+        const flexibility = Math.pow(f, 3.5);
 
         vertices.push(
             color.r,
@@ -55,7 +56,7 @@ Plants.prototype.makeBlade = function(x, y, vertices, indices) {
             x - r,
             y,
             height * f,
-            f);
+            flexibility);
         vertices.push(
             color.r,
             color.g,
@@ -63,7 +64,7 @@ Plants.prototype.makeBlade = function(x, y, vertices, indices) {
             x + r,
             y,
             height * f,
-            f);
+            flexibility);
 
         if (step !== steps - 2)
             indices.push(
