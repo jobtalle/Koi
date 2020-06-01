@@ -290,11 +290,9 @@ Koi.prototype.render = function(deltaTime) {
         this.scale,
         timeFactor);
 
-    // if (this.mover.move) {
-    //     this.systems.gl.activeTexture(this.systems.gl.TEXTURE0);
-    //     this.systems.gl.bindTexture(this.systems.gl.TEXTURE_2D, this.air.getFront().texture);
-    //     this.systems.quad.render();
-    // }
+    // this.systems.gl.activeTexture(this.systems.gl.TEXTURE0);
+    // this.systems.gl.bindTexture(this.systems.gl.TEXTURE_2D, this.air.getFront().texture);
+    // this.systems.quad.render();
 };
 
 /**

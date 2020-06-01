@@ -11,8 +11,8 @@ const Water = function(gl, width, height) {
     this.height = Math.ceil(height * this.SCALE);
     this.influences = new InfluencePainter.Influences(this.width, this.height, this.SCALE);
     this.targets = [
-        new RenderTarget(gl, this.width, this.height, gl.RGB, false),
-        new RenderTarget(gl, this.width, this.height, gl.RGB, false)];
+        new RenderTarget(gl, this.width, this.height, gl.RGB, false, gl.NEAREST),
+        new RenderTarget(gl, this.width, this.height, gl.RGB, false, gl.NEAREST)];
 
     gl.clearColor(.5, .5, 0, 0);
 
