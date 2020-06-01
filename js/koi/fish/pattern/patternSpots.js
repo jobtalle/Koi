@@ -79,11 +79,11 @@ PatternSpots.prototype.configure = function(gl, program) {
     const z = this.getZ();
     const y = this.getY(z);
 
-    gl.uniform1f(program.uScale, this.scale);
-    gl.uniform3f(program.uColor, this.color.r, this.color.g, this.color.b);
-    gl.uniform3f(program.uAnchor, this.anchor.x, this.anchor.y, this.anchor.z);
+    gl.uniform1f(program["uScale"], this.scale);
+    gl.uniform3f(program["uColor"], this.color.r, this.color.g, this.color.b);
+    gl.uniform3f(program["uAnchor"], this.anchor.x, this.anchor.y, this.anchor.z);
     gl.uniformMatrix3fv(
-        program.uRotate,
+        program["uRotate"],
         false,
         [
             this.x.x, this.x.y, this.x.z,

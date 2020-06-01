@@ -25,8 +25,8 @@ const Blur = function(gl, quad) {
     gl.vao.bindVertexArrayOES(this.vaoQuad);
     gl.bindBuffer(gl.ARRAY_BUFFER, quad.buffer);
 
-    gl.enableVertexAttribArray(this.programQuad.aPosition);
-    gl.vertexAttribPointer(this.programQuad.aPosition, 2, gl.FLOAT, false, 8, 0);
+    gl.enableVertexAttribArray(this.programQuad["aPosition"]);
+    gl.vertexAttribPointer(this.programQuad["aPosition"], 2, gl.FLOAT, false, 8, 0);
 };
 
 Blur.prototype.SHADER_VERTEX_MESH = `#version 100
@@ -73,8 +73,8 @@ Blur.prototype.setMesh = function(mesh) {
 
     mesh.bindBuffers();
 
-    this.gl.enableVertexAttribArray(this.programMesh.aPosition);
-    this.gl.vertexAttribPointer(this.programMesh.aPosition, 2, this.gl.FLOAT, false, 8, 0);
+    this.gl.enableVertexAttribArray(this.programMesh["aPosition"]);
+    this.gl.vertexAttribPointer(this.programMesh["aPosition"], 2, this.gl.FLOAT, false, 8, 0);
 };
 
 /**
@@ -92,10 +92,10 @@ Blur.prototype.applyMesh = function(width, height, scale, target, intermediate) 
 
     this.gl.vao.bindVertexArrayOES(this.vaoMesh);
 
-    this.gl.uniform2f(this.programMesh.uSize, width, height);
-    this.gl.uniform1f(this.programMesh.uScale, scale);
-    this.gl.uniform2f(this.programMesh.uTargetSize, target.width, target.height);
-    this.gl.uniform2f(this.programMesh.uDirection, 1, 0);
+    this.gl.uniform2f(this.programMesh["uSize"], width, height);
+    this.gl.uniform1f(this.programMesh["uScale"], scale);
+    this.gl.uniform2f(this.programMesh["uTargetSize"], target.width, target.height);
+    this.gl.uniform2f(this.programMesh["uDirection"], 1, 0);
 
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, target.texture);
@@ -106,7 +106,7 @@ Blur.prototype.applyMesh = function(width, height, scale, target, intermediate) 
 
     target.target();
 
-    this.gl.uniform2f(this.programMesh.uDirection, 0, 1);
+    this.gl.uniform2f(this.programMesh["uDirection"], 0, 1);
 
     this.gl.bindTexture(this.gl.TEXTURE_2D, intermediate.texture);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
@@ -127,8 +127,8 @@ Blur.prototype.applyQuad = function(target, intermediate) {
 
     this.gl.vao.bindVertexArrayOES(this.vaoQuad);
 
-    this.gl.uniform2f(this.programQuad.uTargetSize, target.width, target.height);
-    this.gl.uniform2f(this.programQuad.uDirection, 1, 0);
+    this.gl.uniform2f(this.programQuad["uTargetSize"], target.width, target.height);
+    this.gl.uniform2f(this.programQuad["uDirection"], 1, 0);
 
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, target.texture);
@@ -139,7 +139,7 @@ Blur.prototype.applyQuad = function(target, intermediate) {
 
     target.target();
 
-    this.gl.uniform2f(this.programQuad.uDirection, 0, 1);
+    this.gl.uniform2f(this.programQuad["uDirection"], 0, 1);
 
     this.gl.bindTexture(this.gl.TEXTURE_2D, intermediate.texture);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);

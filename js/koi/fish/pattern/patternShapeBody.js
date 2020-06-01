@@ -64,11 +64,11 @@ PatternShapeBody.prototype.sample = function(x) {
  * @param {Shader} program A shader program created from this patterns' shaders
  */
 PatternShapeBody.prototype.configure = function(gl, program) {
-    gl.uniform1f(program.uCenterPower, this.centerPower);
-    gl.uniform1f(program.uShadePower, this.SHADE_POWER);
-    gl.uniform1f(program.uLightPower, this.LIGHT_POWER);
-    gl.uniform1f(program.uRadiusPower, this.radiusPower);
-    gl.uniform1f(program.uAmbient, this.AMBIENT);
+    gl.uniform1f(program["uCenterPower"], this.centerPower);
+    gl.uniform1f(program["uShadePower"], this.SHADE_POWER);
+    gl.uniform1f(program["uLightPower"], this.LIGHT_POWER);
+    gl.uniform1f(program["uRadiusPower"], this.radiusPower);
+    gl.uniform1f(program["uAmbient"], this.AMBIENT);
 };
 
 /**

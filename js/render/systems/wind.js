@@ -72,8 +72,8 @@ Wind.prototype.propagate = function(air, influencePainter) {
     air.flip();
     air.getFront().target();
 
-    this.gl.uniform1f(this.program.uSpring, this.SPRING);
-    this.gl.uniform1f(this.program.uDamping, this.DAMPING);
+    this.gl.uniform1f(this.program["uSpring"], this.SPRING);
+    this.gl.uniform1f(this.program["uDamping"], this.DAMPING);
 
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, air.getBack().texture);

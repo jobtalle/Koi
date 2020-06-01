@@ -23,10 +23,10 @@ const Bodies = function(gl) {
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferVertices);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferIndices);
-    gl.enableVertexAttribArray(this.program.aPosition);
-    gl.vertexAttribPointer(this.program.aPosition, 2, gl.FLOAT, false, 16, 0);
-    gl.enableVertexAttribArray(this.program.aUv);
-    gl.vertexAttribPointer(this.program.aUv, 2, gl.FLOAT, false, 16, 8);
+    gl.enableVertexAttribArray(this.program["aPosition"]);
+    gl.vertexAttribPointer(this.program["aPosition"], 2, gl.FLOAT, false, 16, 0);
+    gl.enableVertexAttribArray(this.program["aUv"]);
+    gl.vertexAttribPointer(this.program["aUv"], 2, gl.FLOAT, false, 16, 8);
 };
 
 Bodies.prototype.SHADOW_ALPHA = .4;
@@ -107,16 +107,16 @@ Bodies.prototype.render = function(atlas, width, height, scale, shadows) {
     this.gl.bindTexture(this.gl.TEXTURE_2D, atlas.renderTarget.texture);
 
     // TODO: Would be nice to wrap this into a 3D vector
-    this.gl.uniform2f(this.program.uSize, width, height);
-    this.gl.uniform1f(this.program.uScale, scale);
+    this.gl.uniform2f(this.program["uSize"], width, height);
+    this.gl.uniform1f(this.program["uScale"], scale);
 
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
 
     if (shadows)
-        this.gl.uniform2f(this.program.uShadow, 0, this.SHADOW_ALPHA);
+        this.gl.uniform2f(this.program["uShadow"], 0, this.SHADOW_ALPHA);
     else
-        this.gl.uniform2f(this.program.uShadow, 1, 1);
+        this.gl.uniform2f(this.program["uShadow"], 1, 1);
 
     this.gl.drawElements(this.gl.TRIANGLES, this.indices.length, this.gl.UNSIGNED_SHORT, 0);
 

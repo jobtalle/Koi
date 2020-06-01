@@ -65,10 +65,10 @@ Sand.prototype.setMesh = function(mesh) {
 
     mesh.bindBuffers();
 
-    this.gl.enableVertexAttribArray(this.program.aPosition);
-    this.gl.vertexAttribPointer(this.program.aPosition, 2, this.gl.FLOAT, false, 16, 0);
-    this.gl.enableVertexAttribArray(this.program.aDepth);
-    this.gl.vertexAttribPointer(this.program.aDepth, 2, this.gl.FLOAT, false, 16, 8);
+    this.gl.enableVertexAttribArray(this.program["aPosition"]);
+    this.gl.vertexAttribPointer(this.program["aPosition"], 2, this.gl.FLOAT, false, 16, 0);
+    this.gl.enableVertexAttribArray(this.program["aDepth"]);
+    this.gl.vertexAttribPointer(this.program["aDepth"], 2, this.gl.FLOAT, false, 16, 8);
 };
 
 /**
@@ -84,10 +84,10 @@ Sand.prototype.write = function(width, height, scale) {
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, this.randomSource.texture);
 
-    this.gl.uniform2f(this.program.uSize, width, height);
-    this.gl.uniform1f(this.program.uScale, scale);
-    this.gl.uniform3f(this.program.uColorDeep, this.COLOR_DEEP.r, this.COLOR_DEEP.g, this.COLOR_DEEP.b);
-    this.gl.uniform3f(this.program.uColorShallow, this.COLOR_SHALLOW.r, this.COLOR_SHALLOW.g, this.COLOR_SHALLOW.b);
+    this.gl.uniform2f(this.program["uSize"], width, height);
+    this.gl.uniform1f(this.program["uScale"], scale);
+    this.gl.uniform3f(this.program["uColorDeep"], this.COLOR_DEEP.r, this.COLOR_DEEP.g, this.COLOR_DEEP.b);
+    this.gl.uniform3f(this.program["uColorShallow"], this.COLOR_SHALLOW.r, this.COLOR_SHALLOW.g, this.COLOR_SHALLOW.b);
 
     this.gl.drawElements(this.gl.TRIANGLES, this.indexCount, this.gl.UNSIGNED_SHORT, 0);
 };

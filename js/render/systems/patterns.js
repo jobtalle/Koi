@@ -32,12 +32,12 @@ Patterns.prototype.createVAO = function(gl, program) {
     gl.vao.bindVertexArrayOES(vao);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
-    gl.enableVertexAttribArray(program.aPosition);
-    gl.vertexAttribPointer(program.aPosition, 2, gl.FLOAT, false, 16, 0);
+    gl.enableVertexAttribArray(program["aPosition"]);
+    gl.vertexAttribPointer(program["aPosition"], 2, gl.FLOAT, false, 16, 0);
 
-    if (program.aUv !== undefined) {
-        gl.enableVertexAttribArray(program.aUv);
-        gl.vertexAttribPointer(program.aUv, 2, gl.FLOAT, false, 16, 8);
+    if (program["aUv"] !== undefined) {
+        gl.enableVertexAttribArray(program["aUv"]);
+        gl.vertexAttribPointer(program["aUv"], 2, gl.FLOAT, false, 16, 8);
     }
 
     return vao;
@@ -56,8 +56,8 @@ Patterns.prototype.writeLayer = function(layer, program, vao) {
 
     this.gl.vao.bindVertexArrayOES(vao);
 
-    if (program.uSize !== undefined)
-        this.gl.uniform2f(program.uSize, Atlas.prototype.RATIO, 1);
+    if (program["uSize"] !== undefined)
+        this.gl.uniform2f(program["uSize"], Atlas.prototype.RATIO, 1);
 
     this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, 4);
 };

@@ -90,6 +90,7 @@ RenderTarget.prototype.createTexture = function(
  * Create a depth texture
  * @param {Number} width The width in pixels
  * @param {Number} height The height in pixels
+ * @returns {WebGLRenderbuffer} buffer A depth buffer
  */
 RenderTarget.prototype.createDepth = function(width, height) {
     const buffer = this.gl.createRenderbuffer();

@@ -28,7 +28,7 @@ void main() {
  * @param {Shader} program A shader program created from this patterns' shaders
  */
 PatternBase.prototype.configure = function(gl, program) {
-    gl.uniform3f(program.uColor, this.color.r, this.color.g, this.color.b);
+    gl.uniform3f(program["uColor"], this.color.r, this.color.g, this.color.b);
 };
 
 /**

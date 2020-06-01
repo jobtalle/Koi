@@ -90,12 +90,12 @@ Stone.prototype.setMesh = function(mesh) {
 
     mesh.bindBuffers();
 
-    this.gl.enableVertexAttribArray(this.program.aColor);
-    this.gl.vertexAttribPointer(this.program.aColor, 3, this.gl.FLOAT, false, 28, 0);
-    this.gl.enableVertexAttribArray(this.program.aLightness);
-    this.gl.vertexAttribPointer(this.program.aLightness, 1, this.gl.FLOAT, false, 28, 12);
-    this.gl.enableVertexAttribArray(this.program.aPosition);
-    this.gl.vertexAttribPointer(this.program.aPosition, 3, this.gl.FLOAT, false, 28, 16);
+    this.gl.enableVertexAttribArray(this.program["aColor"]);
+    this.gl.vertexAttribPointer(this.program["aColor"], 3, this.gl.FLOAT, false, 28, 0);
+    this.gl.enableVertexAttribArray(this.program["aLightness"]);
+    this.gl.vertexAttribPointer(this.program["aLightness"], 1, this.gl.FLOAT, false, 28, 12);
+    this.gl.enableVertexAttribArray(this.program["aPosition"]);
+    this.gl.vertexAttribPointer(this.program["aPosition"], 3, this.gl.FLOAT, false, 28, 16);
 };
 
 /**
@@ -108,8 +108,8 @@ Stone.prototype.render = function(width, height, scale) {
     this.program.use();
     this.gl.vao.bindVertexArrayOES(this.vao);
 
-    this.gl.uniform2f(this.program.uSize, width, height);
-    this.gl.uniform1f(this.program.uScale, scale);
+    this.gl.uniform2f(this.program["uSize"], width, height);
+    this.gl.uniform1f(this.program["uScale"], scale);
 
     this.gl.drawElements(this.gl.TRIANGLES, this.indexCount, this.gl.UNSIGNED_SHORT, 0);
 };
@@ -124,8 +124,8 @@ Stone.prototype.renderReflections = function(width, height, scale) {
     this.programReflect.use();
     this.gl.vao.bindVertexArrayOES(this.vao);
 
-    this.gl.uniform2f(this.programReflect.uSize, width, height);
-    this.gl.uniform1f(this.programReflect.uScale, scale);
+    this.gl.uniform2f(this.programReflect["uSize"], width, height);
+    this.gl.uniform1f(this.programReflect["uScale"], scale);
 
     this.gl.drawElements(this.gl.TRIANGLES, this.indexCount, this.gl.UNSIGNED_SHORT, 0);
 };

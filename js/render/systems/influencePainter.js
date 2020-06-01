@@ -17,8 +17,8 @@ const InfluencePainter = function(gl) {
 
     this.bufferFlare = this.createBufferFlare();
 
-    gl.enableVertexAttribArray(this.program.aVertex);
-    gl.vertexAttribPointer(this.program.aVertex,3, gl.FLOAT, false, 12, 0);
+    gl.enableVertexAttribArray(this.program["aVertex"]);
+    gl.vertexAttribPointer(this.program["aVertex"],3, gl.FLOAT, false, 12, 0);
 };
 
 /**
@@ -119,12 +119,12 @@ InfluencePainter.prototype.paintFlares = function(flares, scale) {
     for (let flare = 0; flare < flareCount; ++flare) {
         const index = flare * 6;
 
-        this.gl.uniform2f(this.program.uOrigin,
+        this.gl.uniform2f(this.program["uOrigin"],
             flares[index] * scale,
             flares[index + 1] * scale);
-        this.gl.uniform1f(this.program.uRadius,
+        this.gl.uniform1f(this.program["uRadius"],
             flares[index + 2] * scale);
-        this.gl.uniform3f(this.program.uColor,
+        this.gl.uniform3f(this.program["uColor"],
             flares[index + 3],
             flares[index + 4],
             flares[index + 5]);
@@ -145,7 +145,7 @@ InfluencePainter.prototype.applyInfluences = function(influences) {
         this.gl.enable(this.gl.BLEND);
         this.gl.blendFunc(this.gl.ONE, this.gl.ONE);
 
-        this.gl.uniform2f(this.program.uSize, influences.width, influences.height);
+        this.gl.uniform2f(this.program["uSize"], influences.width, influences.height);
 
         if (influences.flares.length !== 0)
             this.paintFlares(influences.flares, influences.scale);

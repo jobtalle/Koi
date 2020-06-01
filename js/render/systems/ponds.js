@@ -86,8 +86,8 @@ Ponds.prototype.setMesh = function(mesh) {
 
     mesh.bindBuffers();
 
-    this.gl.enableVertexAttribArray(this.program.aPosition);
-    this.gl.vertexAttribPointer(this.program.aPosition, 2, this.gl.FLOAT, false, 8, 0);
+    this.gl.enableVertexAttribArray(this.program["aPosition"]);
+    this.gl.vertexAttribPointer(this.program["aPosition"], 2, this.gl.FLOAT, false, 8, 0);
 };
 
 /**
@@ -111,16 +111,16 @@ Ponds.prototype.render = function(
     this.program.use();
     this.gl.vao.bindVertexArrayOES(this.vao);
 
-    this.gl.uniform1f(this.program.uScale, scale);
-    this.gl.uniform1i(this.program.uBackground, 0);
-    this.gl.uniform1i(this.program.uReflections, 1);
-    this.gl.uniform1i(this.program.uWaterBack, 2);
-    this.gl.uniform1i(this.program.uWaterFront, 3);
-    this.gl.uniform1f(this.program.uDepth, this.DEPTH * scale);
-    this.gl.uniform1f(this.program.uHeight, this.HEIGHT * scale);
-    this.gl.uniform2f(this.program.uSize, width, height);
-    this.gl.uniform2f(this.program.uWaterSize, water.width, water.height);
-    this.gl.uniform1f(this.program.uTime, time);
+    this.gl.uniform1f(this.program["uScale"], scale);
+    this.gl.uniform1i(this.program["uBackground"], 0);
+    this.gl.uniform1i(this.program["uReflections"], 1);
+    this.gl.uniform1i(this.program["uWaterBack"], 2);
+    this.gl.uniform1i(this.program["uWaterFront"], 3);
+    this.gl.uniform1f(this.program["uDepth"], this.DEPTH * scale);
+    this.gl.uniform1f(this.program["uHeight"], this.HEIGHT * scale);
+    this.gl.uniform2f(this.program["uSize"], width, height);
+    this.gl.uniform2f(this.program["uWaterSize"], water.width, water.height);
+    this.gl.uniform1f(this.program["uTime"], time);
 
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, background);

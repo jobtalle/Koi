@@ -61,10 +61,10 @@ Shadows.prototype.setMesh = function(mesh) {
 
     mesh.bindBuffers();
 
-    this.gl.enableVertexAttribArray(this.program.aPosition);
-    this.gl.vertexAttribPointer(this.program.aPosition, 2, this.gl.FLOAT, false, 16, 0);
-    this.gl.enableVertexAttribArray(this.program.aDepth);
-    this.gl.vertexAttribPointer(this.program.aDepth, 2, this.gl.FLOAT, false, 16, 8);
+    this.gl.enableVertexAttribArray(this.program["aPosition"]);
+    this.gl.vertexAttribPointer(this.program["aPosition"], 2, this.gl.FLOAT, false, 16, 0);
+    this.gl.enableVertexAttribArray(this.program["aDepth"]);
+    this.gl.vertexAttribPointer(this.program["aDepth"], 2, this.gl.FLOAT, false, 16, 8);
 };
 
 /**
@@ -82,9 +82,9 @@ Shadows.prototype.render = function(buffer, width, height, scale) {
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
 
-    this.gl.uniform2f(this.program.uSize, width, height);
-    this.gl.uniform1f(this.program.uScale, scale);
-    this.gl.uniform1f(this.program.uShadowDepth, this.SHADOW_DEPTH);
+    this.gl.uniform2f(this.program["uSize"], width, height);
+    this.gl.uniform1f(this.program["uScale"], scale);
+    this.gl.uniform1f(this.program["uShadowDepth"], this.SHADOW_DEPTH);
 
     this.gl.vao.bindVertexArrayOES(this.vao);
 
