@@ -16,7 +16,7 @@ const Foreground = function(
     const slots = new Slots(constellation.width, constellation.height, constellation, random);
 
     this.gl = gl;
-    this.rocks = new Rocks(gl, constellation, slots, random);
+    this.rocks = new Rocks(gl, constellation, slots, this.Y_SCALE, random);
     this.plants = new Plants(gl, constellation, slots, random);
     this.reflections = new RenderTarget(
         gl,
@@ -28,6 +28,7 @@ const Foreground = function(
 };
 
 Foreground.prototype.REFLECTION_SCALE = 40;
+Foreground.prototype.Y_SCALE = .7;
 Foreground.prototype.SKY_COLOR = Color.fromCSS("sky");
 
 /**

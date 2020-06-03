@@ -27,8 +27,8 @@ Slots.prototype.RANDOM_RANGE = .8;
 
 /**
  * Clear an oval in the slots array
- * @param {Number} circleX The circle X position
- * @param {Number} circleY The circle Y position
+ * @param {Number} circleX The oval X center
+ * @param {Number} circleY The oval Y center
  * @param {Number} xRadius The horizontal radius
  * @param {Number} yRadius The vertical radius
  */

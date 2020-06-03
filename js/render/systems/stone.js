@@ -111,7 +111,9 @@ Stone.prototype.render = function(width, height, scale) {
     this.gl.uniform2f(this.program["uSize"], width, height);
     this.gl.uniform1f(this.program["uScale"], scale);
 
+    this.gl.enable(this.gl.CULL_FACE);
     this.gl.drawElements(this.gl.TRIANGLES, this.indexCount, this.gl.UNSIGNED_SHORT, 0);
+    this.gl.disable(this.gl.CULL_FACE);
 };
 
 /**

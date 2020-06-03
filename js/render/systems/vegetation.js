@@ -10,16 +10,17 @@ const Vegetation = function(gl) {
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
         ["size", "scale", "airBack", "airFront", "time"],
-        ["color", "position", "flexibility"]);
+        ["color", "position", "flexibility", "windPosition"]);
     this.programReflect = new Shader(
         gl,
         this.SHADER_VERTEX_REFLECT,
         this.SHADER_FRAGMENT_REFLECT,
         ["size", "scale"],
-        ["color", "position", "flexibility"]);
+        ["color", "position"]);
 
     this.indexCount = -1;
     this.vao = gl.vao.createVertexArrayOES();
+    this.vaoReflect = gl.vao.createVertexArrayOES();
 };
 
 Vegetation.prototype.SHADER_VERTEX = `#version 100
@@ -32,13 +33,14 @@ uniform float scale;
 attribute vec3 color;
 attribute vec3 position;
 attribute float flexibility;
+attribute vec2 windPosition;
 
 varying vec3 iColor;
 
 void main() {
   iColor = color;
   
-  vec2 uv = position.xy / size * scale;
+  vec2 uv = windPosition / size * scale;
   float displacement = mix(
     texture2D(airBack, vec2(uv.x, 1.0 - uv.y)).r * 2.0 - 1.0,
     texture2D(airFront, vec2(uv.x, 1.0 - uv.y)).r * 2.0 - 1.0,
@@ -65,7 +67,6 @@ uniform float scale;
 
 attribute vec3 color;
 attribute vec3 position;
-attribute float flexibility;
 
 varying vec3 iColor;
 
@@ -99,11 +100,22 @@ Vegetation.prototype.setMesh = function(mesh) {
     mesh.bindBuffers();
 
     this.gl.enableVertexAttribArray(this.program["aColor"]);
-    this.gl.vertexAttribPointer(this.program["aColor"], 3, this.gl.FLOAT, false, 28, 0);
+    this.gl.vertexAttribPointer(this.program["aColor"], 3, this.gl.FLOAT, false, 36, 0);
     this.gl.enableVertexAttribArray(this.program["aPosition"]);
-    this.gl.vertexAttribPointer(this.program["aPosition"], 3, this.gl.FLOAT, false, 28, 12);
+    this.gl.vertexAttribPointer(this.program["aPosition"], 3, this.gl.FLOAT, false, 36, 12);
     this.gl.enableVertexAttribArray(this.program["aFlexibility"]);
-    this.gl.vertexAttribPointer(this.program["aFlexibility"], 1, this.gl.FLOAT, false, 28, 24);
+    this.gl.vertexAttribPointer(this.program["aFlexibility"], 1, this.gl.FLOAT, false, 36, 24);
+    this.gl.enableVertexAttribArray(this.program["aWindPosition"]);
+    this.gl.vertexAttribPointer(this.program["aWindPosition"], 2, this.gl.FLOAT, false, 36, 28);
+
+    this.gl.vao.bindVertexArrayOES(this.vaoReflect);
+
+    mesh.bindBuffers();
+
+    this.gl.enableVertexAttribArray(this.programReflect["aColor"]);
+    this.gl.vertexAttribPointer(this.programReflect["aColor"], 3, this.gl.FLOAT, false, 36, 0);
+    this.gl.enableVertexAttribArray(this.programReflect["aPosition"]);
+    this.gl.vertexAttribPointer(this.programReflect["aPosition"], 3, this.gl.FLOAT, false, 36, 12);
 };
 
 /**
@@ -140,7 +152,7 @@ Vegetation.prototype.render = function(air, width, height, scale, time) {
  */
 Vegetation.prototype.renderReflections = function(width, height, scale) {
     this.programReflect.use();
-    this.gl.vao.bindVertexArrayOES(this.vao);
+    this.gl.vao.bindVertexArrayOES(this.vaoReflect);
 
     this.gl.uniform2f(this.programReflect["uSize"], width, height);
     this.gl.uniform1f(this.programReflect["uScale"], scale);
@@ -155,4 +167,5 @@ Vegetation.prototype.free = function() {
     this.program.free();
     this.programReflect.free();
     this.gl.vao.deleteVertexArrayOES(this.vao);
+    this.gl.vao.deleteVertexArrayOES(this.vaoReflect);
 };

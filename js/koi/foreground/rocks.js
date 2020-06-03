@@ -3,11 +3,12 @@
  * @param {WebGLRenderingContext} gl A WebGL rendering context
  * @param {Constellation} constellation A constellation to decorate
  * @param {Slots} slots The slots to place objects on
+ * @param {Number} yScale The Y projection scale in the range [0, 1]
  * @param {Random} random A randomizer
  * @constructor
  */
-const Rocks = function(gl, constellation, slots, random) {
-    this.mesh = this.createMesh(gl, constellation, slots, random);
+const Rocks = function(gl, constellation, slots, yScale, random) {
+    this.mesh = this.createMesh(gl, constellation, slots, yScale, random);
 };
 
 /**
@@ -37,7 +38,6 @@ Rocks.prototype.PILLAR_HEIGHT_MIN = 1;
 Rocks.prototype.PILLAR_HEIGHT_MAX = 2;
 Rocks.prototype.PILLAR_HEIGHT_DELTA = .07;
 Rocks.prototype.PILLAR_SHIFT_AMPLITUDE = .06;
-Rocks.prototype.PILLAR_SQUISH = .7;
 Rocks.prototype.PILLAR_SKEW = 1.2;
 Rocks.prototype.NOISE_SCALE = .7;
 Rocks.prototype.NOISE_THRESHOLD = .36;
@@ -47,9 +47,15 @@ Rocks.prototype.NOISE_THRESHOLD = .36;
  * @param {WebGLRenderingContext} gl A WebGL rendering context
  * @param {Constellation} constellation A constellation to decorate
  * @param {Slots} slots The slots to place objects on
+ * @param {Number} yScale The Y projection scale in the range [0, 1]
  * @param {Random} random A randomizer
  */
-Rocks.prototype.createMesh = function(gl, constellation, slots, random) {
+Rocks.prototype.createMesh = function(
+    gl,
+    constellation,
+    slots,
+    yScale,
+    random) {
     const noisePonds = new CubicNoise(
         Math.ceil(constellation.width * this.NOISE_SCALE),
         Math.ceil(constellation.height * this.NOISE_SCALE),
@@ -132,13 +138,14 @@ Rocks.prototype.createMesh = function(gl, constellation, slots, random) {
             plan.y,
             plan.radius,
             plan.height,
+            yScale,
             random);
 
         slots.clearOval(
             plan.x,
             plan.y,
             plan.radius * this.PILLAR_SKEW,
-            plan.radius * this.PILLAR_SQUISH * this.PILLAR_SKEW);
+            plan.radius * yScale * this.PILLAR_SKEW);
     }
     
     return new Mesh(gl, vertices, indices);
@@ -227,6 +234,7 @@ Rocks.prototype.planArc = function(
  * @param {Number} y The Y position in meters
  * @param {Number} radius The pillar radius
  * @param {Number} height The pillar height
+ * @param {Number} yScale The Y projection scale in the range [0, 1]
  * @param {Random} random A randomizer
  */
 Rocks.prototype.createPillar = function(
@@ -236,6 +244,7 @@ Rocks.prototype.createPillar = function(
     y,
     radius,
     height,
+    yScale,
     random) {
     const firstIndex = vertices.length / 7;
     const precision = Math.ceil(2 * Math.PI * radius / this.PILLAR_RESOLUTION);
@@ -243,12 +252,11 @@ Rocks.prototype.createPillar = function(
     const zShift = (-.5 + random.getFloat()) * .5;
     const lightTop = .8 - zShift * .4;
     let lastStep = precision - 1;
-    // TODO: Skip back faces
 
     for (let step = 0; step < precision; ++step) {
         const radians = Math.PI * 2 * step / precision + offset;
         const dx = Math.cos(radians) * radius;
-        const dy = Math.sin(radians) * radius * this.PILLAR_SQUISH;
+        const dy = Math.sin(radians) * radius * yScale;
         const l = Math.sqrt(dx * dx + dy * dy);
         const lx = 1 / Math.sqrt(2);
         const ly = 1 / Math.sqrt(2);
@@ -288,8 +296,8 @@ Rocks.prototype.createPillar = function(
             firstIndex + step * 3,
             firstIndex + lastStep * 3,
             firstIndex + precision * 3,
-            firstIndex + lastStep * 3 + 2,
-            firstIndex + step * 3 + 2);
+            firstIndex + step * 3 + 2,
+            firstIndex + lastStep * 3 + 2);
 
         lastStep = step;
     }
