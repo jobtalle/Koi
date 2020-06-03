@@ -13,9 +13,11 @@ const Foreground = function(
     vegetation,
     constellation,
     random) {
+    const slots = new Slots(constellation.width, constellation.height, constellation, random);
+
     this.gl = gl;
-    this.plants = new Plants(gl, constellation, random);
-    this.rocks = new Rocks(gl, constellation, random);
+    this.rocks = new Rocks(gl, constellation, slots, random);
+    this.plants = new Plants(gl, constellation, slots, random);
     this.reflections = new RenderTarget(
         gl,
         Math.round(constellation.width * this.REFLECTION_SCALE),

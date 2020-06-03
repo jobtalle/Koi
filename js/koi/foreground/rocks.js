@@ -2,11 +2,12 @@
  * The rocky terrain surrounding the ponds
  * @param {WebGLRenderingContext} gl A WebGL rendering context
  * @param {Constellation} constellation A constellation to decorate
+ * @param {Slots} slots The slots to place objects on
  * @param {Random} random A randomizer
  * @constructor
  */
-const Rocks = function(gl, constellation, random) {
-    this.mesh = this.createMesh(gl, constellation, random);
+const Rocks = function(gl, constellation, slots, random) {
+    this.mesh = this.createMesh(gl, constellation, slots, random);
 };
 
 /**
@@ -45,9 +46,10 @@ Rocks.prototype.NOISE_THRESHOLD = .36;
  * Create the rocks mesh
  * @param {WebGLRenderingContext} gl A WebGL rendering context
  * @param {Constellation} constellation A constellation to decorate
+ * @param {Slots} slots The slots to place objects on
  * @param {Random} random A randomizer
  */
-Rocks.prototype.createMesh = function(gl, constellation, random) {
+Rocks.prototype.createMesh = function(gl, constellation, slots, random) {
     const noisePonds = new CubicNoise(
         Math.ceil(constellation.width * this.NOISE_SCALE),
         Math.ceil(constellation.height * this.NOISE_SCALE),
@@ -69,6 +71,7 @@ Rocks.prototype.createMesh = function(gl, constellation, random) {
         0,
         constellation.height,
         noisePonds,
+        slots,
         random);
 
     this.planArc(
@@ -83,6 +86,7 @@ Rocks.prototype.createMesh = function(gl, constellation, random) {
         0,
         constellation.height,
         noisePonds,
+        slots,
         random);
 
     for (const arc of constellation.river.constraint.arcs) {
@@ -98,6 +102,7 @@ Rocks.prototype.createMesh = function(gl, constellation, random) {
             0,
             constellation.height,
             noiseRiver,
+            slots,
             random);
 
         this.planArc(
@@ -112,13 +117,14 @@ Rocks.prototype.createMesh = function(gl, constellation, random) {
             0,
             constellation.height,
             noiseRiver,
+            slots,
             random);
     }
 
     plans.sort((a, b) => b.y - a.y);
 
     // TODO: Cull rocks outside view
-    for (const plan of plans)
+    for (const plan of plans) {
         this.createPillar(
             vertices,
             indices,
@@ -127,6 +133,13 @@ Rocks.prototype.createMesh = function(gl, constellation, random) {
             plan.radius,
             plan.height,
             random);
+
+        slots.clearOval(
+            plan.x,
+            plan.y,
+            plan.radius * this.PILLAR_SKEW,
+            plan.radius * this.PILLAR_SQUISH * this.PILLAR_SKEW);
+    }
     
     return new Mesh(gl, vertices, indices);
 };
@@ -144,6 +157,7 @@ Rocks.prototype.createMesh = function(gl, constellation, random) {
  * @param {Number} yMin The minimum Y position
  * @param {Number} yMax The maximum Y position
  * @param {CubicNoise} noise The rock intensity noise
+ * @param {Slots} slots The slots to place objects on
  * @param {Random} random A randomizer
  */
 Rocks.prototype.planArc = function(
@@ -158,6 +172,7 @@ Rocks.prototype.planArc = function(
     yMin,
     yMax,
     noise,
+    slots,
     random) {
     const circumference = Math.PI * 2 * radius;
     let radiansLeft = end - start;

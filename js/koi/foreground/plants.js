@@ -2,30 +2,27 @@
  * Plants
  * @param {WebGLRenderingContext} gl A WebGL rendering context
  * @param {Constellation} constellation The constellation
+ * @param {Slots} slots The slots to place objects on
  * @param {Random} random A randomizer
  * @constructor
  */
-const Plants = function(gl, constellation, random) {
-    this.mesh = this.makeMesh(gl, constellation, random);
+const Plants = function(gl, constellation, slots, random) {
+    this.mesh = this.makeMesh(gl, constellation, slots, random);
 };
 
 /**
  * Make the vegetation mesh
  * @param {WebGLRenderingContext} gl A WebGL rendering context
  * @param {Constellation} constellation The constellation
+ * @param {Slots} slots The slots to place objects on
  * @param {Random} random A randomizer
  */
-Plants.prototype.makeMesh = function(gl, constellation, random) {
+Plants.prototype.makeMesh = function(gl, constellation, slots, random) {
     const vertices = [];
     const indices = [];
 
-    for (let i = 0; i < 10000; ++i) {
-        const x = random.getFloat() * constellation.width;
-        const y = random.getFloat() * constellation.height;
-
-        if (!constellation.contains(x, y))
-            this.makeBlade(x, y, vertices, indices);
-    }
+    for (const slot of slots.slots) if (slot)
+        this.makeBlade(slot.x, slot.y, vertices, indices);
 
     return new Mesh(gl, vertices, indices);
 };

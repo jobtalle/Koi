@@ -73,6 +73,7 @@ Atlas.prototype.returnRegion = function(region) {
  * @param {Pattern} pattern The pattern to write to the atlas
  */
 Atlas.prototype.write = function(pattern) {
+    // TODO: slot is sometimes undefined after resizing
     pattern.region = new AtlasRegion(this.getSlot(), this.slotSize);
 
     this.renderTarget.target();
