@@ -6,24 +6,10 @@
  * @constructor
  */
 const Air = function(gl, width, height) {
-    // TODO: Create prototype that fits both air and wind
-    this.front = 0;
-    this.width = Math.ceil(width * this.SCALE);
-    this.height = Math.ceil(height * this.SCALE);
-    this.influences = new InfluencePainter.Influences(this.width, this.height, this.SCALE);
-    this.targets = [
-        new RenderTarget(gl, this.width, this.height, gl.RGB, false, gl.NEAREST),
-        new RenderTarget(gl, this.width, this.height, gl.RGB, false, gl.NEAREST)];
-
-    gl.clearColor(.5, 0, 0, 1);
-
-    for (const target of this.targets) {
-        target.target();
-
-        gl.clear(gl.COLOR_BUFFER_BIT);
-    }
+    ConvolutionalBuffer.call(this, gl, width, height, this.SCALE, new Color(.5, 0, 0), gl.RGB);
 };
 
+Air.prototype = Object.create(ConvolutionalBuffer.prototype);
 Air.prototype.SCALE = 4;
 
 /**
@@ -38,35 +24,4 @@ Air.prototype.addDisplacement = function(x, y, radius, amount) {
         this.influences.addFlare(x, y, radius, 0, 0, amount);
     else
         this.influences.addFlare(x, y, radius, 0, -amount, 0);
-};
-
-/**
- * Flip the buffers after propagating
- */
-Air.prototype.flip = function() {
-    this.front = 1 - this.front;
-};
-
-/**
- * Return the render target currently used as the front buffer
- * @returns {RenderTarget} The current front buffer
- */
-Air.prototype.getFront = function() {
-    return this.targets[this.front];
-};
-
-/**
- * Return the render target currently used as the back buffer
- * @returns {RenderTarget} The current back buffer
- */
-Air.prototype.getBack = function() {
-    return this.targets[1 - this.front];
-};
-
-/**
- * Free all resources maintained by this air buffer
- */
-Air.prototype.free = function() {
-    for (const target of this.targets)
-        target.free();
 };

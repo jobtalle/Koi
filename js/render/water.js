@@ -6,23 +6,10 @@
  * @constructor
  */
 const Water = function(gl, width, height) {
-    this.front = 0;
-    this.width = Math.ceil(width * this.SCALE);
-    this.height = Math.ceil(height * this.SCALE);
-    this.influences = new InfluencePainter.Influences(this.width, this.height, this.SCALE);
-    this.targets = [
-        new RenderTarget(gl, this.width, this.height, gl.RGB, false, gl.NEAREST),
-        new RenderTarget(gl, this.width, this.height, gl.RGB, false, gl.NEAREST)];
-
-    gl.clearColor(.5, .5, 0, 0);
-
-    for (const target of this.targets) {
-        target.target();
-
-        gl.clear(gl.COLOR_BUFFER_BIT);
-    }
+    ConvolutionalBuffer.call(this, gl, width, height, this.SCALE, new Color(.5, .5, 0), gl.RGB);
 };
 
+Water.prototype = Object.create(ConvolutionalBuffer.prototype);
 Water.prototype.SCALE = 18;
 
 /**
@@ -34,35 +21,4 @@ Water.prototype.SCALE = 18;
  */
 Water.prototype.addFlare = function(x, y, radius, displacement) {
     this.influences.addFlare(x, y, radius, 0, 0, displacement);
-};
-
-/**
- * Flip the buffers after propagating
- */
-Water.prototype.flip = function() {
-    this.front = 1 - this.front;
-};
-
-/**
- * Return the render target currently used as the front buffer
- * @returns {RenderTarget} The current front buffer
- */
-Water.prototype.getFront = function() {
-    return this.targets[this.front];
-};
-
-/**
- * Return the render target currently used as the back buffer
- * @returns {RenderTarget} The current back buffer
- */
-Water.prototype.getBack = function() {
-    return this.targets[1 - this.front];
-};
-
-/**
- * Free all resources maintained by this water plane
- */
-Water.prototype.free = function() {
-    for (const target of this.targets)
-        target.free();
 };
