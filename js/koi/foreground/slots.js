@@ -26,6 +26,24 @@ Slots.prototype.RESOLUTION = .12;
 Slots.prototype.RANDOM_RANGE = .8;
 
 /**
+ * Sort the slots front to back, after which clearing operations are invalid
+ */
+Slots.prototype.sort = function() {
+    this.slots = this.slots.sort((a, b) => {
+        if (a === b)
+            return 0;
+
+        if (a === null)
+            return 100;
+
+        if (b === null)
+            return -100;
+
+        return b.y - a.y
+    });
+};
+
+/**
  * Clear an oval in the slots array
  * @param {Number} circleX The oval X center
  * @param {Number} circleY The oval Y center

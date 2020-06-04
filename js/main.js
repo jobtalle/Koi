@@ -11,6 +11,9 @@ const gl =
 // Enable VAO
 gl.vao = gl.getExtension("OES_vertex_array_object");
 
+// Enable 32 bit element indices
+gl.getExtension("OES_element_index_uint");
+
 const random = new Random();
 const systems = new Systems(gl, random, canvas.width, canvas.height);
 let lastDate = null;

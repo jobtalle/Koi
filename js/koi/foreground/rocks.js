@@ -147,7 +147,16 @@ Rocks.prototype.createMesh = function(
             plan.radius * yScale * this.PILLAR_SKEW);
     }
     
-    return new Mesh(gl, vertices, indices);
+    return new Mesh(gl, vertices, indices, this.getFirstIndex(vertices) - 1 > 0xFFFF);
+};
+
+/**
+ * Get the first index of a new mesh in the vertex array
+ * @param {Number[]} vertices The vertex array
+ * @returns {Number} The first index of vertices that will be added to the array
+ */
+Rocks.prototype.getFirstIndex = function(vertices) {
+    return vertices.length / 7;
 };
 
 /**
@@ -245,7 +254,7 @@ Rocks.prototype.createPillar = function(
     height,
     yScale,
     random) {
-    const firstIndex = vertices.length / 7;
+    const firstIndex = this.getFirstIndex(vertices);
     const precision = Math.ceil(2 * Math.PI * radius / this.PILLAR_RESOLUTION);
     const offset = random.getFloat() * 2 * Math.PI / precision;
     const zShift = (-.5 + random.getFloat()) * .5;

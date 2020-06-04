@@ -15,8 +15,9 @@ const Mover = function(constellation) {
 Mover.prototype.SPLASH_DROP_RADIUS = 0.13;
 Mover.prototype.SPLASH_DROP_AMPLITUDE = 0.4;
 Mover.prototype.SPLASH_DROP_DISTANCE = 0.1;
-Mover.prototype.AIR_RADIUS = .8;
-Mover.prototype.AIR_INTENSITY = .5;
+Mover.prototype.AIR_RADIUS = 1.5;
+Mover.prototype.AIR_INTENSITY = .2;
+Mover.prototype.AIR_HEIGHT = .5;
 
 /**
  * Update the mover
@@ -67,7 +68,11 @@ Mover.prototype.touchMove = function(x, y, air) {
         this.cursorOffset.set(this.cursor).add(this.offset);
         this.move.moveTo(this.cursorOffset);
 
-        air.addDisplacement(x, y, this.AIR_RADIUS, this.AIR_INTENSITY * (this.cursor.x - this.cursorPrevious.x));
+        air.addDisplacement(
+            x,
+            y + this.AIR_HEIGHT,
+            this.AIR_RADIUS,
+            this.AIR_INTENSITY * (this.cursor.x - this.cursorPrevious.x));
     }
 };
 

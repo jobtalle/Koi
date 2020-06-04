@@ -9,6 +9,7 @@ const Meshed = function(gl, vaoConfigurations) {
     this.vaoConfigurations = vaoConfigurations;
     this.mesh = null;
     this.elementCount = -1;
+    this.indexFormat = -1;
 };
 
 /**
@@ -41,6 +42,7 @@ Meshed.VAOConfiguration.prototype.configure = function(gl, mesh) {
  */
 Meshed.prototype.setMesh = function(mesh) {
     this.elementCount = mesh.elementCount;
+    this.indexFormat = mesh.indexFormat;
 
     for (const configuration of this.vaoConfigurations)
         configuration.configure(this.gl, mesh);
@@ -50,5 +52,5 @@ Meshed.prototype.setMesh = function(mesh) {
  * Render the mesh
  */
 Meshed.prototype.renderMesh = function() {
-    this.gl.drawElements(this.gl.TRIANGLES, this.elementCount, this.gl.UNSIGNED_SHORT, 0);
+    this.gl.drawElements(this.gl.TRIANGLES, this.elementCount, this.indexFormat, 0);
 };
