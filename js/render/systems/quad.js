@@ -19,10 +19,14 @@ const Quad = function(gl, blit) {
 };
 
 /**
- * Render a fullscreen quad of the currently bound texture 0
+ * Render a fullscreen quad of a given texture
+ * @param {WebGLTexture} texture A texture
  */
-Quad.prototype.render = function() {
+Quad.prototype.render = function(texture) {
     this.blit.program.use();
+
+    this.gl.activeTexture(this.gl.TEXTURE0);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
 
     this.gl.vao.bindVertexArrayOES(this.vao);
 
