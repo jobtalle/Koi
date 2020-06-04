@@ -11,7 +11,7 @@ const Sand = function(gl, randomSource) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["size", "scale", "colorDeep", "colorShallow"],
+        ["scale", "colorDeep", "colorShallow"],
         ["position", "depth"]);
     this.vao = gl.vao.createVertexArrayOES();
     this.indexCount = -1;
@@ -21,9 +21,6 @@ Sand.prototype.COLOR_DEEP = Color.fromCSS("water-deep");
 Sand.prototype.COLOR_SHALLOW = Color.fromCSS("water-shallow");
 
 Sand.prototype.SHADER_VERTEX = `#version 100
-uniform vec2 size;
-uniform mediump float scale;
-
 attribute vec2 position;
 attribute vec2 depth;
 
@@ -32,7 +29,7 @@ varying vec2 iDepth;
 void main() {
   iDepth = depth;
 
-  gl_Position = vec4(vec2(2.0, -2.0) * position / size * scale + vec2(-1.0, 1.0), 0.0, 1.0);
+  gl_Position = vec4(position, 0.0, 1.0);
 }
 `;
 
@@ -73,18 +70,15 @@ Sand.prototype.setMesh = function(mesh) {
 
 /**
  * Write a sand texture
- * @param {Number} width The width in pixels
- * @param {Number} height The height in pixels
  * @param {Number} scale The render scale
  */
-Sand.prototype.write = function(width, height, scale) {
+Sand.prototype.write = function(scale) {
     this.program.use();
     this.gl.vao.bindVertexArrayOES(this.vao);
 
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, this.randomSource.texture);
 
-    this.gl.uniform2f(this.program["uSize"], width, height);
     this.gl.uniform1f(this.program["uScale"], scale);
     this.gl.uniform3f(this.program["uColorDeep"], this.COLOR_DEEP.r, this.COLOR_DEEP.g, this.COLOR_DEEP.b);
     this.gl.uniform3f(this.program["uColorShallow"], this.COLOR_SHALLOW.r, this.COLOR_SHALLOW.g, this.COLOR_SHALLOW.b);

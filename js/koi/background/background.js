@@ -14,13 +14,11 @@ const Background = function(
     height,
     scale) {
     this.gl = gl;
-    this.width = width;
-    this.height = height;
     this.bottom = new RenderTarget(gl, width, height, gl.RGB, false, gl.NEAREST);
 
     this.bottom.target();
 
-    sand.write(width, height, scale);
+    sand.write(scale);
 };
 
 /**

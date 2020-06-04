@@ -47,7 +47,7 @@ void main() {
     time);
   
   gl_Position = vec4(
-    vec2(2.0, -2.0) * (position.xy - vec2(-displacement * flexibility, position.z)) / size * scale + vec2(-1.0, 1.0),
+    vec2(2.0, -2.0) * (position.xy - vec2(-displacement * flexibility, position.z - .5 * abs(displacement) * flexibility)) / size * scale + vec2(-1.0, 1.0),
     1.0 - position.y / size.y * scale,
     1.0);
 }

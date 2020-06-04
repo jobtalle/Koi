@@ -10,7 +10,9 @@ const Plants = function(gl, constellation, slots, random) {
     this.mesh = this.makeMesh(gl, constellation, slots, random);
 };
 
-Plants.prototype.WIND_UV_RADIUS = .5;
+Plants.prototype.WIND_UV_RADIUS = .6;
+Plants.prototype.BLADE_HEIGHT_MIN = .3;
+Plants.prototype.BLADE_HEIGHT_MAX = .85;
 
 /**
  * Make the vegetation mesh
@@ -23,8 +25,8 @@ Plants.prototype.makeMesh = function(gl, constellation, slots, random) {
     const vertices = [];
     const indices = [];
 
-    for (const slot of slots.slots) if (slot)
-        this.makeBlade(slot.x, slot.y, vertices, indices, random);
+    for (let slot = slots.slots.length; slot-- > 0;) if (slots.slots[slot])
+        this.makeBlade(slots.slots[slot].x, slots.slots[slot].y, vertices, indices, random);
 
     return new Mesh(gl, vertices, indices);
 };
@@ -56,20 +58,21 @@ Plants.prototype.makeUV = function(x, y, random) {
 Plants.prototype.makeBlade = function(x, y, vertices, indices, random) {
     const uv = this.makeUV(x, y, random);
     const firstIndex = vertices.length / 9;
-    const height = .5;
-    const radius = .05;
-    const steps = 4;
+    const height = this.BLADE_HEIGHT_MIN + (this.BLADE_HEIGHT_MAX - this.BLADE_HEIGHT_MIN) * random.getFloat();
+    const radius = .1;
+    const steps = 6;
     const color = Color.fromCSS("grass");
+    const l = .8 + .2 * random.getFloat();
 
     for (let step = 0; step < steps - 1; ++step) {
         const f = step / (steps - 1);
-        const r = radius * (1 - f);
+        const r = radius * Math.pow(1 - f, .7);
         const flexibility = Math.pow(f, 3.5);
 
         vertices.push(
-            color.r,
-            color.g,
-            color.b,
+            color.r * l,
+            color.g * l,
+            color.b * l,
             x - r,
             y,
             height * f,
@@ -77,9 +80,9 @@ Plants.prototype.makeBlade = function(x, y, vertices, indices, random) {
             uv.x,
             uv.y);
         vertices.push(
-            color.r,
-            color.g,
-            color.b,
+            color.r * l,
+            color.g * l,
+            color.b * l,
             x + r,
             y,
             height * f,
@@ -103,9 +106,9 @@ Plants.prototype.makeBlade = function(x, y, vertices, indices, random) {
     }
 
     vertices.push(
-        color.r,
-        color.g,
-        color.b,
+        color.r * l,
+        color.g * l,
+        color.b * l,
         x,
         y,
         height,

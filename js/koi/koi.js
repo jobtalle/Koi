@@ -233,7 +233,6 @@ Koi.prototype.render = function(deltaTime) {
     // Render shadows
     this.systems.shadows.render(
         this.shadowBuffer,
-        this.systems.width,
         this.systems.height,
         this.scale);
 
@@ -291,7 +290,7 @@ Koi.prototype.render = function(deltaTime) {
         timeFactor);
 
     // this.systems.gl.activeTexture(this.systems.gl.TEXTURE0);
-    // this.systems.gl.bindTexture(this.systems.gl.TEXTURE_2D, this.air.getFront().texture);
+    // this.systems.gl.bindTexture(this.systems.gl.TEXTURE_2D, this.background.bottom.texture);
     // this.systems.quad.render();
 };
 

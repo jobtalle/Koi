@@ -250,9 +250,9 @@ Constellation.prototype.makeMeshDepth = function(gl) {
     const vertices = [];
     const indices = [];
 
-    this.big.constraint.appendMeshDepth(vertices, indices);
-    this.small.constraint.appendMeshDepth(vertices, indices);
-    this.river.constraint.appendMeshDepth(vertices, indices);
+    this.big.constraint.appendMeshDepth(vertices, indices, this.width, this.height);
+    this.small.constraint.appendMeshDepth(vertices, indices, this.width, this.height);
+    this.river.constraint.appendMeshDepth(vertices, indices, this.width, this.height);
 
     return new Mesh(gl, vertices, indices);
 };

@@ -156,8 +156,14 @@ ConstraintArcPath.prototype.appendMeshWater = function(vertices, indices, random
  * Append a depth mesh
  * @param {Number[]} vertices The vertex array
  * @param {Number[]} indices The index array
+ * @param {Number} width The scene width
+ * @param {Number} height The scene height
  */
-ConstraintArcPath.prototype.appendMeshDepth = function(vertices, indices) {
+ConstraintArcPath.prototype.appendMeshDepth = function(
+    vertices,
+    indices,
+    width,
+    height) {
     for (let arc = this.arcs.length; arc-- > 0;) {
         const firstIndex = vertices.length >> 2;
         const steps = this.getMeshSteps(arc);
@@ -169,16 +175,16 @@ ConstraintArcPath.prototype.appendMeshDepth = function(vertices, indices) {
             const radiusOuter = this.arcs[arc].radius + this.width * .5 + this.rings[arc].MESH_DEPTH_PADDING;
 
             vertices.push(
-                this.arcs[arc].center.x + Math.cos(radians) * radiusInner,
-                this.arcs[arc].center.y + Math.sin(radians) * radiusInner,
+                2 * (this.arcs[arc].center.x + Math.cos(radians) * radiusInner) / width - 1,
+                1 - 2 * (this.arcs[arc].center.y + Math.sin(radians) * radiusInner) / height,
                 0,
                 this.rings[arc].DEPTH,
-                this.arcs[arc].center.x + Math.cos(radians) * radiusCenter,
-                this.arcs[arc].center.y + Math.sin(radians) * radiusCenter,
+                2 * (this.arcs[arc].center.x + Math.cos(radians) * radiusCenter) / width - 1,
+                1 - 2 * (this.arcs[arc].center.y + Math.sin(radians) * radiusCenter) / height,
                 1,
                 this.rings[arc].DEPTH,
-                this.arcs[arc].center.x + Math.cos(radians) * radiusOuter,
-                this.arcs[arc].center.y + Math.sin(radians) * radiusOuter,
+                2 * (this.arcs[arc].center.x + Math.cos(radians) * radiusOuter) / width - 1,
+                1 - 2 * (this.arcs[arc].center.y + Math.sin(radians) * radiusOuter) / height,
                 0,
                 this.rings[arc].DEPTH);
 

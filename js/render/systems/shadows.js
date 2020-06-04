@@ -9,42 +9,40 @@ const Shadows = function(gl) {
         gl,
         this.VERTEX_SHADER,
         this.FRAGMENT_SHADER,
-        ["size", "scale", "shadowDepth"],
+        ["meter", "shadowDepth"],
         ["position", "depth"]);
     this.vao = gl.vao.createVertexArrayOES();
     this.indexCount = -1;
 };
 
 Shadows.prototype.VERTEX_SHADER = `#version 100
-uniform mediump vec2 size;
-uniform mediump float scale;
-
 attribute vec2 position;
 attribute vec2 depth;
 
 varying vec2 iDepth;
+varying vec2 iUv;
 
 void main() {
   iDepth = depth;
+  iUv = 0.5 * position + 0.5;
 
-  gl_Position = vec4(vec2(2.0, -2.0) * position / size * scale + vec2(-1.0, 1.0), 0.0, 1.0);
+  gl_Position = vec4(position, 0.0, 1.0);
 }
 `;
 
 Shadows.prototype.FRAGMENT_SHADER = `#version 100
 uniform sampler2D source;
-uniform mediump vec2 size;
-uniform mediump float scale;
+uniform mediump float meter;
 uniform mediump float shadowDepth;
 
 varying mediump vec2 iDepth;
+varying mediump vec2 iUv;
 
 void main() {
-  mediump float meter = scale / size.y;
   mediump float depthFactor = iDepth.y * (0.5 - 0.5 * cos(3.141592 * sqrt(iDepth.x)));
   mediump float depth = depthFactor * meter * shadowDepth;
 
-  gl_FragColor = texture2D(source, gl_FragCoord.xy / size + vec2(depth * 0.5, depth));
+  gl_FragColor = texture2D(source, iUv + vec2(depth * 0.5, depth));
 }
 `;
 
@@ -70,11 +68,10 @@ Shadows.prototype.setMesh = function(mesh) {
 /**
  * Render shadows
  * @param {ShadowBuffer} buffer A buffer to read shadows from
- * @param {Number} width The render target width
  * @param {Number} height The render target height
  * @param {Number} scale The render scale
  */
-Shadows.prototype.render = function(buffer, width, height, scale) {
+Shadows.prototype.render = function(buffer, height, scale) {
     this.program.use();
 
     this.gl.activeTexture(this.gl.TEXTURE0);
@@ -82,8 +79,7 @@ Shadows.prototype.render = function(buffer, width, height, scale) {
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
 
-    this.gl.uniform2f(this.program["uSize"], width, height);
-    this.gl.uniform1f(this.program["uScale"], scale);
+    this.gl.uniform1f(this.program["uMeter"], scale / height);
     this.gl.uniform1f(this.program["uShadowDepth"], this.SHADOW_DEPTH);
 
     this.gl.vao.bindVertexArrayOES(this.vao);
