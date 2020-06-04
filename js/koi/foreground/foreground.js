@@ -52,7 +52,7 @@ Foreground.prototype.makeReflections = function(
     this.reflections.target();
 
     this.renderReflections(stone, vegetation, width, height, scale);
-    this.blurReflections(blur, quad, width, height, scale);
+    this.blurReflections(blur, quad);
 
     this.gl.bindTexture(this.gl.TEXTURE_2D, this.reflections.texture);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
@@ -83,11 +83,8 @@ Foreground.prototype.renderReflections = function(stone, vegetation, width, heig
  * Blur the reflections
  * @param {Blur} blur The blur system
  * @param {Quad} quad The quad renderer
- * @param {Number} width The render target width
- * @param {Number} height The render target height
- * @param {Number} scale The scale
  */
-Foreground.prototype.blurReflections = function(blur, quad, width, height, scale) {
+Foreground.prototype.blurReflections = function(blur, quad) {
     const intermediate = new RenderTarget(this.gl, this.reflections.width, this.reflections.height, this.gl.RGB, false);
 
     intermediate.target();

@@ -10,7 +10,8 @@ const Systems = function(gl, random, width, height) {
     this.gl = gl;
     this.width = width;
     this.height = height;
-    this.quad = new Quad(gl);
+    this.blit = new Blit(gl);
+    this.quad = new Quad(gl, this.blit);
     this.randomSource = new RandomSource(gl, random);
     this.patterns = new Patterns(gl, this.randomSource);
     this.sand = new Sand(gl, this.randomSource);
@@ -47,6 +48,7 @@ Systems.prototype.targetMain = function() {
  * Free all rendering systems
  */
 Systems.prototype.free = function() {
+    this.blit.free();
     this.randomSource.free();
     this.patterns.free();
     this.sand.free();
