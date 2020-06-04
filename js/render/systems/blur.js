@@ -10,7 +10,7 @@ const Blur = function(gl, quad) {
         gl,
         this.SHADER_VERTEX_MESH,
         this.SHADER_FRAGMENT,
-        ["size", "scale", "targetSize", "direction"],
+        ["targetSize", "direction"],
         ["position"]);
     this.programQuad = new Shader(
         gl,
@@ -30,13 +30,10 @@ const Blur = function(gl, quad) {
 };
 
 Blur.prototype.SHADER_VERTEX_MESH = `#version 100
-uniform vec2 size;
-uniform float scale;
-
 attribute vec2 position;
 
 void main() {
-  gl_Position = vec4(vec2(2.0, -2.0) * position / size * scale + vec2(-1.0, 1.0), 0.0, 1.0);
+  gl_Position = vec4(position, 0.0, 1.0);
 }
 `;
 
@@ -79,21 +76,16 @@ Blur.prototype.setMesh = function(mesh) {
 
 /**
  * Apply 5x5 gaussian blur to the currently set mesh
- * @param {Number} width The render target width
- * @param {Number} height The render target height
- * @param {Number} scale The render scale
  * @param {RenderTarget} target A render target to blur
  * @param {RenderTarget} intermediate An intermediate render target with the same properties as target
  */
-Blur.prototype.applyMesh = function(width, height, scale, target, intermediate) {
+Blur.prototype.applyMesh = function(target, intermediate) {
     intermediate.target();
 
     this.programMesh.use();
 
     this.gl.vao.bindVertexArrayOES(this.vaoMesh);
 
-    this.gl.uniform2f(this.programMesh["uSize"], width, height);
-    this.gl.uniform1f(this.programMesh["uScale"], scale);
     this.gl.uniform2f(this.programMesh["uTargetSize"], target.width, target.height);
     this.gl.uniform2f(this.programMesh["uDirection"], 1, 0);
 

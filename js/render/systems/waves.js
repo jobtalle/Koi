@@ -9,7 +9,7 @@ const Waves = function(gl) {
         gl,
         this.SHADER_PROPAGATE_VERTEX,
         this.SHADER_PROPAGATE_FRAGMENT,
-        ["size", "scale", "damping"],
+        ["size", "damping"],
         ["position"]);
     this.vao = gl.vao.createVertexArrayOES();
     this.indexCount = -1;
@@ -18,13 +18,14 @@ const Waves = function(gl) {
 Waves.prototype.DAMPING = .997;
 
 Waves.prototype.SHADER_PROPAGATE_VERTEX = `#version 100
-uniform mediump vec2 size;
-uniform mediump float scale;
-
 attribute vec2 position;
 
+varying vec2 iUv;
+
 void main() {
-  gl_Position = vec4(vec2(2.0, -2.0) * position / size * scale + vec2(-1.0, 1.0), 0.0, 1.0);
+  iUv = 0.5 * position + 0.5;
+
+  gl_Position = vec4(position, 0.0, 1.0);
 }
 `;
 
@@ -33,14 +34,15 @@ uniform sampler2D source;
 uniform mediump vec2 size;
 uniform mediump float damping;
 
+varying mediump vec2 iUv;
+
 void main() {
-  mediump vec2 uv = gl_FragCoord.xy / size;
-  mediump vec2 step = vec2(1.0 / size.x, 1.0 / size.y);
-  mediump vec3 state = texture2D(source, uv).rgb;
-  mediump float hLeft = texture2D(source, vec2(uv.x - step.x, uv.y)).r;
-  mediump float hRight = texture2D(source, vec2(uv.x + step.x, uv.y)).r;
-  mediump float hUp = texture2D(source, vec2(uv.x, uv.y - step.y)).r;
-  mediump float hDown = texture2D(source, vec2(uv.x, uv.y + step.y)).r;
+  mediump vec2 step = 1.0 / size;
+  mediump vec3 state = texture2D(source, iUv).rgb;
+  mediump float hLeft = texture2D(source, vec2(iUv.x - step.x, iUv.y)).r;
+  mediump float hRight = texture2D(source, vec2(iUv.x + step.x, iUv.y)).r;
+  mediump float hUp = texture2D(source, vec2(iUv.x, iUv.y - step.y)).r;
+  mediump float hDown = texture2D(source, vec2(iUv.x, iUv.y + step.y)).r;
   mediump float momentum = (state.g + state.b) * 2.0 - 1.0;
   mediump float newHeight = (hLeft + hUp + hRight + hDown) - 2.0;
   
@@ -83,7 +85,6 @@ Waves.prototype.propagate = function(water, influencePainter) {
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
 
     this.gl.uniform2f(this.program["uSize"], water.width, water.height);
-    this.gl.uniform1f(this.program["uScale"], water.SCALE);
     this.gl.uniform1f(this.program["uDamping"], this.DAMPING);
 
     this.gl.activeTexture(this.gl.TEXTURE0);

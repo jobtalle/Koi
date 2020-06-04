@@ -87,20 +87,27 @@ ConstraintCircle.prototype.getMeshSteps = function() {
  * Append a water mesh
  * @param {Number[]} vertices The vertex array
  * @param {Number[]} indices The index array
- * @param {Random} random A randomizer
+ * @param {Number} width The scene width
+ * @param {Number} height The scene height
  */
-ConstraintCircle.prototype.appendMeshWater = function(vertices, indices, random) {
+ConstraintCircle.prototype.appendMeshWater = function(
+    vertices,
+    indices,
+    width,
+    height) {
     const firstIndex = vertices.length >> 1;
     const steps = this.getMeshSteps();
 
-    vertices.push(this.position.x, this.position.y);
+    vertices.push(
+        2 * this.position.x / width - 1,
+        1 - 2 * this.position.y / height);
 
     for (let step = 0; step < steps; ++step) {
         const radians = Math.PI * 2 * step / steps;
 
         vertices.push(
-            this.position.x + Math.cos(radians) * this.radius,
-            this.position.y + Math.sin(radians) * this.radius);
+            2 * (this.position.x + Math.cos(radians) * this.radius) / width - 1,
+            1 - 2 * (this.position.y + Math.sin(radians) * this.radius) / height);
 
         indices.push(
             firstIndex,
@@ -116,7 +123,11 @@ ConstraintCircle.prototype.appendMeshWater = function(vertices, indices, random)
  * @param {Number} width The scene width
  * @param {Number} height The scene height
  */
-ConstraintCircle.prototype.appendMeshDepth = function(vertices, indices, width, height) {
+ConstraintCircle.prototype.appendMeshDepth = function(
+    vertices,
+    indices,
+    width,
+    height) {
     const firstIndex = vertices.length >> 2;
     const steps = this.getMeshSteps();
 

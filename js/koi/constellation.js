@@ -234,9 +234,9 @@ Constellation.prototype.makeMeshWater = function(gl, random) {
     const vertices = [];
     const indices = [];
 
-    this.big.constraint.appendMeshWater(vertices, indices, random);
-    this.small.constraint.appendMeshWater(vertices, indices, random);
-    this.river.constraint.appendMeshWater(vertices, indices, random);
+    this.big.constraint.appendMeshWater(vertices, indices, this.width, this.height);
+    this.small.constraint.appendMeshWater(vertices, indices, this.width, this.height);
+    this.river.constraint.appendMeshWater(vertices, indices, this.width, this.height);
 
     return new Mesh(gl, vertices, indices);
 };

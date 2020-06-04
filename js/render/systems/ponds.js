@@ -9,7 +9,7 @@ const Ponds = function(gl) {
         gl,
         this.SHADER_DISTORT_VERTEX,
         this.SHADER_DISTORT_FRAGMENT,
-        ["scale", "background", "reflections", "waterBack", "waterFront", "depth", "height", "size", "waterSize", "time"],
+        ["background", "reflections", "waterBack", "waterFront", "depth", "height", "size", "waterSize", "time"],
         ["position", "depth"]);
     this.vao = gl.vao.createVertexArrayOES();
     this.indexCount = -1;
@@ -19,13 +19,14 @@ Ponds.prototype.DEPTH = .1;
 Ponds.prototype.HEIGHT = .5;
 
 Ponds.prototype.SHADER_DISTORT_VERTEX = `#version 100
-uniform mediump float scale;
-uniform mediump vec2 size;
-
 attribute vec2 position;
 
+varying vec2 iUv;
+
 void main() {
-  gl_Position = vec4(vec2(2.0, -2.0) * position / size * scale + vec2(-1.0, 1.0), 0.999999, 1.0);
+  iUv = 0.5 * position + 0.5;
+
+  gl_Position = vec4(position, 0.999999, 1.0);
 }
 `;
 
@@ -34,14 +35,16 @@ uniform sampler2D background;
 uniform sampler2D reflections;
 uniform sampler2D waterBack;
 uniform sampler2D waterFront;
+uniform mediump vec2 size;
 uniform mediump float depth;
 uniform mediump float height;
-uniform mediump vec2 size;
 uniform mediump vec2 waterSize;
 uniform mediump float time;
 
+varying mediump vec2 iUv;
+
 mediump float get(mediump vec2 delta) {
-  mediump vec2 uv = gl_FragCoord.xy / size + delta / waterSize;
+  mediump vec2 uv = iUv + delta / waterSize;
   
   return mix(texture2D(waterBack, uv).r, texture2D(waterFront, uv).r, time) * 6.0 - 3.0;
 }
@@ -65,8 +68,8 @@ void main() {
   
   mediump vec4 filter = vec4(0.93, 0.98, 1.0, 1.0) * vec4(0.92, 0.97, 1.0, 1.0);
   
-  lowp vec4 pixel = texture2D(background, gl_FragCoord.xy / size - depth * normal.xz / size);
-  lowp vec4 reflected = texture2D(reflections, gl_FragCoord.xy / size + height * normal.xz / size);
+  lowp vec4 pixel = texture2D(background, iUv - depth * normal.xz / size);
+  lowp vec4 reflected = texture2D(reflections, iUv + height * normal.xz / size);
   
   gl_FragColor = mix(
     filter * mix(pixel, reflected, 0.16),
@@ -111,7 +114,6 @@ Ponds.prototype.render = function(
     this.program.use();
     this.gl.vao.bindVertexArrayOES(this.vao);
 
-    this.gl.uniform1f(this.program["uScale"], scale);
     this.gl.uniform1i(this.program["uBackground"], 0);
     this.gl.uniform1i(this.program["uReflections"], 1);
     this.gl.uniform1i(this.program["uWaterBack"], 2);

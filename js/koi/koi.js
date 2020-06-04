@@ -217,9 +217,6 @@ Koi.prototype.render = function(deltaTime) {
 
     // Blur shadows
     this.systems.blur.applyMesh(
-        this.systems.width,
-        this.systems.height,
-        this.scale,
         this.shadowBuffer.renderTarget,
         this.shadowBuffer.intermediate);
 
