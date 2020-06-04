@@ -4,7 +4,6 @@
  * @constructor
  */
 const Shadows = function(gl) {
-    this.gl = gl;
     this.program = new Shader(
         gl,
         this.VERTEX_SHADER,
@@ -12,8 +11,23 @@ const Shadows = function(gl) {
         ["meter", "shadowDepth"],
         ["position", "depth"]);
     this.vao = gl.vao.createVertexArrayOES();
-    this.indexCount = -1;
+
+    Meshed.call(this, gl, [
+        new Meshed.VAOConfiguration(
+            this.vao,
+            () => {
+                gl.enableVertexAttribArray(this.program["aPosition"]);
+                gl.vertexAttribPointer(this.program["aPosition"],
+                    2, gl.FLOAT, false, 16, 0);
+                gl.enableVertexAttribArray(this.program["aDepth"]);
+                gl.vertexAttribPointer(this.program["aDepth"],
+                    2, gl.FLOAT, false, 16, 8);
+            }
+        )
+    ])
 };
+
+Shadows.prototype = Object.create(Meshed.prototype);
 
 Shadows.prototype.VERTEX_SHADER = `#version 100
 attribute vec2 position;
@@ -49,23 +63,6 @@ void main() {
 Shadows.prototype.SHADOW_DEPTH = .35;
 
 /**
- * Set the mesh for the shadows renderer
- * @param {Mesh} mesh The mesh containing depth values
- */
-Shadows.prototype.setMesh = function(mesh) {
-    this.indexCount = mesh.indexCount;
-
-    this.gl.vao.bindVertexArrayOES(this.vao);
-
-    mesh.bindBuffers();
-
-    this.gl.enableVertexAttribArray(this.program["aPosition"]);
-    this.gl.vertexAttribPointer(this.program["aPosition"], 2, this.gl.FLOAT, false, 16, 0);
-    this.gl.enableVertexAttribArray(this.program["aDepth"]);
-    this.gl.vertexAttribPointer(this.program["aDepth"], 2, this.gl.FLOAT, false, 16, 8);
-};
-
-/**
  * Render shadows
  * @param {ShadowBuffer} buffer A buffer to read shadows from
  * @param {Number} height The render target height
@@ -87,7 +84,7 @@ Shadows.prototype.render = function(buffer, height, scale) {
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
 
-    this.gl.drawElements(this.gl.TRIANGLES, this.indexCount, this.gl.UNSIGNED_SHORT, 0);
+    this.renderMesh();
 
     this.gl.disable(this.gl.BLEND);
 };

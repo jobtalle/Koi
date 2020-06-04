@@ -47,7 +47,7 @@ Koi.prototype.createRenderables = function() {
     this.constellationMeshWater = this.constellation.makeMeshWater(this.systems.gl, this.random);
     this.constellationMeshDepth = this.constellation.makeMeshDepth(this.systems.gl);
 
-    // Assign constellation meshes
+    // Assign constellation meshes to systems
     this.systems.sand.setMesh(this.constellationMeshDepth);
     this.systems.shadows.setMesh(this.constellationMeshDepth);
     this.systems.blur.setMesh(this.constellationMeshWater);
@@ -66,6 +66,7 @@ Koi.prototype.createRenderables = function() {
     this.background = new Background(
         this.systems.gl,
         this.systems.sand,
+        this.systems.blit,
         this.systems.width,
         this.systems.height,
         this.scale);
@@ -90,6 +91,9 @@ Koi.prototype.createRenderables = function() {
         this.systems.gl,
         this.systems.width / this.scale,
         this.systems.height / this.scale);
+
+    // Assign constellation meshes to objects
+    this.background.setMesh(this.constellationMeshDepth);
 
     // Assign scene object meshes
     this.systems.stone.setMesh(this.foreground.rocks.mesh);
@@ -224,8 +228,7 @@ Koi.prototype.render = function(deltaTime) {
     this.underwater.target();
 
     // Render background
-    this.background.render(
-        this.systems.quad);
+    this.background.render();
 
     // Render shadows
     this.systems.shadows.render(

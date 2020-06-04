@@ -9,7 +9,7 @@ const Mesh = function(gl, vertices, indices) {
     this.gl = gl;
     this.vertices = gl.createBuffer();
     this.indices = gl.createBuffer();
-    this.indexCount = indices.length;
+    this.elementCount = indices.length;
 
     gl.vao.bindVertexArrayOES(null);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vertices);

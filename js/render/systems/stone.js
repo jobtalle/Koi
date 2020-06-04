@@ -4,7 +4,6 @@
  * @constructor
  */
 const Stone = function(gl) {
-    this.gl = gl;
     this.program = new Shader(
         gl,
         this.SHADER_VERTEX,
@@ -18,8 +17,41 @@ const Stone = function(gl) {
         ["size", "scale"],
         ["color", "lightness", "position"]);
     this.vao = gl.vao.createVertexArrayOES();
-    this.indexCount = -1;
+    this.vaoReflect = gl.vao.createVertexArrayOES();
+
+    Meshed.call(this, gl, [
+        new Meshed.VAOConfiguration(
+            this.vao,
+            () => {
+                gl.enableVertexAttribArray(this.program["aColor"]);
+                gl.vertexAttribPointer(this.program["aColor"],
+                    3, gl.FLOAT, false, 28, 0);
+                gl.enableVertexAttribArray(this.program["aLightness"]);
+                gl.vertexAttribPointer(this.program["aLightness"],
+                    1, gl.FLOAT, false, 28, 12);
+                gl.enableVertexAttribArray(this.program["aPosition"]);
+                gl.vertexAttribPointer(this.program["aPosition"],
+                    3, gl.FLOAT, false, 28, 16);
+            }
+        ),
+        new Meshed.VAOConfiguration(
+            this.vaoReflect,
+            () => {
+                gl.enableVertexAttribArray(this.programReflect["aColor"]);
+                gl.vertexAttribPointer(this.programReflect["aColor"],
+                    3, gl.FLOAT, false, 28, 0);
+                gl.enableVertexAttribArray(this.programReflect["aLightness"]);
+                gl.vertexAttribPointer(this.programReflect["aLightness"],
+                    1, gl.FLOAT, false, 28, 12);
+                gl.enableVertexAttribArray(this.programReflect["aPosition"]);
+                gl.vertexAttribPointer(this.programReflect["aPosition"],
+                    3, gl.FLOAT, false, 28, 16);
+            }
+        )
+    ]);
 };
+
+Stone.prototype = Object.create(Meshed.prototype);
 
 Stone.prototype.SHADER_VERTEX = `#version 100
 uniform vec2 size;
@@ -80,25 +112,6 @@ void main() {
 `;
 
 /**
- * Set the mesh for this stone renderer
- * @param {Mesh} mesh The mesh
- */
-Stone.prototype.setMesh = function(mesh) {
-    this.indexCount = mesh.indexCount;
-
-    this.gl.vao.bindVertexArrayOES(this.vao);
-
-    mesh.bindBuffers();
-
-    this.gl.enableVertexAttribArray(this.program["aColor"]);
-    this.gl.vertexAttribPointer(this.program["aColor"], 3, this.gl.FLOAT, false, 28, 0);
-    this.gl.enableVertexAttribArray(this.program["aLightness"]);
-    this.gl.vertexAttribPointer(this.program["aLightness"], 1, this.gl.FLOAT, false, 28, 12);
-    this.gl.enableVertexAttribArray(this.program["aPosition"]);
-    this.gl.vertexAttribPointer(this.program["aPosition"], 3, this.gl.FLOAT, false, 28, 16);
-};
-
-/**
  * Render the stone
  * @param {Number} width The background width in pixels
  * @param {Number} height The background height in pixels
@@ -112,7 +125,7 @@ Stone.prototype.render = function(width, height, scale) {
     this.gl.uniform1f(this.program["uScale"], scale);
 
     this.gl.enable(this.gl.CULL_FACE);
-    this.gl.drawElements(this.gl.TRIANGLES, this.indexCount, this.gl.UNSIGNED_SHORT, 0);
+    this.renderMesh();
     this.gl.disable(this.gl.CULL_FACE);
 };
 
@@ -124,12 +137,12 @@ Stone.prototype.render = function(width, height, scale) {
  */
 Stone.prototype.renderReflections = function(width, height, scale) {
     this.programReflect.use();
-    this.gl.vao.bindVertexArrayOES(this.vao);
+    this.gl.vao.bindVertexArrayOES(this.vaoReflect);
 
     this.gl.uniform2f(this.programReflect["uSize"], width, height);
     this.gl.uniform1f(this.programReflect["uScale"], scale);
 
-    this.gl.drawElements(this.gl.TRIANGLES, this.indexCount, this.gl.UNSIGNED_SHORT, 0);
+    this.renderMesh();
 };
 
 /**
@@ -139,5 +152,6 @@ Stone.prototype.free = function() {
     this.program.free();
     this.programReflect.free();
     this.gl.vao.deleteVertexArrayOES(this.vao);
+    this.gl.vao.deleteVertexArrayOES(this.vaoReflect);
 };
 

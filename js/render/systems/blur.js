@@ -5,7 +5,6 @@
  * @constructor
  */
 const Blur = function(gl, quad) {
-    this.gl = gl;
     this.programMesh = new Shader(
         gl,
         this.SHADER_VERTEX_MESH,
@@ -20,14 +19,26 @@ const Blur = function(gl, quad) {
         ["position"]);
     this.vaoMesh = gl.vao.createVertexArrayOES();
     this.vaoQuad = gl.vao.createVertexArrayOES();
-    this.indexCount = -1;
 
     gl.vao.bindVertexArrayOES(this.vaoQuad);
     gl.bindBuffer(gl.ARRAY_BUFFER, quad.buffer);
 
     gl.enableVertexAttribArray(this.programQuad["aPosition"]);
     gl.vertexAttribPointer(this.programQuad["aPosition"], 2, gl.FLOAT, false, 8, 0);
+
+    Meshed.call(this, gl, [
+        new Meshed.VAOConfiguration(
+            this.vaoMesh,
+            () => {
+                gl.enableVertexAttribArray(this.programMesh["aPosition"]);
+                gl.vertexAttribPointer(this.programMesh["aPosition"],
+                    2, gl.FLOAT, false, 8, 0);
+            }
+        )
+    ])
 };
+
+Blur.prototype = Object.create(Meshed.prototype);
 
 Blur.prototype.SHADER_VERTEX_MESH = `#version 100
 attribute vec2 position;
@@ -60,21 +71,6 @@ void main() {
 `;
 
 /**
- * Set the mesh for the blur shader
- * @param {Mesh} mesh The mesh containing depth values
- */
-Blur.prototype.setMesh = function(mesh) {
-    this.indexCount = mesh.indexCount;
-
-    this.gl.vao.bindVertexArrayOES(this.vaoMesh);
-
-    mesh.bindBuffers();
-
-    this.gl.enableVertexAttribArray(this.programMesh["aPosition"]);
-    this.gl.vertexAttribPointer(this.programMesh["aPosition"], 2, this.gl.FLOAT, false, 8, 0);
-};
-
-/**
  * Apply 5x5 gaussian blur to the currently set mesh
  * @param {RenderTarget} target A render target to blur
  * @param {RenderTarget} intermediate An intermediate render target with the same properties as target
@@ -94,7 +90,7 @@ Blur.prototype.applyMesh = function(target, intermediate) {
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
 
-    this.gl.drawElements(this.gl.TRIANGLES, this.indexCount, this.gl.UNSIGNED_SHORT, 0);
+    this.renderMesh();
 
     target.target();
 
@@ -104,7 +100,7 @@ Blur.prototype.applyMesh = function(target, intermediate) {
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
 
-    this.gl.drawElements(this.gl.TRIANGLES, this.indexCount, this.gl.UNSIGNED_SHORT, 0);
+    this.renderMesh();
 };
 
 /**

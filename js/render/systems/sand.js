@@ -5,7 +5,6 @@
  * @constructor
  */
 const Sand = function(gl, randomSource) {
-    this.gl = gl;
     this.randomSource = randomSource;
     this.program = new Shader(
         gl,
@@ -14,8 +13,23 @@ const Sand = function(gl, randomSource) {
         ["scale", "colorDeep", "colorShallow"],
         ["position", "depth"]);
     this.vao = gl.vao.createVertexArrayOES();
-    this.indexCount = -1;
+
+    Meshed.call(this, gl, [
+        new Meshed.VAOConfiguration(
+            this.vao,
+            () => {
+                gl.enableVertexAttribArray(this.program["aPosition"]);
+                gl.vertexAttribPointer(this.program["aPosition"],
+                    2, gl.FLOAT, false, 16, 0);
+                gl.enableVertexAttribArray(this.program["aDepth"]);
+                gl.vertexAttribPointer(this.program["aDepth"],
+                    2, gl.FLOAT, false, 16, 8);
+            }
+        )
+    ]);
 };
+
+Sand.prototype = Object.create(Meshed.prototype);
 
 Sand.prototype.COLOR_DEEP = Color.fromCSS("water-deep");
 Sand.prototype.COLOR_SHALLOW = Color.fromCSS("water-shallow");
@@ -52,23 +66,6 @@ void main() {
 `;
 
 /**
- * Set the mesh for the sand renderer
- * @param {Mesh} mesh The mesh
- */
-Sand.prototype.setMesh = function(mesh) {
-    this.indexCount = mesh.indexCount;
-
-    this.gl.vao.bindVertexArrayOES(this.vao);
-
-    mesh.bindBuffers();
-
-    this.gl.enableVertexAttribArray(this.program["aPosition"]);
-    this.gl.vertexAttribPointer(this.program["aPosition"], 2, this.gl.FLOAT, false, 16, 0);
-    this.gl.enableVertexAttribArray(this.program["aDepth"]);
-    this.gl.vertexAttribPointer(this.program["aDepth"], 2, this.gl.FLOAT, false, 16, 8);
-};
-
-/**
  * Write a sand texture
  * @param {Number} scale The render scale
  */
@@ -83,7 +80,7 @@ Sand.prototype.write = function(scale) {
     this.gl.uniform3f(this.program["uColorDeep"], this.COLOR_DEEP.r, this.COLOR_DEEP.g, this.COLOR_DEEP.b);
     this.gl.uniform3f(this.program["uColorShallow"], this.COLOR_SHALLOW.r, this.COLOR_SHALLOW.g, this.COLOR_SHALLOW.b);
 
-    this.gl.drawElements(this.gl.TRIANGLES, this.indexCount, this.gl.UNSIGNED_SHORT, 0);
+    this.renderMesh();
 };
 
 /**

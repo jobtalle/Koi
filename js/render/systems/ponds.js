@@ -4,7 +4,6 @@
  * @constructor
  */
 const Ponds = function(gl) {
-    this.gl = gl;
     this.program = new Shader(
         gl,
         this.SHADER_DISTORT_VERTEX,
@@ -12,8 +11,20 @@ const Ponds = function(gl) {
         ["background", "reflections", "waterBack", "waterFront", "depth", "height", "size", "waterSize", "time"],
         ["position", "depth"]);
     this.vao = gl.vao.createVertexArrayOES();
-    this.indexCount = -1;
+
+    Meshed.call(this, gl, [
+        new Meshed.VAOConfiguration(
+            this.vao,
+            () => {
+                gl.enableVertexAttribArray(this.program["aPosition"]);
+                gl.vertexAttribPointer(this.program["aPosition"],
+                    2, gl.FLOAT, false, 8, 0);
+            }
+        )
+    ]);
 };
+
+Ponds.prototype = Object.create(Meshed.prototype);
 
 Ponds.prototype.DEPTH = .1;
 Ponds.prototype.HEIGHT = .5;
@@ -79,21 +90,6 @@ void main() {
 `;
 
 /**
- * Set the mesh
- * @param {Mesh} mesh The mesh
- */
-Ponds.prototype.setMesh = function(mesh) {
-    this.indexCount = mesh.indexCount;
-
-    this.gl.vao.bindVertexArrayOES(this.vao);
-
-    mesh.bindBuffers();
-
-    this.gl.enableVertexAttribArray(this.program["aPosition"]);
-    this.gl.vertexAttribPointer(this.program["aPosition"], 2, this.gl.FLOAT, false, 8, 0);
-};
-
-/**
  * Render ponds
  * @param {WebGLTexture} background A background texture
  * @param {WebGLTexture} reflections A texture containing the reflections
@@ -133,7 +129,7 @@ Ponds.prototype.render = function(
     this.gl.activeTexture(this.gl.TEXTURE3);
     this.gl.bindTexture(this.gl.TEXTURE_2D, water.getFront().texture);
 
-    this.gl.drawElements(this.gl.TRIANGLES, this.indexCount, this.gl.UNSIGNED_SHORT, 0);
+    this.renderMesh();
 };
 
 /**

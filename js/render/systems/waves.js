@@ -4,7 +4,6 @@
  * @constructor
  */
 const Waves = function(gl) {
-    this.gl = gl;
     this.program = new Shader(
         gl,
         this.SHADER_PROPAGATE_VERTEX,
@@ -12,8 +11,20 @@ const Waves = function(gl) {
         ["size", "damping"],
         ["position"]);
     this.vao = gl.vao.createVertexArrayOES();
-    this.indexCount = -1;
+
+    Meshed.call(this, gl, [
+        new Meshed.VAOConfiguration(
+            this.vao,
+            () => {
+                gl.enableVertexAttribArray(this.program["aPosition"]);
+                gl.vertexAttribPointer(this.program["aPosition"],
+                    2, gl.FLOAT, false, 8, 0);
+            }
+        )
+    ])
 };
+
+Waves.prototype = Object.create(Meshed.prototype);
 
 Waves.prototype.DAMPING = .997;
 
@@ -55,21 +66,6 @@ void main() {
 `;
 
 /**
- * Set the mesh
- * @param {Mesh} mesh The mesh
- */
-Waves.prototype.setMesh = function(mesh) {
-    this.indexCount = mesh.indexCount;
-
-    this.gl.vao.bindVertexArrayOES(this.vao);
-
-    mesh.bindBuffers();
-
-    this.gl.enableVertexAttribArray(this.program.aPosition);
-    this.gl.vertexAttribPointer(this.program.aPosition, 2, this.gl.FLOAT, false, 8, 0);
-};
-
-/**
  * Propagate the waves on a water plane
  * @param {Water} water A water plane
  * @param {InfluencePainter} influencePainter An influence painter to render wave influences
@@ -92,7 +88,7 @@ Waves.prototype.propagate = function(water, influencePainter) {
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
 
-    this.gl.drawElements(this.gl.TRIANGLES, this.indexCount, this.gl.UNSIGNED_SHORT, 0);
+    this.renderMesh();
 
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);

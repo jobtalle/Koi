@@ -4,7 +4,6 @@
  * @constructor
  */
 const Vegetation = function(gl) {
-    this.gl = gl;
     this.program = new Shader(
         gl,
         this.SHADER_VERTEX,
@@ -17,11 +16,42 @@ const Vegetation = function(gl) {
         this.SHADER_FRAGMENT_REFLECT,
         ["size", "scale"],
         ["color", "position"]);
-
-    this.indexCount = -1;
     this.vao = gl.vao.createVertexArrayOES();
     this.vaoReflect = gl.vao.createVertexArrayOES();
+
+    Meshed.call(this, gl, [
+        new Meshed.VAOConfiguration(
+            this.vao,
+            () => {
+                gl.enableVertexAttribArray(this.program["aColor"]);
+                gl.vertexAttribPointer(this.program["aColor"],
+                    3, gl.FLOAT, false, 36, 0);
+                gl.enableVertexAttribArray(this.program["aPosition"]);
+                gl.vertexAttribPointer(this.program["aPosition"],
+                    3, gl.FLOAT, false, 36, 12);
+                gl.enableVertexAttribArray(this.program["aFlexibility"]);
+                gl.vertexAttribPointer(this.program["aFlexibility"],
+                    1, gl.FLOAT, false, 36, 24);
+                gl.enableVertexAttribArray(this.program["aWindPosition"]);
+                gl.vertexAttribPointer(this.program["aWindPosition"],
+                    2, gl.FLOAT, false, 36, 28);
+            }
+        ),
+        new Meshed.VAOConfiguration(
+            this.vaoReflect,
+            () => {
+                gl.enableVertexAttribArray(this.programReflect["aColor"]);
+                gl.vertexAttribPointer(this.programReflect["aColor"],
+                    3, gl.FLOAT, false, 36, 0);
+                gl.enableVertexAttribArray(this.programReflect["aPosition"]);
+                gl.vertexAttribPointer(this.programReflect["aPosition"],
+                    3, gl.FLOAT, false, 36, 12);
+            }
+        )
+    ]);
 };
+
+Vegetation.prototype = Object.create(Meshed.prototype);
 
 Vegetation.prototype.SHADER_VERTEX = `#version 100
 uniform sampler2D airBack;
@@ -89,36 +119,6 @@ void main() {
 `;
 
 /**
- * Set the mesh
- * @param {Mesh} mesh The mesh
- */
-Vegetation.prototype.setMesh = function(mesh) {
-    this.indexCount = mesh.indexCount;
-
-    this.gl.vao.bindVertexArrayOES(this.vao);
-
-    mesh.bindBuffers();
-
-    this.gl.enableVertexAttribArray(this.program["aColor"]);
-    this.gl.vertexAttribPointer(this.program["aColor"], 3, this.gl.FLOAT, false, 36, 0);
-    this.gl.enableVertexAttribArray(this.program["aPosition"]);
-    this.gl.vertexAttribPointer(this.program["aPosition"], 3, this.gl.FLOAT, false, 36, 12);
-    this.gl.enableVertexAttribArray(this.program["aFlexibility"]);
-    this.gl.vertexAttribPointer(this.program["aFlexibility"], 1, this.gl.FLOAT, false, 36, 24);
-    this.gl.enableVertexAttribArray(this.program["aWindPosition"]);
-    this.gl.vertexAttribPointer(this.program["aWindPosition"], 2, this.gl.FLOAT, false, 36, 28);
-
-    this.gl.vao.bindVertexArrayOES(this.vaoReflect);
-
-    mesh.bindBuffers();
-
-    this.gl.enableVertexAttribArray(this.programReflect["aColor"]);
-    this.gl.vertexAttribPointer(this.programReflect["aColor"], 3, this.gl.FLOAT, false, 36, 0);
-    this.gl.enableVertexAttribArray(this.programReflect["aPosition"]);
-    this.gl.vertexAttribPointer(this.programReflect["aPosition"], 3, this.gl.FLOAT, false, 36, 12);
-};
-
-/**
  * Render a mesh as vegetation
  * @param {Air} air An air object to displace vegetation with
  * @param {Number} width The render target width
@@ -141,7 +141,7 @@ Vegetation.prototype.render = function(air, width, height, scale, time) {
     this.gl.uniform2f(this.program["uSize"], width, height);
     this.gl.uniform1f(this.program["uScale"], scale);
 
-    this.gl.drawElements(this.gl.TRIANGLES, this.indexCount, this.gl.UNSIGNED_SHORT, 0);
+    this.renderMesh();
 };
 
 /**
@@ -157,7 +157,7 @@ Vegetation.prototype.renderReflections = function(width, height, scale) {
     this.gl.uniform2f(this.programReflect["uSize"], width, height);
     this.gl.uniform1f(this.programReflect["uScale"], scale);
 
-    this.gl.drawElements(this.gl.TRIANGLES, this.indexCount, this.gl.UNSIGNED_SHORT, 0);
+    this.renderMesh();
 };
 
 /**
