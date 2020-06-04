@@ -129,7 +129,6 @@ Rocks.prototype.createMesh = function(
 
     plans.sort((a, b) => b.y - a.y);
 
-    // TODO: Cull rocks outside view
     for (const plan of plans) {
         this.createPillar(
             vertices,

@@ -6,8 +6,8 @@
 const Waves = function(gl) {
     this.program = new Shader(
         gl,
-        this.SHADER_PROPAGATE_VERTEX,
-        this.SHADER_PROPAGATE_FRAGMENT,
+        this.SHADER_VERTEX,
+        this.SHADER_FRAGMENT,
         ["size", "damping"],
         ["position"]);
     this.vao = gl.vao.createVertexArrayOES();
@@ -28,7 +28,7 @@ Waves.prototype = Object.create(Meshed.prototype);
 
 Waves.prototype.DAMPING = .997;
 
-Waves.prototype.SHADER_PROPAGATE_VERTEX = `#version 100
+Waves.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
 
 varying vec2 iUv;
@@ -40,7 +40,7 @@ void main() {
 }
 `;
 
-Waves.prototype.SHADER_PROPAGATE_FRAGMENT = `#version 100
+Waves.prototype.SHADER_FRAGMENT = `#version 100
 uniform sampler2D source;
 uniform mediump vec2 size;
 uniform mediump float damping;

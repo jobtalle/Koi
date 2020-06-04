@@ -15,9 +15,17 @@ const Bodies = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["size", "scale", "shadow"],
+        ["scale"],
+        ["position", "uv"]);
+    this.programShadows = new Shader(
+        gl,
+        this.SHADER_SHADOWS_VERTEX,
+        this.SHADER_SHADOWS_FRAGMENT,
+        ["scale"],
         ["position", "uv"]);
     this.vao = gl.vao.createVertexArrayOES();
+    this.vaoShadows = gl.vao.createVertexArrayOES();
+    this.uploaded = false;
 
     gl.vao.bindVertexArrayOES(this.vao);
 
@@ -27,13 +35,19 @@ const Bodies = function(gl) {
     gl.vertexAttribPointer(this.program["aPosition"], 2, gl.FLOAT, false, 16, 0);
     gl.enableVertexAttribArray(this.program["aUv"]);
     gl.vertexAttribPointer(this.program["aUv"], 2, gl.FLOAT, false, 16, 8);
+
+    gl.vao.bindVertexArrayOES(this.vaoShadows);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferVertices);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferIndices);
+    gl.enableVertexAttribArray(this.programShadows["aPosition"]);
+    gl.vertexAttribPointer(this.programShadows["aPosition"], 2, gl.FLOAT, false, 16, 0);
+    gl.enableVertexAttribArray(this.programShadows["aUv"]);
+    gl.vertexAttribPointer(this.programShadows["aUv"], 2, gl.FLOAT, false, 16, 8);
 };
 
-Bodies.prototype.SHADOW_ALPHA = .4;
-
 Bodies.prototype.SHADER_VERTEX = `#version 100
-uniform mediump float scale;
-uniform mediump vec2 size;
+uniform vec2 scale;
 
 attribute vec2 position;
 attribute vec2 uv;
@@ -43,7 +57,7 @@ varying vec2 iUv;
 void main() {
   iUv = uv;
   
-  gl_Position = vec4(vec2(2.0, -2.0) * position / size * scale + vec2(-1.0, 1.0), 0.0, 1.0);
+  gl_Position = vec4(position * scale + vec2(-1.0, 1.0), 0.0, 1.0);
 }
 `;
 
@@ -54,7 +68,32 @@ uniform mediump vec2 shadow;
 varying mediump vec2 iUv;
 
 void main() {
-  gl_FragColor = texture2D(atlas, iUv) * vec4(vec3(shadow.r), shadow.g);
+  gl_FragColor = texture2D(atlas, iUv);
+}
+`;
+
+Bodies.prototype.SHADER_SHADOWS_VERTEX = `#version 100
+uniform vec2 scale;
+
+attribute vec2 position;
+attribute vec2 uv;
+
+varying mediump vec2 iUv;
+
+void main() {
+  iUv = uv;
+  
+  gl_Position = vec4(position * scale + vec2(-1.0, 1.0), 0.0, 1.0);
+}
+`;
+
+Bodies.prototype.SHADER_SHADOWS_FRAGMENT = `#version 100
+uniform sampler2D atlas;
+
+varying mediump vec2 iUv;
+
+void main() {
+  gl_FragColor = vec4(vec3(0.0), texture2D(atlas, iUv).a * 0.4);
 }
 `;
 
@@ -70,6 +109,9 @@ Bodies.prototype.getIndexOffset = function() {
  * Upload the buffered data
  */
 Bodies.prototype.upload = function() {
+    if (this.uploaded)
+        return;
+
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.bufferVertices);
     this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.bufferIndices);
 
@@ -86,6 +128,8 @@ Bodies.prototype.upload = function() {
     }
     else
         this.gl.bufferSubData(this.gl.ELEMENT_ARRAY_BUFFER, 0, new Uint16Array(this.indices));
+
+    this.uploaded = true;
 };
 
 /**
@@ -101,29 +145,31 @@ Bodies.prototype.render = function(atlas, width, height, scale, shadows) {
 
     this.upload();
 
-    this.program.use();
+    this.gl.enable(this.gl.BLEND);
+    this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
 
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, atlas.renderTarget.texture);
 
-    // TODO: Would be nice to wrap this into a 3D vector
-    this.gl.uniform2f(this.program["uSize"], width, height);
-    this.gl.uniform1f(this.program["uScale"], scale);
+    if (shadows) {
+        this.programShadows.use();
 
-    this.gl.enable(this.gl.BLEND);
-    this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
+        this.gl.uniform2f(this.programShadows["uScale"], 2 / width * scale, -2 / height * scale);
 
-    if (shadows)
-        this.gl.uniform2f(this.program["uShadow"], 0, this.SHADOW_ALPHA);
-    else
-        this.gl.uniform2f(this.program["uShadow"], 1, 1);
+        this.gl.drawElements(this.gl.TRIANGLES, this.indices.length, this.gl.UNSIGNED_SHORT, 0);
+    }
+    else {
+        this.program.use();
 
-    this.gl.drawElements(this.gl.TRIANGLES, this.indices.length, this.gl.UNSIGNED_SHORT, 0);
+        this.gl.uniform2f(this.program["uScale"], 2 / width * scale, -2 / height * scale);
+
+        this.gl.drawElements(this.gl.TRIANGLES, this.indices.length, this.gl.UNSIGNED_SHORT, 0);
+
+        this.vertices.length = this.indices.length = 0;
+        this.uploaded = false;
+    }
 
     this.gl.disable(this.gl.BLEND);
-
-    if (!shadows)
-        this.vertices.length = this.indices.length = 0;
 };
 
 /**
@@ -133,5 +179,7 @@ Bodies.prototype.free = function() {
     this.gl.deleteBuffer(this.bufferVertices);
     this.gl.deleteBuffer(this.bufferIndices);
     this.program.free();
+    this.programShadows.free();
     this.gl.vao.deleteVertexArrayOES(this.vao);
+    this.gl.vao.deleteVertexArrayOES(this.vaoShadows);
 };

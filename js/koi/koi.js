@@ -202,7 +202,7 @@ Koi.prototype.render = function(deltaTime) {
     while (this.time > this.UPDATE_RATE) {
         this.time -= this.UPDATE_RATE;
 
-        this.update(); // TODO: Add separate update step to spread out processing?
+        this.update();
     }
 
     const timeFactor = this.time / this.UPDATE_RATE;
