@@ -287,7 +287,7 @@ Koi.prototype.render = function(deltaTime) {
         timeFactor);
 
     // this.systems.gl.activeTexture(this.systems.gl.TEXTURE0);
-    // this.systems.gl.bindTexture(this.systems.gl.TEXTURE_2D, this.background.bottom.texture);
+    // this.systems.gl.bindTexture(this.systems.gl.TEXTURE_2D, this.foreground.reflections.texture);
     // this.systems.quad.render();
 };
 

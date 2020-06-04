@@ -30,9 +30,9 @@ attribute vec2 position;
 varying mediump vec2 iUv;
 
 void main() {
-  iUv = vec2(position.x, 1.0 - position.y);
+  iUv = position * 0.5 + 0.5;
   
-  gl_Position = vec4(vec2(2.0, -2.0) * position + vec2(-1.0, 1.0), 0.0, 1.0);
+  gl_Position = vec4(position, 0.0, 1.0);
 }
 `;
 

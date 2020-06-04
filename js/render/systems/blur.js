@@ -41,7 +41,7 @@ Blur.prototype.SHADER_VERTEX_QUAD = `#version 100
 attribute vec2 position;
 
 void main() {
-  gl_Position = vec4(vec2(2.0, -2.0) * position + vec2(-1.0, 1.0), 0.0, 1.0);
+  gl_Position = vec4(position, 0.0, 1.0);
 }
 `;
 
