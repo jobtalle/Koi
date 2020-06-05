@@ -27,7 +27,7 @@ const Foreground = function(
         gl.LINEAR);
 };
 
-Foreground.prototype.REFLECTION_SCALE = 40;
+Foreground.prototype.REFLECTION_SCALE = 25;
 Foreground.prototype.Y_SCALE = .7;
 Foreground.prototype.SKY_COLOR = Color.fromCSS("sky");
 
