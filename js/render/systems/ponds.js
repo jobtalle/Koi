@@ -8,7 +8,7 @@ const Ponds = function(gl) {
         gl,
         this.SHADER_DISTORT_VERTEX,
         this.SHADER_DISTORT_FRAGMENT,
-        ["background", "reflections", "waterBack", "waterFront", "depth", "height", "size", "waterSize", "time"],
+        ["background", "reflections", "water", "depth", "height", "size", "waterSize", "time"],
         ["position", "depth"]);
     this.vao = gl.vao.createVertexArrayOES();
 
@@ -44,8 +44,7 @@ void main() {
 Ponds.prototype.SHADER_DISTORT_FRAGMENT = `#version 100
 uniform sampler2D background;
 uniform sampler2D reflections;
-uniform sampler2D waterBack;
-uniform sampler2D waterFront;
+uniform sampler2D water;
 uniform mediump vec2 size;
 uniform mediump float depth;
 uniform mediump float height;
@@ -56,8 +55,9 @@ varying mediump vec2 iUv;
 
 mediump float get(mediump vec2 delta) {
   mediump vec2 uv = iUv + delta / waterSize;
+  lowp vec2 sample = texture2D(water, uv).rg;
   
-  return mix(texture2D(waterBack, uv).r, texture2D(waterFront, uv).r, time) * 6.0 - 3.0;
+  return mix(sample.g, sample.r, time) * 6.0 - 3.0;
 }
 
 void main() {
@@ -112,8 +112,7 @@ Ponds.prototype.render = function(
 
     this.gl.uniform1i(this.program["uBackground"], 0);
     this.gl.uniform1i(this.program["uReflections"], 1);
-    this.gl.uniform1i(this.program["uWaterBack"], 2);
-    this.gl.uniform1i(this.program["uWaterFront"], 3);
+    this.gl.uniform1i(this.program["uWater"], 2);
     this.gl.uniform1f(this.program["uDepth"], this.DEPTH * scale);
     this.gl.uniform1f(this.program["uHeight"], this.HEIGHT * scale);
     this.gl.uniform2f(this.program["uSize"], width, height);
@@ -125,8 +124,6 @@ Ponds.prototype.render = function(
     this.gl.activeTexture(this.gl.TEXTURE1);
     this.gl.bindTexture(this.gl.TEXTURE_2D, reflections);
     this.gl.activeTexture(this.gl.TEXTURE2);
-    this.gl.bindTexture(this.gl.TEXTURE_2D, water.getBack().texture);
-    this.gl.activeTexture(this.gl.TEXTURE3);
     this.gl.bindTexture(this.gl.TEXTURE_2D, water.getFront().texture);
 
     this.renderMesh();

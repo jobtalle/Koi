@@ -74,10 +74,10 @@ void main() {
   float displacement = mix(
     texture2D(airBack, vec2(uv.x, 1.0 - uv.y)).r * 2.0 - 1.0,
     texture2D(airFront, vec2(uv.x, 1.0 - uv.y)).r * 2.0 - 1.0,
-    time);    
+    time);
   
   gl_Position = vec4(
-    vec2(2.0, -2.0) * (position.xy - vec2(0.0, position.z) + flex * displacement) / size * scale + vec2(-1.0, 1.0),
+    vec2(2.0, -2.0) * (vec2(position.x, position.y - position.z) + flex * displacement) / size * scale + vec2(-1.0, 1.0),
     1.0 - position.y / size.y * scale,
     1.0);
 }
