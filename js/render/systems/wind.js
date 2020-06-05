@@ -21,7 +21,7 @@ const Wind = function(gl, quad) {
     gl.vertexAttribPointer(this.program.aPosition, 2, gl.FLOAT, false, 8, 0);
 };
 
-Wind.prototype.SPRING = .6;
+Wind.prototype.SPRING = .3;
 Wind.prototype.DAMPING = .92;
 
 Wind.prototype.SHADER_VERTEX = `#version 100
@@ -49,7 +49,7 @@ void main() {
   mediump float previousLeft = previous.g;
   mediump float previousRight = previous.b;
   mediump float motion = previousRight - previousLeft;
-  mediump float state = previousState + motion * 0.2;
+  mediump float state = previousState + motion * 0.4;
   
   motion = (motion - state * spring) * damping;
   

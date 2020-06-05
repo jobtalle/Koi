@@ -9,7 +9,7 @@ const Vegetation = function(gl) {
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
         ["size", "scale", "airBack", "airFront", "time"],
-        ["color", "position", "flexibility", "windPosition"]);
+        ["color", "position", "flex", "windPosition"]);
     this.programReflect = new Shader(
         gl,
         this.SHADER_VERTEX_REFLECT,
@@ -25,16 +25,16 @@ const Vegetation = function(gl) {
             () => {
                 gl.enableVertexAttribArray(this.program["aColor"]);
                 gl.vertexAttribPointer(this.program["aColor"],
-                    3, gl.FLOAT, false, 36, 0);
+                    3, gl.FLOAT, false, 40, 0);
                 gl.enableVertexAttribArray(this.program["aPosition"]);
                 gl.vertexAttribPointer(this.program["aPosition"],
-                    3, gl.FLOAT, false, 36, 12);
-                gl.enableVertexAttribArray(this.program["aFlexibility"]);
-                gl.vertexAttribPointer(this.program["aFlexibility"],
-                    1, gl.FLOAT, false, 36, 24);
+                    3, gl.FLOAT, false, 40, 12);
+                gl.enableVertexAttribArray(this.program["aFlex"]);
+                gl.vertexAttribPointer(this.program["aFlex"],
+                    2, gl.FLOAT, false, 40, 24);
                 gl.enableVertexAttribArray(this.program["aWindPosition"]);
                 gl.vertexAttribPointer(this.program["aWindPosition"],
-                    2, gl.FLOAT, false, 36, 28);
+                    2, gl.FLOAT, false, 40, 32);
             }
         ),
         new Meshed.VAOConfiguration(
@@ -42,10 +42,10 @@ const Vegetation = function(gl) {
             () => {
                 gl.enableVertexAttribArray(this.programReflect["aColor"]);
                 gl.vertexAttribPointer(this.programReflect["aColor"],
-                    3, gl.FLOAT, false, 36, 0);
+                    3, gl.FLOAT, false, 40, 0);
                 gl.enableVertexAttribArray(this.programReflect["aPosition"]);
                 gl.vertexAttribPointer(this.programReflect["aPosition"],
-                    3, gl.FLOAT, false, 36, 12);
+                    3, gl.FLOAT, false, 40, 12);
             }
         )
     ]);
@@ -62,7 +62,7 @@ uniform float scale;
 
 attribute vec3 color;
 attribute vec3 position;
-attribute float flexibility;
+attribute vec2 flex;
 attribute vec2 windPosition;
 
 varying vec3 iColor;
@@ -74,12 +74,10 @@ void main() {
   float displacement = mix(
     texture2D(airBack, vec2(uv.x, 1.0 - uv.y)).r * 2.0 - 1.0,
     texture2D(airFront, vec2(uv.x, 1.0 - uv.y)).r * 2.0 - 1.0,
-    time);
-  
-  vec2 displace = vec2(-displacement * flexibility, position.z - .5 * abs(displacement) * flexibility);
+    time);    
   
   gl_Position = vec4(
-    vec2(2.0, -2.0) * (position.xy - displace) / size * scale + vec2(-1.0, 1.0),
+    vec2(2.0, -2.0) * (position.xy - vec2(0.0, position.z) + flex * displacement) / size * scale + vec2(-1.0, 1.0),
     1.0 - position.y / size.y * scale,
     1.0);
 }

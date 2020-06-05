@@ -10,13 +10,14 @@ const Plants = function(gl, constellation, slots, random) {
     this.mesh = this.makeMesh(gl, constellation, slots, random);
 };
 
-Plants.prototype.WIND_UV_RADIUS = .4;
+Plants.prototype.STRIDE = 10;
+Plants.prototype.WIND_UV_RADIUS = .45;
 
 Plants.prototype.BLADE_HEIGHT_MIN = .3;
 Plants.prototype.BLADE_HEIGHT_MAX = .85;
 Plants.prototype.BLADE_FLEXIBILITY_POWER = 3.5;
 
-Plants.prototype.STALK_FLEXIBILITY_POWER = 2.5;
+Plants.prototype.STALK_FLEXIBILITY_POWER = 1.5;
 Plants.prototype.STALK_SHADE = .8;
 
 Plants.prototype.LEAF_RESOLUTION = .15;
@@ -56,7 +57,7 @@ Plants.prototype.makeMesh = function(gl, constellation, slots, random) {
  * @returns {Number} The first index of vertices that will be added to the array
  */
 Plants.prototype.getFirstIndex = function(vertices) {
-    return vertices.length / 9;
+    return vertices.length / this.STRIDE;
 };
 
 /**
@@ -73,6 +74,60 @@ Plants.prototype.makeUV = function(x, y, random) {
     return new Vector2(
         x + Math.cos(angle) * radius,
         y + Math.sin(angle) * radius);
+};
+
+/**
+ * Make a flex vector that determines the direction in which a vegetation vertex bends
+ * @param {Number} flex The amount of flex
+ * @param {Number} x The X position of the vertex
+ * @param {Number} z The Z position of the vertex
+ * @param {Number} xOrigin The plant X origin
+ * @param {Number} zOrigin The plant Z origin
+ * @returns {Vector2} The flex vector
+ */
+Plants.prototype.makeFlexVector = function(
+    flex,
+    x,
+    z,
+    xOrigin,
+    zOrigin) {
+    const dx = x - xOrigin;
+    const dz = z - zOrigin;
+
+    if (dx === 0 && dz === 0)
+        return new Vector2();
+
+    return new Vector2(dz * flex, dx * flex);
+};
+
+/**
+ * Make flex vectors for a range of vertices
+ * @param {Number} flex The amount of flex
+ * @param {Number} start The start index
+ * @param {Number} end The end index
+ * @param {Number} xOrigin The plant X origin
+ * @param {Number} zOrigin The plant Z origin
+ * @param {Number[]} vertices The vertex array
+ */
+Plants.prototype.makeFlexVectors = function(
+    flex,
+    start,
+    end,
+    xOrigin,
+    zOrigin,
+    vertices) {
+    for (let i = start; i <= end; ++i) {
+        const index = i * this.STRIDE;
+        const flexVector = this.makeFlexVector(
+            flex,
+            vertices[index + 3],
+            vertices[index + 5],
+            xOrigin,
+            zOrigin);
+
+        vertices[index + 6] += flexVector.x;
+        vertices[index + 7] += flexVector.y;
+    }
 };
 
 /**
@@ -96,25 +151,27 @@ Plants.prototype.modelCattail = function(
 
 /**
  * Model a leaf
+ * @param {Vector2} flexVector The flex vector at the root of this leaf
  * @param {Number} x1 The X origin
  * @param {Number} z1 The Z origin
  * @param {Number} x2 The X target
  * @param {Number} z2 The Z target
  * @param {Number} y The Y position
  * @param {Number} width The leaf width factor, proportional to length
- * @param {Number} flexibility The flexibility
+ * @param {Number} flex The flexibility
  * @param {Vector2} uv The air UV
  * @param {Number[]} vertices The vertex array
  * @param {Number[]} indices The index array
  */
 Plants.prototype.modelLeaf = function(
+    flexVector,
     x1,
     z1,
     x2,
     z2,
     y,
     width,
-    flexibility,
+    flex,
     uv,
     vertices,
     indices) {
@@ -137,7 +194,8 @@ Plants.prototype.modelLeaf = function(
         x1,
         y,
         z1,
-        flexibility,
+        flexVector.x,
+        flexVector.y,
         uv.x,
         uv.y,
         this.COLOR_LEAF.r * shadeRight,
@@ -146,7 +204,8 @@ Plants.prototype.modelLeaf = function(
         x1,
         y,
         z1,
-        flexibility,
+        flexVector.x,
+        flexVector.y,
         uv.x,
         uv.y);
 
@@ -169,7 +228,8 @@ Plants.prototype.modelLeaf = function(
             x1 + dx * f + dzn * radius * centerOffset,
             y,
             z1 + dz * f - dxn * radius * centerOffset,
-            flexibility,
+            flexVector.x,
+            flexVector.y,
             uv.x,
             uv.y,
             this.COLOR_LEAF.r * shadeRight,
@@ -178,7 +238,8 @@ Plants.prototype.modelLeaf = function(
             x1 + dx * f + dzn * radius,
             y,
             z1 + dz * f - dxn * radius,
-            flexibility,
+            flexVector.x,
+            flexVector.y,
             uv.x,
             uv.y);
 
@@ -189,7 +250,8 @@ Plants.prototype.modelLeaf = function(
             x1 + dx * f + dzn * radius * centerOffset,
             y,
             z1 + dz * f - dxn * radius * centerOffset,
-            flexibility,
+            flexVector.x,
+            flexVector.y,
             uv.x,
             uv.y,
             this.COLOR_LEAF.r * shadeLeft,
@@ -198,7 +260,8 @@ Plants.prototype.modelLeaf = function(
             x1 + dx * f - dzn * radius,
             y,
             z1 + dz * f + dxn * radius,
-            flexibility,
+            flexVector.x,
+            flexVector.y,
             uv.x,
             uv.y);
 
@@ -233,7 +296,8 @@ Plants.prototype.modelLeaf = function(
         x2,
         y,
         z2,
-        flexibility,
+        flexVector.x,
+        flexVector.y,
         uv.x,
         uv.y,
         this.COLOR_LEAF.r * shadeRight,
@@ -242,9 +306,18 @@ Plants.prototype.modelLeaf = function(
         x2,
         y,
         z2,
-        flexibility,
+        flexVector.x,
+        flexVector.y,
         uv.x,
         uv.y);
+
+    this.makeFlexVectors(
+        -2 + 4 * Math.random(),
+        firstIndex,
+        firstIndex + ((segments - 1) << 2) - 1,
+        x1,
+        z1,
+        vertices);
 };
 
 /**
@@ -265,11 +338,11 @@ Plants.prototype.modelStalk = function(
     indices) {
     const firstIndex = this.getFirstIndex(vertices);
     const radius = .05;
-    const steps = 5;
+    const segments = 5;
+    const flex = .8;
 
-    for (let step = 0; step < steps; ++step) {
-        const f = step / (steps - 1);
-        const flexibility = Math.pow(f, this.STALK_FLEXIBILITY_POWER);
+    for (let segment = 0; segment < segments; ++segment) {
+        const f = segment / (segments - 1);
 
         vertices.push(
             this.COLOR_STALK.r * this.STALK_SHADE,
@@ -278,7 +351,8 @@ Plants.prototype.modelStalk = function(
             x - radius * (1 - .5 * f),
             y,
             height * f,
-            flexibility,
+            0,
+            0,
             uv.x,
             uv.y);
         vertices.push(
@@ -288,18 +362,27 @@ Plants.prototype.modelStalk = function(
             x + radius * (1 - .5 * f),
             y,
             height * f,
-            flexibility,
+            0,
+            0,
             uv.x,
             uv.y);
 
-        if (step !== steps - 1)
+        this.makeFlexVectors(
+            flex * Math.pow(f, this.STALK_FLEXIBILITY_POWER),
+            firstIndex + (segment << 1),
+            firstIndex + (segment << 1) + 1,
+            x,
+            0,
+            vertices);
+
+        if (segment !== segments - 1)
             indices.push(
-                firstIndex + (step << 1),
-                firstIndex + (step << 1) + 1,
-                firstIndex + (step << 1) + 3,
-                firstIndex + (step << 1) + 3,
-                firstIndex + (step << 1) + 2,
-                firstIndex + (step << 1));
+                firstIndex + (segment << 1),
+                firstIndex + (segment << 1) + 1,
+                firstIndex + (segment << 1) + 3,
+                firstIndex + (segment << 1) + 3,
+                firstIndex + (segment << 1) + 2,
+                firstIndex + (segment << 1));
     }
 
     for (let i = 0; i < 3; ++i) {
@@ -308,13 +391,19 @@ Plants.prototype.modelStalk = function(
         const length = .4 + .25 * random.getFloat();
 
         this.modelLeaf(
+            this.makeFlexVector(
+                flex * Math.pow(h / height, this.STALK_FLEXIBILITY_POWER),
+                x,
+                h,
+                x,
+                0),
             x,
             h,
             x + Math.cos(angle) * length,
             h + Math.sin(angle) * length,
             y,
             .7,
-            1,
+            flex * Math.pow(h / height, this.STALK_FLEXIBILITY_POWER),
             uv,
             vertices,
             indices);
@@ -334,11 +423,11 @@ Plants.prototype.modelBlade = function(x, y, vertices, indices, random) {
     const firstIndex = this.getFirstIndex(vertices);
     const height = this.BLADE_HEIGHT_MIN + (this.BLADE_HEIGHT_MAX - this.BLADE_HEIGHT_MIN) * random.getFloat();
     const radius = .1;
-    const steps = 4;
+    const segments = 4;
     const l = .8 + .2 * random.getFloat();
 
-    for (let step = 0; step < steps - 1; ++step) {
-        const f = step / (steps - 1);
+    for (let segment = 0; segment < segments - 1; ++segment) {
+        const f = segment / (segments - 1);
         const r = radius * Math.pow(1 - f, .7);
         const flexibility = Math.pow(f, this.BLADE_FLEXIBILITY_POWER);
 
@@ -350,6 +439,7 @@ Plants.prototype.modelBlade = function(x, y, vertices, indices, random) {
             y,
             height * f,
             flexibility,
+            0,
             uv.x,
             uv.y);
         vertices.push(
@@ -360,22 +450,23 @@ Plants.prototype.modelBlade = function(x, y, vertices, indices, random) {
             y,
             height * f,
             flexibility,
+            0,
             uv.x,
             uv.y);
 
-        if (step !== steps - 2)
+        if (segment !== segments - 2)
             indices.push(
-                firstIndex + (step << 1),
-                firstIndex + (step << 1) + 1,
-                firstIndex + (step << 1) + 3,
-                firstIndex + (step << 1) + 3,
-                firstIndex + (step << 1) + 2,
-                firstIndex + (step << 1));
+                firstIndex + (segment << 1),
+                firstIndex + (segment << 1) + 1,
+                firstIndex + (segment << 1) + 3,
+                firstIndex + (segment << 1) + 3,
+                firstIndex + (segment << 1) + 2,
+                firstIndex + (segment << 1));
         else
             indices.push(
-                firstIndex + (step << 1),
-                firstIndex + (step << 1) + 1,
-                firstIndex + (step << 1) + 2);
+                firstIndex + (segment << 1),
+                firstIndex + (segment << 1) + 1,
+                firstIndex + (segment << 1) + 2);
     }
 
     vertices.push(
@@ -386,6 +477,7 @@ Plants.prototype.modelBlade = function(x, y, vertices, indices, random) {
         y,
         height,
         1,
+        0,
         uv.x,
         uv.y);
 };
