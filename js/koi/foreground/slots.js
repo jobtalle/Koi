@@ -22,7 +22,7 @@ const Slots = function(width, height, constellation, random) {
     }
 };
 
-Slots.prototype.RESOLUTION = .125;
+Slots.prototype.RESOLUTION = .15;
 Slots.prototype.RANDOM_RANGE = .8;
 
 /**

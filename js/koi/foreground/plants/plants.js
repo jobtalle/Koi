@@ -13,21 +13,14 @@ const Plants = function(gl, constellation, slots, random) {
 Plants.prototype.STRIDE = 10;
 Plants.prototype.WIND_UV_RADIUS = .45;
 
-Plants.prototype.BLADE_HEIGHT_MIN = .3;
-Plants.prototype.BLADE_HEIGHT_MAX = .85;
-Plants.prototype.BLADE_FLEXIBILITY_POWER = 3.5;
-
 Plants.prototype.STALK_RESOLUTION = .3;
-Plants.prototype.STALK_SHADE = .8;
 
 Plants.prototype.LEAF_RESOLUTION = .15;
 Plants.prototype.LEAF_SEGMENTS_MIN = 5;
 Plants.prototype.LEAF_BULGE = .25;
 Plants.prototype.LEAF_SHADE = .8;
 
-Plants.prototype.COLOR_GRASS = Color.fromCSS("grass");
 Plants.prototype.COLOR_LEAF = Color.fromCSS("leaf");
-Plants.prototype.COLOR_STALK = Color.fromCSS("stalk");
 
 /**
  * Make the vegetation mesh
@@ -44,9 +37,9 @@ Plants.prototype.makeMesh = function(gl, constellation, slots, random) {
 
     for (const slot of slots.slots) if (slot) {
         if (random.getFloat() < .01)
-            this.modelCattail(slot.x, slot.y, vertices, indices, random);
+            this.modelCattail(slot.x, slot.y, random, vertices, indices);
         else
-            this.modelGrass(slot.x, slot.y, vertices, indices, random);
+            this.modelGrass(slot.x, slot.y, random, vertices, indices);
     }
 
     return new Mesh(gl, vertices, indices, this.getFirstIndex(vertices) - 1 > 0xFFFF);
@@ -129,99 +122,6 @@ Plants.prototype.makeFlexVectors = function(
         vertices[index + 6] += flexVector.x;
         vertices[index + 7] += flexVector.y;
     }
-};
-
-/**
- * Make a grass blade
- * @param {Number} x The X origin
- * @param {Number} y The Y origin
- * @param {Number[]} vertices The vertex array
- * @param {Number[]} indices The index array
- * @param {Random} random A randomizer
- */
-Plants.prototype.modelGrass = function(
-    x,
-    y,
-    vertices,
-    indices,
-    random) {
-    const uv = this.makeUV(x, y, random);
-    const height = this.BLADE_HEIGHT_MIN + (this.BLADE_HEIGHT_MAX - this.BLADE_HEIGHT_MIN) * random.getFloat();
-
-    this.modelStalk(
-        x,
-        0,
-        x,
-        height,
-        y,
-        .1,
-        uv,
-        this.COLOR_GRASS.copy().multiply(.85 + .15 * random.getFloat()),
-        .95,
-        .3,
-        this.BLADE_FLEXIBILITY_POWER,
-        vertices,
-        indices);
-    this.modelStalk(
-        x,
-        0,
-        x - .16,
-        height,
-        y,
-        .1,
-        uv,
-        this.COLOR_GRASS.copy().multiply(.85 + .15 * random.getFloat()),
-        .95,
-        .3,
-        this.BLADE_FLEXIBILITY_POWER,
-        vertices,
-        indices);
-    this.modelStalk(
-        x,
-        0,
-        x + .16,
-        height,
-        y,
-        .1,
-        uv,
-        this.COLOR_GRASS.copy().multiply(.85 + .15 * random.getFloat()),
-        .95,
-        .3,
-        this.BLADE_FLEXIBILITY_POWER,
-        vertices,
-        indices);
-};
-
-/**
- * Model a cattail
- * @param {Number} x The X origin
- * @param {Number} y The Y origin
- * @param {Number[]} vertices The vertex array
- * @param {Number[]} indices The index array
- * @param {Random} random The randomizer
- */
-Plants.prototype.modelCattail = function(
-    x,
-    y,
-    vertices,
-    indices,
-    random) {
-    const uv = this.makeUV(x, y, random);
-
-    this.modelStalk(
-        x,
-        0,
-        x,
-        1.5,
-        y,
-        .05,
-        uv,
-        this.COLOR_STALK,
-        .8,
-        .2,
-        2.5,
-        vertices,
-        indices);
 };
 
 /**
