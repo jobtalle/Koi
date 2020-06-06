@@ -54,9 +54,9 @@ void main() {
   motion = (motion - state * spring) * damping;
   
   if (motion < 0.0)
-    gl_FragColor = vec4(state * 0.5 + 0.5, -motion, 0.0, 1.0);
+    gl_FragColor = vec4(state * 0.5 + 0.5, -motion, 0.0, previous.r);
   else
-    gl_FragColor = vec4(state * 0.5 + 0.5, 0.0, motion, 1.0);
+    gl_FragColor = vec4(state * 0.5 + 0.5, 0.0, motion, previous.r);
 }
 `;
 

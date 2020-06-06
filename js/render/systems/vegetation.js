@@ -8,7 +8,7 @@ const Vegetation = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["size", "scale", "airBack", "airFront", "time"],
+        ["size", "scale", "time"],
         ["color", "position", "flex", "windPosition"]);
     this.programReflect = new Shader(
         gl,
@@ -54,8 +54,7 @@ const Vegetation = function(gl) {
 Vegetation.prototype = Object.create(Meshed.prototype);
 
 Vegetation.prototype.SHADER_VERTEX = `#version 100
-uniform sampler2D airBack;
-uniform sampler2D airFront;
+uniform sampler2D air;
 uniform float time;
 uniform vec2 size;
 uniform float scale;
@@ -71,10 +70,8 @@ void main() {
   iColor = color;
   
   vec2 uv = windPosition / size * scale;
-  float displacement = mix(
-    texture2D(airBack, vec2(uv.x, 1.0 - uv.y)).r * 2.0 - 1.0,
-    texture2D(airFront, vec2(uv.x, 1.0 - uv.y)).r * 2.0 - 1.0,
-    time);
+  vec2 states = texture2D(air, vec2(uv.x, 1.0 - uv.y)).ar;
+  float displacement = mix(states.x, states.y, time) * 2.0 - 1.0;
   
   gl_Position = vec4(
     vec2(2.0, -2.0) * (vec2(position.x, position.y - position.z) + flex * displacement) / size * scale + vec2(-1.0, 1.0),
@@ -131,12 +128,8 @@ Vegetation.prototype.render = function(air, width, height, scale, time) {
     this.gl.vao.bindVertexArrayOES(this.vao);
 
     this.gl.activeTexture(this.gl.TEXTURE0);
-    this.gl.bindTexture(this.gl.TEXTURE_2D, air.getBack().texture);
-    this.gl.activeTexture(this.gl.TEXTURE1);
     this.gl.bindTexture(this.gl.TEXTURE_2D, air.getFront().texture);
 
-    this.gl.uniform1i(this.program["uAirBack"], 0);
-    this.gl.uniform1i(this.program["uAirFront"], 1);
     this.gl.uniform1f(this.program["uTime"], time);
     this.gl.uniform2f(this.program["uSize"], width, height);
     this.gl.uniform1f(this.program["uScale"], scale);

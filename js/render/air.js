@@ -6,7 +6,7 @@
  * @constructor
  */
 const Air = function(gl, width, height) {
-    ConvolutionalBuffer.call(this, gl, width, height, this.SCALE, new Color(.5, 0, 0), gl.RGB);
+    ConvolutionalBuffer.call(this, gl, width, height, this.SCALE, new Color(.5, 0, 0), gl.RGBA);
 };
 
 Air.prototype = Object.create(ConvolutionalBuffer.prototype);
