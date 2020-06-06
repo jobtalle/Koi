@@ -13,7 +13,7 @@ const Vegetation = function(gl) {
     this.programReflect = new Shader(
         gl,
         this.SHADER_VERTEX_REFLECT,
-        this.SHADER_FRAGMENT_REFLECT,
+        this.SHADER_FRAGMENT,
         ["scale"],
         ["color", "position"]);
     this.vao = gl.vao.createVertexArrayOES();
@@ -78,14 +78,6 @@ void main() {
 }
 `;
 
-Vegetation.prototype.SHADER_FRAGMENT = `#version 100
-varying lowp vec3 iColor;
-
-void main() {
-    gl_FragColor = vec4(iColor, 1.0);
-}
-`;
-
 Vegetation.prototype.SHADER_VERTEX_REFLECT = `#version 100
 uniform vec2 scale;
 
@@ -104,7 +96,7 @@ void main() {
 }
 `;
 
-Vegetation.prototype.SHADER_FRAGMENT_REFLECT = `#version 100
+Vegetation.prototype.SHADER_FRAGMENT = `#version 100
 varying lowp vec3 iColor;
 
 void main() {

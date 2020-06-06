@@ -16,8 +16,7 @@ Mover.prototype.SPLASH_DROP_RADIUS = 0.13;
 Mover.prototype.SPLASH_DROP_AMPLITUDE = 0.4;
 Mover.prototype.SPLASH_DROP_DISTANCE = 0.1;
 Mover.prototype.AIR_RADIUS = 1.5;
-Mover.prototype.AIR_INTENSITY = .15;
-Mover.prototype.AIR_INTENSITY_MAX = .3;
+Mover.prototype.AIR_INTENSITY = .3;
 Mover.prototype.AIR_HEIGHT = .5;
 
 /**
@@ -69,12 +68,7 @@ Mover.prototype.touchMove = function(x, y, air) {
         this.cursorOffset.set(this.cursor).add(this.offset);
         this.move.moveTo(this.cursorOffset);
 
-        let intensity = this.AIR_INTENSITY * (this.cursor.x - this.cursorPrevious.x);
-
-        if (intensity > this.AIR_INTENSITY_MAX)
-            intensity = this.AIR_INTENSITY_MAX;
-        else if (intensity < -this.AIR_INTENSITY_MAX)
-            intensity = -this.AIR_INTENSITY_MAX;
+        const intensity = this.AIR_INTENSITY * (this.cursor.x - this.cursorPrevious.x);
 
         // TODO: Only displace after certain delta
         air.addDisplacement(x, y + this.AIR_HEIGHT, this.AIR_RADIUS, intensity);

@@ -13,7 +13,7 @@ const Stone = function(gl) {
     this.programReflect = new Shader(
         gl,
         this.SHADER_VERTEX_REFLECT,
-        this.SHADER_FRAGMENT_REFLECT,
+        this.SHADER_FRAGMENT,
         ["size", "scale"],
         ["color", "position"]);
     this.vao = gl.vao.createVertexArrayOES();
@@ -67,14 +67,6 @@ void main() {
 }
 `;
 
-Stone.prototype.SHADER_FRAGMENT = `#version 100
-varying lowp vec3 iColor;
-
-void main() {
-  gl_FragColor = vec4(iColor, 1.0);
-}
-`;
-
 Stone.prototype.SHADER_VERTEX_REFLECT = `#version 100
 uniform vec2 size;
 uniform float scale;
@@ -95,7 +87,7 @@ void main() {
 }
 `;
 
-Stone.prototype.SHADER_FRAGMENT_REFLECT = `#version 100
+Stone.prototype.SHADER_FRAGMENT = `#version 100
 varying lowp vec3 iColor;
 
 void main() {

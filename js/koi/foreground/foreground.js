@@ -13,7 +13,7 @@ const Foreground = function(
     vegetation,
     constellation,
     random) {
-    const slots = new Slots(constellation.width, constellation.height, constellation, random);
+    const slots = new Slots(constellation.width, constellation.height + this.Y_OVERFLOW, constellation, random);
 
     this.gl = gl;
     this.rocks = new Rocks(gl, constellation, slots, this.Y_SCALE, random);
@@ -29,6 +29,7 @@ const Foreground = function(
 
 Foreground.prototype.REFLECTION_SCALE = 25;
 Foreground.prototype.Y_SCALE = .7;
+Foreground.prototype.Y_OVERFLOW = .3;
 Foreground.prototype.SKY_COLOR = Color.fromCSS("sky");
 
 /**

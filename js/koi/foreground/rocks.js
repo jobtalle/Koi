@@ -40,6 +40,8 @@ Rocks.prototype.PILLAR_HEIGHT_MAX = 2;
 Rocks.prototype.PILLAR_HEIGHT_DELTA = .07;
 Rocks.prototype.PILLAR_SHIFT_AMPLITUDE = .06;
 Rocks.prototype.PILLAR_SKEW = 1.2;
+Rocks.prototype.PILLAR_LIGHT_AMBIENT = .6;
+Rocks.prototype.PILLAR_LIGHT_BASE = .8;
 Rocks.prototype.NOISE_SCALE = .7;
 Rocks.prototype.NOISE_THRESHOLD = .36;
 
@@ -271,14 +273,12 @@ Rocks.prototype.createPillar = function(
         const ly = 1 / Math.sqrt(2);
         const nx = dx / l;
         const ny = dy / l;
-        const baseLight = .8;
-        const ambient = .6;
-        const light = ambient + (1 - ambient) * Math.max(0, nx * lx + ny * ly);
+        const light = this.PILLAR_LIGHT_AMBIENT + (1 - this.PILLAR_LIGHT_AMBIENT) * Math.max(0, nx * lx + ny * ly);
 
         vertices.push(
-            this.COLOR_SIDE.r * light * baseLight,
-            this.COLOR_SIDE.g * light * baseLight,
-            this.COLOR_SIDE.b * light * baseLight,
+            this.COLOR_SIDE.r * light * this.PILLAR_LIGHT_BASE,
+            this.COLOR_SIDE.g * light * this.PILLAR_LIGHT_BASE,
+            this.COLOR_SIDE.b * light * this.PILLAR_LIGHT_BASE,
             x + dx,
             y + dy,
             0,

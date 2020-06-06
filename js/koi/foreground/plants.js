@@ -17,10 +17,11 @@ Plants.prototype.BLADE_HEIGHT_MIN = .3;
 Plants.prototype.BLADE_HEIGHT_MAX = .85;
 Plants.prototype.BLADE_FLEXIBILITY_POWER = 3.5;
 
-Plants.prototype.STALK_FLEXIBILITY_POWER = 1.5;
+Plants.prototype.STALK_RESOLUTION = .3;
 Plants.prototype.STALK_SHADE = .8;
 
 Plants.prototype.LEAF_RESOLUTION = .15;
+Plants.prototype.LEAF_SEGMENTS_MIN = 5;
 Plants.prototype.LEAF_BULGE = .25;
 Plants.prototype.LEAF_SHADE = .8;
 
@@ -45,7 +46,7 @@ Plants.prototype.makeMesh = function(gl, constellation, slots, random) {
         if (random.getFloat() < .01)
             this.modelCattail(slot.x, slot.y, vertices, indices, random);
         else
-            this.modelBlade(slot.x, slot.y, vertices, indices, random);
+            this.modelGrass(slot.x, slot.y, vertices, indices, random);
     }
 
     return new Mesh(gl, vertices, indices, this.getFirstIndex(vertices) - 1 > 0xFFFF);
@@ -131,6 +132,67 @@ Plants.prototype.makeFlexVectors = function(
 };
 
 /**
+ * Make a grass blade
+ * @param {Number} x The X origin
+ * @param {Number} y The Y origin
+ * @param {Number[]} vertices The vertex array
+ * @param {Number[]} indices The index array
+ * @param {Random} random A randomizer
+ */
+Plants.prototype.modelGrass = function(
+    x,
+    y,
+    vertices,
+    indices,
+    random) {
+    const uv = this.makeUV(x, y, random);
+    const height = this.BLADE_HEIGHT_MIN + (this.BLADE_HEIGHT_MAX - this.BLADE_HEIGHT_MIN) * random.getFloat();
+
+    this.modelStalk(
+        x,
+        0,
+        x,
+        height,
+        y,
+        .1,
+        uv,
+        this.COLOR_GRASS.copy().multiply(.85 + .15 * random.getFloat()),
+        .95,
+        .3,
+        this.BLADE_FLEXIBILITY_POWER,
+        vertices,
+        indices);
+    this.modelStalk(
+        x,
+        0,
+        x - .16,
+        height,
+        y,
+        .1,
+        uv,
+        this.COLOR_GRASS.copy().multiply(.85 + .15 * random.getFloat()),
+        .95,
+        .3,
+        this.BLADE_FLEXIBILITY_POWER,
+        vertices,
+        indices);
+    this.modelStalk(
+        x,
+        0,
+        x + .16,
+        height,
+        y,
+        .1,
+        uv,
+        this.COLOR_GRASS.copy().multiply(.85 + .15 * random.getFloat()),
+        .95,
+        .3,
+        this.BLADE_FLEXIBILITY_POWER,
+        vertices,
+        indices);
+};
+
+/**
  * Model a cattail
  * @param {Number} x The X origin
  * @param {Number} y The Y origin
@@ -146,7 +208,20 @@ Plants.prototype.modelCattail = function(
     random) {
     const uv = this.makeUV(x, y, random);
 
-    this.modelStalk(x, y, 1.5, uv, vertices, indices);
+    this.modelStalk(
+        x,
+        0,
+        x,
+        1.5,
+        y,
+        .05,
+        uv,
+        this.COLOR_STALK,
+        .8,
+        .2,
+        2.5,
+        vertices,
+        indices);
 };
 
 /**
@@ -162,6 +237,7 @@ Plants.prototype.modelCattail = function(
  * @param {Vector2} uv The air UV
  * @param {Number[]} vertices The vertex array
  * @param {Number[]} indices The index array
+ * @param {Random} random A randomizer
  */
 Plants.prototype.modelLeaf = function(
     flexVector,
@@ -173,6 +249,7 @@ Plants.prototype.modelLeaf = function(
     width,
     flex,
     uv,
+    random,
     vertices,
     indices) {
     const firstIndex = this.getFirstIndex(vertices);
@@ -181,7 +258,7 @@ Plants.prototype.modelLeaf = function(
     const length = Math.sqrt(dx * dx + dz * dz);
     const dxn = dx / length;
     const dzn = dz / length;
-    const segments = Math.max(2, Math.ceil(length / this.LEAF_RESOLUTION) + 1);
+    const segments = Math.max(this.LEAF_SEGMENTS_MIN, Math.round(length / this.LEAF_RESOLUTION) + 1);
 
     const shadeLeft = dxn < 0 ? this.LEAF_SHADE : 1;
     const shadeRight = dxn < 0 ? 1 : this.LEAF_SHADE;
@@ -312,7 +389,7 @@ Plants.prototype.modelLeaf = function(
         uv.y);
 
     this.makeFlexVectors(
-        -2 + 4 * Math.random(),
+        -1 + 2 * random.getFloat(),
         firstIndex,
         firstIndex + ((segments - 1) << 2) - 1,
         x1,
@@ -321,136 +398,72 @@ Plants.prototype.modelLeaf = function(
 };
 
 /**
- * Model a stalk to support something
- * @param {Number} x The X origin
- * @param {Number} y The Y origin
- * @param {Number} height The stalk height
+ * Model a stalk
+ * @param {Number} x1 The X origin
+ * @param {Number} z1 The Y origin
+ * @param {Number} x2 The X target
+ * @param {Number} z2 The Z target
+ * @param {Number} y The Y position
+ * @param {Number} radius The stalk radius
  * @param {Vector2} uv The air UV
+ * @param {Color} color The color
+ * @param {Number} shade The dark side shade
+ * @param {Number} flex The amount of flex
+ * @param {Number} flexPower The flex power
  * @param {Number[]} vertices The vertex array
  * @param {Number[]} indices The index array
  */
 Plants.prototype.modelStalk = function(
-    x,
+    x1,
+    z1,
+    x2,
+    z2,
     y,
-    height,
+    radius,
     uv,
+    color,
+    shade,
+    flex,
+    flexPower,
     vertices,
     indices) {
     const firstIndex = this.getFirstIndex(vertices);
-    const radius = .05;
-    const segments = 5;
-    const flex = .8;
-
-    for (let segment = 0; segment < segments; ++segment) {
-        const f = segment / (segments - 1);
-
-        vertices.push(
-            this.COLOR_STALK.r * this.STALK_SHADE,
-            this.COLOR_STALK.g * this.STALK_SHADE,
-            this.COLOR_STALK.b * this.STALK_SHADE,
-            x - radius * (1 - .5 * f),
-            y,
-            height * f,
-            0,
-            0,
-            uv.x,
-            uv.y);
-        vertices.push(
-            this.COLOR_STALK.r,
-            this.COLOR_STALK.g,
-            this.COLOR_STALK.b,
-            x + radius * (1 - .5 * f),
-            y,
-            height * f,
-            0,
-            0,
-            uv.x,
-            uv.y);
-
-        this.makeFlexVectors(
-            flex * Math.pow(f, this.STALK_FLEXIBILITY_POWER),
-            firstIndex + (segment << 1),
-            firstIndex + (segment << 1) + 1,
-            x,
-            0,
-            vertices);
-
-        if (segment !== segments - 1)
-            indices.push(
-                firstIndex + (segment << 1),
-                firstIndex + (segment << 1) + 1,
-                firstIndex + (segment << 1) + 3,
-                firstIndex + (segment << 1) + 3,
-                firstIndex + (segment << 1) + 2,
-                firstIndex + (segment << 1));
-    }
-
-    for (let i = 0; i < 3; ++i) {
-        const h = height * random.getFloat();
-        const angle = Math.PI * 2 * random.getFloat();
-        const length = .4 + .25 * random.getFloat();
-
-        this.modelLeaf(
-            this.makeFlexVector(
-                flex * Math.pow(h / height, this.STALK_FLEXIBILITY_POWER),
-                x,
-                h,
-                x,
-                0),
-            x,
-            h,
-            x + Math.cos(angle) * length,
-            h + Math.sin(angle) * length,
-            y,
-            .7,
-            flex * Math.pow(h / height, this.STALK_FLEXIBILITY_POWER),
-            uv,
-            vertices,
-            indices);
-    }
-};
-
-/**
- * Make a grass blade
- * @param {Number} x The X origin
- * @param {Number} y The Y origin
- * @param {Number[]} vertices The vertex array
- * @param {Number[]} indices The index array
- * @param {Random} random A randomizer
- */
-Plants.prototype.modelBlade = function(x, y, vertices, indices, random) {
-    const uv = this.makeUV(x, y, random);
-    const firstIndex = this.getFirstIndex(vertices);
-    const height = this.BLADE_HEIGHT_MIN + (this.BLADE_HEIGHT_MAX - this.BLADE_HEIGHT_MIN) * random.getFloat();
-    const radius = .1;
-    const segments = 4;
-    const l = .8 + .2 * random.getFloat();
+    const dx = x2 - x1;
+    const dz = z2 - z1;
+    const length = Math.sqrt(dx * dx + dz * dz);
+    const segments = Math.max(2, Math.round(length / this.STALK_RESOLUTION) + 1);
 
     for (let segment = 0; segment < segments - 1; ++segment) {
         const f = segment / (segments - 1);
-        const r = radius * Math.pow(1 - f, .7);
-        const flexibility = Math.pow(f, this.BLADE_FLEXIBILITY_POWER);
+        const x = x1 + dx * f;
+        const z = z1 + dz * f;
+        const flexVector = this.makeFlexVector(
+            flex * Math.pow(f, flexPower),
+            x,
+            z,
+            x1,
+            z1);
 
         vertices.push(
-            this.COLOR_GRASS.r * l,
-            this.COLOR_GRASS.g * l,
-            this.COLOR_GRASS.b * l,
-            x - r,
+            color.r * shade,
+            color.g * shade,
+            color.b * shade,
+            x - radius * (1 - f),
             y,
-            height * f,
-            flexibility,
-            0,
+            z,
+            flexVector.x,
+            flexVector.y,
             uv.x,
             uv.y);
         vertices.push(
-            this.COLOR_GRASS.r * l,
-            this.COLOR_GRASS.g * l,
-            this.COLOR_GRASS.b * l,
-            x + r,
+            color.r,
+            color.g,
+            color.b,
+            x + radius * (1 - f),
             y,
-            height * f,
-            flexibility,
-            0,
+            z,
+            flexVector.x,
+            flexVector.y,
             uv.x,
             uv.y);
 
@@ -469,17 +482,49 @@ Plants.prototype.modelBlade = function(x, y, vertices, indices, random) {
                 firstIndex + (segment << 1) + 2);
     }
 
+    const flexVector = this.makeFlexVector(
+        flex,
+        x2,
+        z2,
+        x1,
+        z1);
+
     vertices.push(
-        this.COLOR_GRASS.r * l,
-        this.COLOR_GRASS.g * l,
-        this.COLOR_GRASS.b * l,
-        x,
+        color.r * (1 - (1 - shade) * .5),
+        color.g * (1 - (1 - shade) * .5),
+        color.b * (1 - (1 - shade) * .5),
+        x2,
         y,
-        height,
-        1,
-        0,
+        z2,
+        flexVector.x,
+        flexVector.y,
         uv.x,
         uv.y);
+
+    // Debug leaves
+    // for (let i = 0; i < 3; ++i) {
+    //     const h = height * random.getFloat();
+    //     const angle = Math.PI * 2 * random.getFloat();
+    //     const length = .4 + .25 * random.getFloat();
+    //
+    //     this.modelLeaf(
+    //         this.makeFlexVector(
+    //             flex * Math.pow(h / height, flexPower),
+    //             x,
+    //             h,
+    //             x,
+    //             0),
+    //         x,
+    //         h,
+    //         x + Math.cos(angle) * length,
+    //         h + Math.sin(angle) * length,
+    //         y,
+    //         .7,
+    //         flex * Math.pow(h / height, flexPower),
+    //         uv,
+    //         vertices,
+    //         indices);
+    // }
 };
 
 /**

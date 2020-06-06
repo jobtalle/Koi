@@ -13,6 +13,34 @@ const Color = function(r, g, b, a = 1) {
     this.a = a;
 };
 
+Color.RED = new Color(1, 0, 0);
+Color.GREEN = new Color(0, 1, 0);
+Color.BLUE = new Color(0, 0, 1);
+Color.BLACK = new Color(0, 0, 0);
+Color.WHITE = new Color(1, 1, 1);
+
+/**
+ * Make a copy of this color
+ * @returns {Color} A copy of the color
+ */
+Color.prototype.copy = function() {
+    return new Color(this.r, this.g, this.b, this.a);
+};
+
+/**
+ * Multiply this color by a scalar
+ * @param {Number} n The number to multiply the color by
+ * @returns {Color} The changed color
+ */
+Color.prototype.multiply = function(n) {
+    this.r *= n;
+    this.g *= n;
+    this.b *= n;
+    this.a *= n;
+
+    return this;
+};
+
 /**
  * Make a color from a CSS variable
  * @param name
@@ -38,9 +66,3 @@ Color.fromCSS = function(name) {
 
     // TODO: support rgba, rgb
 };
-
-Color.RED = new Color(1, 0, 0);
-Color.GREEN = new Color(0, 1, 0);
-Color.BLUE = new Color(0, 0, 1);
-Color.BLACK = new Color(0, 0, 0);
-Color.WHITE = new Color(1, 1, 1);
