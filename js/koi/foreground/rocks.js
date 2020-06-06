@@ -28,6 +28,7 @@ Rocks.Plan = function(x, y, radius, height) {
 
 Rocks.prototype.COLOR_TOP = Color.fromCSS("rock-top");
 Rocks.prototype.COLOR_SIDE = Color.fromCSS("rock-side");
+Rocks.prototype.STRIDE = 6;
 Rocks.prototype.PILLAR_RESOLUTION = .15;
 Rocks.prototype.PILLAR_RADIUS_MIN = .12;
 Rocks.prototype.PILLAR_RADIUS_MAX = .45;
@@ -156,7 +157,7 @@ Rocks.prototype.createMesh = function(
  * @returns {Number} The first index of vertices that will be added to the array
  */
 Rocks.prototype.getFirstIndex = function(vertices) {
-    return vertices.length / 7;
+    return vertices.length / this.STRIDE;
 };
 
 /**
@@ -270,29 +271,26 @@ Rocks.prototype.createPillar = function(
         const ly = 1 / Math.sqrt(2);
         const nx = dx / l;
         const ny = dy / l;
-        const baseLight = 1;
+        const baseLight = .8;
         const ambient = .6;
         const light = ambient + (1 - ambient) * Math.max(0, nx * lx + ny * ly);
 
         vertices.push(
-            this.COLOR_SIDE.r,
-            this.COLOR_SIDE.g,
-            this.COLOR_SIDE.b,
-            light * baseLight,
+            this.COLOR_SIDE.r * light * baseLight,
+            this.COLOR_SIDE.g * light * baseLight,
+            this.COLOR_SIDE.b * light * baseLight,
             x + dx,
             y + dy,
             0,
-            this.COLOR_SIDE.r,
-            this.COLOR_SIDE.g,
-            this.COLOR_SIDE.b,
-            light,
+            this.COLOR_SIDE.r * light,
+            this.COLOR_SIDE.g * light,
+            this.COLOR_SIDE.b * light,
             x + dx * this.PILLAR_SKEW,
             y + dy * this.PILLAR_SKEW,
             height + dx * zShift * this.PILLAR_SKEW,
-            this.COLOR_TOP.r,
-            this.COLOR_TOP.g,
-            this.COLOR_TOP.b,
-            lightTop,
+            this.COLOR_TOP.r * lightTop,
+            this.COLOR_TOP.g * lightTop,
+            this.COLOR_TOP.b * lightTop,
             x + dx * this.PILLAR_SKEW,
             y + dy * this.PILLAR_SKEW,
             height + dx * zShift * this.PILLAR_SKEW);
@@ -311,10 +309,9 @@ Rocks.prototype.createPillar = function(
     }
 
     vertices.push(
-        this.COLOR_TOP.r,
-        this.COLOR_TOP.g,
-        this.COLOR_TOP.b,
-        lightTop,
+        this.COLOR_TOP.r * lightTop,
+        this.COLOR_TOP.g * lightTop,
+        this.COLOR_TOP.b * lightTop,
         x,
         y,
         height);

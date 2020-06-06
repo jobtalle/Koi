@@ -8,13 +8,13 @@ const Vegetation = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["size", "scale", "time"],
+        ["scale", "time"],
         ["color", "position", "flex", "windPosition"]);
     this.programReflect = new Shader(
         gl,
         this.SHADER_VERTEX_REFLECT,
         this.SHADER_FRAGMENT_REFLECT,
-        ["size", "scale"],
+        ["scale"],
         ["color", "position"]);
     this.vao = gl.vao.createVertexArrayOES();
     this.vaoReflect = gl.vao.createVertexArrayOES();
@@ -56,8 +56,7 @@ Vegetation.prototype = Object.create(Meshed.prototype);
 Vegetation.prototype.SHADER_VERTEX = `#version 100
 uniform sampler2D air;
 uniform float time;
-uniform vec2 size;
-uniform float scale;
+uniform vec2 scale;
 
 attribute vec3 color;
 attribute vec3 position;
@@ -69,13 +68,12 @@ varying vec3 iColor;
 void main() {
   iColor = color;
   
-  vec2 uv = windPosition / size * scale;
-  vec2 states = texture2D(air, vec2(uv.x, 1.0 - uv.y)).ar;
+  vec2 states = texture2D(air, vec2(windPosition.x * scale.x, 1.0 - windPosition.y * scale.y)).ar;
   float displacement = mix(states.x, states.y, time) * 2.0 - 1.0;
   
   gl_Position = vec4(
-    vec2(2.0, -2.0) * (vec2(position.x, position.y - position.z) + flex * displacement) / size * scale + vec2(-1.0, 1.0),
-    1.0 - position.y / size.y * scale,
+    vec2(2.0, -2.0) * (vec2(position.x, position.y - position.z) + flex * displacement) * scale + vec2(-1.0, 1.0),
+    1.0 - position.y * scale.y,
     1.0);
 }
 `;
@@ -89,8 +87,7 @@ void main() {
 `;
 
 Vegetation.prototype.SHADER_VERTEX_REFLECT = `#version 100
-uniform vec2 size;
-uniform float scale;
+uniform vec2 scale;
 
 attribute vec3 color;
 attribute vec3 position;
@@ -101,8 +98,8 @@ void main() {
   iColor = color;
   
   gl_Position = vec4(
-    vec2(2.0, -2.0) * (position.xy + vec2(0.0, position.z)) / size * scale + vec2(-1.0, 1.0),
-    1.0 - position.y / size.y * scale,
+    vec2(2.0, -2.0) * vec2(position.x, position.y + position.z) * scale + vec2(-1.0, 1.0),
+    1.0 - position.y * scale.y,
     1.0);
 }
 `;
@@ -131,8 +128,7 @@ Vegetation.prototype.render = function(air, width, height, scale, time) {
     this.gl.bindTexture(this.gl.TEXTURE_2D, air.getFront().texture);
 
     this.gl.uniform1f(this.program["uTime"], time);
-    this.gl.uniform2f(this.program["uSize"], width, height);
-    this.gl.uniform1f(this.program["uScale"], scale);
+    this.gl.uniform2f(this.program["uScale"], 1 / width * scale, 1 / height * scale);
 
     this.renderMesh();
 };
@@ -147,8 +143,7 @@ Vegetation.prototype.renderReflections = function(width, height, scale) {
     this.programReflect.use();
     this.gl.vao.bindVertexArrayOES(this.vaoReflect);
 
-    this.gl.uniform2f(this.programReflect["uSize"], width, height);
-    this.gl.uniform1f(this.programReflect["uScale"], scale);
+    this.gl.uniform2f(this.programReflect["uScale"], 1 / width * scale, 1 / height * scale);
 
     this.renderMesh();
 };

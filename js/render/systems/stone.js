@@ -9,13 +9,13 @@ const Stone = function(gl) {
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
         ["size", "scale"],
-        ["color", "lightness", "position"]);
+        ["color", "position"]);
     this.programReflect = new Shader(
         gl,
         this.SHADER_VERTEX_REFLECT,
         this.SHADER_FRAGMENT_REFLECT,
         ["size", "scale"],
-        ["color", "lightness", "position"]);
+        ["color", "position"]);
     this.vao = gl.vao.createVertexArrayOES();
     this.vaoReflect = gl.vao.createVertexArrayOES();
 
@@ -25,13 +25,10 @@ const Stone = function(gl) {
             () => {
                 gl.enableVertexAttribArray(this.program["aColor"]);
                 gl.vertexAttribPointer(this.program["aColor"],
-                    3, gl.FLOAT, false, 28, 0);
-                gl.enableVertexAttribArray(this.program["aLightness"]);
-                gl.vertexAttribPointer(this.program["aLightness"],
-                    1, gl.FLOAT, false, 28, 12);
+                    3, gl.FLOAT, false, 24, 0);
                 gl.enableVertexAttribArray(this.program["aPosition"]);
                 gl.vertexAttribPointer(this.program["aPosition"],
-                    3, gl.FLOAT, false, 28, 16);
+                    3, gl.FLOAT, false, 24, 12);
             }
         ),
         new Meshed.VAOConfiguration(
@@ -39,13 +36,10 @@ const Stone = function(gl) {
             () => {
                 gl.enableVertexAttribArray(this.programReflect["aColor"]);
                 gl.vertexAttribPointer(this.programReflect["aColor"],
-                    3, gl.FLOAT, false, 28, 0);
-                gl.enableVertexAttribArray(this.programReflect["aLightness"]);
-                gl.vertexAttribPointer(this.programReflect["aLightness"],
-                    1, gl.FLOAT, false, 28, 12);
+                    3, gl.FLOAT, false, 24, 0);
                 gl.enableVertexAttribArray(this.programReflect["aPosition"]);
                 gl.vertexAttribPointer(this.programReflect["aPosition"],
-                    3, gl.FLOAT, false, 28, 16);
+                    3, gl.FLOAT, false, 24, 12);
             }
         )
     ]);
@@ -59,13 +53,12 @@ uniform float scale;
 uniform float zDirection;
 
 attribute vec3 color;
-attribute float lightness;
 attribute vec3 position;
 
 varying vec3 iColor;
 
 void main() {
-  iColor = color * lightness;
+  iColor = color;
 
   gl_Position = vec4(
     vec2(2.0, -2.0) * (position.xy - vec2(0.0, position.z)) / size * scale + vec2(-1.0, 1.0),
@@ -88,13 +81,12 @@ uniform float scale;
 uniform float zDirection;
 
 attribute vec3 color;
-attribute float lightness;
 attribute vec3 position;
 
 varying vec3 iColor;
 
 void main() {
-  iColor = color * lightness;
+  iColor = color;
 
   gl_Position = vec4(
     vec2(2.0, -2.0) * (position.xy + vec2(0.0, position.z)) / size * scale + vec2(-1.0, 1.0),

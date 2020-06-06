@@ -55,9 +55,9 @@ varying mediump vec2 iUv;
 
 mediump float get(mediump vec2 delta) {
   mediump vec2 uv = iUv + delta / waterSize;
-  lowp vec2 sample = texture2D(water, uv).rg;
+  lowp vec2 sample = texture2D(water, uv).gr;
   
-  return mix(sample.g, sample.r, time) * 6.0 - 3.0;
+  return mix(sample.x, sample.y, time) * 6.0 - 3.0;
 }
 
 void main() {
