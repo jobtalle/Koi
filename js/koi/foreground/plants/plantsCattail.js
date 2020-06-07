@@ -1,5 +1,27 @@
 Plants.prototype.CATTAIL_COLOR_STALK = Color.fromCSS("cattail-stalk");
 Plants.prototype.CATTAIL_COLOR_CAPSULE = Color.fromCSS("cattail-capsule");
+Plants.prototype.CATTAIL_ANGLE_RADIUS = .05;
+Plants.prototype.CATTAIL_FLEX = .15;
+Plants.prototype.CATTAIL_FLEX_POWER = 1.5;
+Plants.prototype.CATTAIL_HEIGHT_MIN = 1.5;
+Plants.prototype.CATTAIL_HEIGHT_MAX = 2.2;
+Plants.prototype.CATTAIL_HEIGHT_POWER = 1.5;
+Plants.prototype.CATTAIL_STALK_RADIUS = .02;
+Plants.prototype.CATTAIL_STALK_RADIUS_POWER = .7;
+Plants.prototype.CATTAIL_STALK_SHADE = .7;
+Plants.prototype.CATTAIL_LEAVES_START = .1;
+Plants.prototype.CATTAIL_LEAVES_END = .6;
+Plants.prototype.CATTAIL_LEAVES_DENSITY = .3;
+Plants.prototype.CATTAIL_LEAVES_ANGLE_MIN = .8;
+Plants.prototype.CATTAIL_LEAVES_ANGLE_MAX = 1.5;
+Plants.prototype.CATTAIL_LEAVES_LENGTH_ROOT = .8;
+Plants.prototype.CATTAIL_LEAVES_LENGTH_TIP = .35;
+Plants.prototype.CATTAIL_LEAVES_WIDTH = .6;
+Plants.prototype.CATTAIL_LEAVES_FLEX = .22;
+Plants.prototype.CATTAIL_CAPSULE_START = .65;
+Plants.prototype.CATTAIL_CAPSULE_END = .95;
+Plants.prototype.CATTAIL_CAPSULE_RADIUS = .04;
+Plants.prototype.CATTAIL_CAPSULE_SHADE = .75;
 
 /**
  * Model cattail
@@ -11,39 +33,40 @@ Plants.prototype.CATTAIL_COLOR_CAPSULE = Color.fromCSS("cattail-capsule");
  */
 Plants.prototype.modelCattail = function(x, y, random, vertices, indices) {
     const uv = this.makeUV(x, y, random);
-    const flex = .15;
-    const flexPower = 1.5;
-    const height = 2.2;
-    const capsuleStart = 1.2;
-    const capsuleEnd = 2;
-    const leafStart = .3;
-    const leafEnd = 1.2;
-    const direction = Math.PI * .5 + (random.getFloat() - .5) * .1;
-    const flexSampler = new Plants.FlexSampler(x, 0, flex, flexPower, height);
+    const height = this.CATTAIL_HEIGHT_MIN + (this.CATTAIL_HEIGHT_MAX - this.CATTAIL_HEIGHT_MIN) *
+        Math.pow(random.getFloat(), this.CATTAIL_HEIGHT_POWER);
+    const capsuleStart = height * this.CATTAIL_CAPSULE_START;
+    const capsuleEnd = height * this.CATTAIL_CAPSULE_END;
+    const leafStart = height * this.CATTAIL_LEAVES_START;
+    const leafEnd = height * this.CATTAIL_LEAVES_END;
+    const direction = Math.PI * .5 + (random.getFloat() * 2 - 1) * this.CATTAIL_ANGLE_RADIUS;
+    const directionCos = Math.cos(direction);
+    const directionSin = Math.sin(direction);
+    const flexSampler = new Plants.FlexSampler(x, 0, this.CATTAIL_FLEX, this.CATTAIL_FLEX_POWER, height);
     const leafSet = new Plants.LeafSet(
-        x + Math.cos(direction) * leafStart,
-        Math.sin(direction) * leafStart,
-        x + Math.cos(direction) * leafEnd,
-        Math.sin(direction) * leafEnd,
-        .2,
-        .7,
-        Math.PI * .5,
-        .8,
-        .35,
-        .6,
-        .2,
+        x + directionCos * leafStart,
+        directionSin * leafStart,
+        x + directionCos * leafEnd,
+        directionSin * leafEnd,
+        this.CATTAIL_LEAVES_DENSITY,
+        this.CATTAIL_LEAVES_ANGLE_MIN,
+        this.CATTAIL_LEAVES_ANGLE_MAX,
+        this.CATTAIL_LEAVES_LENGTH_ROOT,
+        this.CATTAIL_LEAVES_LENGTH_TIP,
+        this.CATTAIL_LEAVES_WIDTH,
+        this.CATTAIL_LEAVES_FLEX,
         random);
 
     this.modelCapsule(
-        x + Math.cos(direction) * capsuleStart,
-        Math.sin(direction) * capsuleStart,
-        x + Math.cos(direction) * capsuleEnd,
-        Math.sin(direction) * capsuleEnd,
+        x + directionCos * capsuleStart,
+        directionSin * capsuleStart,
+        x + directionCos * capsuleEnd,
+        directionSin * capsuleEnd,
         y,
-        .1,
+        this.CATTAIL_CAPSULE_RADIUS * height,
         uv,
         this.CATTAIL_COLOR_CAPSULE,
-        .7,
+        this.CATTAIL_CAPSULE_SHADE,
         flexSampler,
         vertices,
         indices);
@@ -51,13 +74,14 @@ Plants.prototype.modelCattail = function(x, y, random, vertices, indices) {
     this.modelStalk(
         x,
         0,
-        x + Math.cos(direction) * height,
-        Math.sin(direction) * height,
+        x + directionCos * height,
+        directionSin * height,
         y,
-        .05,
+        this.CATTAIL_STALK_RADIUS * height,
+        this.CATTAIL_STALK_RADIUS_POWER,
         uv,
         this.CATTAIL_COLOR_STALK,
-        .8,
+        this.CATTAIL_STALK_SHADE,
         flexSampler,
         vertices,
         indices);

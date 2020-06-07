@@ -8,6 +8,7 @@ Plants.prototype.STALK_RESOLUTION = .3;
  * @param {Number} z2 The Z target
  * @param {Number} y The Y position
  * @param {Number} radius The stalk radius
+ * @param {Number} radiusPower A power to apply to the radius
  * @param {Vector2} uv The air UV
  * @param {Color} color The color
  * @param {Number} shade The dark side shade
@@ -22,6 +23,7 @@ Plants.prototype.modelStalk = function(
     z2,
     y,
     radius,
+    radiusPower,
     uv,
     color,
     shade,
@@ -40,14 +42,15 @@ Plants.prototype.modelStalk = function(
         const f = segment / (segments - 1);
         const x = x1 + dx * f;
         const z = z1 + dz * f;
+        const r = radius * Math.pow(1 - f, radiusPower);
 
         vertices.push(
             color.r * shade,
             color.g * shade,
             color.b * shade,
-            x + nx * radius * (1 - f),
+            x + nx * r,
             y,
-            z + nz * radius * (1 - f),
+            z + nz * r,
             0,
             0,
             uv.x,
@@ -55,9 +58,9 @@ Plants.prototype.modelStalk = function(
             color.r,
             color.g,
             color.b,
-            x - nx * radius * (1 - f),
+            x - nx * r,
             y,
-            z - nz * radius * (1 - f),
+            z - nz * r,
             0,
             0,
             uv.x,

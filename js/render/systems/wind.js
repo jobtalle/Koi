@@ -16,7 +16,6 @@ const Wind = function(gl, quad, randomSource) {
         ["position"]);
     this.vao = gl.vao.createVertexArrayOES();
 
-    // TODO: Instead of quad buffer, use tessellated plane and store spring in vertices
     gl.vao.bindVertexArrayOES(this.vao);
     gl.bindBuffer(gl.ARRAY_BUFFER, quad.buffer);
 
@@ -25,7 +24,7 @@ const Wind = function(gl, quad, randomSource) {
 };
 
 Wind.prototype.SPRING = .3;
-Wind.prototype.DAMPING = .92;
+Wind.prototype.DAMPING = .95;
 
 Wind.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
