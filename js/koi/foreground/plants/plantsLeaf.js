@@ -5,6 +5,12 @@
  * @param {Number} x2 The X target
  * @param {Number} z2 The Z target
  * @param {Number} density The amounts of leaves per distance
+ * @param {Number} minAngle The minimum branching angle
+ * @param {Number} maxAngle The maximum branching angle
+ * @param {Number} lengthRoot The leaf length at the root
+ * @param {Number} lengthTip The leaf length at the tip
+ * @param {Number} width The leaf width factor
+ * @param {Number} flex The flex amount
  * @param {Random} random A randomizer
  * @constructor
  */
@@ -14,11 +20,23 @@ Plants.LeafSet = function(
     x2,
     z2,
     density,
+    minAngle,
+    maxAngle,
+    lengthRoot,
+    lengthTip,
+    width,
+    flex,
     random) {
     this.x1 = x1;
     this.z1 = z1;
     this.dx = x2 - x1;
     this.dz = z2 - z1;
+    this.minAngle = minAngle;
+    this.maxAngle = maxAngle;
+    this.lengthRoot = lengthRoot;
+    this.lengthTip = lengthTip;
+    this.width = width;
+    this.flex = flex;
 
     const distance = Math.sqrt(this.dx * this.dx + this.dz * this.dz);
 
@@ -48,12 +66,17 @@ Plants.LeafSet.prototype.model = function(
     random,
     vertices,
     indices) {
+    let angleDirection = random.getFloat() < .5 ? -1 : 1;
+
     for (const distance of this.leaves) {
         const x = this.x1 + this.dx * distance;
         const z = this.z1 + this.dz * distance;
         const flexVector = flexSampler.sample(x, z);
-        const length = .5 + .3 * random.getFloat();
-        const angle = random.getFloat() > .5 ? 1.2 + 1.2 * random.getFloat() : Math.PI - 1.2 - 1.2 * random.getFloat();
+        const length = this.lengthRoot + (this.lengthTip - this.lengthRoot) * distance;
+        const angle = Math.PI * .5 + angleDirection *
+            (this.minAngle + (this.maxAngle - this.minAngle) * random.getFloat());
+
+        angleDirection = -angleDirection;
 
         plants.modelLeaf(
             flexVector,
@@ -62,10 +85,9 @@ Plants.LeafSet.prototype.model = function(
             x + Math.cos(angle) * length,
             z + Math.sin(angle) * length,
             y,
-            .3,
-            .3,
-            uv,
-            random,
+            this.width,
+            this.flex * (random.getFloat() * 2 - 2),
+            plants.makeUV(x, y, random),
             vertices,
             indices);
     }
@@ -73,7 +95,7 @@ Plants.LeafSet.prototype.model = function(
 
 Plants.prototype.LEAF_RESOLUTION = .15;
 Plants.prototype.LEAF_SEGMENTS_MIN = 5;
-Plants.prototype.LEAF_BULGE = .25;
+Plants.prototype.LEAF_BULGE = .5;
 Plants.prototype.LEAF_SHADE = .8;
 
 Plants.prototype.COLOR_LEAF = Color.fromCSS("leaf"); // TODO: Should be parameter instead
@@ -89,7 +111,6 @@ Plants.prototype.COLOR_LEAF = Color.fromCSS("leaf"); // TODO: Should be paramete
  * @param {Number} width The leaf width factor, proportional to length
  * @param {Number} flex The flexibility
  * @param {Vector2} uv The air UV
- * @param {Random} random A randomizer
  * @param {Number[]} vertices The vertex array
  * @param {Number[]} indices The index array
  */
@@ -103,7 +124,6 @@ Plants.prototype.modelLeaf = function(
     width,
     flex,
     uv,
-    random,
     vertices,
     indices) {
     const firstIndex = this.getFirstIndex(vertices);
@@ -243,7 +263,7 @@ Plants.prototype.modelLeaf = function(
         uv.y);
 
     this.makeFlexVectors(
-        -.5 + 1.5 * random.getFloat(),
+        flex,
         firstIndex,
         firstIndex + ((segments - 1) << 2) - 1,
         x1,

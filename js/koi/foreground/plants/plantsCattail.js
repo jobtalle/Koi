@@ -17,7 +17,19 @@ Plants.prototype.modelCattail = function(x, y, random, vertices, indices) {
     const capsuleStart = 1.2;
     const capsuleEnd = 2;
     const flexSampler = new Plants.FlexSampler(x, 0, flex, flexPower, height);
-    const leafSet = new Plants.LeafSet(x, .3, x, 1, .2, random);
+    const leafSet = new Plants.LeafSet(
+        x,
+        .3,
+        x,
+        1,
+        .2,
+        .7,
+        Math.PI * .5,
+        .8,
+        .35,
+        .4,
+        .2,
+        random);
 
     this.modelCapsule(
         x,

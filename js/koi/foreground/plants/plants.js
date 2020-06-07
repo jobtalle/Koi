@@ -61,7 +61,7 @@ Plants.FlexSampler.prototype.applyToRange = function(vertices, start, end) {
 };
 
 Plants.prototype.STRIDE = 10;
-Plants.prototype.WIND_UV_RADIUS = .45;
+Plants.prototype.WIND_UV_RADIUS = .6;
 
 /**
  * Make the vegetation mesh

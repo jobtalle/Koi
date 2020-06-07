@@ -111,4 +111,4 @@ Plants.prototype.modelCapsule = function(
         firstIndex + ((segments - 2) << 1) + 1);
 
     flexSampler.applyToRange(vertices, firstIndex, firstIndex + ((segments - 1) << 1) - 1);
-}
+};
