@@ -11,8 +11,7 @@ Plants.prototype.STALK_RESOLUTION = .3;
  * @param {Vector2} uv The air UV
  * @param {Color} color The color
  * @param {Number} shade The dark side shade
- * @param {Number} flex The amount of flex
- * @param {Number} flexPower The flex power
+ * @param {Plants.FlexSampler} flexSampler A flex sampler
  * @param {Number[]} vertices The vertex array
  * @param {Number[]} indices The index array
  */
@@ -26,8 +25,7 @@ Plants.prototype.modelStalk = function(
     uv,
     color,
     shade,
-    flex,
-    flexPower,
+    flexSampler,
     vertices,
     indices) {
     const firstIndex = this.getFirstIndex(vertices);
@@ -42,12 +40,6 @@ Plants.prototype.modelStalk = function(
         const f = segment / (segments - 1);
         const x = x1 + dx * f;
         const z = z1 + dz * f;
-        const flexVector = this.makeFlexVector(
-            flex * Math.pow(f, flexPower),
-            x,
-            z,
-            x1,
-            z1);
 
         vertices.push(
             color.r * shade,
@@ -56,19 +48,18 @@ Plants.prototype.modelStalk = function(
             x + nx * radius * (1 - f),
             y,
             z + nz * radius * (1 - f),
-            flexVector.x,
-            flexVector.y,
+            0,
+            0,
             uv.x,
-            uv.y);
-        vertices.push(
+            uv.y,
             color.r,
             color.g,
             color.b,
             x - nx * radius * (1 - f),
             y,
             z - nz * radius * (1 - f),
-            flexVector.x,
-            flexVector.y,
+            0,
+            0,
             uv.x,
             uv.y);
 
@@ -87,13 +78,6 @@ Plants.prototype.modelStalk = function(
                 firstIndex + (segment << 1) + 2);
     }
 
-    const flexVector = this.makeFlexVector(
-        flex,
-        x2,
-        z2,
-        x1,
-        z1);
-
     vertices.push(
         color.r * (1 - (1 - shade) * .5),
         color.g * (1 - (1 - shade) * .5),
@@ -101,8 +85,10 @@ Plants.prototype.modelStalk = function(
         x2,
         y,
         z2,
-        flexVector.x,
-        flexVector.y,
+        0,
+        0,
         uv.x,
         uv.y);
+
+    flexSampler.applyToRange(vertices, firstIndex, firstIndex + ((segments - 1) << 1));
 };

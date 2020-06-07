@@ -13,8 +13,6 @@ Plants.prototype.CAPSULE_RADIUS_POWER = .35;
  * @param uv
  * @param color
  * @param shade
- * @param flexVector1
- * @param flexVector2
  * @param vertices
  * @param indices
  */
@@ -28,8 +26,7 @@ Plants.prototype.modelCapsule = function(
     uv,
     color,
     shade,
-    flexVector1,
-    flexVector2,
+    flexSampler,
     vertices,
     indices) {
 
@@ -48,8 +45,8 @@ Plants.prototype.modelCapsule = function(
         x1,
         y,
         z1,
-        flexVector1.x,
-        flexVector1.y,
+        0,
+        0,
         uv.x,
         uv.y);
     indices.push(
@@ -59,8 +56,6 @@ Plants.prototype.modelCapsule = function(
 
     for (let segment = 1; segment < segments - 1; ++segment) {
         const f = segment / (segments - 1);
-        const xFlex = flexVector1.x + (flexVector2.x - flexVector1.x) * f;
-        const yFlex = flexVector1.y + (flexVector2.y - flexVector1.y) * f;
         const x = x1 + dx * f;
         const z = z1 + dz * f;
         const r = radius * Math.pow(Math.cos(Math.PI * (f - .5)), this.CAPSULE_RADIUS_POWER);
@@ -72,8 +67,8 @@ Plants.prototype.modelCapsule = function(
             x + nx * r,
             y,
             z + nz * r,
-            xFlex,
-            yFlex,
+            0,
+            0,
             uv.x,
             uv.y);
         vertices.push(
@@ -83,8 +78,8 @@ Plants.prototype.modelCapsule = function(
             x - nx * r,
             y,
             z - nz * r,
-            xFlex,
-            yFlex,
+            0,
+            0,
             uv.x,
             uv.y);
 
@@ -105,12 +100,14 @@ Plants.prototype.modelCapsule = function(
         x2,
         y,
         z2,
-        flexVector2.x,
-        flexVector2.y,
+        0,
+        0,
         uv.x,
         uv.y);
     indices.push(
         firstIndex + ((segments - 2) << 1) - 1,
         firstIndex + ((segments - 2) << 1),
         firstIndex + ((segments - 2) << 1) + 1);
+
+    flexSampler.applyToRange(vertices, firstIndex, firstIndex + ((segments - 1) << 1) - 1);
 }

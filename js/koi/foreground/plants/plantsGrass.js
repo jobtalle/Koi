@@ -17,6 +17,12 @@ Plants.prototype.GRASS_SHADE = .9;
 Plants.prototype.modelGrass = function(x, y, random, vertices, indices) {
     const height = this.GRASS_HEIGHT_MIN + (this.GRASS_HEIGHT_MAX - this.GRASS_HEIGHT_MIN) * random.getFloat();
     const color = this.GRASS_COLOR.copy().multiply(.8 + .2 * random.getFloat());
+    const flexSampler = new Plants.FlexSampler(
+        x,
+        0,
+        this.GRASS_FLEX_MIN + (this.GRASS_FLEX_MAX - this.GRASS_FLEX_MIN) * random.getFloat(),
+        this.GRASS_FLEX_POWER,
+        height * 1.2);
 
     this.modelStalk(
         x,
@@ -28,8 +34,7 @@ Plants.prototype.modelGrass = function(x, y, random, vertices, indices) {
         this.makeUV(x, y, random),
         color,
         this.GRASS_SHADE,
-        this.GRASS_FLEX_MIN + (this.GRASS_FLEX_MAX - this.GRASS_FLEX_MIN) * random.getFloat(),
-        this.GRASS_FLEX_POWER,
+        flexSampler,
         vertices,
         indices);
     this.modelStalk(
@@ -42,8 +47,7 @@ Plants.prototype.modelGrass = function(x, y, random, vertices, indices) {
         this.makeUV(x, y, random),
         color,
         this.GRASS_SHADE,
-        this.GRASS_FLEX_MIN + (this.GRASS_FLEX_MAX - this.GRASS_FLEX_MIN) * random.getFloat(),
-        this.GRASS_FLEX_POWER,
+        flexSampler,
         vertices,
         indices);
     this.modelStalk(
@@ -56,8 +60,7 @@ Plants.prototype.modelGrass = function(x, y, random, vertices, indices) {
         this.makeUV(x, y, random),
         color,
         this.GRASS_SHADE,
-        this.GRASS_FLEX_MIN + (this.GRASS_FLEX_MAX - this.GRASS_FLEX_MIN) * random.getFloat(),
-        this.GRASS_FLEX_POWER,
+        flexSampler,
         vertices,
         indices);
 };

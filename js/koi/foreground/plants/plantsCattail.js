@@ -16,8 +16,7 @@ Plants.prototype.modelCattail = function(x, y, random, vertices, indices) {
     const height = 2.2;
     const capsuleStart = 1.2;
     const capsuleEnd = 2;
-    const flexCapsuleStart = this.makeFlexVector(flex * Math.pow(capsuleStart / height, flexPower), x, 1, x, 0);
-    const flexCapsuleEnd = this.makeFlexVector(flex * Math.pow(capsuleEnd / height, flexPower), x, 1.3, x, 0);
+    const flexSampler = new Plants.FlexSampler(x, 0, flex, flexPower, height);
 
     this.modelCapsule(
         x,
@@ -29,8 +28,7 @@ Plants.prototype.modelCattail = function(x, y, random, vertices, indices) {
         uv,
         this.CATTAIL_COLOR_CAPSULE,
         .8,
-        flexCapsuleStart,
-        flexCapsuleEnd,
+        flexSampler,
         vertices,
         indices);
     this.modelStalk(
@@ -43,8 +41,7 @@ Plants.prototype.modelCattail = function(x, y, random, vertices, indices) {
         uv,
         this.CATTAIL_COLOR_STALK,
         .8,
-        flex,
-        2.5,
+        flexSampler,
         vertices,
         indices);
 };
