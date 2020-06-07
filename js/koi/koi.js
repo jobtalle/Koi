@@ -135,6 +135,8 @@ Koi.prototype.touchStart = function(x, y) {
 
     if (fish)
         this.mover.pickUp(fish,x / this.scale, y / this.scale, this.water, this.random);
+    else
+        this.mover.startTouch(x / this.scale, y / this.scale);
 };
 
 /**

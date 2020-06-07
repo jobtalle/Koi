@@ -16,6 +16,7 @@ const Wind = function(gl, quad, randomSource) {
         ["position"]);
     this.vao = gl.vao.createVertexArrayOES();
 
+    // TODO: Instead of quad buffer, use tessellated plane and store spring in vertices
     gl.vao.bindVertexArrayOES(this.vao);
     gl.bindBuffer(gl.ARRAY_BUFFER, quad.buffer);
 
@@ -54,7 +55,7 @@ void main() {
   mediump float motion = previousRight - previousLeft;
   mediump float state = previousState + motion * 0.4;
   
-  motion = (motion - state * spring * (0.8 + 0.4 * texture2D(random, iUv).r)) * damping;
+  motion = (motion - state * spring * (0.7 + 0.6 * texture2D(random, iUv).r)) * damping;
   
   if (motion < 0.0)
     gl_FragColor = vec4(state * 0.5 + 0.5, -motion, 0.0, previous.r);

@@ -11,13 +11,13 @@ Plants.prototype.CATTAIL_COLOR_CAPSULE = Color.fromCSS("cattail-capsule");
  */
 Plants.prototype.modelCattail = function(x, y, random, vertices, indices) {
     const uv = this.makeUV(x, y, random);
-    const flex = .2;
-    const flexPower = 2.5;
+    const flex = .15;
+    const flexPower = 1.5;
     const height = 2.2;
     const capsuleStart = 1.2;
     const capsuleEnd = 2;
     const leafStart = .3;
-    const leafEnd = 1;
+    const leafEnd = 1.2;
     const direction = Math.PI * .5 + (random.getFloat() - .5) * .1;
     const flexSampler = new Plants.FlexSampler(x, 0, flex, flexPower, height);
     const leafSet = new Plants.LeafSet(

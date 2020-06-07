@@ -10,13 +10,14 @@ const Mover = function(constellation) {
     this.cursorPrevious = new Vector2();
     this.offset = new Vector2();
     this.cursorOffset = new Vector2();
+    this.touch = false;
 };
 
 Mover.prototype.SPLASH_DROP_RADIUS = 0.13;
 Mover.prototype.SPLASH_DROP_AMPLITUDE = 0.4;
 Mover.prototype.SPLASH_DROP_DISTANCE = 0.1;
 Mover.prototype.AIR_RADIUS = 1.5;
-Mover.prototype.AIR_INTENSITY = .3;
+Mover.prototype.AIR_INTENSITY = .4;
 Mover.prototype.AIR_HEIGHT = .5;
 
 /**
@@ -67,10 +68,12 @@ Mover.prototype.touchMove = function(x, y, air) {
     if (this.move) {
         this.cursorOffset.set(this.cursor).add(this.offset);
         this.move.moveTo(this.cursorOffset);
+    }
 
+    if (this.touch) {
         const intensity = this.AIR_INTENSITY * (this.cursor.x - this.cursorPrevious.x);
 
-        // TODO: Only displace after certain delta
+        // TODO: This makes very large steps, smooth this out
         air.addDisplacement(x, y + this.AIR_HEIGHT, this.AIR_RADIUS, intensity);
     }
 };
@@ -96,6 +99,17 @@ Mover.prototype.createBodySplash = function(body, water, random) {
 };
 
 /**
+ * Start touching the game area
+ * @param {Number} x The X position in meters
+ * @param {Number} y The Y position in meters
+ */
+Mover.prototype.startTouch = function(x, y) {
+    this.cursorPrevious.x = this.cursor.x = x;
+    this.cursorPrevious.y = this.cursor.y = y;
+    this.touch = true;
+};
+
+/**
  * Start a new move
  * @param {Fish} fish The fish that needs to be moved
  * @param {Number} x The X position in meters
@@ -109,6 +123,7 @@ Mover.prototype.pickUp = function(fish, x, y, waterPlane, random) {
     this.move = fish;
     this.offset.x = fish.position.x - this.cursor.x;
     this.offset.y = fish.position.y - this.cursor.y;
+    this.touch = true;
 
     this.createBodySplash(fish.body, waterPlane, random);
 };
@@ -124,4 +139,6 @@ Mover.prototype.drop = function(waterPlane, random) {
         this.createBodySplash(this.move.body, waterPlane, random);
         this.move = null;
     }
+
+    this.touch = false;
 };

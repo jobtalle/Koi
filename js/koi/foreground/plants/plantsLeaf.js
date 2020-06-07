@@ -46,7 +46,7 @@ Plants.LeafSet = function(
     for (let leaf = 0; leaf < this.leaves.length; ++leaf)
         this.leaves[leaf] = random.getFloat() * distance;
 
-    this.leaves.sort((a, b) => a - b);
+    this.leaves.sort((a, b) => b - a);
 };
 
 /**
