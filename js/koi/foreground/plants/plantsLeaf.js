@@ -53,6 +53,7 @@ Plants.LeafSet = function(
  * Model the leaves in this set
  * @param {Number} y The Y position
  * @param {Vector2} uv The air UV
+ * @param {Color} color The leaf color
  * @param {Plants} plants The plants object
  * @param {Plants.FlexSampler} flexSampler A flex sampler
  * @param {Random} random A randomizer
@@ -62,6 +63,7 @@ Plants.LeafSet = function(
 Plants.LeafSet.prototype.model = function(
     y,
     uv,
+    color,
     plants,
     flexSampler,
     random,
@@ -89,6 +91,7 @@ Plants.LeafSet.prototype.model = function(
             this.width,
             this.flex * (random.getFloat() * 2 - 2),
             uv,
+            color,
             vertices,
             indices);
     }
@@ -98,8 +101,6 @@ Plants.prototype.LEAF_RESOLUTION = .15;
 Plants.prototype.LEAF_SEGMENTS_MIN = 5;
 Plants.prototype.LEAF_BULGE = .5;
 Plants.prototype.LEAF_SHADE = .8;
-
-Plants.prototype.COLOR_LEAF = Color.fromCSS("leaf"); // TODO: Should be parameter instead
 
 /**
  * Model a leaf
@@ -112,6 +113,7 @@ Plants.prototype.COLOR_LEAF = Color.fromCSS("leaf"); // TODO: Should be paramete
  * @param {Number} width The leaf width factor, proportional to length
  * @param {Number} flex The flexibility
  * @param {Vector2} uv The air UV
+ * @param {Color} color The leaf color
  * @param {Number[]} vertices The vertex array
  * @param {Number[]} indices The index array
  */
@@ -125,6 +127,7 @@ Plants.prototype.modelLeaf = function(
     width,
     flex,
     uv,
+    color,
     vertices,
     indices) {
     const firstIndex = this.getFirstIndex(vertices);
@@ -140,9 +143,9 @@ Plants.prototype.modelLeaf = function(
     const centerOffset = (dxn < 0 ? this.LEAF_BULGE : -this.LEAF_BULGE) * (1 - Math.abs(dzn));
 
     vertices.push(
-        this.COLOR_LEAF.r * shadeLeft,
-        this.COLOR_LEAF.g * shadeLeft,
-        this.COLOR_LEAF.b * shadeLeft,
+        color.r * shadeLeft,
+        color.g * shadeLeft,
+        color.b * shadeLeft,
         x1,
         y,
         z1,
@@ -150,9 +153,9 @@ Plants.prototype.modelLeaf = function(
         flexVector.y,
         uv.x,
         uv.y,
-        this.COLOR_LEAF.r * shadeRight,
-        this.COLOR_LEAF.g * shadeRight,
-        this.COLOR_LEAF.b * shadeRight,
+        color.r * shadeRight,
+        color.g * shadeRight,
+        color.b * shadeRight,
         x1,
         y,
         z1,
@@ -174,9 +177,9 @@ Plants.prototype.modelLeaf = function(
         const radius = length * width * .5 * Math.cos(Math.PI * (f - .5));
 
         vertices.push(
-            this.COLOR_LEAF.r * shadeLeft,
-            this.COLOR_LEAF.g * shadeLeft,
-            this.COLOR_LEAF.b * shadeLeft,
+            color.r * shadeLeft,
+            color.g * shadeLeft,
+            color.b * shadeLeft,
             x1 + dx * f + dzn * radius * centerOffset,
             y,
             z1 + dz * f - dxn * radius * centerOffset,
@@ -184,9 +187,9 @@ Plants.prototype.modelLeaf = function(
             flexVector.y,
             uv.x,
             uv.y,
-            this.COLOR_LEAF.r * shadeRight,
-            this.COLOR_LEAF.g * shadeRight,
-            this.COLOR_LEAF.b * shadeRight,
+            color.r * shadeRight,
+            color.g * shadeRight,
+            color.b * shadeRight,
             x1 + dx * f + dzn * radius,
             y,
             z1 + dz * f - dxn * radius,
@@ -196,9 +199,9 @@ Plants.prototype.modelLeaf = function(
             uv.y);
 
         vertices.push(
-            this.COLOR_LEAF.r * shadeRight,
-            this.COLOR_LEAF.g * shadeRight,
-            this.COLOR_LEAF.b * shadeRight,
+            color.r * shadeRight,
+            color.g * shadeRight,
+            color.b * shadeRight,
             x1 + dx * f + dzn * radius * centerOffset,
             y,
             z1 + dz * f - dxn * radius * centerOffset,
@@ -206,9 +209,9 @@ Plants.prototype.modelLeaf = function(
             flexVector.y,
             uv.x,
             uv.y,
-            this.COLOR_LEAF.r * shadeLeft,
-            this.COLOR_LEAF.g * shadeLeft,
-            this.COLOR_LEAF.b * shadeLeft,
+            color.r * shadeLeft,
+            color.g * shadeLeft,
+            color.b * shadeLeft,
             x1 + dx * f - dzn * radius,
             y,
             z1 + dz * f + dxn * radius,
@@ -242,9 +245,9 @@ Plants.prototype.modelLeaf = function(
     }
 
     vertices.push(
-        this.COLOR_LEAF.r * shadeLeft,
-        this.COLOR_LEAF.g * shadeLeft,
-        this.COLOR_LEAF.b * shadeLeft,
+        color.r * shadeLeft,
+        color.g * shadeLeft,
+        color.b * shadeLeft,
         x2,
         y,
         z2,
@@ -252,9 +255,9 @@ Plants.prototype.modelLeaf = function(
         flexVector.y,
         uv.x,
         uv.y,
-        this.COLOR_LEAF.r * shadeRight,
-        this.COLOR_LEAF.g * shadeRight,
-        this.COLOR_LEAF.b * shadeRight,
+        color.r * shadeRight,
+        color.g * shadeRight,
+        color.b * shadeRight,
         x2,
         y,
         z2,

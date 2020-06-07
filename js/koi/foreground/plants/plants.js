@@ -83,6 +83,8 @@ Plants.prototype.makeMesh = function(gl, constellation, slots, random) {
             this.modelGrass(slot.x, slot.y, random, vertices, indices);
     }
 
+    // TODO: Transform mesh coordinates to prevent size & scale multiplication in shader
+
     return new Mesh(gl, vertices, indices, this.getFirstIndex(vertices) - 1 > 0xFFFF);
 };
 

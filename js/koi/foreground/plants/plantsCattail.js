@@ -1,5 +1,6 @@
 Plants.prototype.CATTAIL_COLOR_STALK = Color.fromCSS("cattail-stalk");
 Plants.prototype.CATTAIL_COLOR_CAPSULE = Color.fromCSS("cattail-capsule");
+Plants.prototype.CATTAIL_COLOR_LEAF = Color.fromCSS("cattail-leaf");
 Plants.prototype.CATTAIL_ANGLE_RADIUS = .05;
 Plants.prototype.CATTAIL_FLEX = .15;
 Plants.prototype.CATTAIL_FLEX_POWER = 1.5;
@@ -89,6 +90,7 @@ Plants.prototype.modelCattail = function(x, y, random, vertices, indices) {
     leafSet.model(
         y,
         uv,
+        this.CATTAIL_COLOR_LEAF,
         this,
         flexSampler,
         random,
