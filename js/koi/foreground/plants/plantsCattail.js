@@ -16,31 +16,34 @@ Plants.prototype.modelCattail = function(x, y, random, vertices, indices) {
     const height = 2.2;
     const capsuleStart = 1.2;
     const capsuleEnd = 2;
+    const leafStart = .3;
+    const leafEnd = 1;
+    const direction = Math.PI * .5 + (random.getFloat() - .5) * .1;
     const flexSampler = new Plants.FlexSampler(x, 0, flex, flexPower, height);
     const leafSet = new Plants.LeafSet(
-        x,
-        .3,
-        x,
-        1,
+        x + Math.cos(direction) * leafStart,
+        Math.sin(direction) * leafStart,
+        x + Math.cos(direction) * leafEnd,
+        Math.sin(direction) * leafEnd,
         .2,
         .7,
         Math.PI * .5,
         .8,
         .35,
-        .4,
+        .6,
         .2,
         random);
 
     this.modelCapsule(
-        x,
-        capsuleStart,
-        x,
-        capsuleEnd,
+        x + Math.cos(direction) * capsuleStart,
+        Math.sin(direction) * capsuleStart,
+        x + Math.cos(direction) * capsuleEnd,
+        Math.sin(direction) * capsuleEnd,
         y,
         .1,
         uv,
         this.CATTAIL_COLOR_CAPSULE,
-        .8,
+        .7,
         flexSampler,
         vertices,
         indices);
@@ -48,8 +51,8 @@ Plants.prototype.modelCattail = function(x, y, random, vertices, indices) {
     this.modelStalk(
         x,
         0,
-        x,
-        height,
+        x + Math.cos(direction) * height,
+        Math.sin(direction) * height,
         y,
         .05,
         uv,

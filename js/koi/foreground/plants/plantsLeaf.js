@@ -31,6 +31,7 @@ Plants.LeafSet = function(
     this.z1 = z1;
     this.dx = x2 - x1;
     this.dz = z2 - z1;
+    this.direction = Math.atan2(this.dz, this.dx);
     this.minAngle = minAngle;
     this.maxAngle = maxAngle;
     this.lengthRoot = lengthRoot;
@@ -73,7 +74,7 @@ Plants.LeafSet.prototype.model = function(
         const z = this.z1 + this.dz * distance;
         const flexVector = flexSampler.sample(x, z);
         const length = this.lengthRoot + (this.lengthTip - this.lengthRoot) * distance;
-        const angle = Math.PI * .5 + angleDirection *
+        const angle = this.direction + angleDirection *
             (this.minAngle + (this.maxAngle - this.minAngle) * random.getFloat());
 
         angleDirection = -angleDirection;
@@ -87,7 +88,7 @@ Plants.LeafSet.prototype.model = function(
             y,
             this.width,
             this.flex * (random.getFloat() * 2 - 2),
-            plants.makeUV(x, y, random),
+            uv,
             vertices,
             indices);
     }
