@@ -4,6 +4,9 @@
  * @param {Stone} stone The stone renderer
  * @param {Vegetation} vegetation The vegetation renderer
  * @param {Constellation} constellation A constellation to decorate
+ * @param {Number} width The render target width
+ * @param {Number} height The render target height
+ * @param {Number} scale The scene scale
  * @param {Random} random A randomizer
  * @constructor
  */
@@ -12,12 +15,15 @@ const Foreground = function(
     stone,
     vegetation,
     constellation,
+    width,
+    height,
+    scale,
     random) {
     const slots = new Slots(constellation.width, constellation.height + this.Y_OVERFLOW, constellation, random);
 
     this.gl = gl;
     this.rocks = new Rocks(gl, constellation, slots, this.Y_SCALE, random);
-    this.plants = new Plants(gl, constellation, slots, random);
+    this.plants = new Plants(gl, constellation, width, height, scale, slots, random);
     this.reflections = new RenderTarget(
         gl,
         Math.round(constellation.width * this.REFLECTION_SCALE),
@@ -68,14 +74,19 @@ Foreground.prototype.makeReflections = function(
  * @param {Number} height The render target height
  * @param {Number} scale The scale
  */
-Foreground.prototype.renderReflections = function(stone, vegetation, width, height, scale) {
+Foreground.prototype.renderReflections = function(
+    stone,
+    vegetation,
+    width,
+    height,
+    scale) {
     this.gl.clearColor(this.SKY_COLOR.r, this.SKY_COLOR.g, this.SKY_COLOR.b, this.SKY_COLOR.a);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
 
     this.gl.enable(this.gl.DEPTH_TEST);
 
     stone.renderReflections(width, height, scale);
-    vegetation.renderReflections(width, height, scale);
+    vegetation.renderReflections();
 
     this.gl.disable(this.gl.DEPTH_TEST);
 };
@@ -116,7 +127,7 @@ Foreground.prototype.render = function(
     scale,
     time) {
     stone.render(width, height, scale);
-    vegetation.render(air, width, height, scale, time);
+    vegetation.render(air, time);
 };
 
 /**

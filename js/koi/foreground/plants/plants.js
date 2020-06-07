@@ -2,12 +2,22 @@
  * Plants
  * @param {WebGLRenderingContext} gl A WebGL rendering context
  * @param {Constellation} constellation The constellation
+ * @param {Number} width The render target width
+ * @param {Number} height The render target height
+ * @param {Number} scale The scene scale
  * @param {Slots} slots The slots to place objects on
  * @param {Random} random A randomizer
  * @constructor
  */
-const Plants = function(gl, constellation, slots, random) {
-    this.mesh = this.makeMesh(gl, constellation, slots, random);
+const Plants = function(
+    gl,
+    constellation,
+    width,
+    height,
+    scale,
+    slots,
+    random) {
+    this.mesh = this.makeMesh(gl, constellation, width, height, scale, slots, random);
 };
 
 /**
@@ -67,10 +77,20 @@ Plants.prototype.WIND_UV_RADIUS = .6;
  * Make the vegetation mesh
  * @param {WebGLRenderingContext} gl A WebGL rendering context
  * @param {Constellation} constellation The constellation
+ * @param {Number} width The render target width
+ * @param {Number} height The render target height
+ * @param {Number} scale The scene scale
  * @param {Slots} slots The slots to place objects on
  * @param {Random} random A randomizer
  */
-Plants.prototype.makeMesh = function(gl, constellation, slots, random) {
+Plants.prototype.makeMesh = function(
+    gl,
+    constellation,
+    width,
+    height,
+    scale,
+    slots,
+    random) {
     const vertices = [];
     const indices = [];
 
@@ -83,9 +103,34 @@ Plants.prototype.makeMesh = function(gl, constellation, slots, random) {
             this.modelGrass(slot.x, slot.y, random, vertices, indices);
     }
 
-    // TODO: Transform mesh coordinates to prevent size & scale multiplication in shader
+    this.normalize(width, height, scale, vertices);
 
     return new Mesh(gl, vertices, indices, this.getFirstIndex(vertices) - 1 > 0xFFFF);
+};
+
+// TODO: Make this function more general
+/**
+ * Normalize the mesh
+ * @param {Number} width The render target width
+ * @param {Number} height The render target height
+ * @param {Number} scale The scene scale
+ * @param {Number[]} vertices The vertex array
+ */
+Plants.prototype.normalize = function(width, height, scale, vertices) {
+    const vx = 2 / width * scale;
+    const vy = -2 / height * scale;
+    const u = 1 / width * scale;
+    const v = 1 / height * scale;
+
+    for (let index = 0, lastIndex = vertices.length; index < lastIndex; index += this.STRIDE) {
+        vertices[index + 3] *= vx;
+        vertices[index + 4] *= vy;
+        vertices[index + 5] *= vy;
+        vertices[index + 6] *= vx;
+        vertices[index + 7] *= vy;
+        vertices[index + 8] *= u;
+        vertices[index + 9] *= v;
+    }
 };
 
 /**

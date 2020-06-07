@@ -74,6 +74,9 @@ Koi.prototype.createRenderables = function() {
         this.systems.stone,
         this.systems.vegetation,
         this.constellation,
+        this.systems.width,
+        this.systems.height,
+        this.scale,
         this.random);
     this.underwater = new RenderTarget(
         this.systems.gl,

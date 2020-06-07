@@ -104,7 +104,7 @@ void main() {
 Stone.prototype.render = function(width, height, scale) {
     this.program.use();
     this.gl.vao.bindVertexArrayOES(this.vao);
-
+    // TODO: Factor these out, premultiply mesh
     this.gl.uniform2f(this.program["uSize"], width, height);
     this.gl.uniform1f(this.program["uScale"], scale);
 
