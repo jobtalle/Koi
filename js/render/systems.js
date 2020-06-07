@@ -23,7 +23,7 @@ const Systems = function(gl, random, width, height) {
     this.stone = new Stone(gl);
     this.shadows = new Shadows(gl);
     this.blur = new Blur(gl, this.quad);
-    this.wind = new Wind(gl, this.quad);
+    this.wind = new Wind(gl, this.quad, this.randomSource);
 };
 
 /**

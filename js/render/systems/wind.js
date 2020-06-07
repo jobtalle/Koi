@@ -2,15 +2,17 @@
  * The wind system
  * @param {WebGLRenderingContext} gl A WebGL context
  * @param {Quad} quad A quad renderer
+ * @param {RandomSource} randomSource A random source
  * @constructor
  */
-const Wind = function(gl, quad) {
+const Wind = function(gl, quad, randomSource) {
     this.gl = gl;
+    this.randomSource = randomSource;
     this.program = new Shader(
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["spring", "damping"],
+        ["spring", "damping", "source", "random"],
         ["position"]);
     this.vao = gl.vao.createVertexArrayOES();
 
@@ -38,6 +40,7 @@ void main() {
 
 Wind.prototype.SHADER_FRAGMENT = `#version 100
 uniform sampler2D source;
+uniform sampler2D random;
 uniform mediump float spring;
 uniform mediump float damping;
 
@@ -51,7 +54,7 @@ void main() {
   mediump float motion = previousRight - previousLeft;
   mediump float state = previousState + motion * 0.4;
   
-  motion = (motion - state * spring) * damping;
+  motion = (motion - state * spring * (0.8 + 0.4 * texture2D(random, iUv).r)) * damping;
   
   if (motion < 0.0)
     gl_FragColor = vec4(state * 0.5 + 0.5, -motion, 0.0, previous.r);
@@ -72,11 +75,15 @@ Wind.prototype.propagate = function(air, influencePainter) {
     air.flip();
     air.getFront().target();
 
+    this.gl.uniform1i(this.program["uSource"], 0);
+    this.gl.uniform1i(this.program["uRandom"], 1);
     this.gl.uniform1f(this.program["uSpring"], this.SPRING);
     this.gl.uniform1f(this.program["uDamping"], this.DAMPING);
 
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, air.getBack().texture);
+    this.gl.activeTexture(this.gl.TEXTURE1);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, this.randomSource.texture);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
 
