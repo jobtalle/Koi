@@ -77,7 +77,7 @@ Plants.prototype.makeMesh = function(gl, constellation, slots, random) {
     slots.sort();
 
     for (const slot of slots.slots) if (slot) {
-        if (random.getFloat() < .01)
+        if (random.getFloat() < .02)
             this.modelCattail(slot.x, slot.y, random, vertices, indices);
         else
             this.modelGrass(slot.x, slot.y, random, vertices, indices);

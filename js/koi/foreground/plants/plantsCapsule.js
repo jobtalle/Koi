@@ -1,20 +1,21 @@
 Plants.prototype.CAPSULE_SEGMENTS_MIN = 3;
-Plants.prototype.CAPSULE_RESOLUTION = .1;
-Plants.prototype.CAPSULE_RADIUS_POWER = .35;
+Plants.prototype.CAPSULE_RESOLUTION = .11;
+Plants.prototype.CAPSULE_RADIUS_POWER = .25;
 
 /**
  * Model a capsule shape
- * @param x1
- * @param z1
- * @param x2
- * @param z2
- * @param y
- * @param radius
- * @param uv
- * @param color
- * @param shade
- * @param vertices
- * @param indices
+ * @param {Number} x1 The X origin
+ * @param {Number} z1 The Z origin
+ * @param {Number} x2 The X target
+ * @param {Number} z2 The Z target
+ * @param {Number} y The Y position
+ * @param {Number} radius The capsule radius
+ * @param {Vector2} uv The air UV
+ * @param {Color} color The capsule color
+ * @param {Number} shade The shade multiplier
+ * @param {Plants.FlexSampler} flexSampler A flex sampler
+ * @param {Number[]} vertices The vertex array
+ * @param {Number[]} indices The index array
  */
 Plants.prototype.modelCapsule = function(
     x1,

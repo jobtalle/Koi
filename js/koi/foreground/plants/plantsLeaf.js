@@ -1,3 +1,76 @@
+/**
+ * A set of leaves to place on a stalk
+ * @param {Number} x1 The X origin
+ * @param {Number} z1 The Z origin
+ * @param {Number} x2 The X target
+ * @param {Number} z2 The Z target
+ * @param {Number} density The amounts of leaves per distance
+ * @param {Random} random A randomizer
+ * @constructor
+ */
+Plants.LeafSet = function(
+    x1,
+    z1,
+    x2,
+    z2,
+    density,
+    random) {
+    this.x1 = x1;
+    this.z1 = z1;
+    this.dx = x2 - x1;
+    this.dz = z2 - z1;
+
+    const distance = Math.sqrt(this.dx * this.dx + this.dz * this.dz);
+
+    this.leaves = new Array(Math.round(distance / density));
+
+    for (let leaf = 0; leaf < this.leaves.length; ++leaf)
+        this.leaves[leaf] = random.getFloat() * distance;
+
+    this.leaves.sort((a, b) => a - b);
+};
+
+/**
+ * Model the leaves in this set
+ * @param {Number} y The Y position
+ * @param {Vector2} uv The air UV
+ * @param {Plants} plants The plants object
+ * @param {Plants.FlexSampler} flexSampler A flex sampler
+ * @param {Random} random A randomizer
+ * @param {Number[]} vertices The vertex array
+ * @param {Number[]} indices The index array
+ */
+Plants.LeafSet.prototype.model = function(
+    y,
+    uv,
+    plants,
+    flexSampler,
+    random,
+    vertices,
+    indices) {
+    for (const distance of this.leaves) {
+        const x = this.x1 + this.dx * distance;
+        const z = this.z1 + this.dz * distance;
+        const flexVector = flexSampler.sample(x, z);
+        const length = .5 + .3 * random.getFloat();
+        const angle = random.getFloat() > .5 ? 1.2 + 1.2 * random.getFloat() : Math.PI - 1.2 - 1.2 * random.getFloat();
+
+        plants.modelLeaf(
+            flexVector,
+            x,
+            z,
+            x + Math.cos(angle) * length,
+            z + Math.sin(angle) * length,
+            y,
+            .3,
+            .3,
+            uv,
+            random,
+            vertices,
+            indices);
+    }
+};
+
 Plants.prototype.LEAF_RESOLUTION = .15;
 Plants.prototype.LEAF_SEGMENTS_MIN = 5;
 Plants.prototype.LEAF_BULGE = .25;
@@ -16,9 +89,9 @@ Plants.prototype.COLOR_LEAF = Color.fromCSS("leaf"); // TODO: Should be paramete
  * @param {Number} width The leaf width factor, proportional to length
  * @param {Number} flex The flexibility
  * @param {Vector2} uv The air UV
+ * @param {Random} random A randomizer
  * @param {Number[]} vertices The vertex array
  * @param {Number[]} indices The index array
- * @param {Random} random A randomizer
  */
 Plants.prototype.modelLeaf = function(
     flexVector,
@@ -170,7 +243,7 @@ Plants.prototype.modelLeaf = function(
         uv.y);
 
     this.makeFlexVectors(
-        -1 + 2 * random.getFloat(),
+        -.5 + 1.5 * random.getFloat(),
         firstIndex,
         firstIndex + ((segments - 1) << 2) - 1,
         x1,
