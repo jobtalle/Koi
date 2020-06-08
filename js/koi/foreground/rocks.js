@@ -149,7 +149,16 @@ Rocks.prototype.createMesh = function(
             plan.radius * this.PILLAR_SKEW,
             plan.radius * yScale * this.PILLAR_SKEW);
     }
-    
+
+    new MeshNormalizer(
+        constellation.width,
+        constellation.height,
+        this.STRIDE,
+        [3],
+        [4],
+        [],
+        [5]).apply(vertices);
+
     return new Mesh(gl, vertices, indices, this.getFirstIndex(vertices) - 1 > 0xFFFF);
 };
 

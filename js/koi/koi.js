@@ -103,10 +103,7 @@ Koi.prototype.createRenderables = function() {
         this.systems.stone,
         this.systems.vegetation,
         this.systems.blur,
-        this.systems.quad,
-        this.systems.width,
-        this.systems.height,
-        this.scale);
+        this.systems.quad);
 };
 
 /**
@@ -263,9 +260,6 @@ Koi.prototype.render = function(deltaTime) {
         this.systems.vegetation,
         this.systems.stone,
         this.air,
-        this.systems.width,
-        this.systems.height,
-        this.scale,
         timeFactor);
 
     // Render shaded water

@@ -38,21 +38,11 @@ Foreground.prototype.SKY_COLOR = Color.fromCSS("sky");
  * @param {Vegetation} vegetation The vegetation renderer
  * @param {Blur} blur The blur system
  * @param {Quad} quad The quad renderer
- * @param {Number} width The render target width
- * @param {Number} height The render target height
- * @param {Number} scale The scale
  */
-Foreground.prototype.makeReflections = function(
-    stone,
-    vegetation,
-    blur,
-    quad,
-    width,
-    height,
-    scale) {
+Foreground.prototype.makeReflections = function(stone, vegetation, blur, quad) {
     this.reflections.target();
 
-    this.renderReflections(stone, vegetation, width, height, scale);
+    this.renderReflections(stone, vegetation);
     this.blurReflections(blur, quad);
 
     this.gl.bindTexture(this.gl.TEXTURE_2D, this.reflections.texture);
@@ -64,22 +54,14 @@ Foreground.prototype.makeReflections = function(
  * Render the reflected foreground scene
  * @param {Stone} stone The stone renderer
  * @param {Vegetation} vegetation The vegetation renderer
- * @param {Number} width The render target width
- * @param {Number} height The render target height
- * @param {Number} scale The scale
  */
-Foreground.prototype.renderReflections = function(
-    stone,
-    vegetation,
-    width,
-    height,
-    scale) {
+Foreground.prototype.renderReflections = function(stone, vegetation) {
     this.gl.clearColor(this.SKY_COLOR.r, this.SKY_COLOR.g, this.SKY_COLOR.b, this.SKY_COLOR.a);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
 
     this.gl.enable(this.gl.DEPTH_TEST);
 
-    stone.renderReflections(width, height, scale);
+    stone.renderReflections();
     vegetation.renderReflections();
 
     this.gl.disable(this.gl.DEPTH_TEST);
@@ -107,20 +89,14 @@ Foreground.prototype.blurReflections = function(blur, quad) {
  * @param {Vegetation} vegetation The vegetation renderer
  * @param {Stone} stone The stone renderer
  * @param {Air} air An air object
- * @param {Number} width The render target width
- * @param {Number} height The render target height
- * @param {Number} scale The scale
  * @param {Number} time The time interpolation factor
  */
 Foreground.prototype.render = function(
     vegetation,
     stone,
     air,
-    width,
-    height,
-    scale,
     time) {
-    stone.render(width, height, scale);
+    stone.render();
     vegetation.render(air, time);
 };
 

@@ -8,13 +8,13 @@ const Stone = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["size", "scale"],
+        [],
         ["color", "position"]);
     this.programReflect = new Shader(
         gl,
         this.SHADER_VERTEX_REFLECT,
         this.SHADER_FRAGMENT,
-        ["size", "scale"],
+        [],
         ["color", "position"]);
     this.vao = gl.vao.createVertexArrayOES();
     this.vaoReflect = gl.vao.createVertexArrayOES();
@@ -48,8 +48,6 @@ const Stone = function(gl) {
 Stone.prototype = Object.create(Meshed.prototype);
 
 Stone.prototype.SHADER_VERTEX = `#version 100
-uniform vec2 size;
-uniform float scale;
 uniform float zDirection;
 
 attribute vec3 color;
@@ -61,15 +59,13 @@ void main() {
   iColor = color;
 
   gl_Position = vec4(
-    vec2(2.0, -2.0) * (position.xy - vec2(0.0, position.z)) / size * scale + vec2(-1.0, 1.0),
-    1.0 - position.y / size.y * scale,
+    vec2(position.x, position.y - position.z),
+    0.5 * position.y + 0.5,
     1.0);
 }
 `;
 
 Stone.prototype.SHADER_VERTEX_REFLECT = `#version 100
-uniform vec2 size;
-uniform float scale;
 uniform float zDirection;
 
 attribute vec3 color;
@@ -81,8 +77,8 @@ void main() {
   iColor = color;
 
   gl_Position = vec4(
-    vec2(2.0, -2.0) * (position.xy + vec2(0.0, position.z)) / size * scale + vec2(-1.0, 1.0),
-    1.0 - position.y / size.y * scale,
+    vec2(position.x, position.y + position.z),
+    0.5 * position.y + 0.5,
     1.0);
 }
 `;
@@ -97,16 +93,10 @@ void main() {
 
 /**
  * Render the stone
- * @param {Number} width The background width in pixels
- * @param {Number} height The background height in pixels
- * @param {Number} scale The render scale
  */
-Stone.prototype.render = function(width, height, scale) {
+Stone.prototype.render = function() {
     this.program.use();
     this.gl.vao.bindVertexArrayOES(this.vao);
-    // TODO: Factor these out, premultiply mesh
-    this.gl.uniform2f(this.program["uSize"], width, height);
-    this.gl.uniform1f(this.program["uScale"], scale);
 
     this.gl.enable(this.gl.CULL_FACE);
     this.renderMesh();
@@ -115,16 +105,10 @@ Stone.prototype.render = function(width, height, scale) {
 
 /**
  * Render the stone reflections
- * @param {Number} width The background width in pixels
- * @param {Number} height The background height in pixels
- * @param {Number} scale The render scale
  */
-Stone.prototype.renderReflections = function(width, height, scale) {
+Stone.prototype.renderReflections = function() {
     this.programReflect.use();
     this.gl.vao.bindVertexArrayOES(this.vaoReflect);
-
-    this.gl.uniform2f(this.programReflect["uSize"], width, height);
-    this.gl.uniform1f(this.programReflect["uScale"], scale);
 
     this.renderMesh();
 };
