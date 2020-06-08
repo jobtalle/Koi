@@ -71,8 +71,8 @@ void main() {
   float displacement = mix(states.x, states.y, time) * 2.0 - 1.0;
   
   gl_Position = vec4(
-    (vec2(position.x, position.y - position.z) + flex * displacement) + vec2(-1.0, 1.0),
-    1.0 + position.y * 0.5,
+    (vec2(position.x, position.y - position.z) + flex * displacement),
+    0.5 * position.y + 0.5,
     1.0);
 }
 `;
@@ -87,8 +87,8 @@ void main() {
   iColor = color;
   
   gl_Position = vec4(
-    vec2(position.x, position.y + position.z) + vec2(-1.0, 1.0),
-    1.0 + position.y,
+    vec2(position.x, position.y + position.z),
+    position.y * 0.5 + 0.5,
     1.0);
 }
 `;

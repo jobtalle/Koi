@@ -4,9 +4,6 @@
  * @param {Stone} stone The stone renderer
  * @param {Vegetation} vegetation The vegetation renderer
  * @param {Constellation} constellation A constellation to decorate
- * @param {Number} width The render target width
- * @param {Number} height The render target height
- * @param {Number} scale The scene scale
  * @param {Random} random A randomizer
  * @constructor
  */
@@ -15,15 +12,12 @@ const Foreground = function(
     stone,
     vegetation,
     constellation,
-    width,
-    height,
-    scale,
     random) {
     const slots = new Slots(constellation.width, constellation.height + this.Y_OVERFLOW, constellation, random);
 
     this.gl = gl;
     this.rocks = new Rocks(gl, constellation, slots, this.Y_SCALE, random);
-    this.plants = new Plants(gl, constellation, width, height, scale, slots, random);
+    this.plants = new Plants(gl, constellation, slots, random);
     this.reflections = new RenderTarget(
         gl,
         Math.round(constellation.width * this.REFLECTION_SCALE),
