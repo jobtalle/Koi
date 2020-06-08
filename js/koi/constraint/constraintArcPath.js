@@ -122,14 +122,8 @@ ConstraintArcPath.prototype.getMeshSteps = function(arc) {
  * Append a water mesh
  * @param {Number[]} vertices The vertex array
  * @param {Number[]} indices The index array
- * @param {Number} width The scene width
- * @param {Number} height The scene height
  */
-ConstraintArcPath.prototype.appendMeshWater = function(
-    vertices,
-    indices,
-    width,
-    height) {
+ConstraintArcPath.prototype.appendMeshWater = function(vertices, indices) {
     for (let arc = this.arcs.length; arc-- > 0;) {
         const firstIndex = vertices.length >> 1;
         const steps = this.getMeshSteps(arc);
@@ -140,10 +134,10 @@ ConstraintArcPath.prototype.appendMeshWater = function(
             const radiusOuter = this.arcs[arc].radius + this.width * .5;
 
             vertices.push(
-                2 * (this.arcs[arc].center.x + Math.cos(radians) * radiusInner) / width - 1,
-                1 - 2 * (this.arcs[arc].center.y + Math.sin(radians) * radiusInner) / height,
-                2 * (this.arcs[arc].center.x + Math.cos(radians) * radiusOuter) / width - 1,
-                1 - 2 * (this.arcs[arc].center.y + Math.sin(radians) * radiusOuter) / height);
+                this.arcs[arc].center.x + Math.cos(radians) * radiusInner,
+                this.arcs[arc].center.y + Math.sin(radians) * radiusInner,
+                this.arcs[arc].center.x + Math.cos(radians) * radiusOuter,
+                this.arcs[arc].center.y + Math.sin(radians) * radiusOuter);
 
             if (step !== steps)
                 indices.push(
@@ -161,14 +155,8 @@ ConstraintArcPath.prototype.appendMeshWater = function(
  * Append a depth mesh
  * @param {Number[]} vertices The vertex array
  * @param {Number[]} indices The index array
- * @param {Number} width The scene width
- * @param {Number} height The scene height
  */
-ConstraintArcPath.prototype.appendMeshDepth = function(
-    vertices,
-    indices,
-    width,
-    height) {
+ConstraintArcPath.prototype.appendMeshDepth = function(vertices, indices) {
     for (let arc = this.arcs.length; arc-- > 0;) {
         const firstIndex = vertices.length >> 2;
         const steps = this.getMeshSteps(arc);
@@ -180,16 +168,16 @@ ConstraintArcPath.prototype.appendMeshDepth = function(
             const radiusOuter = this.arcs[arc].radius + this.width * .5 + this.rings[arc].MESH_DEPTH_PADDING;
 
             vertices.push(
-                2 * (this.arcs[arc].center.x + Math.cos(radians) * radiusInner) / width - 1,
-                1 - 2 * (this.arcs[arc].center.y + Math.sin(radians) * radiusInner) / height,
+                this.arcs[arc].center.x + Math.cos(radians) * radiusInner,
+                this.arcs[arc].center.y + Math.sin(radians) * radiusInner,
                 0,
                 this.rings[arc].DEPTH,
-                2 * (this.arcs[arc].center.x + Math.cos(radians) * radiusCenter) / width - 1,
-                1 - 2 * (this.arcs[arc].center.y + Math.sin(radians) * radiusCenter) / height,
+                this.arcs[arc].center.x + Math.cos(radians) * radiusCenter,
+                this.arcs[arc].center.y + Math.sin(radians) * radiusCenter,
                 1,
                 this.rings[arc].DEPTH,
-                2 * (this.arcs[arc].center.x + Math.cos(radians) * radiusOuter) / width - 1,
-                1 - 2 * (this.arcs[arc].center.y + Math.sin(radians) * radiusOuter) / height,
+                this.arcs[arc].center.x + Math.cos(radians) * radiusOuter,
+                this.arcs[arc].center.y + Math.sin(radians) * radiusOuter,
                 0,
                 this.rings[arc].DEPTH);
 

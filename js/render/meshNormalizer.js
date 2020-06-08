@@ -5,10 +5,10 @@
  * @param {Number} stride The vertex stride
  * @param {Number[]} xClip Element offsets to transform to x clip space
  * @param {Number[]} yClip Element offsets to transform to y clip space
- * @param {Number[]} xScale Element offsets to transform to x clip scale
- * @param {Number[]} yScale Element offsets to transform to y clip scale
- * @param {Number[]} xUv Element offsets to transform to x uv space
- * @param {Number[]} yUv Element offsets to transform to y uv space
+ * @param {Number[]} [xScale] Element offsets to transform to x clip scale
+ * @param {Number[]} [yScale] Element offsets to transform to y clip scale
+ * @param {Number[]} [xUv] Element offsets to transform to x uv space
+ * @param {Number[]} [yUv] Element offsets to transform to y uv space
  * @constructor
  */
 const MeshNormalizer = function(
@@ -17,10 +17,10 @@ const MeshNormalizer = function(
     stride,
     xClip,
     yClip,
-    xScale,
-    yScale,
-    xUv,
-    yUv) {
+    xScale = null,
+    yScale= null,
+    xUv = null,
+    yUv = null) {
     this.width = width;
     this.height = height;
     this.stride = stride;
@@ -32,16 +32,16 @@ const MeshNormalizer = function(
     for (const index of yClip)
         this.indices.push(index | this.INDEX_FLAG_CLIP_SPACE_Y);
 
-    for (const index of xScale)
+    if (xScale) for (const index of xScale)
         this.indices.push(index | this.INDEX_FLAG_CLIP_SCALE_X);
 
-    for (const index of yScale)
+    if (yScale) for (const index of yScale)
         this.indices.push(index | this.INDEX_FLAG_CLIP_SCALE_Y);
 
-    for (const index of xUv)
+    if (xUv) for (const index of xUv)
         this.indices.push(index | this.INDEX_FLAG_UV_X);
 
-    for (const index of yUv)
+    if (yUv) for (const index of yUv)
         this.indices.push(index | this.INDEX_FLAG_UV_Y);
 
     this.indices.sort((a, b) => (a & 0x00FF) - (b & 0x00FF));
@@ -59,13 +59,13 @@ MeshNormalizer.prototype.INDEX_FLAG_UV_Y = 0x2000;
  * @param {Number[]} vertices Vertex data
  */
 MeshNormalizer.prototype.apply = function(vertices) {
-    const latsVertex = vertices.length;
+    const lastVertex = vertices.length;
     const scx = 2 / this.width;
     const scy = -2 / this.height;
     const su = 1 / this.width;
     const sv = 1 / this.height;
 
-    for (let vertex = 0; vertex < latsVertex; vertex += this.stride) for (const index of this.indices) {
+    for (let vertex = 0; vertex < lastVertex; vertex += this.stride) for (const index of this.indices) {
         const offset = index & 0xFF;
 
         switch (index & 0xFF00) {

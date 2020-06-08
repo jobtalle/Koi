@@ -227,16 +227,17 @@ Constellation.prototype.drop = function(fish) {
 /**
  * Make a mask mesh overlapping all water area
  * @param {WebGLRenderingContext} gl A WebGL context
- * @param {Random} random A randomizer
  * @returns {Mesh} A mesh
  */
-Constellation.prototype.makeMeshWater = function(gl, random) {
+Constellation.prototype.makeMeshWater = function(gl) {
     const vertices = [];
     const indices = [];
 
-    this.big.constraint.appendMeshWater(vertices, indices, this.width, this.height);
-    this.small.constraint.appendMeshWater(vertices, indices, this.width, this.height);
-    this.river.constraint.appendMeshWater(vertices, indices, this.width, this.height);
+    this.big.constraint.appendMeshWater(vertices, indices);
+    this.small.constraint.appendMeshWater(vertices, indices);
+    this.river.constraint.appendMeshWater(vertices, indices);
+
+    new MeshNormalizer(this.width, this.height, 2, [0], [1]).apply(vertices);
 
     return new Mesh(gl, vertices, indices);
 };
@@ -250,9 +251,11 @@ Constellation.prototype.makeMeshDepth = function(gl) {
     const vertices = [];
     const indices = [];
 
-    this.big.constraint.appendMeshDepth(vertices, indices, this.width, this.height);
-    this.small.constraint.appendMeshDepth(vertices, indices, this.width, this.height);
-    this.river.constraint.appendMeshDepth(vertices, indices, this.width, this.height);
+    this.big.constraint.appendMeshDepth(vertices, indices);
+    this.small.constraint.appendMeshDepth(vertices, indices);
+    this.river.constraint.appendMeshDepth(vertices, indices);
+
+    new MeshNormalizer(this.width, this.height, 4, [0], [1]).apply(vertices);
 
     return new Mesh(gl, vertices, indices);
 };

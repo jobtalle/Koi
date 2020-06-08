@@ -43,7 +43,7 @@ Koi.prototype.COLOR_BACKGROUND = Color.fromCSS("earth");
  */
 Koi.prototype.createRenderables = function() {
     // Create constellation meshes
-    this.constellationMeshWater = this.constellation.makeMeshWater(this.systems.gl, this.random);
+    this.constellationMeshWater = this.constellation.makeMeshWater(this.systems.gl);
     this.constellationMeshDepth = this.constellation.makeMeshDepth(this.systems.gl);
 
     // Assign constellation meshes to systems

@@ -87,27 +87,19 @@ ConstraintCircle.prototype.getMeshSteps = function() {
  * Append a water mesh
  * @param {Number[]} vertices The vertex array
  * @param {Number[]} indices The index array
- * @param {Number} width The scene width
- * @param {Number} height The scene height
  */
-ConstraintCircle.prototype.appendMeshWater = function(
-    vertices,
-    indices,
-    width,
-    height) {
+ConstraintCircle.prototype.appendMeshWater = function(vertices, indices) {
     const firstIndex = vertices.length >> 1;
     const steps = this.getMeshSteps();
 
-    vertices.push(
-        2 * this.position.x / width - 1,
-        1 - 2 * this.position.y / height);
+    vertices.push(this.position.x, this.position.y);
 
     for (let step = 0; step < steps; ++step) {
         const radians = Math.PI * 2 * step / steps;
 
         vertices.push(
-            2 * (this.position.x + Math.cos(radians) * this.radius) / width - 1,
-            1 - 2 * (this.position.y + Math.sin(radians) * this.radius) / height);
+            this.position.x + Math.cos(radians) * this.radius,
+            this.position.y + Math.sin(radians) * this.radius);
 
         indices.push(
             firstIndex,
@@ -120,20 +112,14 @@ ConstraintCircle.prototype.appendMeshWater = function(
  * Append a depth mesh
  * @param {Number[]} vertices The vertex array
  * @param {Number[]} indices The index array
- * @param {Number} width The scene width
- * @param {Number} height The scene height
  */
-ConstraintCircle.prototype.appendMeshDepth = function(
-    vertices,
-    indices,
-    width,
-    height) {
+ConstraintCircle.prototype.appendMeshDepth = function(vertices, indices) {
     const firstIndex = vertices.length >> 2;
     const steps = this.getMeshSteps();
 
     vertices.push(
-        2 * this.position.x / width - 1,
-        1 - 2 * this.position.y / height,
+        this.position.x,
+        this.position.y,
         1,
         this.DEPTH);
 
@@ -142,8 +128,8 @@ ConstraintCircle.prototype.appendMeshDepth = function(
         const radius = this.radius + this.MESH_DEPTH_PADDING;
 
         vertices.push(
-            2 * (this.position.x + Math.cos(radians) * radius) / width - 1,
-            1 - 2 * (this.position.y + Math.sin(radians) * radius) / height,
+            this.position.x + Math.cos(radians) * radius,
+            this.position.y + Math.sin(radians) * radius,
             0,
             this.DEPTH);
 
