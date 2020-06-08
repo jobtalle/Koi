@@ -35,9 +35,8 @@ Mover.prototype.update = function() {
  * Render the mover
  * @param {Bodies} bodies The bodies renderer
  * @param {Atlas} atlas The atlas containing the fish textures
- * @param {Number} width The render target width
- * @param {Number} height The render target height
- * @param {Number} scale The render scale
+ * @param {Number} width The scene width
+ * @param {Number} height The scene height
  * @param {Number} time The interpolation factor since the last update
  */
 Mover.prototype.render = function(
@@ -45,12 +44,11 @@ Mover.prototype.render = function(
     atlas,
     width,
     height,
-    scale,
     time) {
     if (this.move) {
         this.move.render(bodies, time);
 
-        bodies.render(atlas, width, height, scale, false);
+        bodies.render(atlas, width, height, false);
     }
 };
 

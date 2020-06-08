@@ -135,12 +135,11 @@ Bodies.prototype.upload = function() {
 /**
  * Draw all buffered bodies
  * @param {Atlas} atlas The atlas containing fish textures
- * @param {Number} width The render target width
- * @param {Number} height The render target height
- * @param {Number} scale The render scale
+ * @param {Number} width The scene width
+ * @param {Number} height The scene height
  * @param {Boolean} shadows A boolean indicating whether shadows or actual bodies should be rendered
  */
-Bodies.prototype.render = function(atlas, width, height, scale, shadows) {
+Bodies.prototype.render = function(atlas, width, height, shadows) {
     this.gl.vao.bindVertexArrayOES(this.vao);
 
     this.upload();
@@ -154,14 +153,14 @@ Bodies.prototype.render = function(atlas, width, height, scale, shadows) {
     if (shadows) {
         this.programShadows.use();
 
-        this.gl.uniform2f(this.programShadows["uScale"], 2 / width * scale, -2 / height * scale);
+        this.gl.uniform2f(this.programShadows["uScale"], 2 / width, -2 / height);
 
         this.gl.drawElements(this.gl.TRIANGLES, this.indices.length, this.gl.UNSIGNED_SHORT, 0);
     }
     else {
         this.program.use();
 
-        this.gl.uniform2f(this.program["uScale"], 2 / width * scale, -2 / height * scale);
+        this.gl.uniform2f(this.program["uScale"], 2 / width, -2 / height);
 
         this.gl.drawElements(this.gl.TRIANGLES, this.indices.length, this.gl.UNSIGNED_SHORT, 0);
 

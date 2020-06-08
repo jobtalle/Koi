@@ -56,8 +56,8 @@ Koi.prototype.createRenderables = function() {
     // Create scene objects
     this.shadowBuffer = new ShadowBuffer(
         this.systems.gl,
-        this.systems.width / this.scale,
-        this.systems.height / this.scale);
+        this.constellation.width,
+        this.constellation.height);
     this.atlas = new Atlas(
         this.systems.gl,
         this.systems.patterns,
@@ -84,12 +84,12 @@ Koi.prototype.createRenderables = function() {
         this.systems.gl.LINEAR);
     this.water = new Water(
         this.systems.gl,
-        this.systems.width / this.scale,
-        this.systems.height / this.scale);
+        this.constellation.width,
+        this.constellation.height);
     this.air = new Air(
         this.systems.gl,
-        this.systems.width / this.scale,
-        this.systems.height / this.scale);
+        this.constellation.width,
+        this.constellation.height);
 
     // Assign constellation meshes to objects
     this.background.setMesh(this.constellationMeshDepth);
@@ -208,19 +208,10 @@ Koi.prototype.render = function(deltaTime) {
 
     // Render shadows
     this.shadowBuffer.target();
-    this.constellation.render(
-        this.systems.bodies,
-        this.atlas,
-        this.systems.width,
-        this.systems.height,
-        this.scale,
-        timeFactor,
-        true);
+    this.constellation.render(this.systems.bodies, this.atlas, timeFactor,true);
 
     // Blur shadows
-    this.systems.blur.applyMesh(
-        this.shadowBuffer.renderTarget,
-        this.shadowBuffer.intermediate);
+    this.systems.blur.applyMesh(this.shadowBuffer.renderTarget, this.shadowBuffer.intermediate);
 
     // Target underwater buffer
     this.underwater.target();
@@ -238,9 +229,6 @@ Koi.prototype.render = function(deltaTime) {
     this.constellation.render(
         this.systems.bodies,
         this.atlas,
-        this.systems.width,
-        this.systems.height,
-        this.scale,
         timeFactor,
         false,
         false);
@@ -279,9 +267,8 @@ Koi.prototype.render = function(deltaTime) {
     this.mover.render(
         this.systems.bodies,
         this.atlas,
-        this.systems.width,
-        this.systems.height,
-        this.scale,
+        this.constellation.width,
+        this.constellation.height,
         timeFactor);
 
     // this.systems.quad.render(this.air.getFront().texture);

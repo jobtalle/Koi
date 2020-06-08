@@ -276,9 +276,6 @@ Constellation.prototype.update = function(atlas, water, random) {
  * Render the constellation
  * @param {Bodies} bodies The bodies renderer
  * @param {Atlas} atlas The atlas containing the fish textures
- * @param {Number} width The render target width
- * @param {Number} height The render target height
- * @param {Number} scale The render scale
  * @param {Number} time The amount of time since the last update
  * @param {Boolean} shadows A boolean indicating whether shadows or actual bodies should be rendered
  * @param {Boolean} [firstPass] A boolean indicating whether this was the first pass, true by default
@@ -286,9 +283,6 @@ Constellation.prototype.update = function(atlas, water, random) {
 Constellation.prototype.render = function(
     bodies,
     atlas,
-    width,
-    height,
-    scale,
     time,
     shadows,
     firstPass = true) {
@@ -298,5 +292,5 @@ Constellation.prototype.render = function(
         this.river.render(bodies, time);
     }
 
-    bodies.render(atlas, width, height, scale, shadows);
+    bodies.render(atlas, this.width, this.height, shadows);
 };
