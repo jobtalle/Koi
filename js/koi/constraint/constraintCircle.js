@@ -15,6 +15,31 @@ ConstraintCircle.prototype = Object.create(Constraint.prototype);
 ConstraintCircle.prototype.DEPTH = 1;
 
 /**
+ * Get the relative position of a position
+ * @param {Vector2} position A position
+ * @returns {ConstraintPosition} A relative position
+ */
+ConstraintCircle.prototype.getRelativePosition = function(position) {
+    const dx = position.x - this.position.x;
+    const dy = position.y - this.position.y;
+
+    return new ConstraintPosition(
+        Math.atan2(dy, dx),
+        Math.sqrt(dx * dx + dy * dy) / this.radius);
+};
+
+/**
+ * Convert a relative position to an absolute position
+ * @param {ConstraintPosition} position A relative position
+ * @returns {Vector2} An absolute position
+ */
+ConstraintCircle.prototype.getAbsolutePosition = function(position) {
+    return new Vector2(
+        this.position.x + Math.cos(position.angle) * position.distance * this.radius,
+        this.position.y + Math.sin(position.angle) * position.distance * this.radius);
+};
+
+/**
  * Constrain a vector to make sure it is inside the constraint
  * @param {Vector2} vector The vector to constrain
  * @returns {Boolean} A boolean indicating whether the vector could be constrained, always true for circles

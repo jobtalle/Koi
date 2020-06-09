@@ -84,10 +84,6 @@ canvas.addEventListener("touchend", event => {
     koi.touchEnd();
 });
 
-canvas.addEventListener("mouseleave", () => {
-    koi.touchEnd();
-});
-
 window.onbeforeunload = () => {
     koi.free();
     systems.free();

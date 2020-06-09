@@ -23,16 +23,24 @@ Pond.prototype.updateAtlas = function(atlas) {
  * @param {Atlas} atlas The texture atlas
  */
 Pond.prototype.replaceConstraint = function(constraint, atlas) {
-    this.constraint = constraint;
+    const relativePositions = new Array(this.fishes.length);
 
     for (let fish = this.fishes.length; fish-- > 0;) {
-        const newPosition = this.fishes[fish].position;
+        relativePositions[fish] = this.constraint.getRelativePosition(this.fishes[fish].position);
 
-        if (!this.constraint.constrain(newPosition))
-            this.removeFish(fish, atlas);
+        if (relativePositions[fish]) {
+            const newPosition = constraint.getAbsolutePosition(relativePositions[fish])
+
+            if (newPosition)
+                this.fishes[fish].moveTo(newPosition);
+            else
+                this.removeFish(fish, atlas);
+        }
         else
-            this.fishes[fish].moveTo(newPosition);
+            this.removeFish(fish, atlas);
     }
+
+    this.constraint = constraint;
 }
 
 /**
