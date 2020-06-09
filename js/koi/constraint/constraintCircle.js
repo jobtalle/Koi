@@ -17,20 +17,20 @@ ConstraintCircle.prototype.DEPTH = 1;
 /**
  * Get the relative position of a position
  * @param {Vector2} position A position
- * @returns {ConstraintPosition} A relative position
+ * @returns {ConstraintCirclePosition} A relative position
  */
 ConstraintCircle.prototype.getRelativePosition = function(position) {
     const dx = position.x - this.position.x;
     const dy = position.y - this.position.y;
 
-    return new ConstraintPosition(
+    return new ConstraintCirclePosition(
         Math.atan2(dy, dx),
         Math.sqrt(dx * dx + dy * dy) / this.radius);
 };
 
 /**
  * Convert a relative position to an absolute position
- * @param {ConstraintPosition} position A relative position
+ * @param {ConstraintCirclePosition} position A relative position
  * @returns {Vector2} An absolute position
  */
 ConstraintCircle.prototype.getAbsolutePosition = function(position) {

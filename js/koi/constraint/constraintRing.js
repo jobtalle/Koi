@@ -17,31 +17,6 @@ ConstraintRing.prototype = Object.create(Constraint.prototype);
 ConstraintRing.prototype.DEPTH = .5;
 
 /**
- * Get the relative position of a position
- * @param {Vector2} position A position
- * @returns {ConstraintPosition} A relative position
- */
-ConstraintRing.prototype.getRelativePosition = function(position) {
-    const dx = position.x - this.position.x;
-    const dy = position.y - this.position.y;
-
-    return new ConstraintPosition(
-        Math.atan2(dy, dx),
-        (Math.sqrt(dx * dx + dy * dy) - this.radius) / this.halfWidth);
-};
-
-/**
- * Convert a relative position to an absolute position
- * @param {ConstraintPosition} position A relative position
- * @returns {Vector2} An absolute position
- */
-ConstraintRing.prototype.getAbsolutePosition = function(position) {
-    return new Vector2(
-        this.position.x + Math.cos(position.angle) * (this.radius + position.distance * this.halfWidth),
-        this.position.y + Math.sin(position.angle) * (this.radius + position.distance * this.halfWidth));
-};
-
-/**
  * Constrain a vector to make sure it is inside the constraint
  * @param {Vector2} vector The vector to constrain
  * @param {Number} dx The X distance to the center

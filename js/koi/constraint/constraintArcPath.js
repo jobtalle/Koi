@@ -12,40 +12,6 @@ const ConstraintArcPath = function(arcs, width) {
 };
 
 /**
- * Get the relative position of a position
- * @param {Vector2} position A position
- * @returns {ConstraintPosition} A relative position
- */
-ConstraintArcPath.prototype.getRelativePosition = function(position) {
-    for (let arc = 0; arc < this.arcs.length; ++arc) {
-        const dx = position.x - this.arcs[arc].center.x;
-        const dy = position.y - this.arcs[arc].center.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (dx * this.arcs[arc].direction.x + dy * this.arcs[arc].direction.y >= this.arcs[arc].cone * distance)
-            return this.rings[arc].getRelativePosition(position);
-    }
-
-    return null;
-};
-
-/**
- * Convert a relative position to an absolute position
- * @param {ConstraintPosition} position A relative position
- * @returns {Vector2} An absolute position
- */
-ConstraintArcPath.prototype.getAbsolutePosition = function(position) {
-    const dx = Math.cos(position.angle);
-    const dy = Math.sin(position.angle);
-
-    for (let arc = 0; arc < this.arcs.length; ++arc)
-        if (dx * this.arcs[arc].direction.x + dy * this.arcs[arc].direction.y >= this.arcs[arc].cone)
-            return this.rings[arc].getAbsolutePosition(position);
-
-    return null;
-};
-
-/**
  * An arc of an arc path
  * @param {Vector2} center The arc center
  * @param {Number} radius The arc radius
@@ -62,6 +28,44 @@ ConstraintArcPath.Arc = function(center, radius, start, end) {
 
     this.cone = Math.cos(this.radians * .5);
     this.direction = new Vector2().fromAngle(start + this.radians * .5);
+};
+
+/**
+ * Get the relative position of a position
+ * @param {Vector2} position A position
+ * @returns {ConstraintArcPathPosition} A relative position
+ */
+ConstraintArcPath.prototype.getRelativePosition = function(position) {
+    for (let arc = 0; arc < this.arcs.length; ++arc) {
+        let dx = position.x - this.arcs[arc].center.x;
+        let dy = position.y - this.arcs[arc].center.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        dx /= distance;
+        dy /= distance;
+
+        if (arc === this.arcs.length - 1 ||
+            dx * this.arcs[arc].direction.x + dy * this.arcs[arc].direction.y >= this.arcs[arc].cone)
+            return new ConstraintArcPathPosition(
+                arc,
+                (distance - (this.arcs[arc].radius - this.width * .5)) / this.width,
+                Math.acos(dx * Math.cos(this.arcs[arc].start) + dy * Math.sin(this.arcs[arc].start)) / this.arcs[arc].radians);
+    }
+};
+
+/**
+ * Convert a relative position to an absolute position
+ * @param {ConstraintArcPathPosition} position A relative position
+ * @returns {Vector2} An absolute position
+ */
+ConstraintArcPath.prototype.getAbsolutePosition = function(position) {
+    const angle = this.arcs[position.index].start +
+        (this.arcs[position.index].end - this.arcs[position.index].start) * position.progress;
+    const radius = this.arcs[position.index].radius + this.width * (position.radius - .5);
+
+    return new Vector2(
+        this.arcs[position.index].center.x + Math.cos(angle) * radius,
+        this.arcs[position.index].center.y + Math.sin(angle) * radius);
 };
 
 /**
