@@ -10,7 +10,7 @@ const ConstraintRing = function(position, radius, width) {
     this.radius = radius;
     this.halfWidth = width * .5;
 
-    Constraint.call(this);
+    Constraint.call(this, Math.min(this.BORDER, this.halfWidth));
 };
 
 ConstraintRing.prototype = Object.create(Constraint.prototype);
