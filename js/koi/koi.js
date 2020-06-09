@@ -19,8 +19,10 @@ const Koi = function(systems, random) {
     this.foreground = null;
     this.underwater = null;
     this.water = null;
+    this.air = null;
     this.constellationMeshWater = null;
     this.constellationMeshDepth = null;
+    this.weather = new Weather(this.constellation);
     this.spawner = new Spawner(this.constellation);
     this.time = 0;
 
