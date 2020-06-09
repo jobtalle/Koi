@@ -10,7 +10,8 @@
  * @param {Number} lengthRoot The leaf length at the root
  * @param {Number} lengthTip The leaf length at the tip
  * @param {Number} width The leaf width factor
- * @param {Number} flex The flex amount
+ * @param {Number} flexMin The minimum flex amount
+ * @param {Number} flexMax The maximum flex amount
  * @param {Random} random A randomizer
  * @constructor
  */
@@ -25,7 +26,8 @@ Plants.LeafSet = function(
     lengthRoot,
     lengthTip,
     width,
-    flex,
+    flexMin,
+    flexMax,
     random) {
     this.x1 = x1;
     this.z1 = z1;
@@ -37,7 +39,8 @@ Plants.LeafSet = function(
     this.lengthRoot = lengthRoot;
     this.lengthTip = lengthTip;
     this.width = width;
-    this.flex = flex;
+    this.flexMin = flexMin;
+    this.flexMax = flexMax;
 
     const distance = Math.sqrt(this.dx * this.dx + this.dz * this.dz);
 
@@ -78,6 +81,8 @@ Plants.LeafSet.prototype.model = function(
         const length = this.lengthRoot + (this.lengthTip - this.lengthRoot) * distance;
         const angle = this.direction + angleDirection *
             (this.minAngle + (this.maxAngle - this.minAngle) * random.getFloat());
+        const flex = this.flexMin + (this.flexMax - this.flexMin) * random.getFloat();
+        const flexDirection = random.getFloat() < .5 ? -1 : 1;
 
         angleDirection = -angleDirection;
 
@@ -89,7 +94,7 @@ Plants.LeafSet.prototype.model = function(
             z + Math.sin(angle) * length,
             y,
             this.width,
-            this.flex * (random.getFloat() * 2 - 2),
+            flex * flexDirection,
             uv,
             color,
             vertices,

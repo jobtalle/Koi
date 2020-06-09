@@ -18,7 +18,8 @@ Plants.prototype.CATTAIL_LEAVES_ANGLE_MAX = 1.5;
 Plants.prototype.CATTAIL_LEAVES_LENGTH_ROOT = .8;
 Plants.prototype.CATTAIL_LEAVES_LENGTH_TIP = .35;
 Plants.prototype.CATTAIL_LEAVES_WIDTH = .6;
-Plants.prototype.CATTAIL_LEAVES_FLEX = .22;
+Plants.prototype.CATTAIL_LEAVES_FLEX_MIN = .04;
+Plants.prototype.CATTAIL_LEAVES_FLEX_MAX = .22;
 Plants.prototype.CATTAIL_CAPSULE_START = .65;
 Plants.prototype.CATTAIL_CAPSULE_END = .95;
 Plants.prototype.CATTAIL_CAPSULE_RADIUS = .04;
@@ -55,7 +56,8 @@ Plants.prototype.modelCattail = function(x, y, random, vertices, indices) {
         this.CATTAIL_LEAVES_LENGTH_ROOT,
         this.CATTAIL_LEAVES_LENGTH_TIP,
         this.CATTAIL_LEAVES_WIDTH,
-        this.CATTAIL_LEAVES_FLEX,
+        this.CATTAIL_LEAVES_FLEX_MIN,
+        this.CATTAIL_LEAVES_FLEX_MAX,
         random);
 
     this.modelCapsule(
