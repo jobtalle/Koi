@@ -4,11 +4,18 @@
  * @param {Constellation} constellation A constellation to decorate
  * @param {Slots} slots The slots to place objects on
  * @param {Number} yScale The Y projection scale in the range [0, 1]
+ * @param {Biome} biome The biome
  * @param {Random} random A randomizer
  * @constructor
  */
-const Rocks = function(gl, constellation, slots, yScale, random) {
-    this.mesh = this.createMesh(gl, constellation, slots, yScale, random);
+const Rocks = function(
+    gl,
+    constellation,
+    slots,
+    yScale,
+    biome,
+    random) {
+    this.mesh = this.createMesh(gl, constellation, slots, yScale, biome, random);
 };
 
 /**
@@ -42,8 +49,6 @@ Rocks.prototype.PILLAR_SHIFT_AMPLITUDE = .06;
 Rocks.prototype.PILLAR_SKEW = 1.2;
 Rocks.prototype.PILLAR_LIGHT_AMBIENT = .6;
 Rocks.prototype.PILLAR_LIGHT_BASE = .8;
-Rocks.prototype.NOISE_SCALE = .7;
-Rocks.prototype.NOISE_THRESHOLD = .36;
 
 /**
  * Create the rocks mesh
@@ -51,6 +56,7 @@ Rocks.prototype.NOISE_THRESHOLD = .36;
  * @param {Constellation} constellation A constellation to decorate
  * @param {Slots} slots The slots to place objects on
  * @param {Number} yScale The Y projection scale in the range [0, 1]
+ * @param {Biome} biome The biome
  * @param {Random} random A randomizer
  */
 Rocks.prototype.createMesh = function(
@@ -58,12 +64,8 @@ Rocks.prototype.createMesh = function(
     constellation,
     slots,
     yScale,
+    biome,
     random) {
-    const noisePonds = new CubicNoise(
-        Math.ceil(constellation.width * this.NOISE_SCALE),
-        Math.ceil(constellation.height * this.NOISE_SCALE),
-        random);
-    const noiseRiver = noisePonds.createSimilar();
     const vertices = [];
     const indices = [];
     const plans = [];
@@ -79,7 +81,7 @@ Rocks.prototype.createMesh = function(
         constellation.width,
         0,
         constellation.height,
-        noisePonds,
+        biome.sampleRocksPonds.bind(biome),
         slots,
         random);
 
@@ -94,7 +96,7 @@ Rocks.prototype.createMesh = function(
         constellation.width,
         0,
         constellation.height,
-        noisePonds,
+        biome.sampleRocksPonds.bind(biome),
         slots,
         random);
 
@@ -110,7 +112,7 @@ Rocks.prototype.createMesh = function(
             constellation.width,
             0,
             constellation.height,
-            noiseRiver,
+            biome.sampleRocksRiver.bind(biome),
             slots,
             random);
 
@@ -125,7 +127,7 @@ Rocks.prototype.createMesh = function(
             constellation.width,
             0,
             constellation.height,
-            noiseRiver,
+            biome.sampleRocksRiver.bind(biome),
             slots,
             random);
     }
@@ -183,7 +185,7 @@ Rocks.prototype.getFirstIndex = function(vertices) {
  * @param {Number} xMax The maximum X position
  * @param {Number} yMin The minimum Y position
  * @param {Number} yMax The maximum Y position
- * @param {CubicNoise} noise The rock intensity noise
+ * @param {Function} sampler The rock intensity sampler
  * @param {Slots} slots The slots to place objects on
  * @param {Random} random A randomizer
  */
@@ -198,7 +200,7 @@ Rocks.prototype.planArc = function(
     xMax,
     yMin,
     yMax,
-    noise,
+    sampler,
     slots,
     random) {
     const circumference = Math.PI * 2 * radius;
@@ -215,16 +217,12 @@ Rocks.prototype.planArc = function(
             rockX > xMax ||
             rockY < yMin ||
             rockY > yMax ||
-            (intensity = noise.sample(
-                rockX * this.NOISE_SCALE,
-                rockY * this.NOISE_SCALE)) < this.NOISE_THRESHOLD) {
+            (intensity = sampler(rockX, rockY)) === 0) {
             radians += this.PILLAR_RADIUS_MIN;
             radiansLeft -= this.PILLAR_RADIUS_MIN;
 
             continue;
         }
-
-        intensity = (intensity - this.NOISE_THRESHOLD) / (1 - this.NOISE_THRESHOLD);
 
         const pillarRadius = this.PILLAR_RADIUS_MIN +
             (this.PILLAR_RADIUS_MAX - this.PILLAR_RADIUS_MIN) *
