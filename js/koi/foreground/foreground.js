@@ -14,11 +14,11 @@ const Foreground = function(
     constellation,
     random) {
     const slots = new Slots(constellation.width, constellation.height + this.Y_OVERFLOW, constellation, random);
-    const biome = new Biome(constellation, random);
+    const biome = new Biome(constellation, slots.width, slots.height, random);
 
     this.gl = gl;
     this.rocks = new Rocks(gl, constellation, slots, this.Y_SCALE, biome, random);
-    this.plants = new Plants(gl, constellation, slots, random);
+    this.plants = new Plants(gl, constellation, slots, biome, random);
     this.reflections = new RenderTarget(
         gl,
         Math.round(constellation.width * this.REFLECTION_SCALE),

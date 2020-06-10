@@ -103,6 +103,32 @@ ConstraintArcPath.prototype.constrain = function(vector) {
 };
 
 /**
+ * Calculate the distance to the nearest point in this constraint
+ * @param {Number} x The X position
+ * @param {Number} y The Y position
+ * @returns {Number} The distance to the nearest point in this constraint
+ */
+ConstraintArcPath.prototype.distanceToWater = function(x, y) {
+    for (let arc = 0; arc < this.arcs.length; ++arc) {
+        const dx = x - this.arcs[arc].center.x;
+        const dy = y - this.arcs[arc].center.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (dx * this.arcs[arc].direction.x + dy * this.arcs[arc].direction.y >= this.arcs[arc].cone * distance) {
+            if (distance > this.arcs[arc].radius - this.width * .5 && distance < this.arcs[arc].radius + this.width * .5)
+                return 0;
+
+            if (distance < this.arcs[arc].radius - this.width * .5)
+                return this.arcs[arc].radius - this.width * .5 - distance;
+
+            return distance - this.arcs[arc].radius - this.width * .5;
+        }
+    }
+
+    return Infinity;
+};
+
+/**
  * Check whether a given point is contained within this constraint
  * @param {Number} x The X position
  * @param {Number} y The Y position

@@ -61,6 +61,26 @@ ConstraintCircle.prototype.constrain = function(vector) {
 };
 
 /**
+ * Calculate the distance to the nearest point in this constraint
+ * @param {Number} x The X position
+ * @param {Number} y The Y position
+ * @returns {Number} The distance to the nearest point in this constraint
+ */
+ConstraintCircle.prototype.distanceToWater = function(x, y) {
+    const dx = x - this.position.x;
+    const dy = y - this.position.y;
+    const distanceSquared = dx * dx + dy * dy;
+
+    if (distanceSquared < this.radius * this.radius)
+        return 0;
+    else {
+        const distance = Math.sqrt(distanceSquared);
+
+        return distance - this.radius;
+    }
+};
+
+/**
  * Check whether a given point is contained within this constraint
  * @param {Number} x The X position
  * @param {Number} y The Y position

@@ -225,6 +225,20 @@ Constellation.prototype.drop = function(fish) {
 };
 
 /**
+ * Calculate the distance to the nearest body of water
+ * @param {Number} x The X position
+ * @param {Number} y The Y position
+ * @returns {Number} The distance to the nearest body of water
+ */
+Constellation.prototype.distanceToWater = function(x, y) {
+    return Math.min(
+        Math.min(
+            this.small.constraint.distanceToWater(x, y),
+            this.big.constraint.distanceToWater(x, y)),
+        this.river.constraint.distanceToWater(x, y));
+};
+
+/**
  * Make a mask mesh overlapping all water area
  * @param {WebGLRenderingContext} gl A WebGL context
  * @returns {Mesh} A mesh
