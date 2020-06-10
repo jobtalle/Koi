@@ -13,7 +13,7 @@ const Plants = function(
     slots,
     biome,
     random) {
-    this.mesh = this.makeMesh(gl, constellation, slots, biome, random);
+    this.mesh = this.makeMesh(gl, constellation, new Planter(slots, biome, random));
 };
 
 /**
@@ -73,27 +73,16 @@ Plants.prototype.WIND_UV_RADIUS = .6;
  * Make the vegetation mesh
  * @param {WebGLRenderingContext} gl A WebGL rendering context
  * @param {Constellation} constellation The constellation
- * @param {Slots} slots The slots to place objects on
- * @param {Biome} biome The biome
- * @param {Random} random A randomizer
+ * @param {Planter} planter A planter
  */
 Plants.prototype.makeMesh = function(
     gl,
     constellation,
-    slots,
-    biome,
-    random) {
+    planter) {
     const vertices = [];
     const indices = [];
 
-    slots.sort();
-
-    for (const slot of slots.slots) if (slot) {
-        if (biome.sampleSDF(slot.x, slot.y) < .5)
-            this.modelCattail(slot.x, slot.y, random, vertices, indices);
-        else
-            this.modelGrass(slot.x, slot.y, random, vertices, indices);
-    }
+    planter.plant(this, vertices, indices);
 
     new MeshNormalizer(
         constellation.width,
