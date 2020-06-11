@@ -91,7 +91,8 @@ Koi.prototype.createRenderables = function() {
     this.air = new Air(
         this.systems.gl,
         this.constellation.width,
-        this.constellation.height);
+        this.constellation.height,
+        this.random);
 
     // Assign constellation meshes to objects
     this.background.setMesh(this.constellationMeshDepth);
@@ -273,7 +274,7 @@ Koi.prototype.render = function(deltaTime) {
         this.constellation.height,
         timeFactor);
 
-    // this.systems.quad.render(this.air.getFront().texture);
+    // this.systems.quad.render(this.air.springs);
 };
 
 /**
