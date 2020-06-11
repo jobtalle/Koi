@@ -13,6 +13,25 @@ const Planter = function(slots, biome, random) {
     this.random = random;
 };
 
+Planter.prototype.BEACH_MAX = .3;
+Planter.prototype.CATTAIL_CHANCE = .2;
+Planter.prototype.CATTAIL_DIST_MIN = .2;
+Planter.prototype.CATTAIL_DIST_MAX = 1.5;
+
+/**
+ * Get the cattail chance
+ * @param {Number} waterDistance The distance to the nearest body of water
+ * @param {Number} beachFactor The beach factor
+ * @returns {Number} The cattail chance
+ */
+Planter.prototype.getCattailChance = function(waterDistance, beachFactor) {
+    return beachFactor * (1 - Math.max(
+        0,
+        Math.min(
+            1,
+            (waterDistance - this.CATTAIL_DIST_MIN) / (this.CATTAIL_DIST_MAX - this.CATTAIL_DIST_MIN))));
+};
+
 /**
  * Plant all plants into slots
  * @param {Plants} plants The plants object
@@ -21,8 +40,15 @@ const Planter = function(slots, biome, random) {
  */
 Planter.prototype.plant = function(plants, vertices, indices) {
     for (const slot of this.slots.slots) if (slot) {
-        if (this.biome.sampleSDF(slot.x, slot.y) < .5)
-            plants.modelCattail(slot.x, slot.y, this.random, vertices, indices);
+        const waterDistance = this.biome.sampleSDF(slot.x, slot.y);
+        const beachFactor = Math.max(0, Math.min(1, -Math.min(
+            this.biome.sampleRocksPonds(slot.x, slot.y),
+            this.biome.sampleRocksRiver(slot.x, slot.y)) / this.BEACH_MAX));
+
+        const cattailFactor = this.getCattailChance(waterDistance, beachFactor);
+
+        if (this.random.getFloat() < cattailFactor * this.CATTAIL_CHANCE)
+            plants.modelCattail(slot.x, slot.y, cattailFactor, this.random, vertices, indices);
         else
             plants.modelGrass(slot.x, slot.y, this.random, vertices, indices);
     }

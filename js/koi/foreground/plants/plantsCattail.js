@@ -12,7 +12,7 @@ Plants.prototype.CATTAIL_STALK_RADIUS_POWER = .7;
 Plants.prototype.CATTAIL_STALK_SHADE = .7;
 Plants.prototype.CATTAIL_LEAVES_START = .1;
 Plants.prototype.CATTAIL_LEAVES_END = .55;
-Plants.prototype.CATTAIL_LEAVES_DENSITY = .3;
+Plants.prototype.CATTAIL_LEAVES_DENSITY = .36;
 Plants.prototype.CATTAIL_LEAVES_ANGLE_MIN = .8;
 Plants.prototype.CATTAIL_LEAVES_ANGLE_MAX = 1.5;
 Plants.prototype.CATTAIL_LEAVES_LENGTH_ROOT = .8;
@@ -29,14 +29,16 @@ Plants.prototype.CATTAIL_CAPSULE_SHADE = .75;
  * Model cattail
  * @param {Number} x The X origin
  * @param {Number} y The Y origin
+ * @param {Number} size A size factor in the range [0, 1]
  * @param {Random} random A randomizer
  * @param {Number[]} vertices The vertex array
  * @param {Number[]} indices The index array
  */
-Plants.prototype.modelCattail = function(x, y, random, vertices, indices) {
+Plants.prototype.modelCattail = function(x, y, size, random, vertices, indices) {
     const uv = this.makeUV(x, y, random);
     const height = this.CATTAIL_HEIGHT_MIN + (this.CATTAIL_HEIGHT_MAX - this.CATTAIL_HEIGHT_MIN) *
-        Math.pow(random.getFloat(), this.CATTAIL_HEIGHT_POWER);
+        Math.pow(size, this.CATTAIL_HEIGHT_POWER);
+
     const capsuleStart = height * this.CATTAIL_CAPSULE_START;
     const capsuleEnd = height * this.CATTAIL_CAPSULE_END;
     const leafStart = height * this.CATTAIL_LEAVES_START;

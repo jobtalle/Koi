@@ -217,7 +217,7 @@ Rocks.prototype.planArc = function(
             rockX > xMax ||
             rockY < yMin ||
             rockY > yMax ||
-            (intensity = sampler(rockX, rockY)) === 0) {
+            (intensity = sampler(rockX, rockY)) <= 0) {
             radians += this.PILLAR_RADIUS_MIN;
             radiansLeft -= this.PILLAR_RADIUS_MIN;
 
