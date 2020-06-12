@@ -6,7 +6,7 @@
  */
 const Constellation = function(width, height) {
     this.width = width;
-    this.height = height;
+    this.height = height * this.Y_SCALE;
     this.big = null;
     this.small = null;
     this.river = null;
@@ -20,6 +20,25 @@ Constellation.prototype.FACTOR_PADDING = .15;
 Constellation.prototype.FACTOR_SMALL = .7;
 Constellation.prototype.FACTOR_RIVER = .6;
 Constellation.prototype.FISH_PER_AREA = 1;
+Constellation.prototype.Y_SCALE = 1.12;
+
+/**
+ * Get the X position in meters
+ * @param {Number} x The X position in pixels
+ * @param {Number} scale The scale
+ */
+Constellation.prototype.getWorldX = function(x, scale) {
+    return x / scale;
+};
+
+/**
+ * Get the Y position in meters
+ * @param {Number} y The Y position in pixels
+ * @param {Number} scale The scale
+ */
+Constellation.prototype.getWorldY = function(y, scale) {
+    return y / scale * this.Y_SCALE;
+};
 
 /**
  * Update the atlas, write all fish textures again
@@ -39,7 +58,7 @@ Constellation.prototype.updateAtlas = function(atlas) {
  */
 Constellation.prototype.resize = function(width, height, atlas) {
     this.width = width;
-    this.height = height;
+    this.height = height * this.Y_SCALE;
 
     this.fit(atlas);
 };

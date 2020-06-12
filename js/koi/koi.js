@@ -131,12 +131,14 @@ Koi.prototype.freeRenderables = function() {
  * @param {Number} y The Y position in pixels
  */
 Koi.prototype.touchStart = function(x, y) {
-    const fish = this.constellation.pick(x / this.scale, y / this.scale);
+    const wx = this.constellation.getWorldX(x, this.scale);
+    const wy = this.constellation.getWorldY(y, this.scale);
+    const fish = this.constellation.pick(wx, wy);
 
     if (fish)
-        this.mover.pickUp(fish,x / this.scale, y / this.scale, this.water, this.random);
+        this.mover.pickUp(fish,wx, wy, this.water, this.random);
     else
-        this.mover.startTouch(x / this.scale, y / this.scale);
+        this.mover.startTouch(wx, wy);
 };
 
 /**
@@ -145,7 +147,10 @@ Koi.prototype.touchStart = function(x, y) {
  * @param {Number} y The Y position in pixels
  */
 Koi.prototype.touchMove = function(x, y) {
-    this.mover.touchMove(x / this.scale, y / this.scale, this.air);
+    this.mover.touchMove(
+        this.constellation.getWorldX(x, this.scale),
+        this.constellation.getWorldY(y, this.scale),
+        this.air);
 };
 
 /**
@@ -274,7 +279,7 @@ Koi.prototype.render = function(deltaTime) {
         this.constellation.height,
         timeFactor);
 
-    // this.systems.quad.render(this.air.springs);
+    // this.systems.quad.render(this.atlas.renderTarget.texture);
 };
 
 /**

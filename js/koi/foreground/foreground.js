@@ -29,7 +29,7 @@ const Foreground = function(
 };
 
 Foreground.prototype.REFLECTION_SCALE = 25;
-Foreground.prototype.Y_SCALE = .7;
+Foreground.prototype.Y_SCALE = .8;
 Foreground.prototype.Y_OVERFLOW = .3;
 Foreground.prototype.SKY_COLOR = Color.fromCSS("sky");
 
