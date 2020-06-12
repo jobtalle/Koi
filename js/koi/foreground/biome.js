@@ -17,7 +17,7 @@ const Biome = function(constellation, width, height, random) {
 };
 
 Biome.prototype.ROCKS_NOISE_SCALE = .7;
-Biome.prototype.ROCKS_NOISE_THRESHOLD = .35;
+Biome.prototype.ROCKS_NOISE_THRESHOLD = .33;
 Biome.prototype.SDF_RESOLUTION = 3;
 
 /**

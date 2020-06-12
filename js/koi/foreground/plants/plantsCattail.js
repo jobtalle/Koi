@@ -37,7 +37,7 @@ Plants.prototype.CATTAIL_CAPSULE_SHADE = .75;
 Plants.prototype.modelCattail = function(x, y, size, random, vertices, indices) {
     const uv = this.makeUV(x, y, random);
     const height = this.CATTAIL_HEIGHT_MIN + (this.CATTAIL_HEIGHT_MAX - this.CATTAIL_HEIGHT_MIN) *
-        Math.pow(size, this.CATTAIL_HEIGHT_POWER);
+        Math.pow(size * random.getFloat(), this.CATTAIL_HEIGHT_POWER);
 
     const capsuleStart = height * this.CATTAIL_CAPSULE_START;
     const capsuleEnd = height * this.CATTAIL_CAPSULE_END;

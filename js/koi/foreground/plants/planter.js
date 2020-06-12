@@ -13,10 +13,10 @@ const Planter = function(slots, biome, random) {
     this.random = random;
 };
 
-Planter.prototype.BEACH_MAX = .18;
-Planter.prototype.CATTAIL_CHANCE = .13;
+Planter.prototype.BEACH_MAX = .1;
+Planter.prototype.CATTAIL_CHANCE = .1;
 Planter.prototype.CATTAIL_DIST_MIN = .2;
-Planter.prototype.CATTAIL_DIST_MAX = 1.5;
+Planter.prototype.CATTAIL_DIST_MAX = 1;
 
 /**
  * Get the cattail chance

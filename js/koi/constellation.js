@@ -16,9 +16,9 @@ const Constellation = function(width, height) {
     this.fit();
 };
 
-Constellation.prototype.FACTOR_PADDING = .15;
-Constellation.prototype.FACTOR_SMALL = .7;
-Constellation.prototype.FACTOR_RIVER = .6;
+Constellation.prototype.FACTOR_PADDING = .14;
+Constellation.prototype.FACTOR_SMALL = .65;
+Constellation.prototype.FACTOR_RIVER = .55;
 Constellation.prototype.FISH_PER_AREA = 1;
 Constellation.prototype.Y_SCALE = 1.12;
 
