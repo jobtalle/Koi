@@ -16,8 +16,8 @@ const Biome = function(constellation, width, height, random) {
     this.sdf = this.makeSDF(constellation, width, height);
 };
 
-Biome.prototype.ROCKS_NOISE_SCALE = .7;
-Biome.prototype.ROCKS_NOISE_THRESHOLD = .33;
+Biome.prototype.ROCKS_NOISE_SCALE = .9;
+Biome.prototype.ROCKS_NOISE_THRESHOLD = .36;
 Biome.prototype.SDF_RESOLUTION = 3;
 
 /**

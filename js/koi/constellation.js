@@ -20,7 +20,7 @@ Constellation.prototype.FACTOR_PADDING = .14;
 Constellation.prototype.FACTOR_SMALL = .65;
 Constellation.prototype.FACTOR_RIVER = .55;
 Constellation.prototype.FISH_PER_AREA = 1;
-Constellation.prototype.Y_SCALE = 1.12;
+Constellation.prototype.Y_SCALE = 1;
 
 /**
  * Get the X position in meters

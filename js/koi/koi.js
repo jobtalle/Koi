@@ -35,9 +35,8 @@ const Koi = function(systems, random) {
 
 Koi.prototype.FRAME_TIME_MAX = 1;
 Koi.prototype.UPDATE_RATE = 1 / 14;
-Koi.prototype.PREFERRED_SCALE = 100;
-Koi.prototype.SIZE_MIN = 9;
-Koi.prototype.SIZE_MAX = 11.5;
+Koi.prototype.SCALE_FACTOR = .051;
+Koi.prototype.SCALE_MIN = 50;
 Koi.prototype.COLOR_BACKGROUND = Color.fromCSS("earth");
 
 /**
@@ -166,9 +165,7 @@ Koi.prototype.touchEnd = function() {
  * @param {Number} height The view height in pixels
  */
 Koi.prototype.getScale = function(width, height) {
-    const minSize = Math.min(width, height);
-
-    return Math.max(Math.min(this.PREFERRED_SCALE, minSize / this.SIZE_MIN), minSize / this.SIZE_MAX);
+    return Math.max(this.SCALE_MIN, Math.sqrt(width * width + height * height) * this.SCALE_FACTOR);
 };
 
 /**
