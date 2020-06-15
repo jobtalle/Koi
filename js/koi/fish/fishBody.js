@@ -2,15 +2,18 @@
  * A fish body
  * @param {Pattern} pattern A body pattern
  * @param {Fin[]} fins The fins
+ * @param {Tail} tail The tail
  * @param {Number} length The body length
  * @param {Number} thickness The body thickness
  * @constructor
  */
-const FishBody = function(pattern, fins, length, thickness) {
+const FishBody = function(pattern, fins, tail, length, thickness) {
     this.pattern = pattern;
     this.fins = fins;
+    this.tail = tail;
     this.radius = thickness * .5;
     this.spine = new Array(Math.ceil(length / this.RESOLUTION));
+    this.tailOffset = this.spine.length - 1;
     this.finGroups = this.assignFins(fins, this.spine.length);
     this.spinePrevious = new Array(this.spine.length);
     this.spacing = length / (this.spine.length - 1);
@@ -97,6 +100,8 @@ FishBody.prototype.moveTo = function(position) {
 
     for (const fin of this.fins)
         fin.shift(dx, dy);
+
+    this.tail.shift(dx, dy);
 };
 
 /**
@@ -143,6 +148,8 @@ FishBody.prototype.initializeSpine = function(head, direction) {
         if (this.finGroups[vertebra]) for (const fin of this.finGroups[vertebra])
             fin.initializePosition(this.spine[vertebra]);
     }
+
+    this.tailOffset = this.tail.connect(this.spine);
 };
 
 /**
@@ -192,7 +199,7 @@ FishBody.prototype.update = function(
     let xDir = Math.cos(angle);
     let yDir = Math.sin(angle);
 
-    for (let vertebra = 1; vertebra < this.spine.length; ++vertebra) {
+    for (let vertebra = 1, vertebrae = this.spine.length; vertebra < vertebrae; ++vertebra) {
         let dx = this.spine[vertebra].x - this.spine[vertebra - 1].x;
         let dy = this.spine[vertebra].y - this.spine[vertebra - 1].y;
         let distance = Math.sqrt(dx * dx + dy * dy);
@@ -218,6 +225,8 @@ FishBody.prototype.update = function(
             fin.update(this.spine[vertebra], xDirPrevious, yDirPrevious, this.finPhase);
     }
 
+    this.tail.update(this.spine);
+
     if ((this.phase += this.SWIM_SPEED * speed) > Math.PI + Math.PI)
         this.phase -= Math.PI + Math.PI;
 
@@ -237,20 +246,25 @@ FishBody.prototype.render = function(bodies, time) {
     for (const fin of this.fins)
         fin.render(bodies, time);
 
+    const indexOffset = bodies.getIndexOffset() + this.tail.getVertexCount();
+    const indexOffsetTail = indexOffset + ((this.tailOffset + 2) << 1) + 1;
+
+    this.tail.render(bodies, indexOffsetTail, 1, time, this.pattern);
+
     let xp, x = this.spinePrevious[0].x + (this.spine[0].x - this.spinePrevious[0].x) * time;
     let yp, y = this.spinePrevious[0].y + (this.spine[0].y - this.spinePrevious[0].y) * time;
     let dxp, dx;
     let dyp, dy;
-    let startIndex = bodies.getIndexOffset();
+    let startIndex = indexOffset;
 
-    for (let segment = 1, segments = this.spine.length; segment < segments; ++segment) {
+    for (let vertebra = 1, vertebrae = this.spine.length; vertebra < vertebrae; ++vertebra) {
         xp = x;
         yp = y;
 
-        x = this.spinePrevious[segment].x + (this.spine[segment].x - this.spinePrevious[segment].x) * time;
-        y = this.spinePrevious[segment].y + (this.spine[segment].y - this.spinePrevious[segment].y) * time;
+        x = this.spinePrevious[vertebra].x + (this.spine[vertebra].x - this.spinePrevious[vertebra].x) * time;
+        y = this.spinePrevious[vertebra].y + (this.spine[vertebra].y - this.spinePrevious[vertebra].y) * time;
 
-        if (segment === 1) {
+        if (vertebra === 1) {
             dx = x - xp;
             dy = y - yp;
         }
@@ -263,7 +277,7 @@ FishBody.prototype.render = function(bodies, time) {
         const dxAveraged = (dx + dxp) * .5;
         const dyAveraged = (dy + dyp) * .5;
         const u = this.pattern.region.uBodyStart + (this.pattern.region.uBodyEnd - this.pattern.region.uBodyStart) *
-            (segment - 1) / (segments - 1);
+            (vertebra - 1) / (vertebrae - 1);
 
         bodies.vertices.push(
             xp - this.radius * dyAveraged * this.inverseSpacing,
@@ -275,12 +289,30 @@ FishBody.prototype.render = function(bodies, time) {
             u,
             this.pattern.region.vEnd);
 
-        if (segment === segments - 1)
-            bodies.indices.push(
-                startIndex,
-                startIndex + 1,
-                startIndex + 2);
-        else
+        if (vertebra > this.tailOffset) {
+            bodies.vertices.push(
+                xp,
+                yp,
+                this.pattern.region.uFinStart + (this.pattern.region.uFinEnd - this.pattern.region.uFinStart) * .5,
+                this.pattern.region.vStart + (this.pattern.region.vEnd - this.pattern.region.vStart) * .5);
+
+            if (vertebra === vertebrae - 1)
+                bodies.indices.push(
+                    startIndex,
+                    startIndex + 1,
+                    startIndex + 3);
+            else
+                bodies.indices.push(
+                    startIndex,
+                    startIndex + 1,
+                    startIndex + 4,
+                    startIndex + 4,
+                    startIndex + 3,
+                    startIndex);
+
+            startIndex += 3;
+        }
+        else {
             bodies.indices.push(
                 startIndex,
                 startIndex + 1,
@@ -289,9 +321,11 @@ FishBody.prototype.render = function(bodies, time) {
                 startIndex + 2,
                 startIndex);
 
-        startIndex += 2;
+            startIndex += 2;
+        }
     }
 
+    for (let i = 0; i < 2; ++i) // TODO: Remove duplicate
     bodies.vertices.push(
         this.spinePrevious[this.spine.length - 1].x +
             (this.spine[this.spine.length - 1].x - this.spinePrevious[this.spine.length - 1].x) * time,
@@ -299,6 +333,15 @@ FishBody.prototype.render = function(bodies, time) {
             (this.spine[this.spine.length - 1].y - this.spinePrevious[this.spine.length - 1].y) * time,
         this.pattern.region.uBodyEnd,
         (this.pattern.region.vStart + this.pattern.region.vEnd) * .5);
+    bodies.vertices.push(
+        this.spinePrevious[this.spine.length - 1].x +
+        (this.spine[this.spine.length - 1].x - this.spinePrevious[this.spine.length - 1].x) * time,
+        this.spinePrevious[this.spine.length - 1].y +
+        (this.spine[this.spine.length - 1].y - this.spinePrevious[this.spine.length - 1].y) * time,
+        this.pattern.region.uFinStart + (this.pattern.region.uFinEnd - this.pattern.region.uFinStart) * .5,
+        (this.pattern.region.vStart + this.pattern.region.vEnd) * .5);
+
+    this.tail.render(bodies, indexOffsetTail, -1, time, this.pattern);
 };
 
 /**

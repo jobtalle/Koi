@@ -55,7 +55,7 @@ void main() {
  * @returns {Number} The thickness in the range [0, 1]
  */
 PatternShapeBody.prototype.sample = function(x) {
-    return Math.pow(Math.cos(Math.PI * (Math.pow(x, this.centerPower) - 0.5)), this.radiusPower);
+    return Math.pow(Math.cos(Math.PI * (Math.pow(x, this.centerPower) - .5)), this.radiusPower);
 };
 
 /**

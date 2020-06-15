@@ -45,6 +45,7 @@ Spawner.prototype.update = function(timeStep, atlas, random) {
                         new Fin(.2, 1.4, 1), new Fin(.2, 1.4, -1),
                         new Fin(.5, .8, 1), new Fin(.5, .8, -1)
                     ],
+                    new Tail(.4),
                     1.2,
                     .3),
                 this.constellation.spawnPoint,
