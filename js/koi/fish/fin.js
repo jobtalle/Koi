@@ -17,6 +17,7 @@ const Fin = function(at, radius, sign) {
     this.endPrevious = new Vector2();
     this.anchorRadius = 0;
     this.finRadius = 0;
+    this.finDepth = 0;
     this.pattern = null;
 };
 
@@ -26,6 +27,7 @@ Fin.prototype.WAVE_SKEW = .2;
 Fin.prototype.X_SCALE = .6;
 Fin.prototype.SPRING = .4;
 Fin.prototype.PHASE_SHIFT = 2;
+Fin.prototype.DEPTH_FACTOR = .25;
 
 /**
  * Get the index of the vertebra this fin is connected to
@@ -45,6 +47,7 @@ Fin.prototype.connect = function(pattern, radius) {
     this.pattern = pattern;
     this.anchorRadius = this.ANCHOR_INSET * radius;
     this.finRadius = this.radius * radius;
+    this.finDepth = this.finRadius * this.DEPTH_FACTOR;
 };
 
 /**
@@ -128,7 +131,7 @@ Fin.prototype.render = function(bodies, time) {
         this.pattern.region.uFinStart,
         this.pattern.region.vStart,
         sx,
-        sy,
+        sy + this.finDepth,
         this.pattern.region.uFinEnd,
         this.pattern.region.vStart,
         ex,
@@ -136,7 +139,7 @@ Fin.prototype.render = function(bodies, time) {
         this.pattern.region.uFinStart,
         this.pattern.region.vEnd,
         sx + (ex - ax),
-        sy + (ey - ay),
+        sy + (ey - ay) + this.finDepth,
         this.pattern.region.uFinEnd,
         this.pattern.region.vEnd);
     bodies.indices.push(
