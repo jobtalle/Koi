@@ -104,8 +104,8 @@ Tail.prototype.render = function(bodies, firstVertebra, sign, time, pattern) {
     const startIndex = bodies.getIndexOffset();
 
     bodies.indices.push(
-        firstVertebra - 3,
         firstVertebra,
+        firstVertebra + 3,
         startIndex);
 
     for (let vertebra = 0; vertebra < this.anchors; ++vertebra) {
@@ -118,13 +118,22 @@ Tail.prototype.render = function(bodies, firstVertebra, sign, time, pattern) {
             u,
             v);
 
-        if (vertebra < this.anchors - 1)
-            bodies.indices.push(
-                firstVertebra + 3 * (vertebra + 1),
-                firstVertebra + 3 * vertebra,
-                startIndex + vertebra,
-                startIndex + vertebra,
-                startIndex + vertebra + 1,
-                firstVertebra + 3 * (vertebra + 1));
+        if (vertebra !== this.anchors - 1)
+            if (vertebra === this.anchors - 2)
+                bodies.indices.push(
+                    firstVertebra + 3 * (vertebra + 2) - 1,
+                    firstVertebra + 3 * (vertebra + 1),
+                    startIndex + vertebra,
+                    startIndex + vertebra,
+                    startIndex + vertebra + 1,
+                    firstVertebra + 3 * (vertebra + 2) - 1);
+            else
+                bodies.indices.push(
+                    firstVertebra + 3 * (vertebra + 2),
+                    firstVertebra + 3 * (vertebra + 1),
+                    startIndex + vertebra,
+                    startIndex + vertebra,
+                    startIndex + vertebra + 1,
+                    firstVertebra + 3 * (vertebra + 2));
     }
 };

@@ -247,7 +247,7 @@ FishBody.prototype.render = function(bodies, time) {
         fin.render(bodies, time);
 
     const indexOffset = bodies.getIndexOffset() + this.tail.getVertexCount();
-    const indexOffsetTail = indexOffset + ((this.tailOffset + 2) << 1) + 1;
+    const indexOffsetTail = indexOffset + ((this.tailOffset + 1) << 1);
 
     this.tail.render(bodies, indexOffsetTail, 1, time, this.pattern);
 
@@ -325,7 +325,6 @@ FishBody.prototype.render = function(bodies, time) {
         }
     }
 
-    for (let i = 0; i < 2; ++i) // TODO: Remove duplicate
     bodies.vertices.push(
         this.spinePrevious[this.spine.length - 1].x +
             (this.spine[this.spine.length - 1].x - this.spinePrevious[this.spine.length - 1].x) * time,
