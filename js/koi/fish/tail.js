@@ -13,7 +13,9 @@ const Tail = function(length) {
     this.distances = null;
 };
 
-Tail.prototype.DEPTH_FACTOR = .7;
+Tail.prototype.DEPTH_FACTOR = .5;
+Tail.prototype.SPRING = .4;
+Tail.prototype.SHIFT = .5;
 
 /**
  * Connect the tail to a spine
@@ -73,12 +75,14 @@ Tail.prototype.update = function(spine) {
     this.storePreviousState();
 
     for (let vertebra = 0; vertebra < this.anchors; ++vertebra) {
-        const dx = this.top[vertebra].x - spine[this.spineOffset + vertebra].x;
-        const dy = this.top[vertebra].y - spine[this.spineOffset + vertebra].y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
+        const sx = spine[this.spineOffset + vertebra].x - spine[this.spineOffset + vertebra - 1].x;
+        const sy = spine[this.spineOffset + vertebra].y - spine[this.spineOffset + vertebra - 1].y;
 
-        this.top[vertebra].x = spine[this.spineOffset + vertebra].x + this.distances[vertebra] * dx / dist;
-        this.top[vertebra].y = spine[this.spineOffset + vertebra].y + this.distances[vertebra] * dy / dist;
+        const dx = spine[this.spineOffset + vertebra].x + sx * this.SHIFT - this.top[vertebra].x;
+        const dy = spine[this.spineOffset + vertebra].y + sy * this.SHIFT - this.top[vertebra].y;
+
+        this.top[vertebra].x += dx * this.SPRING;
+        this.top[vertebra].y += dy * this.SPRING;
     }
 };
 
