@@ -6,15 +6,13 @@
 const Tail = function(length) {
     this.length = length;
     this.anchors = 0;
-    this.top = null;
-    this.topPrevious = null;
-    this.bottom = null;
-    this.bottomPrevious = null;
+    this.edge = null;
+    this.edgePrevious = null;
     this.distances = null;
 };
 
 Tail.prototype.DEPTH_FACTOR = .5;
-Tail.prototype.SPRING = .4;
+Tail.prototype.SPRING = .55;
 Tail.prototype.SHIFT = .5;
 
 /**
@@ -25,17 +23,13 @@ Tail.prototype.SHIFT = .5;
 Tail.prototype.connect = function(spine) {
     this.anchors = Math.min(spine.length - 1, Math.max(2, Math.round(spine.length * this.length)));
     this.spineOffset = spine.length - this.anchors;
-    this.top = new Array(this.anchors);
-    this.topPrevious = new Array(this.anchors);
-    this.bottom = new Array(this.anchors);
-    this.bottomPrevious = new Array(this.anchors);
+    this.edge = new Array(this.anchors);
+    this.edgePrevious = new Array(this.anchors);
     this.distances = new Array(this.anchors);
 
     for (let vertebra = 0; vertebra < this.anchors; ++vertebra) {
-        this.top[vertebra] = spine[this.spineOffset + vertebra].copy();
-        this.topPrevious[vertebra] = this.top[vertebra].copy();
-        this.bottom[vertebra] = spine[this.spineOffset + vertebra].copy();
-        this.bottomPrevious[vertebra] = this.bottom[vertebra].copy();
+        this.edge[vertebra] = spine[this.spineOffset + vertebra].copy();
+        this.edgePrevious[vertebra] = this.edge[vertebra].copy();
 
         this.distances[vertebra] = -.2 * Math.cos(Math.PI * .5 * (1 + (vertebra + 1) / this.anchors));
     }
@@ -50,10 +44,10 @@ Tail.prototype.connect = function(spine) {
  */
 Tail.prototype.shift = function(dx, dy) {
     for (let vertebra = 0; vertebra < this.anchors; ++vertebra) {
-        this.top[vertebra].x += dx;
-        this.top[vertebra].y += dy;
-        this.topPrevious[vertebra].x += dx;
-        this.topPrevious[vertebra].y += dy;
+        this.edge[vertebra].x += dx;
+        this.edge[vertebra].y += dy;
+        this.edgePrevious[vertebra].x += dx;
+        this.edgePrevious[vertebra].y += dy;
     }
 };
 
@@ -61,10 +55,8 @@ Tail.prototype.shift = function(dx, dy) {
  * Store the current state into the previous state
  */
 Tail.prototype.storePreviousState = function() {
-    for (let i = 0; i < this.anchors; ++i) {
-        this.topPrevious[i].set(this.top[i]);
-        this.bottomPrevious[i].set(this.bottom[i]);
-    }
+    for (let i = 0; i < this.anchors; ++i)
+        this.edgePrevious[i].set(this.edge[i]);
 };
 
 /**
@@ -78,11 +70,11 @@ Tail.prototype.update = function(spine) {
         const sx = spine[this.spineOffset + vertebra].x - spine[this.spineOffset + vertebra - 1].x;
         const sy = spine[this.spineOffset + vertebra].y - spine[this.spineOffset + vertebra - 1].y;
 
-        const dx = spine[this.spineOffset + vertebra].x + sx * this.SHIFT - this.top[vertebra].x;
-        const dy = spine[this.spineOffset + vertebra].y + sy * this.SHIFT - this.top[vertebra].y;
+        const dx = spine[this.spineOffset + vertebra].x + sx * this.SHIFT - this.edge[vertebra].x;
+        const dy = spine[this.spineOffset + vertebra].y + sy * this.SHIFT - this.edge[vertebra].y;
 
-        this.top[vertebra].x += dx * this.SPRING;
-        this.top[vertebra].y += dy * this.SPRING;
+        this.edge[vertebra].x += dx * this.SPRING;
+        this.edge[vertebra].y += dy * this.SPRING;
     }
 };
 
@@ -113,8 +105,8 @@ Tail.prototype.render = function(bodies, firstVertebra, sign, time, pattern) {
         startIndex);
 
     for (let vertebra = 0; vertebra < this.anchors; ++vertebra) {
-        const x = this.topPrevious[vertebra].x + (this.top[vertebra].x - this.topPrevious[vertebra].x) * time;
-        const y = this.topPrevious[vertebra].y + (this.top[vertebra].y - this.topPrevious[vertebra].y) * time;
+        const x = this.edgePrevious[vertebra].x + (this.edge[vertebra].x - this.edgePrevious[vertebra].x) * time;
+        const y = this.edgePrevious[vertebra].y + (this.edge[vertebra].y - this.edgePrevious[vertebra].y) * time;
 
         bodies.vertices.push(
             x,
