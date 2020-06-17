@@ -246,10 +246,11 @@ FishBody.prototype.render = function(bodies, time) {
     for (const fin of this.fins)
         fin.render(bodies, time);
 
-    const indexOffset = bodies.getIndexOffset() + this.tail.getVertexCount();
-    const indexOffsetTail = indexOffset + ((this.tailOffset + 1) << 1);
+    const indexOffsetFin = bodies.getIndexOffset();
+    const indexOffset = indexOffsetFin + this.tail.getVertexCount();
+    const indexOffsetBack = indexOffset + ((this.tailOffset + 1) << 1);
 
-    this.tail.render(bodies, indexOffsetTail, 1, time, this.pattern);
+    this.tail.renderBottom(bodies, indexOffsetFin, indexOffsetBack, time, this.pattern);
 
     let xp, x = this.spinePrevious[0].x + (this.spine[0].x - this.spinePrevious[0].x) * time;
     let yp, y = this.spinePrevious[0].y + (this.spine[0].y - this.spinePrevious[0].y) * time;
@@ -340,7 +341,7 @@ FishBody.prototype.render = function(bodies, time) {
         this.pattern.region.uFinStart + (this.pattern.region.uFinEnd - this.pattern.region.uFinStart) * .5,
         (this.pattern.region.vStart + this.pattern.region.vEnd) * .5);
 
-    this.tail.render(bodies, indexOffsetTail, -1, time, this.pattern);
+    this.tail.renderTop(bodies, indexOffsetFin, indexOffsetBack);
 };
 
 /**

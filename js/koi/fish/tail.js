@@ -83,21 +83,25 @@ Tail.prototype.update = function(spine) {
  * @returns {Number} The number of vertices
  */
 Tail.prototype.getVertexCount = function() {
-    return this.anchors;
+    return this.anchors << 1;
 };
 
 /**
- * Render the tail
+ * Render the bottom part of the tail
  * @param {Bodies} bodies The bodies renderer
+ * @param {Number} startIndex The index of the first fin vertex
  * @param {Number} firstVertebra The index of the first vertebra vertex
- * @param {Number} sign The depth direction of the tail, 1 or -1
  * @param {Number} time The interpolation factor
  * @param {Pattern} pattern A pattern
  */
-Tail.prototype.render = function(bodies, firstVertebra, sign, time, pattern) {
+Tail.prototype.renderBottom = function(
+    bodies,
+    startIndex,
+    firstVertebra,
+    time,
+    pattern) {
     const u = pattern.region.uFinStart + (pattern.region.uFinEnd - pattern.region.uFinStart) * .5;
     const v = pattern.region.vStart + (pattern.region.vEnd - pattern.region.vStart) * .5;
-    const startIndex = bodies.getIndexOffset();
 
     bodies.indices.push(
         firstVertebra,
@@ -110,7 +114,11 @@ Tail.prototype.render = function(bodies, firstVertebra, sign, time, pattern) {
 
         bodies.vertices.push(
             x,
-            y + sign * this.distances[vertebra] * this.DEPTH_FACTOR,
+            y + this.distances[vertebra] * this.DEPTH_FACTOR,
+            u,
+            v,
+            x,
+            y - this.distances[vertebra] * this.DEPTH_FACTOR,
             u,
             v);
 
@@ -119,17 +127,48 @@ Tail.prototype.render = function(bodies, firstVertebra, sign, time, pattern) {
                 bodies.indices.push(
                     firstVertebra + 3 * (vertebra + 2) - 1,
                     firstVertebra + 3 * (vertebra + 1),
-                    startIndex + vertebra,
-                    startIndex + vertebra,
-                    startIndex + vertebra + 1,
+                    startIndex + (vertebra << 1),
+                    startIndex + (vertebra << 1),
+                    startIndex + ((vertebra + 1) << 1),
                     firstVertebra + 3 * (vertebra + 2) - 1);
             else
                 bodies.indices.push(
                     firstVertebra + 3 * (vertebra + 2),
                     firstVertebra + 3 * (vertebra + 1),
-                    startIndex + vertebra,
-                    startIndex + vertebra,
-                    startIndex + vertebra + 1,
+                    startIndex + (vertebra << 1),
+                    startIndex + (vertebra << 1),
+                    startIndex + ((vertebra + 1) << 1),
+                    firstVertebra + 3 * (vertebra + 2));
+    }
+};
+
+/**
+ * Render the top part of the tail
+ * @param {Bodies} bodies The bodies renderer
+ * @param {Number} startIndex The index of the first fin vertex
+ * @param {Number} firstVertebra The index of the first vertebra vertex
+ */
+Tail.prototype.renderTop = function(
+    bodies,
+    startIndex,
+    firstVertebra) {
+    for (let vertebra = 0; vertebra < this.anchors; ++vertebra) {
+        if (vertebra !== this.anchors - 1)
+            if (vertebra === this.anchors - 2)
+                bodies.indices.push(
+                    firstVertebra + 3 * (vertebra + 2) - 1,
+                    firstVertebra + 3 * (vertebra + 1),
+                    startIndex + (vertebra << 1) + 1,
+                    startIndex + (vertebra << 1) + 1,
+                    startIndex + ((vertebra + 1) << 1) + 1,
+                    firstVertebra + 3 * (vertebra + 2) - 1);
+            else
+                bodies.indices.push(
+                    firstVertebra + 3 * (vertebra + 2),
+                    firstVertebra + 3 * (vertebra + 1),
+                    startIndex + (vertebra << 1) + 1,
+                    startIndex + (vertebra << 1) + 1,
+                    startIndex + ((vertebra + 1) << 1) + 1,
                     firstVertebra + 3 * (vertebra + 2));
     }
 };
