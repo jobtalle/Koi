@@ -23,9 +23,9 @@ const FishBody = function(pattern, fins, tail, length, thickness) {
     this.finPhase = 0;
 };
 
-FishBody.prototype.RESOLUTION = .12;
+FishBody.prototype.RESOLUTION = .1;
 FishBody.prototype.SPRING_START = .9;
-FishBody.prototype.SPRING_END = .3;
+FishBody.prototype.SPRING_END = .65;
 FishBody.prototype.SPRING_POWER = 1.7;
 FishBody.prototype.SWIM_AMPLITUDE = 8.5;
 FishBody.prototype.SWIM_SPEED = 6.5;

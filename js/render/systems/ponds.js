@@ -82,7 +82,7 @@ void main() {
   lowp vec4 pixel = texture2D(background, iUv - depth * normal.xz / size);
   lowp vec4 reflected = texture2D(reflections, iUv + height * normal.xz / size);
   
-  gl_FragColor = filter * mix(pixel, reflected, 0.15 + shiny);
+  gl_FragColor = filter * mix(pixel, reflected, 0.2 + shiny);
 }
 `;
 

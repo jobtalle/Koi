@@ -21,10 +21,10 @@ const Fish = function(body, position, direction) {
 };
 
 Fish.prototype.FORCE_CONSTRAINT = .6;
-Fish.prototype.FORCE_REPULSION  = .25;
+Fish.prototype.FORCE_REPULSION  = .45;
 Fish.prototype.FORCE_ALIGNMENT = .05;
 Fish.prototype.FORCE_ATTRACTION = .05;
-Fish.prototype.RADIUS_REPULSION = .8;
+Fish.prototype.RADIUS_REPULSION = .6;
 Fish.prototype.RADIUS_ALIGNMENT = 1.25;
 Fish.prototype.RADIUS_ATTRACTION = 1.5;
 Fish.prototype.NIBBLE_TIME_MIN = 20;

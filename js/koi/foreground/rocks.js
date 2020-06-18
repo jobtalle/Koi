@@ -46,7 +46,7 @@ Rocks.prototype.PILLAR_HEIGHT_MIN = 1;
 Rocks.prototype.PILLAR_HEIGHT_MAX = 2;
 Rocks.prototype.PILLAR_HEIGHT_DELTA = .07;
 Rocks.prototype.PILLAR_SHIFT_AMPLITUDE = .06;
-Rocks.prototype.PILLAR_SKEW = 1.2;
+Rocks.prototype.PILLAR_SKEW = 1.18;
 Rocks.prototype.PILLAR_LIGHT_AMBIENT = .6;
 Rocks.prototype.PILLAR_LIGHT_BASE = .8;
 

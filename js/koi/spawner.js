@@ -33,7 +33,7 @@ Spawner.prototype.update = function(timeStep, atlas, random) {
                         new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()
                     )
                 ],
-                new PatternShapeBody(0.6, 0.8),
+                new PatternShapeBody(0.6, 0.7),
                 new PatternShapeFin());
 
             atlas.write(pattern);
@@ -45,7 +45,7 @@ Spawner.prototype.update = function(timeStep, atlas, random) {
                         new Fin(.2, 1.4, 1), new Fin(.2, 1.4, -1),
                         new Fin(.5, .8, 1), new Fin(.5, .8, -1)
                     ],
-                    new Tail(.25),
+                    new Tail(.3),
                     1.2,
                     .3),
                 this.constellation.spawnPoint,

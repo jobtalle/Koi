@@ -27,7 +27,7 @@ Fin.prototype.WAVE_SKEW = .2;
 Fin.prototype.X_SCALE = .6;
 Fin.prototype.SPRING = .4;
 Fin.prototype.PHASE_SHIFT = 2;
-Fin.prototype.DEPTH_FACTOR = .25;
+Fin.prototype.DEPTH_FACTOR = .4;
 
 /**
  * Get the index of the vertebra this fin is connected to

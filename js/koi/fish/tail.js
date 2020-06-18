@@ -11,9 +11,9 @@ const Tail = function(length) {
     this.distances = null;
 };
 
-Tail.prototype.DEPTH_FACTOR = .5;
+Tail.prototype.DEPTH = .15;
 Tail.prototype.SPRING = .55;
-Tail.prototype.SHIFT = .5;
+Tail.prototype.SHIFT = .8;
 
 /**
  * Connect the tail to a spine
@@ -31,7 +31,7 @@ Tail.prototype.connect = function(spine) {
         this.edge[vertebra] = spine[this.spineOffset + vertebra].copy();
         this.edgePrevious[vertebra] = this.edge[vertebra].copy();
 
-        this.distances[vertebra] = -.2 * Math.cos(Math.PI * .5 * (1 + (vertebra + 1) / this.anchors));
+        this.distances[vertebra] = -this.DEPTH * Math.cos(Math.PI * .5 * (1 + (vertebra + 1) / this.anchors));
     }
 
     return this.spineOffset - 1;
@@ -114,11 +114,11 @@ Tail.prototype.renderBottom = function(
 
         bodies.vertices.push(
             x,
-            y + this.distances[vertebra] * this.DEPTH_FACTOR,
+            y + this.distances[vertebra],
             u,
             v,
             x,
-            y - this.distances[vertebra] * this.DEPTH_FACTOR,
+            y - this.distances[vertebra],
             u,
             v);
 
@@ -152,23 +152,22 @@ Tail.prototype.renderTop = function(
     bodies,
     startIndex,
     firstVertebra) {
-    for (let vertebra = 0; vertebra < this.anchors; ++vertebra) {
-        if (vertebra !== this.anchors - 1)
-            if (vertebra === this.anchors - 2)
-                bodies.indices.push(
-                    firstVertebra + 3 * (vertebra + 2) - 1,
-                    firstVertebra + 3 * (vertebra + 1),
-                    startIndex + (vertebra << 1) + 1,
-                    startIndex + (vertebra << 1) + 1,
-                    startIndex + ((vertebra + 1) << 1) + 1,
-                    firstVertebra + 3 * (vertebra + 2) - 1);
-            else
-                bodies.indices.push(
-                    firstVertebra + 3 * (vertebra + 2),
-                    firstVertebra + 3 * (vertebra + 1),
-                    startIndex + (vertebra << 1) + 1,
-                    startIndex + (vertebra << 1) + 1,
-                    startIndex + ((vertebra + 1) << 1) + 1,
-                    firstVertebra + 3 * (vertebra + 2));
+    for (let vertebra = 0; vertebra < this.anchors - 1; ++vertebra) {
+        if (vertebra === this.anchors - 2)
+            bodies.indices.push(
+                firstVertebra + 3 * (vertebra + 2) - 1,
+                firstVertebra + 3 * (vertebra + 1),
+                startIndex + (vertebra << 1) + 1,
+                startIndex + (vertebra << 1) + 1,
+                startIndex + ((vertebra + 1) << 1) + 1,
+                firstVertebra + 3 * (vertebra + 2) - 1);
+        else
+            bodies.indices.push(
+                firstVertebra + 3 * (vertebra + 2),
+                firstVertebra + 3 * (vertebra + 1),
+                startIndex + (vertebra << 1) + 1,
+                startIndex + (vertebra << 1) + 1,
+                startIndex + ((vertebra + 1) << 1) + 1,
+                firstVertebra + 3 * (vertebra + 2));
     }
 };

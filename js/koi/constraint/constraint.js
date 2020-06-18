@@ -8,6 +8,6 @@ const Constraint = function(border = this.BORDER) {
     this.normal = new Vector2(0, 0);
 };
 
-Constraint.prototype.BORDER = 1.1;
+Constraint.prototype.BORDER = 1.25;
 Constraint.prototype.MESH_RESOLUTION = .3;
 Constraint.prototype.MESH_DEPTH_PADDING = Ponds.prototype.DEPTH;
