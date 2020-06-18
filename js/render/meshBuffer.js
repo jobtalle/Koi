@@ -15,6 +15,22 @@ const MeshBuffer = function(gl) {
 };
 
 /**
+ * Add vertices to the buffer
+ * @param {...Number} vertices Any number of vertices
+ */
+MeshBuffer.prototype.addVertices = function(...vertices) {
+    this.vertices.push(...vertices);
+};
+
+/**
+ * Add indices to the buffer
+ * @param {...Number} indices Any number of indices
+ */
+MeshBuffer.prototype.addIndices = function(...indices) {
+    this.indices.push(...indices);
+};
+
+/**
  * Bind the vertex and index buffers of this mesh buffer
  */
 MeshBuffer.prototype.bind = function() {

@@ -20,7 +20,6 @@ const Bodies = function(gl) {
         ["position", "uv"]);
     this.vao = gl.vao.createVertexArrayOES();
     this.vaoShadows = gl.vao.createVertexArrayOES();
-    this.uploaded = false;
 
     gl.vao.bindVertexArrayOES(this.vao);
 
