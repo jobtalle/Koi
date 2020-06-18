@@ -17,7 +17,7 @@ const MeshBuffer = function(gl) {
 /**
  * Bind the vertex and index buffers of this mesh buffer
  */
-MeshBuffer.prototype.bindBuffers = function() {
+MeshBuffer.prototype.bind = function() {
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.bufferVertices);
     this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.bufferIndices);
 };
@@ -29,7 +29,7 @@ MeshBuffer.prototype.upload = function() {
     if (this.vertices.length === 0)
         return;
 
-    this.bindBuffers();
+    this.bind();
 
     if (this.vertices.length > this.bufferVerticesCapacity) {
         this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(this.vertices), this.gl.DYNAMIC_DRAW);

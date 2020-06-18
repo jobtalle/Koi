@@ -103,7 +103,7 @@ Tail.prototype.renderBottom = function(
     const u = pattern.region.uFinStart + (pattern.region.uFinEnd - pattern.region.uFinStart) * .5;
     const v = pattern.region.vStart + (pattern.region.vEnd - pattern.region.vStart) * .5;
 
-    bodies.indices.push(
+    bodies.buffer.indices.push(
         firstVertebra,
         firstVertebra + 3,
         startIndex);
@@ -112,7 +112,7 @@ Tail.prototype.renderBottom = function(
         const x = this.edgePrevious[vertebra].x + (this.edge[vertebra].x - this.edgePrevious[vertebra].x) * time;
         const y = this.edgePrevious[vertebra].y + (this.edge[vertebra].y - this.edgePrevious[vertebra].y) * time;
 
-        bodies.vertices.push(
+        bodies.buffer.vertices.push(
             x,
             y + this.distances[vertebra],
             u,
@@ -124,7 +124,7 @@ Tail.prototype.renderBottom = function(
 
         if (vertebra !== this.anchors - 1)
             if (vertebra === this.anchors - 2)
-                bodies.indices.push(
+                bodies.buffer.indices.push(
                     firstVertebra + 3 * (vertebra + 2) - 1,
                     firstVertebra + 3 * (vertebra + 1),
                     startIndex + (vertebra << 1),
@@ -132,7 +132,7 @@ Tail.prototype.renderBottom = function(
                     startIndex + ((vertebra + 1) << 1),
                     firstVertebra + 3 * (vertebra + 2) - 1);
             else
-                bodies.indices.push(
+                bodies.buffer.indices.push(
                     firstVertebra + 3 * (vertebra + 2),
                     firstVertebra + 3 * (vertebra + 1),
                     startIndex + (vertebra << 1),
@@ -154,7 +154,7 @@ Tail.prototype.renderTop = function(
     firstVertebra) {
     for (let vertebra = 0; vertebra < this.anchors - 1; ++vertebra) {
         if (vertebra === this.anchors - 2)
-            bodies.indices.push(
+            bodies.buffer.indices.push(
                 firstVertebra + 3 * (vertebra + 2) - 1,
                 firstVertebra + 3 * (vertebra + 1),
                 startIndex + (vertebra << 1) + 1,
@@ -162,7 +162,7 @@ Tail.prototype.renderTop = function(
                 startIndex + ((vertebra + 1) << 1) + 1,
                 firstVertebra + 3 * (vertebra + 2) - 1);
         else
-            bodies.indices.push(
+            bodies.buffer.indices.push(
                 firstVertebra + 3 * (vertebra + 2),
                 firstVertebra + 3 * (vertebra + 1),
                 startIndex + (vertebra << 1) + 1,

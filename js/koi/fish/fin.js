@@ -125,7 +125,7 @@ Fin.prototype.render = function(bodies, time) {
     const ex = this.endPrevious.x + (this.end.x - this.endPrevious.x) * time;
     const ey = this.endPrevious.y + (this.end.y - this.endPrevious.y) * time;
 
-    bodies.vertices.push(
+    bodies.buffer.vertices.push(
         ax,
         ay,
         this.pattern.region.uFinStart,
@@ -142,7 +142,7 @@ Fin.prototype.render = function(bodies, time) {
         sy + (ey - ay) + this.finDepth,
         this.pattern.region.uFinEnd,
         this.pattern.region.vEnd);
-    bodies.indices.push(
+    bodies.buffer.indices.push(
         startIndex,
         startIndex + 1,
         startIndex + 2,

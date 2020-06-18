@@ -280,7 +280,7 @@ FishBody.prototype.render = function(bodies, time) {
         const u = this.pattern.region.uBodyStart + (this.pattern.region.uBodyEnd - this.pattern.region.uBodyStart) *
             (vertebra - 1) / (vertebrae - 1);
 
-        bodies.vertices.push(
+        bodies.buffer.vertices.push(
             xp - this.radius * dyAveraged * this.inverseSpacing,
             yp + this.radius * dxAveraged * this.inverseSpacing,
             u,
@@ -291,19 +291,19 @@ FishBody.prototype.render = function(bodies, time) {
             this.pattern.region.vEnd);
 
         if (vertebra > this.tailOffset) {
-            bodies.vertices.push(
+            bodies.buffer.vertices.push(
                 xp,
                 yp,
                 this.pattern.region.uFinStart + (this.pattern.region.uFinEnd - this.pattern.region.uFinStart) * .5,
                 this.pattern.region.vStart + (this.pattern.region.vEnd - this.pattern.region.vStart) * .5);
 
             if (vertebra === vertebrae - 1)
-                bodies.indices.push(
+                bodies.buffer.indices.push(
                     startIndex,
                     startIndex + 1,
                     startIndex + 3);
             else
-                bodies.indices.push(
+                bodies.buffer.indices.push(
                     startIndex,
                     startIndex + 1,
                     startIndex + 4,
@@ -314,7 +314,7 @@ FishBody.prototype.render = function(bodies, time) {
             startIndex += 3;
         }
         else {
-            bodies.indices.push(
+            bodies.buffer.indices.push(
                 startIndex,
                 startIndex + 1,
                 startIndex + 3,
@@ -326,14 +326,14 @@ FishBody.prototype.render = function(bodies, time) {
         }
     }
 
-    bodies.vertices.push(
+    bodies.buffer.vertices.push(
         this.spinePrevious[this.spine.length - 1].x +
             (this.spine[this.spine.length - 1].x - this.spinePrevious[this.spine.length - 1].x) * time,
         this.spinePrevious[this.spine.length - 1].y +
             (this.spine[this.spine.length - 1].y - this.spinePrevious[this.spine.length - 1].y) * time,
         this.pattern.region.uBodyEnd,
         (this.pattern.region.vStart + this.pattern.region.vEnd) * .5);
-    bodies.vertices.push(
+    bodies.buffer.vertices.push(
         this.spinePrevious[this.spine.length - 1].x +
         (this.spine[this.spine.length - 1].x - this.spinePrevious[this.spine.length - 1].x) * time,
         this.spinePrevious[this.spine.length - 1].y +

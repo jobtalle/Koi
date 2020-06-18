@@ -5,12 +5,7 @@
  */
 const Bodies = function(gl) {
     this.gl = gl;
-    this.vertices = [];
-    this.indices = [];
-    this.bufferVertices = gl.createBuffer();
-    this.bufferIndices = gl.createBuffer();
-    this.bufferVerticesCapacity = 0;
-    this.bufferIndicesCapacity = 0;
+    this.buffer = new MeshBuffer(gl);
     this.program = new Shader(
         gl,
         this.SHADER_VERTEX,
@@ -29,8 +24,8 @@ const Bodies = function(gl) {
 
     gl.vao.bindVertexArrayOES(this.vao);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferVertices);
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferIndices);
+    this.buffer.bind();
+
     gl.enableVertexAttribArray(this.program["aPosition"]);
     gl.vertexAttribPointer(this.program["aPosition"], 2, gl.FLOAT, false, 16, 0);
     gl.enableVertexAttribArray(this.program["aUv"]);
@@ -38,8 +33,8 @@ const Bodies = function(gl) {
 
     gl.vao.bindVertexArrayOES(this.vaoShadows);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.bufferVertices);
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufferIndices);
+    this.buffer.bind();
+
     gl.enableVertexAttribArray(this.programShadows["aPosition"]);
     gl.vertexAttribPointer(this.programShadows["aPosition"], 2, gl.FLOAT, false, 16, 0);
     gl.enableVertexAttribArray(this.programShadows["aUv"]);
@@ -102,34 +97,7 @@ void main() {
  * @returns {Number} The index offset
  */
 Bodies.prototype.getIndexOffset = function() {
-    return this.vertices.length >> 2;
-};
-
-/**
- * Upload the buffered data
- */
-Bodies.prototype.upload = function() {
-    if (this.uploaded)
-        return;
-
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.bufferVertices);
-    this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.bufferIndices);
-
-    if (this.vertices.length > this.bufferVerticesCapacity) {
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(this.vertices), this.gl.DYNAMIC_DRAW);
-        this.bufferVerticesCapacity = this.vertices.length;
-    }
-    else
-        this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array(this.vertices));
-
-    if (this.indices.length > this.bufferIndicesCapacity) {
-        this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.indices), this.gl.DYNAMIC_DRAW);
-        this.bufferIndicesCapacity = this.indices.length;
-    }
-    else
-        this.gl.bufferSubData(this.gl.ELEMENT_ARRAY_BUFFER, 0, new Uint16Array(this.indices));
-
-    this.uploaded = true;
+    return this.buffer.vertices.length >> 2;
 };
 
 /**
@@ -142,7 +110,7 @@ Bodies.prototype.upload = function() {
 Bodies.prototype.render = function(atlas, width, height, shadows) {
     this.gl.vao.bindVertexArrayOES(this.vao);
 
-    this.upload();
+    this.buffer.upload();
 
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
@@ -154,18 +122,13 @@ Bodies.prototype.render = function(atlas, width, height, shadows) {
         this.programShadows.use();
 
         this.gl.uniform2f(this.programShadows["uScale"], 2 / width, -2 / height);
-
-        this.gl.drawElements(this.gl.TRIANGLES, this.indices.length, this.gl.UNSIGNED_SHORT, 0);
+        this.buffer.render();
     }
     else {
         this.program.use();
 
         this.gl.uniform2f(this.program["uScale"], 2 / width, -2 / height);
-
-        this.gl.drawElements(this.gl.TRIANGLES, this.indices.length, this.gl.UNSIGNED_SHORT, 0);
-
-        this.vertices.length = this.indices.length = 0;
-        this.uploaded = false;
+        this.buffer.render();
     }
 
     this.gl.disable(this.gl.BLEND);
@@ -175,8 +138,7 @@ Bodies.prototype.render = function(atlas, width, height, shadows) {
  * Free all resources maintained by this body renderer
  */
 Bodies.prototype.free = function() {
-    this.gl.deleteBuffer(this.bufferVertices);
-    this.gl.deleteBuffer(this.bufferIndices);
+    this.buffer.free();
     this.program.free();
     this.programShadows.free();
     this.gl.vao.deleteVertexArrayOES(this.vao);
