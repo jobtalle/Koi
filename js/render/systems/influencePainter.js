@@ -71,6 +71,30 @@ InfluencePainter.Influences.prototype.addFlare = function(
         this.meshData.indices.push(index + offset);
 };
 
+InfluencePainter.Influences.prototype.FLARE_PRECISION = 12;
+InfluencePainter.Influences.prototype.FLARE = (() => {
+    const vertices = [0, 0, 1, 1, 1];
+    const indices = [];
+
+    for (let i = 0; i <= InfluencePainter.Influences.prototype.FLARE_PRECISION; ++i) {
+        const r = Math.PI * 2 * i / InfluencePainter.Influences.prototype.FLARE_PRECISION;
+
+        vertices.push(
+            Math.cos(r),
+            Math.sin(r),
+            0,
+            0,
+            0);
+
+        indices.push(
+            0,
+            i + 1,
+            ((i + 1) % InfluencePainter.Influences.prototype.FLARE_PRECISION) + 1);
+    }
+
+    return new MeshData(vertices, indices);
+})();
+
 /**
  * Clear the influences
  */
@@ -78,8 +102,6 @@ InfluencePainter.Influences.prototype.clear = function() {
     this.meshData.clear();
     this.hasInfluences = false;
 };
-
-InfluencePainter.prototype.SHAPE_FLARE_PRECISION = 14;
 
 InfluencePainter.prototype.SHADER_VERTEX = `#version 100
 uniform vec2 size;
@@ -103,35 +125,6 @@ void main() {
   gl_FragColor = vec4(iColor, 0.0);
 }
 `;
-
-/**
- * Create flare mesh data
- * @returns {MeshData} The mesh data
- */
-InfluencePainter.prototype.makeFlare = function() {
-    const vertices = [0, 0, 1, 1, 1];
-    const indices = [];
-
-    for (let i = 0; i <= this.SHAPE_FLARE_PRECISION; ++i) {
-        const r = Math.PI * 2 * i / this.SHAPE_FLARE_PRECISION;
-
-        vertices.push(
-            Math.cos(r),
-            Math.sin(r),
-            0,
-            0,
-            0);
-
-        indices.push(
-            0,
-            i + 1,
-            ((i + 1) % this.SHAPE_FLARE_PRECISION) + 1);
-    }
-
-    return new MeshData(vertices, indices);
-};
-
-InfluencePainter.Influences.prototype.FLARE = InfluencePainter.prototype.makeFlare();
 
 /**
  * Apply the influences written to a water plane
