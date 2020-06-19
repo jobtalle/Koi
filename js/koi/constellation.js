@@ -272,7 +272,7 @@ Constellation.prototype.makeMeshWater = function(gl) {
 
     new MeshNormalizer(this.width, this.height, 2, [0], [1]).apply(vertices);
 
-    return new Mesh(gl, vertices, indices);
+    return new Mesh(gl, new MeshData(vertices, indices));
 };
 
 /**
@@ -290,7 +290,7 @@ Constellation.prototype.makeMeshDepth = function(gl) {
 
     new MeshNormalizer(this.width, this.height, 4, [0], [1]).apply(vertices);
 
-    return new Mesh(gl, vertices, indices);
+    return new Mesh(gl, new MeshData(vertices, indices));
 };
 
 /**

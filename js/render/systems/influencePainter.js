@@ -12,6 +12,7 @@ const InfluencePainter = function(gl) {
         ["size", "origin", "radius", "color"],
         ["vertex"]);
     this.vao = gl.vao.createVertexArrayOES();
+    this.buffer = new MeshBuffer(gl, 3);
 
     gl.vao.bindVertexArrayOES(this.vao);
 
@@ -160,6 +161,7 @@ InfluencePainter.prototype.applyInfluences = function(influences) {
  * Free all resources maintained by this wave painter
  */
 InfluencePainter.prototype.free = function() {
+    this.buffer.free();
     this.gl.deleteBuffer(this.bufferFlare);
     this.gl.vao.deleteVertexArrayOES(this.vao);
     this.program.free();

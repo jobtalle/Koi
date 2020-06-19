@@ -161,7 +161,7 @@ Rocks.prototype.createMesh = function(
         [],
         [5]).apply(vertices);
 
-    return new Mesh(gl, vertices, indices, this.getFirstIndex(vertices) - 1 > 0xFFFF);
+    return new Mesh(gl, new MeshData(vertices, indices), this.getFirstIndex(vertices) - 1 > 0xFFFF);
 };
 
 /**

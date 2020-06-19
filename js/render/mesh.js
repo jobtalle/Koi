@@ -1,31 +1,29 @@
 /**
  * A generic indexed mesh
  * @param {WebGLRenderingContext} gl A WebGL context
- * @param {Number[]} vertices An array of vertices
- * @param {Number[]} indices An array of indices
+ * @param {MeshData} meshData The mesh data
  * @param {Boolean} [longIndices] A boolean indicating whether to use 32 bit indices, false by default
  * @constructor
  */
 const Mesh = function(
     gl,
-    vertices,
-    indices,
+    meshData,
     longIndices = false) {
     this.gl = gl;
     this.indexFormat = longIndices ? gl.UNSIGNED_INT : gl.UNSIGNED_SHORT;
     this.vertices = gl.createBuffer();
     this.indices = gl.createBuffer();
-    this.elementCount = indices.length;
+    this.elementCount = meshData.getIndexCount();
 
     gl.vao.bindVertexArrayOES(null);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vertices);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(meshData.vertices), gl.STATIC_DRAW);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indices);
 
     if (longIndices)
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(indices), gl.STATIC_DRAW);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(meshData.indices), gl.STATIC_DRAW);
     else
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(meshData.indices), gl.STATIC_DRAW);
 };
 
 /**
