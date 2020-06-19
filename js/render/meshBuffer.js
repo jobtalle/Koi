@@ -17,6 +17,15 @@ const MeshBuffer = function(gl, stride) {
 };
 
 /**
+ * Add mesh data to this mesh buffer
+ * @param {MeshData} meshData Mesh data
+ */
+MeshBuffer.prototype.addMeshData = function(meshData) {
+    this.vertices.push(...meshData.vertices);
+    this.indices.push(...meshData.indices);
+};
+
+/**
  * Add vertices to the buffer
  * @param {...Number} vertices Any number of vertices
  */

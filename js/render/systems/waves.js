@@ -94,6 +94,8 @@ Waves.prototype.propagate = function(water, influencePainter) {
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
 
     influencePainter.applyInfluences(water.influences);
+
+    water.influences.clear();
 };
 
 /**

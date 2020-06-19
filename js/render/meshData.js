@@ -15,4 +15,11 @@ const MeshData = function(vertices, indices) {
  */
 MeshData.prototype.getIndexCount = function() {
     return this.indices.length;
-}
+};
+
+/**
+ * Clear all vertices and indices in this mesh data
+ */
+MeshData.prototype.clear = function() {
+    this.vertices.length = this.indices.length = 0;
+};
