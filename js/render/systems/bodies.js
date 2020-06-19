@@ -5,7 +5,7 @@
  */
 const Bodies = function(gl) {
     this.gl = gl;
-    this.buffer = new MeshBuffer(gl);
+    this.buffer = new MeshBuffer(gl, 4);
     this.program = new Shader(
         gl,
         this.SHADER_VERTEX,
@@ -90,14 +90,6 @@ void main() {
   gl_FragColor = vec4(vec3(0.0), texture2D(atlas, iUv).a * 0.4);
 }
 `;
-
-/**
- * Get the index offset before adding new indices
- * @returns {Number} The index offset
- */
-Bodies.prototype.getIndexOffset = function() {
-    return this.buffer.vertices.length >> 2;
-};
 
 /**
  * Draw all buffered bodies

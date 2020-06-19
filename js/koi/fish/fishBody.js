@@ -246,7 +246,7 @@ FishBody.prototype.render = function(bodies, time) {
     for (const fin of this.fins)
         fin.render(bodies, time);
 
-    const indexOffsetFin = bodies.getIndexOffset();
+    const indexOffsetFin = bodies.buffer.getVertexCount();
     const indexOffset = indexOffsetFin + this.tail.getVertexCount();
     const indexOffsetBack = indexOffset + ((this.tailOffset + 1) << 1);
 

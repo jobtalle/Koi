@@ -116,7 +116,7 @@ Fin.prototype.update = function(vertebra, dx, dy, phase) {
  * @param {Number} time The interpolation factor
  */
 Fin.prototype.render = function(bodies, time) {
-    const startIndex = bodies.getIndexOffset();
+    const startIndex = bodies.buffer.getVertexCount();
 
     const ax = this.anchorPrevious.x + (this.anchor.x - this.anchorPrevious.x) * time;
     const ay = this.anchorPrevious.y + (this.anchor.y - this.anchorPrevious.y) * time;

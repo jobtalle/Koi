@@ -1,10 +1,12 @@
 /**
  * A flexible mesh buffer
  * @param {WebGLRenderingContext} gl A WebGL rendering context
+ * @param {Number} stride The vertex stride
  * @constructor
  */
-const MeshBuffer = function(gl) {
+const MeshBuffer = function(gl, stride) {
     this.gl = gl;
+    this.stride = 1 / stride;
     this.vertices = [];
     this.indices = [];
     this.bufferVertices = gl.createBuffer();
@@ -28,6 +30,13 @@ MeshBuffer.prototype.addVertices = function(...vertices) {
  */
 MeshBuffer.prototype.addIndices = function(...indices) {
     this.indices.push(...indices);
+};
+
+/**
+ * Get the number of vertices in this buffer
+ */
+MeshBuffer.prototype.getVertexCount = function() {
+    return this.vertices.length * this.stride;
 };
 
 /**
