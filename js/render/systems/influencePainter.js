@@ -36,7 +36,7 @@ InfluencePainter.Influences = function(width, height, scale) {
     this.height = height;
     this.scale = scale;
     this.hasInfluences = false;
-    this.meshData = new MeshData([], []);
+    this.meshData = new MeshData();
 };
 
 /**
