@@ -7,8 +7,7 @@
 const MeshBuffer = function(gl, stride) {
     this.gl = gl;
     this.stride = 1 / stride;
-    this.vertices = [];
-    this.indices = [];
+    this.meshData = new MeshData();
     this.bufferVertices = gl.createBuffer();
     this.bufferIndices = gl.createBuffer();
     this.bufferVerticesCapacity = 0;
@@ -17,20 +16,11 @@ const MeshBuffer = function(gl, stride) {
 };
 
 /**
- * Add mesh data to this mesh buffer
- * @param {MeshData} meshData Mesh data
- */
-MeshBuffer.prototype.addMeshData = function(meshData) {
-    this.vertices.push(...meshData.vertices);
-    this.indices.push(...meshData.indices);
-};
-
-/**
  * Add vertices to the buffer
  * @param {...Number} vertices Any number of vertices
  */
 MeshBuffer.prototype.addVertices = function(...vertices) {
-    this.vertices.push(...vertices);
+    this.meshData.vertices.push(...vertices);
 };
 
 /**
@@ -38,14 +28,14 @@ MeshBuffer.prototype.addVertices = function(...vertices) {
  * @param {...Number} indices Any number of indices
  */
 MeshBuffer.prototype.addIndices = function(...indices) {
-    this.indices.push(...indices);
+    this.meshData.indices.push(...indices);
 };
 
 /**
  * Get the number of vertices in this buffer
  */
 MeshBuffer.prototype.getVertexCount = function() {
-    return this.vertices.length * this.stride;
+    return this.meshData.getVertexCount() * this.stride;
 };
 
 /**
@@ -57,30 +47,38 @@ MeshBuffer.prototype.bind = function() {
 };
 
 /**
- * Upload all buffered vertices & indices
+ * Upload all buffered vertices & indices, and clear the accumulated buffers
  */
 MeshBuffer.prototype.upload = function() {
-    if (this.vertices.length === 0)
+    this.uploadMeshData(this.meshData);
+    this.meshData.clear();
+};
+
+/**
+ * Upload mesh data to this mesh buffer
+ * @param {MeshData} meshData Mesh data to upload
+ */
+MeshBuffer.prototype.uploadMeshData = function(meshData) {
+    if (meshData.empty())
         return;
 
     this.bind();
 
-    if (this.vertices.length > this.bufferVerticesCapacity) {
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(this.vertices), this.gl.DYNAMIC_DRAW);
-        this.bufferVerticesCapacity = this.vertices.length;
+    if (meshData.getVertexCount() > this.bufferVerticesCapacity) {
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(meshData.vertices), this.gl.DYNAMIC_DRAW);
+        this.bufferVerticesCapacity = meshData.getVertexCount();
     }
     else
-        this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array(this.vertices));
+        this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array(meshData.vertices));
 
-    if (this.indices.length > this.bufferIndicesCapacity) {
-        this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.indices), this.gl.DYNAMIC_DRAW);
-        this.bufferIndicesCapacity = this.indices.length;
+    if (meshData.getIndexCount() > this.bufferIndicesCapacity) {
+        this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(meshData.indices), this.gl.DYNAMIC_DRAW);
+        this.bufferIndicesCapacity = meshData.getIndexCount();
     }
     else
-        this.gl.bufferSubData(this.gl.ELEMENT_ARRAY_BUFFER, 0, new Uint16Array(this.indices));
+        this.gl.bufferSubData(this.gl.ELEMENT_ARRAY_BUFFER, 0, new Uint16Array(meshData.indices));
 
-    this.indexCount = this.indices.length;
-    this.vertices.length = this.indices.length = 0;
+    this.indexCount = meshData.getIndexCount();
 };
 
 /**

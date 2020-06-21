@@ -55,8 +55,6 @@ InfluencePainter.Influences.prototype.addFlare = function(
     r,
     g,
     b) {
-    this.hasInfluences = true;
-
     const offset = this.meshData.vertices.length * .2;
 
     for (let vertex = 0, vertices = this.FLARE.vertices.length; vertex < vertices; vertex += 5)
@@ -68,7 +66,10 @@ InfluencePainter.Influences.prototype.addFlare = function(
             this.FLARE.vertices[vertex + 4] * b);
 
     for (const index of this.FLARE.indices)
-        this.meshData.indices.push(index + offset);
+        this.meshData.indices.push(
+            index + offset);
+
+    this.hasInfluences = true;
 };
 
 InfluencePainter.Influences.prototype.FLARE_PRECISION = 12;
@@ -141,8 +142,7 @@ InfluencePainter.prototype.applyInfluences = function(influences) {
 
         this.gl.uniform2f(this.program["uSize"], influences.width, influences.height);
 
-        this.buffer.addMeshData(influences.meshData);
-        this.buffer.upload();
+        this.buffer.uploadMeshData(influences.meshData);
         this.buffer.render();
 
         this.gl.disable(this.gl.BLEND);
