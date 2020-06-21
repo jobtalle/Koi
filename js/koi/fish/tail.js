@@ -46,8 +46,6 @@ Tail.prototype.shift = function(dx, dy) {
     for (let vertebra = 0; vertebra < this.anchors; ++vertebra) {
         this.edge[vertebra].x += dx;
         this.edge[vertebra].y += dy;
-        this.edgePrevious[vertebra].x += dx;
-        this.edgePrevious[vertebra].y += dy;
     }
 };
 
