@@ -33,8 +33,8 @@ const Air = function(gl, width, height, random) {
 
 Air.prototype = Object.create(ConvolutionalBuffer.prototype);
 Air.prototype.SCALE = 4;
-Air.prototype.SPRING_MIN = .18;
-Air.prototype.SPRING_MAX = .38;
+Air.prototype.SPRING_MIN = .2;
+Air.prototype.SPRING_MAX = .4;
 
 /**
  * Add displacement to the air

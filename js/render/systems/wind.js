@@ -21,7 +21,7 @@ const Wind = function(gl, quad) {
     gl.vertexAttribPointer(this.program["aPosition"], 2, gl.FLOAT, false, 8, 0);
 };
 
-Wind.prototype.DAMPING = .95;
+Wind.prototype.DAMPING = .98;
 
 Wind.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
