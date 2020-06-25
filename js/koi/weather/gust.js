@@ -9,69 +9,46 @@
  * @constructor
  */
 const Gust = function(from, to, distance, speed, intensity, random) {
-    this.mesh = this.makeMesh(from, to, intensity, random);
     this.distance = distance;
     this.speed = speed;
+    this.intensity = intensity;
     this.moved = 0;
+    this.from = from;
+    this.dx = to.x - from.x;
+    this.dy = to.y - from.y;
+    this.pointCount = this.calculatePointCount();
+    this.offsets = this.makeOffsets(this.pointCount, random);
 };
 
-Gust.prototype.POINT_SPACING = 1.5;
+Gust.prototype.POINT_SPACING = 2.5;
 Gust.prototype.RADIUS_LEADING = 1.2;
 Gust.prototype.RADIUS_TRAILING = .3;
 Gust.prototype.LAG_AMPLITUDE = 2;
 Gust.prototype.LAG_POWER = 2.5;
 
 /**
- * Make the mesh for this gust
- * @param {Vector2} from The wave front start position
- * @param {Vector2} to The wave front end position
- * @param {Number} intensity The gust intensity
- * @returns {MeshData} The mesh data
- * @param {Random} random A randomizer
+ * Calculate the number of points for this gust
+ * @returns {Number} The point count
  */
-Gust.prototype.makeMesh = function(from, to, intensity, random) {
-    const dx = to.x - from.x;
-    const dy = to.y - from.y;
-    const waveFrontLength = Math.sqrt(dx * dx + dy * dy);
-    const pointCount = Math.ceil(waveFrontLength / this.POINT_SPACING) + 1;
-    const vertices = new Array(3 * pointCount);
-    const indices = [];
+Gust.prototype.calculatePointCount = function() {
+    const waveFrontLength = Math.sqrt(this.dx * this.dx + this.dy * this.dy);
 
-    for (let point = 0; point <= pointCount; ++point) {
-        const lag = this.LAG_AMPLITUDE * Math.pow(random.getFloat(), this.LAG_POWER);
-        const progress = point / pointCount;
-        const x = from.x + dx * point / pointCount;
-        const y = from.y + dy * point / pointCount;
+    return Math.ceil(waveFrontLength / this.POINT_SPACING) + 1;
+};
 
-        vertices[15 * point] = x - lag - this.RADIUS_TRAILING;
-        vertices[15 * point + 1] = y;
-        vertices[15 * point + 2] = vertices[15 * point + 3] = vertices[15 * point + 4] = 0;
-        vertices[15 * point + 5] = x - lag;
-        vertices[15 * point + 6] = y;
-        vertices[15 * point + 7] = 0;
-        vertices[15 * point + 8] = 0;
-        vertices[15 * point + 9] = Math.sin(Math.PI * progress) * intensity;
-        vertices[15 * point + 10] = x - lag + this.RADIUS_LEADING;
-        vertices[15 * point + 11] = y;
-        vertices[15 * point + 12] = vertices[15 * point + 13] = vertices[15 * point + 14] = 0;
+/**
+ * Make point offsets
+ * @param {Number} pointCount The number of points
+ * @param {Random} random A randomizer
+ * @returns {Number[]} An array of offsets
+ */
+Gust.prototype.makeOffsets = function(pointCount, random) {
+    const offsets = new Array(pointCount);
 
-        if (point !== pointCount)
-            indices.push(
-                3 * point,
-                3 * point + 1,
-                3 * point + 4,
-                3 * point + 4,
-                3 * point + 3,
-                3 * point,
-                3 * point + 1,
-                3 * point + 2,
-                3 * point + 5,
-                3 * point + 5,
-                3 * point + 4,
-                3 * point + 1);
-    }
+    for (let offset = 0; offset < offsets.length; ++offset)
+        offsets[offset] = this.LAG_AMPLITUDE * Math.pow(random.getFloat(), this.LAG_POWER);
 
-    return new MeshData(vertices, indices);
+    return offsets;
 };
 
 /**
@@ -82,19 +59,47 @@ Gust.prototype.makeMesh = function(from, to, intensity, random) {
 Gust.prototype.update = function(air) {
     const scale = air.influences.scale;
     const progress = this.moved / this.distance;
-    const intensity = Math.sin(Math.PI * progress);
+    const intensity = Math.sin(Math.PI * progress) * this.intensity;
     const firstIndex = air.influences.meshData.getVertexCount() * .2;
 
-    for (let vertex = 0, vertices = this.mesh.vertices.length; vertex < vertices; vertex += 5)
-        air.influences.meshData.vertices.push(
-            (this.mesh.vertices[vertex] + this.moved) * scale,
-            this.mesh.vertices[vertex + 1] * scale,
-            this.mesh.vertices[vertex + 2],
-            this.mesh.vertices[vertex + 3],
-            this.mesh.vertices[vertex + 4] * intensity);
+    for (let point = 0; point <= this.pointCount; ++point) {
+        const offset = this.offsets[point];
+        const progress = point / this.pointCount;
+        const x = this.from.x + this.dx * point / this.pointCount + this.moved;
+        const y = this.from.y + this.dy * point / this.pointCount;
 
-    for (const index of this.mesh.indices)
-        air.influences.meshData.indices.push(index + firstIndex);
+        air.influences.meshData.vertices.push(
+            (x - offset - this.RADIUS_TRAILING) * scale,
+            y * scale,
+            0,
+            0,
+            0,
+            (x - offset) * scale,
+            y * scale,
+            0,
+            0,
+            Math.sin(Math.PI * progress) * intensity,
+            (x - offset + this.RADIUS_LEADING) * scale,
+            y * scale,
+            0,
+            0,
+            0);
+
+        if (point !== this.pointCount)
+            air.influences.meshData.indices.push(
+                firstIndex + 3 * point,
+                firstIndex + 3 * point + 1,
+                firstIndex + 3 * point + 4,
+                firstIndex + 3 * point + 4,
+                firstIndex + 3 * point + 3,
+                firstIndex + 3 * point,
+                firstIndex + 3 * point + 1,
+                firstIndex + 3 * point + 2,
+                firstIndex + 3 * point + 5,
+                firstIndex + 3 * point + 5,
+                firstIndex + 3 * point + 4,
+                firstIndex + 3 * point + 1);
+    }
 
     air.influences.hasInfluences = true;
 
