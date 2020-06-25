@@ -87,10 +87,11 @@ InfluencePainter.Influences.prototype.FLARE = (() => {
             0,
             0);
 
-        indices.push(
-            0,
-            i + 1,
-            ((i + 1) % InfluencePainter.Influences.prototype.FLARE_PRECISION) + 1);
+        if (i !== InfluencePainter.Influences.prototype.FLARE_PRECISION)
+            indices.push(
+                0,
+                i + 1,
+                ((i + 1) % InfluencePainter.Influences.prototype.FLARE_PRECISION) + 1);
     }
 
     return new MeshData(vertices, indices);
