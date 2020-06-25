@@ -190,6 +190,7 @@ Koi.prototype.resize = function() {
 Koi.prototype.update = function() {
     this.spawner.update(this.UPDATE_RATE, this.atlas, this.random);
     this.constellation.update(this.atlas, this.water, this.random);
+    this.weather.update(this.air, this.water, this.random);
     this.mover.update();
 
     this.systems.waves.propagate(this.water, this.systems.influencePainter);
