@@ -12,12 +12,14 @@ const Weather = function(constellation) {
 
 Weather.prototype.WIND_TIME_MIN = 5;
 Weather.prototype.WIND_TIME_MAX = 20;
-Weather.prototype.GUST_HEIGHT_MIN = 8;
-Weather.prototype.GUST_HEIGHT_MAX = 12;
+Weather.prototype.GUST_HEIGHT_MIN = .7;
+Weather.prototype.GUST_HEIGHT_MAX = 1.3;
 Weather.prototype.GUST_SLANT_MIN = -.3;
 Weather.prototype.GUST_SLANT_MAX = .3;
-Weather.prototype.GUST_DISTANCE_MIN = 7;
-Weather.prototype.GUST_DISTANCE_MAX = 20;
+Weather.prototype.GUST_DISTANCE_MIN = .6;
+Weather.prototype.GUST_DISTANCE_MAX = 1.4;
+Weather.prototype.GUST_SPEED_MIN = .15;
+Weather.prototype.GUST_SPEED_MAX = .3;
 
 /**
  * Add a gust
@@ -26,8 +28,10 @@ Weather.prototype.GUST_DISTANCE_MAX = 20;
  */
 Weather.prototype.createGust = function(air, random) {
     const slant = this.GUST_SLANT_MIN + (this.GUST_SLANT_MAX - this.GUST_SLANT_MIN) * random.getFloat();
-    const height = this.GUST_HEIGHT_MIN + (this.GUST_HEIGHT_MAX - this.GUST_HEIGHT_MIN) * random.getFloat();
-    const distance = this.GUST_DISTANCE_MIN + (this.GUST_DISTANCE_MAX - this.GUST_DISTANCE_MIN) * random.getFloat();
+    const height = (this.GUST_HEIGHT_MIN + (this.GUST_HEIGHT_MAX - this.GUST_HEIGHT_MIN) * random.getFloat()) *
+        this.constellation.height;
+    const distance = (this.GUST_DISTANCE_MIN + (this.GUST_DISTANCE_MAX - this.GUST_DISTANCE_MIN) * random.getFloat()) *
+        this.constellation.width;
     const origin = new Vector2(
         distance * -.5 + this.constellation.width * random.getFloat(),
         height * -.5 + this.constellation.height * random.getFloat());
@@ -39,7 +43,7 @@ Weather.prototype.createGust = function(air, random) {
                 origin.x + height * slant,
                 origin.y + height),
             distance,
-            .2,
+            this.GUST_SPEED_MIN + (this.GUST_SPEED_MAX - this.GUST_SPEED_MIN) * random.getFloat(),
             .1,
             random));
 };
