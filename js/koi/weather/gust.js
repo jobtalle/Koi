@@ -4,19 +4,20 @@
  * @param {Vector2} to The wave front end position
  * @param {Number} distance The distance to move
  * @param {Number} speed The speed
+ * @param {Number} intensity The gust intensity
  * @param {Random} random A randomizer
  * @constructor
  */
-const Gust = function(from, to, distance, speed, random) {
-    this.mesh = this.makeMesh(from, to, random);
+const Gust = function(from, to, distance, speed, intensity, random) {
+    this.mesh = this.makeMesh(from, to, intensity, random);
     this.distance = distance;
     this.speed = speed;
     this.moved = 0;
 };
 
 Gust.prototype.POINT_SPACING = 1.5;
-Gust.prototype.RADIUS_LEADING = 1;
-Gust.prototype.RADIUS_TRAILING = .5;
+Gust.prototype.RADIUS_LEADING = 1.2;
+Gust.prototype.RADIUS_TRAILING = .3;
 Gust.prototype.LAG_AMPLITUDE = 2;
 Gust.prototype.LAG_POWER = 2.5;
 
@@ -24,10 +25,11 @@ Gust.prototype.LAG_POWER = 2.5;
  * Make the mesh for this gust
  * @param {Vector2} from The wave front start position
  * @param {Vector2} to The wave front end position
+ * @param {Number} intensity The gust intensity
  * @returns {MeshData} The mesh data
  * @param {Random} random A randomizer
  */
-Gust.prototype.makeMesh = function(from, to, random) {
+Gust.prototype.makeMesh = function(from, to, intensity, random) {
     const dx = to.x - from.x;
     const dy = to.y - from.y;
     const waveFrontLength = Math.sqrt(dx * dx + dy * dy);
@@ -48,7 +50,7 @@ Gust.prototype.makeMesh = function(from, to, random) {
         vertices[15 * point + 6] = y;
         vertices[15 * point + 7] = 0;
         vertices[15 * point + 8] = 0;
-        vertices[15 * point + 9] = Math.sin(Math.PI * progress) * .1;
+        vertices[15 * point + 9] = Math.sin(Math.PI * progress) * intensity;
         vertices[15 * point + 10] = x - lag + this.RADIUS_LEADING;
         vertices[15 * point + 11] = y;
         vertices[15 * point + 12] = vertices[15 * point + 13] = vertices[15 * point + 14] = 0;
@@ -94,7 +96,7 @@ Gust.prototype.update = function(air) {
     for (const index of this.mesh.indices)
         air.influences.meshData.indices.push(index + firstIndex);
 
-    air.influences.hasInfluences = true; // TODO: Not doing this
+    air.influences.hasInfluences = true;
 
     this.moved += this.speed;
 
