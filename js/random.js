@@ -3,13 +3,21 @@
  * @param {Number} [seed] An integer value to use as a seed
  * @constructor
  */
-const Random = function(seed = Math.floor(Math.random() * this.MODULUS)) {
+const Random = function(seed = Random.prototype.makeSeed()) {
     this.n = seed;
 };
 
 Random.prototype.MULTIPLIER = 69069;
 Random.prototype.MODULUS = 2 ** 32;
 Random.prototype.INCREMENT = 1;
+
+/**
+ * Make a 32 bit seed using the default randomizer
+ * @returns A random 32 bit seed
+ */
+Random.prototype.makeSeed = function() {
+    return Math.floor(Math.random() * this.MODULUS);
+};
 
 /**
  * Generate a float

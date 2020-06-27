@@ -1,12 +1,14 @@
 /**
  * The koi game
  * @param {Systems} systems The render systems
+ * @param {Number} environmentSeed The seed for all stable systems
  * @param {Random} random A randomizer
  * @constructor
  */
-const Koi = function(systems, random) {
+const Koi = function(systems, environmentSeed, random) {
     this.systems = systems;
     this.random = random;
+    this.environmentSeed = environmentSeed;
     this.scale = this.getScale(systems.width, systems.height);
     this.constellation = new Constellation(
         systems.width / this.scale,
@@ -43,6 +45,8 @@ Koi.prototype.COLOR_BACKGROUND = Color.fromCSS("earth");
  * Create all renderable objects
  */
 Koi.prototype.createRenderables = function() {
+    const environmentRandomizer = new Random(this.environmentSeed);
+
     // Create constellation meshes
     this.constellationMeshWater = this.constellation.makeMeshWater(this.systems.gl);
     this.constellationMeshDepth = this.constellation.makeMeshDepth(this.systems.gl);
@@ -75,7 +79,7 @@ Koi.prototype.createRenderables = function() {
         this.systems.stone,
         this.systems.vegetation,
         this.constellation,
-        this.random);
+        environmentRandomizer);
     this.underwater = new RenderTarget(
         this.systems.gl,
         this.systems.width,

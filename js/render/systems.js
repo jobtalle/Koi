@@ -1,7 +1,7 @@
 /**
  * A container for all persistent rendering systems
  * @param {WebGLRenderingContext} gl A WebGL context
- * @param {Random} random A randomizer
+ * @param {Random} random A randomizer which may be used only once
  * @param {Number} width The WebGL context width in pixels
  * @param {Number} height The WebGL context height in pixels
  * @constructor

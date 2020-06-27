@@ -21,7 +21,7 @@ const Gust = function(from, to, distance, speed, intensity, random) {
 };
 
 Gust.prototype.POINT_SPACING = 2.5;
-Gust.prototype.RADIUS_LEADING = 1.2;
+Gust.prototype.RADIUS_LEADING = .8;
 Gust.prototype.RADIUS_TRAILING = .3;
 Gust.prototype.LAG_AMPLITUDE = 2;
 Gust.prototype.LAG_POWER = 2.5;

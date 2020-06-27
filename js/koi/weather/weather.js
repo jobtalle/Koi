@@ -44,7 +44,7 @@ Weather.prototype.createGust = function(air, random) {
                 origin.y + height),
             distance,
             this.GUST_SPEED_MIN + (this.GUST_SPEED_MAX - this.GUST_SPEED_MIN) * random.getFloat(),
-            .05,
+            .1,
             random));
 };
 

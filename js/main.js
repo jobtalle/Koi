@@ -14,8 +14,8 @@ gl.vao = gl.getExtension("OES_vertex_array_object");
 // Enable 32 bit element indices
 gl.getExtension("OES_element_index_uint");
 
-const random = new Random();
-const systems = new Systems(gl, random, canvas.width, canvas.height);
+const session = new Session();
+const systems = new Systems(gl, session.random, canvas.width, canvas.height);
 let lastDate = null;
 let koi = null;
 let loaded = true;
@@ -36,7 +36,7 @@ window.onresize = resize;
 
 resize();
 
-koi = new Koi(systems, random);
+koi = new Koi(systems, session.environmentSeed, session.random);
 lastDate = new Date();
 
 const loop = () => {
@@ -85,6 +85,8 @@ canvas.addEventListener("touchend", event => {
 });
 
 window.onbeforeunload = () => {
+    // TODO: Serialize koi
+
     koi.free();
     systems.free();
     loaded = false;
