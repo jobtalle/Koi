@@ -1,10 +1,12 @@
 /**
  * The weather controller
  * @param {Constellation} constellation The constellation
+ * @param {WeatherState} state The state of the weather object
  * @constructor
  */
-const Weather = function(constellation) {
+const Weather = function(constellation, state) {
     this.constellation = constellation;
+    this.state = state;
     this.wind = .5;
     this.windTime = this.WIND_TIME_MIN;
     this.gusts = [];

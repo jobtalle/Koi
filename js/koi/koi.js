@@ -3,14 +3,21 @@
  * @param {Systems} systems The render systems
  * @param {Number} environmentSeed The seed for all stable systems
  * @param {Random} random A randomizer
+ * @param {WeatherState} weatherState The state of the weather object
+ * @param {SpawnerState} spawnerState The state of the spawner object
  * @constructor
  */
-const Koi = function(systems, environmentSeed, random) {
+const Koi = function(
+    systems,
+    environmentSeed,
+    random,
+    weatherState = new WeatherState(),
+    spawnerState = new SpawnerState()) {
     this.systems = systems;
     this.random = random;
     this.environmentSeed = environmentSeed;
     this.scale = this.getScale(systems.width, systems.height);
-    this.constellation = new Constellation(
+    this.constellation =  new Constellation(
         systems.width / this.scale,
         systems.height / this.scale);
     this.mover = new Mover(this.constellation);
@@ -24,8 +31,8 @@ const Koi = function(systems, environmentSeed, random) {
     this.air = null;
     this.constellationMeshWater = null;
     this.constellationMeshDepth = null;
-    this.weather = new Weather(this.constellation);
-    this.spawner = new Spawner(this.constellation);
+    this.weather = new Weather(this.constellation, weatherState);
+    this.spawner = new Spawner(this.constellation, spawnerState);
     this.time = 0;
 
     this.createRenderables();

@@ -1,10 +1,12 @@
 /**
  * The fish spawner
  * @param {Constellation} constellation A constellation to spawn fish in
+ * @param {SpawnerState} state The state of this spawner
  * @constructor
  */
-const Spawner = function(constellation) {
+const Spawner = function(constellation, state) {
     this.constellation = constellation;
+    this.state = state;
     this.time = 0;
 };
 
