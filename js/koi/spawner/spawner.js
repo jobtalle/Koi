@@ -49,10 +49,10 @@ Spawner.prototype.update = function(timeStep, atlas, random) {
                     ],
                     new Tail(.3),
                     1.2,
-                    .3,
-                    .05),
+                    .3),
                 this.constellation.spawnPoint,
-                this.constellation.spawnDirection));
+                this.constellation.spawnDirection,
+                .03));
         }
     }
 };

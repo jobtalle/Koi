@@ -5,16 +5,14 @@
  * @param {Tail} tail The tail
  * @param {Number} length The body length
  * @param {Number} thickness The body thickness
- * @param {Number} growthSpeed The growth speed
  * @constructor
  */
-const FishBody = function(pattern, fins, tail, length, thickness, growthSpeed) {
+const FishBody = function(pattern, fins, tail, length, thickness) {
     this.pattern = pattern;
     this.fins = fins;
     this.tail = tail;
     this.length = length;
     this.radius = thickness * .5;
-    this.growthSpeed = growthSpeed;
     this.spine = new Array(Math.ceil(length / this.RESOLUTION));
     this.tailOffset = this.spine.length - 1;
     this.finGroups = this.assignFins(fins, this.spine.length);
@@ -22,7 +20,6 @@ const FishBody = function(pattern, fins, tail, length, thickness, growthSpeed) {
     this.springs = this.makeSprings(this.SPRING_START, this.SPRING_END, this.SPRING_POWER);
     this.phase = 0;
     this.finPhase = 0;
-    this.size = 0;
     this.spacing = .1;
     this.inverseSpacing = 1 / this.spacing;
 };
@@ -41,7 +38,6 @@ FishBody.prototype.WAVE_INTENSITY_MIN = .05;
 FishBody.prototype.WAVE_INTENSITY_MULTIPLIER = 2;
 FishBody.prototype.WAVE_TURBULENCE = .4;
 FishBody.prototype.FIN_PHASE_SPEED = .4;
-FishBody.prototype.SIZE_MIN = .1;
 
 /**
  * Assign fins to an array matching the vertebrae
@@ -182,12 +178,11 @@ FishBody.prototype.storePreviousState = function() {
 };
 
 /**
- * Calculate the size of this body in the range [0, 1]
- * @param {Number} age The fish age in seconds
+ * Calculate the spacing of this body
+ * @param {Number} size The fish size in the range [0, 1]
  */
-FishBody.prototype.calculateSize = function(age) {
-    this.size = this.SIZE_MIN + (1 - this.SIZE_MIN) * (1 - 1 / (age * this.growthSpeed + 1));
-    this.spacing = this.size * this.length / (this.spine.length - 1);
+FishBody.prototype.calculateSpacing = function(size) {
+    this.spacing = size * this.length / (this.spine.length - 1);
     this.inverseSpacing = 1 / this.spacing;
 };
 
@@ -196,7 +191,7 @@ FishBody.prototype.calculateSize = function(age) {
  * @param {Vector2} head The new head position
  * @param {Vector2} direction The normalized head direction
  * @param {Number} speed The fish speed
- * @param {Number} age The fish age in seconds
+ * @param {Number} size The fish size in the range [0, 1]
  * @param {Water} [water] A water plane to disturb
  * @param {Random} [random] A randomizer, required when water is supplied
  */
@@ -204,12 +199,12 @@ FishBody.prototype.update = function(
     head,
     direction,
     speed,
-    age,
+    size,
     water = null,
     random = null) {
     this.storePreviousState();
     this.spine[0].set(head);
-    this.calculateSize(age);
+    this.calculateSpacing(size);
 
     const speedFactor = speed - this.SPEED_SWING_THRESHOLD;
     const angle = direction.angle() + Math.PI + Math.cos(this.phase) * speedFactor * this.SWIM_AMPLITUDE;
@@ -245,7 +240,7 @@ FishBody.prototype.update = function(
                 xDirPrevious,
                 yDirPrevious,
                 this.finPhase,
-                this.size);
+                size);
     }
 
     this.tail.update(this.spine);
@@ -263,9 +258,10 @@ FishBody.prototype.update = function(
 /**
  * Render the body
  * @param {Bodies} bodies The bodies renderer
+ * @param {Number} size The fish size in the range [0, 1]
  * @param {Number} time The interpolation factor
  */
-FishBody.prototype.render = function(bodies, time) {
+FishBody.prototype.render = function(bodies, size, time) {
     for (const fin of this.fins)
         fin.render(bodies, time);
 
@@ -273,7 +269,7 @@ FishBody.prototype.render = function(bodies, time) {
     const indexOffset = indexOffsetFin + this.tail.getVertexCount();
     const indexOffsetBack = indexOffset + ((this.tailOffset + 1) << 1);
 
-    this.tail.renderBottom(bodies, indexOffsetFin, indexOffsetBack, this.size, this.pattern, time);
+    this.tail.renderBottom(bodies, indexOffsetFin, indexOffsetBack, size, this.pattern, time);
 
     let xp, x = this.spinePrevious[0].x + (this.spine[0].x - this.spinePrevious[0].x) * time;
     let yp, y = this.spinePrevious[0].y + (this.spine[0].y - this.spinePrevious[0].y) * time;
@@ -298,7 +294,7 @@ FishBody.prototype.render = function(bodies, time) {
         dx = x - xp;
         dy = y - yp;
 
-        const radius = this.radius * this.size;
+        const radius = this.radius * size;
         const dxAveraged = (dx + dxp) * .5;
         const dyAveraged = (dy + dyp) * .5;
         const u = this.pattern.region.uBodyStart + (this.pattern.region.uBodyEnd - this.pattern.region.uBodyStart) *

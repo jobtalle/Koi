@@ -3,14 +3,16 @@
  * @param {FishBody} body The fish body
  * @param {Vector2} position The initial position
  * @param {Vector2} direction The initial direction vector, which must be normalized
+ * @param {Number} growthSpeed The growth speed
  * @param {Number} [age] The fish age in seconds, zero by default
  * @constructor
  */
-const Fish = function(body, position, direction, age = 0) {
+const Fish = function(body, position, direction, growthSpeed, age = 0) {
     this.position = position.copy();
     this.positionPrevious = position.copy();
     this.direction = direction.copy();
     this.velocity = direction.copy();
+    this.growthSpeed = growthSpeed;
     this.body = body;
     this.speed = this.SPEED_MIN;
     this.boost = 0;
@@ -18,6 +20,7 @@ const Fish = function(body, position, direction, age = 0) {
     this.turnForce = 0;
     this.nibbleTime = this.NIBBLE_TIME_MIN;
     this.age = age;
+    this.size = 0;
 
     this.body.initializeSpine(position, direction);
 };
@@ -52,6 +55,8 @@ Fish.prototype.TURN_THRESHOLD = .005;
 Fish.prototype.TURN_CARRY = .95;
 Fish.prototype.TURN_FOLLOW_CHANCE = .025;
 Fish.prototype.TURN_AMPLITUDE = Math.PI * .4;
+Fish.prototype.SIZE_MIN = .05;
+Fish.prototype.SIZE_MAX = .99;
 
 /**
  * Move the fish to a given position
@@ -216,6 +221,19 @@ Fish.prototype.boostSpeed = function(random) {
 };
 
 /**
+ * Update the size of this fish
+ */
+Fish.prototype.updateSize = function() {
+    if (this.size !== 1) {
+        this.age += Koi.prototype.UPDATE_RATE;
+        this.size = this.SIZE_MIN + (1 - this.SIZE_MIN) * (1 - 1 / (this.age * this.growthSpeed + 1));
+
+        if (this.size > this.SIZE_MAX)
+            this.size = 1;
+    }
+};
+
+/**
  * Update the fish
  * @param {Constraint} constraint A constraint
  * @param {Water} water A water plane to disturb
@@ -226,7 +244,7 @@ Fish.prototype.update = function(constraint, water, random) {
     if (this.constrain(constraint))
         return true;
 
-    this.age += Koi.prototype.UPDATE_RATE;
+    this.updateSize();
 
     if (this.turnDirection)
         this.applyTurn();
@@ -265,7 +283,7 @@ Fish.prototype.update = function(constraint, water, random) {
 
     this.positionPrevious.set(this.position);
     this.position.add(this.velocity.multiply(this.speed));
-    this.body.update(this.position, this.direction, this.speed, this.age, water, random);
+    this.body.update(this.position, this.direction, this.speed, this.size, water, random);
 
     return false;
 };
@@ -276,7 +294,7 @@ Fish.prototype.update = function(constraint, water, random) {
  * @param {Number} time The interpolation factor
  */
 Fish.prototype.render = function(bodies, time) {
-    this.body.render(bodies, time);
+    this.body.render(bodies, this.size, time);
 };
 
 /**

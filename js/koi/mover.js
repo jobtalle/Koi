@@ -29,7 +29,7 @@ Mover.prototype.update = function() {
             this.move.position,
             this.move.direction,
             this.move.speed,
-            this.move.age);
+            this.move.size);
 };
 
 /**
