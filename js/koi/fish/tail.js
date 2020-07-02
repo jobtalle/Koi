@@ -89,15 +89,17 @@ Tail.prototype.getVertexCount = function() {
  * @param {Bodies} bodies The bodies renderer
  * @param {Number} startIndex The index of the first fin vertex
  * @param {Number} firstVertebra The index of the first vertebra vertex
- * @param {Number} time The interpolation factor
+ * @param {Number} size The size in the range [0, 1]
  * @param {Pattern} pattern A pattern
+ * @param {Number} time The interpolation factor
  */
 Tail.prototype.renderBottom = function(
     bodies,
     startIndex,
     firstVertebra,
-    time,
-    pattern) {
+    size,
+    pattern,
+    time) {
     const u = pattern.region.uFinStart + (pattern.region.uFinEnd - pattern.region.uFinStart) * .5;
     const v = pattern.region.vStart + (pattern.region.vEnd - pattern.region.vStart) * .5;
 
@@ -112,11 +114,11 @@ Tail.prototype.renderBottom = function(
 
         bodies.buffer.addVertices(
             x,
-            y + this.distances[vertebra],
+            y + this.distances[vertebra] * size,
             u,
             v,
             x,
-            y - this.distances[vertebra],
+            y - this.distances[vertebra] * size,
             u,
             v);
 

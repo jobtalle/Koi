@@ -3,9 +3,10 @@
  * @param {FishBody} body The fish body
  * @param {Vector2} position The initial position
  * @param {Vector2} direction The initial direction vector, which must be normalized
+ * @param {Number} [age] The fish age in seconds, zero by default
  * @constructor
  */
-const Fish = function(body, position, direction) {
+const Fish = function(body, position, direction, age = 0) {
     this.position = position.copy();
     this.positionPrevious = position.copy();
     this.direction = direction.copy();
@@ -16,6 +17,7 @@ const Fish = function(body, position, direction) {
     this.turnDirection = new Vector2();
     this.turnForce = 0;
     this.nibbleTime = this.NIBBLE_TIME_MIN;
+    this.age = age;
 
     this.body.initializeSpine(position, direction);
 };
@@ -224,6 +226,8 @@ Fish.prototype.update = function(constraint, water, random) {
     if (this.constrain(constraint))
         return true;
 
+    this.age += Koi.prototype.UPDATE_RATE;
+
     if (this.turnDirection)
         this.applyTurn();
 
@@ -258,9 +262,10 @@ Fish.prototype.update = function(constraint, water, random) {
             this.velocity.normalize();
         }
     }
+
     this.positionPrevious.set(this.position);
     this.position.add(this.velocity.multiply(this.speed));
-    this.body.update(this.position, this.direction, this.speed, water, random);
+    this.body.update(this.position, this.direction, this.speed, this.age, water, random);
 
     return false;
 };

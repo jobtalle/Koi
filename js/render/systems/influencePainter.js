@@ -72,7 +72,7 @@ InfluencePainter.Influences.prototype.addFlare = function(
     this.hasInfluences = true;
 };
 
-InfluencePainter.Influences.prototype.FLARE_PRECISION = 12;
+InfluencePainter.Influences.prototype.FLARE_PRECISION = 8;
 InfluencePainter.Influences.prototype.FLARE = (() => {
     const vertices = [0, 0, 1, 1, 1];
     const indices = [];

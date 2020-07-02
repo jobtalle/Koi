@@ -47,7 +47,6 @@ Fin.prototype.connect = function(pattern, radius) {
     this.pattern = pattern;
     this.anchorRadius = this.ANCHOR_INSET * radius;
     this.finRadius = this.radius * radius;
-    this.finDepth = this.finRadius * this.DEPTH_FACTOR;
 };
 
 /**
@@ -89,25 +88,29 @@ Fin.prototype.storePreviousState = function() {
  * @param {Number} dx The normalized X direction of the vertebra
  * @param {Number} dy The normalized Y direction of the vertebra
  * @param {Number} phase The fin phase
+ * @param {Number} size The fin size in the range [0, 1]
  */
-Fin.prototype.update = function(vertebra, dx, dy, phase) {
+Fin.prototype.update = function(vertebra, dx, dy, phase, size) {
     this.storePreviousState();
 
-    const dxSide = this.sign * dy;
-    const dySide = this.sign * -dx;
-    let dxStart = dxSide * this.finRadius * this.X_SCALE;
-    let dyStart = dySide * this.finRadius * this.X_SCALE;
+    this.finDepth = this.finRadius * this.DEPTH_FACTOR * size;
+
+    const radius = this.finRadius * size;
+    const dxSide = this.sign * dy * size;
+    const dySide = this.sign * -dx * size;
+    let dxStart = dxSide * radius * this.X_SCALE;
+    let dyStart = dySide * radius * this.X_SCALE;
 
     this.anchor.x = vertebra.x + dxSide * this.anchorRadius;
     this.anchor.y = vertebra.y + dySide * this.anchorRadius;
 
     const skew = Math.sin(phase + this.at * this.PHASE_SHIFT) * this.WAVE_SKEW + this.SKEW;
 
-    this.start.x += (this.anchor.x + dxStart + this.finRadius * dx * skew - this.start.x) * this.SPRING;
-    this.start.y += (this.anchor.y + dyStart + this.finRadius * dy * skew - this.start.y) * this.SPRING;
+    this.start.x += (this.anchor.x + dxStart + radius * dx * skew - this.start.x) * this.SPRING;
+    this.start.y += (this.anchor.y + dyStart + radius * dy * skew - this.start.y) * this.SPRING;
 
-    this.end.x = this.anchor.x + this.finRadius * dx;
-    this.end.y = this.anchor.y + this.finRadius * dy;
+    this.end.x = this.anchor.x + radius * dx;
+    this.end.y = this.anchor.y + radius * dy;
 };
 
 /**

@@ -28,7 +28,8 @@ Mover.prototype.update = function() {
         this.move.body.update(
             this.move.position,
             this.move.direction,
-            this.move.speed);
+            this.move.speed,
+            this.move.age);
 };
 
 /**
