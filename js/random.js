@@ -28,3 +28,19 @@ Random.prototype.getFloat = function() {
 
     return this.n / this.MODULUS;
 };
+
+/**
+ * Serialize this randomizer
+ * @param {BinBuffer} buffer A buffer to serialize to
+ */
+Random.prototype.serialize = function(buffer) {
+    buffer.writeUint32(this.n);
+};
+
+/**
+ * Deserialize this randomizer
+ * @param {BinBuffer} buffer A buffer to deserialize from
+ */
+Random.prototype.deserialize = function(buffer) {
+    this.n = buffer.readUint32();
+};

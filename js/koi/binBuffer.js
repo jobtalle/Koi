@@ -9,6 +9,22 @@ const BinBuffer = function(bytes = []) {
 };
 
 /**
+ * Convert the contents of this buffer to a string
+ * @returns {String} The string
+ */
+BinBuffer.prototype.toString = function() {
+    return btoa(String.fromCharCode(...new Uint8Array(this.bytes)));
+};
+
+/**
+ * Get the contents of this buffer from a string
+ * @param {String} string A base64 string
+ */
+BinBuffer.prototype.fromString = function(string) {
+    this.bytes = atob(string).split("").map(c => c.charCodeAt(0));
+};
+
+/**
  * Read the next byte from this buffer
  * @returns {Number} The next byte in this buffer
  */

@@ -14,8 +14,19 @@ gl.vao = gl.getExtension("OES_vertex_array_object");
 // Enable 32 bit element indices
 gl.getExtension("OES_element_index_uint");
 
+const sessionData = localStorage.getItem("session");
 const session = new Session();
-const systems = new Systems(gl, session.random, canvas.width, canvas.height);
+
+// Retrieve last session if it exists
+if (sessionData) {
+    const buffer = new BinBuffer();
+
+    buffer.fromString(sessionData);
+
+    session.deserialize(buffer);
+}
+
+const systems = new Systems(gl, new Random(session.environmentSeed), canvas.width, canvas.height);
 let lastDate = null;
 let koi = null;
 let loaded = true;
@@ -85,7 +96,7 @@ canvas.addEventListener("touchend", event => {
 });
 
 window.onbeforeunload = () => {
-    // TODO: Serialize koi
+    localStorage.setItem("session", session.serialize().toString());
 
     koi.free();
     systems.free();

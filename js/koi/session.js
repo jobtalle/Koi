@@ -11,10 +11,26 @@ const Session = function(
     this.environmentSeed = environmentSeed;
 };
 
-Session.prototype.deserialize = function() {
+/**
+ * Deserialize a session
+ * @param {BinBuffer} buffer The buffer to deserialize from
+ */
+Session.prototype.deserialize = function(buffer) {
+    this.random.deserialize(buffer);
 
+    this.environmentSeed = buffer.readUint32();
 };
 
+/**
+ * Serialize a session
+ * @returns {BinBuffer} A buffer containing the session
+ */
 Session.prototype.serialize = function() {
+    const buffer = new BinBuffer();
 
+    this.random.serialize(buffer);
+
+    buffer.writeUint32(this.environmentSeed);
+
+    return buffer;
 };
