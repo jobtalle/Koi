@@ -9,6 +9,16 @@ const Session = function(
     environmentSeed = Random.prototype.makeSeed()) {
     this.random = random;
     this.environmentSeed = environmentSeed;
+    this.buffer = null;
+};
+
+/**
+ * Make a Koi object, to be called once
+ * @param {Systems} systems Render systems for this koi object
+ * @returns {Koi} A koi object for this session
+ */
+Session.prototype.makeKoi = function(systems) {
+    return new Koi(systems, this.environmentSeed, this.random);
 };
 
 /**
@@ -16,6 +26,8 @@ const Session = function(
  * @param {BinBuffer} buffer The buffer to deserialize from
  */
 Session.prototype.deserialize = function(buffer) {
+    this.buffer = buffer;
+
     this.random.deserialize(buffer);
 
     this.environmentSeed = buffer.readUint32();
