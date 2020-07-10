@@ -28,7 +28,7 @@ FishBody.prototype.RESOLUTION = .1;
 FishBody.prototype.SPRING_START = .9;
 FishBody.prototype.SPRING_END = .65;
 FishBody.prototype.SPRING_POWER = 1.7;
-FishBody.prototype.SWIM_AMPLITUDE = 8.5;
+FishBody.prototype.SWIM_AMPLITUDE = 11;
 FishBody.prototype.SWIM_SPEED = 6.5;
 FishBody.prototype.SPEED_SWING_THRESHOLD = .01;
 FishBody.prototype.SPEED_WAVE_THRESHOLD = .055;
@@ -217,6 +217,7 @@ FishBody.prototype.update = function(
         let dy = this.spine[vertebra].y - this.spine[vertebra - 1].y;
         let distance = Math.sqrt(dx * dx + dy * dy);
 
+        const spring = this.springs[vertebra - 1] + (1 - this.springs[vertebra - 1]) * (1 - size);
         const dxc = this.spine[vertebra - 1].x + xDir * this.spacing - this.spine[vertebra].x;
         const dyc = this.spine[vertebra - 1].y + yDir * this.spacing - this.spine[vertebra].y;
         const xDirPrevious = xDir;
@@ -225,8 +226,8 @@ FishBody.prototype.update = function(
         xDir = dx / distance;
         yDir = dy / distance;
 
-        dx += dxc * this.springs[vertebra - 1];
-        dy += dyc * this.springs[vertebra - 1];
+        dx += dxc * spring;
+        dy += dyc * spring;
 
         distance = Math.sqrt(dx * dx + dy * dy);
 
@@ -245,7 +246,7 @@ FishBody.prototype.update = function(
 
     this.tail.update(this.spine);
 
-    if ((this.phase += this.SWIM_SPEED * speed) > Math.PI + Math.PI)
+    if ((this.phase += this.SWIM_SPEED * speed / size) > Math.PI + Math.PI)
         this.phase -= Math.PI + Math.PI;
 
     if ((this.finPhase -= this.FIN_PHASE_SPEED) < 0)
