@@ -28,6 +28,14 @@ BinBuffer.prototype.writeInt32 = function(integer) {
 };
 
 /**
+ * Write an unsigned 32 bit integer to this binary buffer
+ * @param {Number} integer A number that fits inside an unsigned 32 bit integer
+ */
+BinBuffer.prototype.writeUint32 = function(integer) {
+    this.writeInt32(integer);
+};
+
+/**
  * Write a floating point number to this binary buffer
  * @param {Number} float A floating point number
  */
@@ -46,6 +54,19 @@ BinBuffer.prototype.writeFloat = function(float) {
  */
 BinBuffer.prototype.readInt32 = function() {
     return this.readByte() | (this.readByte() << 8) | (this.readByte() << 16) | (this.readByte() << 24);
+};
+
+/**
+ * Read an unsigned 32 bit integer from this binary buffer
+ * @returns {Number} An unsigned 32 bit integer
+ */
+BinBuffer.prototype.readUint32 = function() {
+    let signed = this.readInt32();
+
+    if (signed < 0)
+        return 0x80000000 + (signed & 0x7FFFFFFF);
+
+    return signed;
 };
 
 /**
