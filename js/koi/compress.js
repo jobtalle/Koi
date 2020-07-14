@@ -8,6 +8,80 @@ const Compress = function(source) {
 };
 
 /**
+ * Compress the data
+ * @returns {Number[]} The compressed byte array
+ */
+Compress.prototype.compress = function() {
+    const dict = {};
+    const indices = [];
+    let maxIndex = -1;
+
+    for (let i = 0; i <= 0xFF; ++i)
+        dict[String.fromCharCode(i)] = i;
+
+    let word = "";
+    let dictSize = 256;
+
+    for (let i = 0, length = this.source.length; i < length; ++i) {
+        let curChar = String.fromCharCode(this.source[i]);
+        let joinedWord = word + curChar;
+
+        if (dict.hasOwnProperty(joinedWord))
+            word = joinedWord;
+        else {
+            const dictIndex = dict[word];
+
+            if (dictIndex > maxIndex)
+                maxIndex = dictIndex;
+
+            indices.push(dictIndex);
+            dict[joinedWord] = dictSize++;
+            word = curChar;
+        }
+    }
+
+    if (word !== "")
+        indices.push(dict[word]);
+
+    return this.indicesToBytes(indices, maxIndex);
+};
+
+/**
+ * Decompress the data
+ * @returns {Number[]} The decompressed byte array
+ */
+Compress.prototype.decompress = function() {
+    const indices = this.bytesToIndices(this.source);
+    const dict = {};
+    const bytes = [indices[0]];
+
+    for (let i = 0; i <= 0xFF; ++i)
+        dict[i] = String.fromCharCode(i);
+
+    let word = String.fromCharCode(indices[0]);
+    let entry = "";
+    let dictSize = 256;
+
+    for (let i = 1, length = indices.length; i < length; ++i) {
+        let curIndex = indices[i];
+
+        if (dict[curIndex] !== undefined)
+            entry = dict[curIndex];
+        else
+            entry = word + word[0];
+
+        for (let entryIndex = 0, entryLength = entry.length; entryIndex < entryLength; ++entryIndex)
+            bytes.push(entry.charCodeAt(entryIndex));
+
+        dict[dictSize++] = word + entry[0];
+
+        word = entry;
+    }
+
+    return bytes;
+};
+
+/**
  * Convert an array of indices to an array of bytes
  * @param {Number[]} indices An array of indices
  * @param {Number} maxIndex The highest number in the given index array
@@ -80,81 +154,4 @@ Compress.prototype.bytesToIndices = function(bytes) {
     }
 
     return indices;
-};
-
-/**
- * Compress the data
- * @returns {Number[]} The compressed byte array
- */
-Compress.prototype.compress = function() {
-    const dict = {};
-    const indices = [];
-    let maxIndex = -1;
-
-    for (let i = 0; i <= 0xFF; ++i)
-        dict[String.fromCharCode(i)] = i;
-
-    let word = "";
-    let dictSize = 256;
-
-    for (let i = 0, length = this.source.length; i < length; ++i) {
-        let curChar = String.fromCharCode(this.source[i]);
-        let joinedWord = word + curChar;
-
-        if (dict.hasOwnProperty(joinedWord))
-            word = joinedWord;
-        else {
-            const dictIndex = dict[word];
-
-            if (dictIndex > maxIndex)
-                maxIndex = dictIndex;
-
-            indices.push(dictIndex);
-            dict[joinedWord] = dictSize++;
-            word = curChar;
-        }
-    }
-
-    if (word !== "")
-        indices.push(dict[word]);
-
-    return this.indicesToBytes(indices, maxIndex);
-};
-
-/**
- * Decompress the data
- * @returns {Number[]} The decompressed byte array
- */
-Compress.prototype.decompress = function() {
-    const indices = this.bytesToIndices(this.source);
-    const dict = {};
-    const bytes = [indices[0]];
-
-    for (let i = 0; i <= 0xFF; ++i)
-        dict[i] = String.fromCharCode(i);
-
-    let word = String.fromCharCode(indices[0]);
-    let result = word;
-    let entry = "";
-    let dictSize = 256;
-
-    for (let i = 1, length = indices.length; i < length; ++i) {
-        let curIndex = indices[i];
-
-        if (dict[curIndex] !== undefined)
-            entry = dict[curIndex];
-        else
-            entry = word + word[0];
-
-        result += entry;
-
-        for (let entryIndex = 0, entryLength = entry.length; entryIndex < entryLength; ++entryIndex)
-            bytes.push(entry.charCodeAt(entryIndex));
-
-        dict[dictSize++] = word + entry[0];
-
-        word = entry;
-    }
-
-    return bytes;
 };
