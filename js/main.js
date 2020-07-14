@@ -17,43 +17,6 @@ gl.getExtension("OES_element_index_uint");
 const sessionData = window["localStorage"].getItem("session");
 let session = new Session(); // TODO: Make this const, it's variable for debugging only
 
-// const c = new Compress([]);
-// const indices = [301, 301];
-// console.log(indices);
-// const bytes = c.indicesToBytes(indices, 1000);
-// console.log(bytes);
-// const back = c.bytesToIndices(bytes);
-// console.log(back);
-
-const testData = `
-A string to compress to a compressed string, with a number of test symbols!
-The string contains several repetitions and repetitions and repetitions.
-The repetitions should compress well!
-This only works if the string contains enough repetitions though.
-It works on a byte per byte level.
-A string with many repetitions and repetitive characters compresses best. compressed`;
-const testBytes = [];
-
-for (let i = 0; i < testData.length; ++i)
-    testBytes.push(testData.charCodeAt(i));
-
-console.log(testBytes);
-
-const compressed = new Compress(testBytes).compress();
-
-console.log(compressed);
-
-const decompressed = new Compress(compressed).decompress();
-
-console.log(decompressed);
-
-let decompressedData = "";
-
-for (let i = 0; i < decompressed.length; ++i)
-    decompressedData += String.fromCharCode(decompressed[i]);
-
-console.log(decompressedData);
-
 // Retrieve last session if it exists
 if (sessionData) {
     const buffer = new BinBuffer();

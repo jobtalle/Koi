@@ -13,7 +13,7 @@ const BinBuffer = function(bytes = []) {
  * @returns {String} The string
  */
 BinBuffer.prototype.toString = function() {
-    return btoa(String.fromCharCode(...new Uint8Array(this.bytes)));
+    return btoa(String.fromCharCode(...new Compress(this.bytes).compress()));
 };
 
 /**
@@ -21,7 +21,7 @@ BinBuffer.prototype.toString = function() {
  * @param {String} string A base64 string
  */
 BinBuffer.prototype.fromString = function(string) {
-    this.bytes = atob(string).split("").map(c => c.charCodeAt(0));
+    this.bytes = new Compress(atob(string).split("").map(c => c.charCodeAt(0))).decompress();
 };
 
 /**
