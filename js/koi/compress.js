@@ -23,11 +23,11 @@ Compress.prototype.compress = function() {
     let dictSize = 256;
 
     for (let i = 0, length = this.source.length; i < length; ++i) {
-        let curChar = String.fromCharCode(this.source[i]);
-        let joinedWord = word + curChar;
+        const character = String.fromCharCode(this.source[i]);
+        const nextWord = word + character;
 
-        if (dict.hasOwnProperty(joinedWord))
-            word = joinedWord;
+        if (dict.hasOwnProperty(nextWord))
+            word = nextWord;
         else {
             const dictIndex = dict[word];
 
@@ -35,8 +35,8 @@ Compress.prototype.compress = function() {
                 maxIndex = dictIndex;
 
             indices.push(dictIndex);
-            dict[joinedWord] = dictSize++;
-            word = curChar;
+            dict[nextWord] = dictSize++;
+            word = character;
         }
     }
 
@@ -63,10 +63,10 @@ Compress.prototype.decompress = function() {
     let dictSize = 256;
 
     for (let i = 1, length = indices.length; i < length; ++i) {
-        let curIndex = indices[i];
+        let index = indices[i];
 
-        if (dict[curIndex] !== undefined)
-            entry = dict[curIndex];
+        if (dict[index] !== undefined)
+            entry = dict[index];
         else
             entry = word + word[0];
 
