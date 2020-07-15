@@ -52,15 +52,14 @@ Compress.prototype.compress = function() {
  */
 Compress.prototype.decompress = function() {
     const indices = this.bytesToIndices(this.source);
-    const dict = {};
+    const dict = [];
     const bytes = [indices[0]];
 
     for (let i = 0; i <= 0xFF; ++i)
-        dict[i] = String.fromCharCode(i);
+        dict.push(String.fromCharCode(i));
 
     let word = String.fromCharCode(indices[0]);
     let entry = "";
-    let dictSize = 256;
 
     for (let i = 1, length = indices.length; i < length; ++i) {
         let index = indices[i];
@@ -73,7 +72,7 @@ Compress.prototype.decompress = function() {
         for (let entryIndex = 0, entryLength = entry.length; entryIndex < entryLength; ++entryIndex)
             bytes.push(entry.charCodeAt(entryIndex));
 
-        dict[dictSize++] = word + entry[0];
+        dict.push(word + entry[0]);
 
         word = entry;
     }
