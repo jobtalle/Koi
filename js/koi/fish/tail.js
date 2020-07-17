@@ -14,13 +14,20 @@ const Tail = function(length) {
 Tail.prototype.DEPTH = .15;
 Tail.prototype.SPRING = .55;
 Tail.prototype.SHIFT = .8;
+Tail.prototype.LENGTH_MIN = Math.fround(.1);
+Tail.prototype.LENGTH_MAX = Math.fround(.6);
 
 /**
  * Deserialize a tail
  * @param {BinBuffer} buffer The buffer to deserialize from
  */
 Tail.deserialize = function(buffer) {
-    return new Tail(buffer.readFloat());
+    const length = buffer.readFloat();
+
+    if (!(length >= Tail.prototype.LENGTH_MIN && length <= Tail.prototype.LENGTH_MAX))
+        throw -1;
+
+    return new Tail(length);
 };
 
 /**
