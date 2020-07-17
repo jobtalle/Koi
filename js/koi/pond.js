@@ -13,12 +13,26 @@ const Pond = function(constraint) {
  * @param {BinBuffer} buffer A buffer to serialize to
  */
 Pond.prototype.serialize = function(buffer) {
-    buffer.writeUint16(this.fishes.length);
+    const relativePositions = new Array(this.fishes.length);
+    let validFishes = 0;
 
-    for (const fish of this.fishes) {
-        this.constraint.getRelativePosition(fish.position).serialize(buffer);
+    for (let fish = 0; fish < this.fishes.length; ++fish) {
+        const position = this.constraint.getRelativePosition(this.fishes[fish].position);
 
-        fish.serialize(buffer);
+        if (position)
+            ++validFishes;
+
+        relativePositions[fish] = position;
+    }
+
+    buffer.writeUint16(validFishes);
+
+    for (let fish = 0; fish < this.fishes.length; ++fish) {
+        if (relativePositions[fish]) {
+            relativePositions[fish].serialize(buffer);
+
+            this.fishes[fish].serialize(buffer);
+        }
     }
 };
 

@@ -42,7 +42,7 @@ ConstraintArcPath.prototype.deserializeRelativePosition = function(buffer) {
 /**
  * Get the relative position of a position
  * @param {Vector2} position A position
- * @returns {ConstraintArcPathPosition} A relative position
+ * @returns {ConstraintArcPathPosition} A relative position, or null if the position could not be constrained
  */
 ConstraintArcPath.prototype.getRelativePosition = function(position) {
     for (let arc = 0; arc < this.arcs.length; ++arc) {
@@ -50,16 +50,17 @@ ConstraintArcPath.prototype.getRelativePosition = function(position) {
         let dy = position.y - this.arcs[arc].center.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        dx /= distance;
-        dy /= distance;
+        if (dx * this.arcs[arc].direction.x + dy * this.arcs[arc].direction.y >= this.arcs[arc].cone * distance) {
+            const radius = (distance - (this.arcs[arc].radius - this.width * .5)) / this.width;
+            const progress = Math.acos((
+                dx * Math.cos(this.arcs[arc].start) +
+                dy * Math.sin(this.arcs[arc].start)) / distance) / this.arcs[arc].radians;
 
-        if (arc === this.arcs.length - 1 ||
-            dx * this.arcs[arc].direction.x + dy * this.arcs[arc].direction.y >= this.arcs[arc].cone)
-            return new ConstraintArcPathPosition(
-                arc,
-                (distance - (this.arcs[arc].radius - this.width * .5)) / this.width,
-                Math.acos(dx * Math.cos(this.arcs[arc].start) + dy * Math.sin(this.arcs[arc].start)) / this.arcs[arc].radians);
+            return new ConstraintArcPathPosition(arc, radius, progress);
+        }
     }
+
+    return null;
 };
 
 /**

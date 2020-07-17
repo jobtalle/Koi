@@ -20,7 +20,7 @@ ConstraintArcPathPosition.deserialize = function(buffer) {
     const index = buffer.readUint8();
     const radius = buffer.readFloat();
 
-    if (!(radius >= 0 && radius <= 2))
+    if (!(radius >= -1 && radius <= 2))
         throw -1;
 
     const progress = buffer.readFloat();
