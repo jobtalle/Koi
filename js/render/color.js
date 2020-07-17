@@ -20,6 +20,30 @@ Color.BLACK = new Color(0, 0, 0);
 Color.WHITE = new Color(1, 1, 1);
 
 /**
+ * Deserialize a color
+ * @param {BinBuffer} buffer A buffer to deserialize from
+ */
+Color.deserialize = function(buffer) {
+    return new Color(
+        buffer.readFloat(),
+        buffer.readFloat(),
+        buffer.readFloat(),
+        buffer.readFloat());
+};
+
+/**
+ * Serialize this color
+ * @param {BinBuffer} buffer A buffer to serialize to
+ */
+Color.prototype.serialize = function(buffer) {
+    // TODO: Probably not necessary when fish colors are stored as gradient locations
+    buffer.writeFloat(this.r);
+    buffer.writeFloat(this.g);
+    buffer.writeFloat(this.b);
+    buffer.writeFloat(this.a);
+};
+
+/**
  * Make a copy of this color
  * @returns {Color} A copy of the color
  */

@@ -4,7 +4,7 @@
  * @constructor
  */
 const PatternBase = function(color) {
-    this.color = color;
+    this.color = color; // TODO: Use gradient location instead
 };
 
 PatternBase.prototype.SHADER_VERTEX = `#version 100
@@ -21,6 +21,22 @@ void main() {
   gl_FragColor = vec4(color, 1.0);
 }
 `;
+
+/**
+ * Deserialize a base pattern
+ * @param {BinBuffer} buffer A buffer to deserialize from
+ */
+PatternBase.deserialize = function(buffer) {
+    return new PatternBase(Color.deserialize(buffer));
+};
+
+/**
+ * Serialize this base pattern
+ * @param {BinBuffer} buffer A buffer to serialize to
+ */
+PatternBase.prototype.serialize = function(buffer) {
+    this.color.serialize(buffer);
+};
 
 /**
  * Configure this pattern to a shader

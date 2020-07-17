@@ -8,7 +8,7 @@
  */
 const PatternSpots = function(scale, color, anchor, x) {
     this.scale = scale;
-    this.color = color;
+    this.color = color; // TODO: Use gradient location
     this.anchor = anchor;
     this.x = x;
 };
@@ -49,6 +49,29 @@ void main() {
   gl_FragColor = vec4(color, 1.0);
 }
 `;
+
+/**
+ * Deserialize a spots pattern
+ * @param {BinBuffer} buffer The buffer to deserialize from
+ */
+PatternSpots.deserialize = function(buffer) {
+    return new PatternSpots(
+        buffer.readFloat(),
+        Color.deserialize(buffer),
+        new Vector3().deserialize(buffer),
+        new Vector3().deserialize(buffer));
+};
+
+/**
+ * Serialize this pattern
+ * @param {BinBuffer} buffer The buffer to serialize to
+ */
+PatternSpots.prototype.serialize = function(buffer) {
+    buffer.writeFloat(this.scale);
+    this.color.serialize(buffer);
+    this.anchor.serialize(buffer);
+    this.x.serialize(buffer);
+};
 
 /**
  * Get the z direction vector, which depends on the X direction vector

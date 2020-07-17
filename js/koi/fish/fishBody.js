@@ -4,15 +4,15 @@
  * @param {Fin[]} fins The fins
  * @param {Tail} tail The tail
  * @param {Number} length The body length
- * @param {Number} thickness The body thickness
+ * @param {Number} radius The body radius
  * @constructor
  */
-const FishBody = function(pattern, fins, tail, length, thickness) {
+const FishBody = function(pattern, fins, tail, length, radius) {
     this.pattern = pattern;
     this.fins = fins;
     this.tail = tail;
     this.length = length;
-    this.radius = thickness * .5;
+    this.radius = radius;
     this.spine = new Array(Math.ceil(length / this.RESOLUTION));
     this.tailOffset = this.spine.length - 1;
     this.finGroups = this.assignFins(fins, this.spine.length);
@@ -29,7 +29,7 @@ FishBody.prototype.SPRING_START = .9;
 FishBody.prototype.SPRING_END = .65;
 FishBody.prototype.SPRING_POWER = 1.7;
 FishBody.prototype.SWIM_AMPLITUDE = 11;
-FishBody.prototype.SWIM_SPEED = 6.5;
+FishBody.prototype.SWIM_SPEED = 6;
 FishBody.prototype.SPEED_SWING_THRESHOLD = .01;
 FishBody.prototype.SPEED_WAVE_THRESHOLD = .055;
 FishBody.prototype.OVERLAP_PADDING = 1.8;
@@ -45,19 +45,7 @@ FishBody.prototype.FIN_PHASE_SPEED = .4;
  * @param {Atlas} atlas The atlas
  */
 FishBody.deserialize = function(buffer, atlas) {
-    const random = new Random(); // TODO: Debug only
-    const pattern = new Pattern(
-        new PatternBase(Color.fromCSS("fish-base")),
-        [
-            new PatternSpots(
-                1.5,
-                Color.fromCSS("fish-spots-orange"),
-                new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),
-                new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()
-            )
-        ],
-        new PatternShapeBody(0.6, 0.7),
-        new PatternShapeFin());
+    const pattern = Pattern.deserialize(buffer);
 
     atlas.write(pattern);
 
@@ -69,9 +57,9 @@ FishBody.deserialize = function(buffer, atlas) {
     return new FishBody(
         pattern,
         fins,
-        new Tail(.3),
-        1.2,
-        .3);
+        Tail.deserialize(buffer),
+        buffer.readFloat(),
+        buffer.readFloat());
 };
 
 /**
@@ -79,10 +67,17 @@ FishBody.deserialize = function(buffer, atlas) {
  * @param {BinBuffer} buffer A buffer to serialize to
  */
 FishBody.prototype.serialize = function(buffer) {
+    this.pattern.serialize(buffer);
+
     buffer.writeUint8(this.fins.length);
 
     for (const fin of this.fins)
         fin.serialize(buffer);
+
+    this.tail.serialize(buffer);
+
+    buffer.writeFloat(this.length);
+    buffer.writeFloat(this.radius);
 };
 
 /**

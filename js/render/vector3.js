@@ -12,6 +12,29 @@ const Vector3 = function(x = 0, y = 0, z = 0) {
 };
 
 /**
+ * Serialize this vector
+ * @param {BinBuffer} buffer A buffer to serialize to
+ */
+Vector3.prototype.serialize = function(buffer) {
+    buffer.writeFloat(this.x);
+    buffer.writeFloat(this.y);
+    buffer.writeFloat(this.z);
+};
+
+/**
+ * Deserialize this vector
+ * @param {BinBuffer} buffer A buffer to deserialize from
+ * @returns {Vector3} This vector
+ */
+Vector3.prototype.deserialize = function(buffer) {
+    this.x = buffer.readFloat();
+    this.y = buffer.readFloat();
+    this.z = buffer.readFloat();
+
+    return this;
+};
+
+/**
  * Add a vector to this vector
  * @param {Vector3} other A vector
  * @returns {Vector3} The modified vector

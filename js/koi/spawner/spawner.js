@@ -49,7 +49,7 @@ Spawner.prototype.update = function(timeStep, atlas, random) {
                     ],
                     new Tail(.3),
                     1.2,
-                    .3),
+                    .15),
                 this.constellation.spawnPoint,
                 this.constellation.spawnDirection,
                 .03));

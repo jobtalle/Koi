@@ -18,6 +18,7 @@ BinBuffer.prototype.toString = function() {
     const compressed = new Compress(this.bytes).compress();
 
     console.log("Compression ratio: " + (compressed.length / this.bytes.length));
+    console.log("Compressed size: " + (compressed.length * .001) + "Kb");
 
     return btoa(String.fromCharCode(...compressed));
 };

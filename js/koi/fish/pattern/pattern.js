@@ -15,6 +15,48 @@ const Pattern = function(base, layers, shapeBody, shapeFin) {
 };
 
 /**
+ * Deserialize a pattern
+ * @param {BinBuffer} buffer The buffer to deserialize from
+ */
+Pattern.deserialize = function(buffer) {
+    const layers = [];
+    let layerID;
+
+    while (layerID = buffer.readUint8()) {
+        switch (layerID) {
+            case PatternSpots.prototype.ID:
+                layers.push(PatternSpots.deserialize(buffer));
+
+                break;
+        }
+    }
+
+    return new Pattern(
+        PatternBase.deserialize(buffer),
+        layers,
+        PatternShapeBody.deserialize(buffer),
+        PatternShapeFin.deserialize(buffer));
+};
+
+/**
+ * Serialize this pattern
+ * @param {BinBuffer} buffer A buffer to serialize to
+ */
+Pattern.prototype.serialize = function(buffer) {
+    for (const layer of this.layers) {
+        buffer.writeUint8(layer.ID);
+
+        layer.serialize(buffer);
+    }
+
+    buffer.writeUint8(0);
+
+    this.base.serialize(buffer);
+    this.shapeBody.serialize(buffer);
+    this.shapeFin.serialize(buffer);
+};
+
+/**
  * Free all resources maintained by this pattern
  * @param {Atlas} atlas The texture atlas
  */

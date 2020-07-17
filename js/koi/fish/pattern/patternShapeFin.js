@@ -34,6 +34,22 @@ void main() {
 `;
 
 /**
+ * Deserialize this pattern
+ * @param {BinBuffer} buffer A buffer to deserialize from
+ */
+PatternShapeFin.deserialize = function(buffer) {
+    return new PatternShapeFin();
+};
+
+/**
+ * Serialize this pattern
+ * @param {BinBuffer} buffer A buffer to serialize to
+ */
+PatternShapeFin.prototype.serialize = function(buffer) {
+
+};
+
+/**
  * Configure this pattern to a shader
  * @param {WebGLRenderingContext} gl A webGL context
  * @param {Shader} program A shader program created from this patterns' shaders

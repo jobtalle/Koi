@@ -16,6 +16,22 @@ Tail.prototype.SPRING = .55;
 Tail.prototype.SHIFT = .8;
 
 /**
+ * Deserialize a tail
+ * @param {BinBuffer} buffer The buffer to deserialize from
+ */
+Tail.deserialize = function(buffer) {
+    return new Tail(buffer.readFloat());
+};
+
+/**
+ * Serialize the tail
+ * @param {BinBuffer} buffer The buffer to serialize to
+ */
+Tail.prototype.serialize = function(buffer) {
+    buffer.writeFloat(this.length);
+};
+
+/**
  * Connect the tail to a spine
  * @param {Vector2[]} spine The spine
  * @returns {Number} The index of the last unused vertebra

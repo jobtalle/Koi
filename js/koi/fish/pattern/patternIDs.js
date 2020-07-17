@@ -1,0 +1,1 @@
+PatternSpots.prototype.ID = 1;

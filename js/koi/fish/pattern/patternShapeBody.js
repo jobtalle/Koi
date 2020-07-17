@@ -50,6 +50,25 @@ void main() {
 `;
 
 /**
+ * Deserialize this pattern
+ * @param {BinBuffer} buffer A buffer to deserialize from
+ */
+PatternShapeBody.deserialize = function(buffer) {
+    return new PatternShapeBody(
+        buffer.readFloat(),
+        buffer.readFloat());
+};
+
+/**
+ * Serialize this pattern
+ * @param {BinBuffer} buffer The buffer to serialize to
+ */
+PatternShapeBody.prototype.serialize = function(buffer) {
+    buffer.writeFloat(this.centerPower);
+    buffer.writeFloat(this.radiusPower);
+};
+
+/**
  * Sample the shapeBody thickness ratio
  * @param {Number} x The X position to sample at in the range [0, 1]
  * @returns {Number} The thickness in the range [0, 1]
