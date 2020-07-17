@@ -178,13 +178,15 @@ FishBody.prototype.atPosition = function(x, y) {
  * Initialize the spine
  * @param {Vector2} head The head position
  * @param {Vector2} direction The initial body direction
+ * @param {Number} size The fish size in the range [0, 1]
  */
-FishBody.prototype.initializeSpine = function(head, direction) {
+FishBody.prototype.initializeSpine = function(head, direction, size) {
     this.spine[0] = head.copy();
     this.spinePrevious[0] = head.copy();
 
     for (let vertebra = 1; vertebra < this.spine.length; ++vertebra) {
-        this.spine[vertebra] = this.spine[vertebra - 1].copy().subtract(direction.copy().multiply(this.spacing));
+        this.spine[vertebra] = this.spine[vertebra - 1].copy().subtract(direction.copy().multiply(
+            this.spacing * size));
         this.spinePrevious[vertebra] = this.spine[vertebra].copy();
 
         if (this.finGroups[vertebra]) for (const fin of this.finGroups[vertebra])

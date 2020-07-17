@@ -22,7 +22,8 @@ const Fish = function(body, position, direction, growthSpeed, age = 0) {
     this.age = age;
     this.size = 0;
 
-    this.body.initializeSpine(position, direction);
+    this.updateSize();
+    this.body.initializeSpine(position, direction, this.size);
 };
 
 Fish.prototype.FORCE_CONSTRAINT = .6;
