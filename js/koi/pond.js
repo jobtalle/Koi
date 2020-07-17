@@ -15,8 +15,11 @@ const Pond = function(constraint) {
 Pond.prototype.serialize = function(buffer) {
     buffer.writeUint16(this.fishes.length);
 
-    for (const fish of this.fishes)
+    for (const fish of this.fishes) {
+        this.constraint.getRelativePosition(fish.position).serialize(buffer);
+
         fish.serialize(buffer);
+    }
 };
 
 /**
@@ -26,7 +29,10 @@ Pond.prototype.serialize = function(buffer) {
  */
 Pond.prototype.deserialize = function(buffer, atlas) {
     for (let fish = 0, fishCount = buffer.readUint16(); fish < fishCount; ++fish)
-        this.fishes.push(Fish.deserialize(buffer, atlas));
+        this.fishes.push(Fish.deserialize(
+            buffer,
+            this.constraint.getAbsolutePosition(this.constraint.deserializeRelativePosition(buffer)),
+            atlas));
 };
 
 /**

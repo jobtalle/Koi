@@ -10,3 +10,25 @@ const ConstraintArcPathPosition = function(index, radius, progress) {
     this.radius = radius;
     this.progress = progress;
 };
+
+/**
+ * Deserialize this position
+ * @param buffer A buffer to deserialize from
+ * @returns {ConstraintArcPathPosition} The deserialized position
+ */
+ConstraintArcPathPosition.deserialize = function(buffer) {
+    return new ConstraintArcPathPosition(
+        buffer.readUint8(),
+        buffer.readFloat(),
+        buffer.readFloat());
+};
+
+/**
+ * Serialize this position
+ * @param {BinBuffer} buffer A buffer to serialize to
+ */
+ConstraintArcPathPosition.prototype.serialize = function(buffer) {
+    buffer.writeUint8(this.index);
+    buffer.writeFloat(this.radius);
+    buffer.writeFloat(this.progress);
+};

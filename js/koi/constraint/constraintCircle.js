@@ -15,6 +15,15 @@ ConstraintCircle.prototype = Object.create(Constraint.prototype);
 ConstraintCircle.prototype.DEPTH = 1;
 
 /**
+ * Deserialize a relative position
+ * @param {BinBuffer} buffer A buffer to deserialize from
+ * @returns {ConstraintCirclePosition} The relative position
+ */
+ConstraintCircle.prototype.deserializeRelativePosition = function(buffer) {
+    return ConstraintCirclePosition.deserialize(buffer);
+};
+
+/**
  * Get the relative position of a position
  * @param {Vector2} position A position
  * @returns {ConstraintCirclePosition} A relative position

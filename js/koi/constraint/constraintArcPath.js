@@ -31,6 +31,15 @@ ConstraintArcPath.Arc = function(center, radius, start, end) {
 };
 
 /**
+ * Deserialize a relative position
+ * @param {BinBuffer} buffer A buffer to deserialize from
+ * @returns {ConstraintArcPathPosition} The relative position
+ */
+ConstraintArcPath.prototype.deserializeRelativePosition = function(buffer) {
+    return ConstraintArcPathPosition.deserialize(buffer);
+};
+
+/**
  * Get the relative position of a position
  * @param {Vector2} position A position
  * @returns {ConstraintArcPathPosition} A relative position

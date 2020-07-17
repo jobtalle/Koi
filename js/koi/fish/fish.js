@@ -62,13 +62,14 @@ Fish.prototype.SIZE_MAX = .99;
 /**
  * Deserialize a fish
  * @param {BinBuffer} buffer A buffer to deserialize from
+ * @param {Vector2} position The fish position
  * @param {Atlas} atlas The atlas
  * @returns {Fish} A fish
  */
-Fish.deserialize = function(buffer, atlas) {
+Fish.deserialize = function(buffer, position, atlas) {
     const fish = new Fish(
         FishBody.deserialize(buffer, atlas),
-        new Vector2().deserialize(buffer),
+        position,
         new Vector2().deserialize(buffer),
         buffer.readFloat(),
         buffer.readFloat());
@@ -84,8 +85,6 @@ Fish.deserialize = function(buffer, atlas) {
  */
 Fish.prototype.serialize = function(buffer) {
     this.body.serialize(buffer);
-
-    this.position.serialize(buffer);
     this.direction.serialize(buffer);
 
     buffer.writeFloat(this.growthSpeed);
