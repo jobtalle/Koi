@@ -25,10 +25,6 @@ Session.prototype.makeKoi = function(systems) {
     else for (let i = 0; i < 1500; ++i)
         koi.update();
 
-    // TODO: Debug warp until deserialization works
-    for (let i = 0; i < 1500; ++i)
-        koi.update();
-
     return koi;
 };
 
@@ -54,9 +50,9 @@ Session.prototype.serialize = function(koi) {
 
     this.random.serialize(buffer);
 
-    koi.serialize(buffer);
-
     buffer.writeUint32(this.environmentSeed);
+
+    koi.serialize(buffer);
 
     return buffer;
 };

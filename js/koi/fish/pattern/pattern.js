@@ -14,6 +14,8 @@ const Pattern = function(base, layers, shapeBody, shapeFin) {
     this.region = null;
 };
 
+
+
 /**
  * Free all resources maintained by this pattern
  * @param {Atlas} atlas The texture atlas

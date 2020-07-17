@@ -23,6 +23,27 @@ Constellation.prototype.FISH_PER_AREA = 1;
 Constellation.prototype.Y_SCALE = 1.1;
 
 /**
+ * Serialize this constellation
+ * @param {BinBuffer} buffer A buffer to serialize to
+ */
+Constellation.prototype.serialize = function(buffer) {
+    this.big.serialize(buffer);
+    this.small.serialize(buffer);
+    this.river.serialize(buffer);
+};
+
+/**
+ * Deserialize this constellation
+ * @param {BinBuffer} buffer A buffer to deserialize from
+ * @param {Atlas} atlas The atlas
+ */
+Constellation.prototype.deserialize = function(buffer, atlas) {
+    this.big.deserialize(buffer, atlas);
+    this.small.deserialize(buffer, atlas);
+    this.river.deserialize(buffer, atlas);
+};
+
+/**
  * Get the X position in meters
  * @param {Number} x The X position in pixels
  * @param {Number} scale The scale

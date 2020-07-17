@@ -10,6 +10,27 @@ const Vector2 = function(x = 0, y = 0) {
 };
 
 /**
+ * Serialize this vector
+ * @param {BinBuffer} buffer A buffer to serialize to
+ */
+Vector2.prototype.serialize = function(buffer) {
+    buffer.writeFloat(this.x);
+    buffer.writeFloat(this.y);
+};
+
+/**
+ * Deserialize this vector
+ * @param {BinBuffer} buffer A buffer to deserialize from
+ * @returns {Vector2} This vector
+ */
+Vector2.prototype.deserialize = function(buffer) {
+    this.x = buffer.readFloat();
+    this.y = buffer.readFloat();
+
+    return this;
+};
+
+/**
  * Copy this vector
  * @returns {Vector2} A copy of the vector
  */

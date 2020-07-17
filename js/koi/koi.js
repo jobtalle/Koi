@@ -49,7 +49,7 @@ Koi.prototype.COLOR_BACKGROUND = Color.fromCSS("earth");
  * @param {BinBuffer} buffer A buffer to serialize to
  */
 Koi.prototype.serialize = function(buffer) {
-
+    this.constellation.serialize(buffer);
 };
 
 /**
@@ -57,7 +57,7 @@ Koi.prototype.serialize = function(buffer) {
  * @param {BinBuffer} buffer A buffer to deserialize from
  */
 Koi.prototype.deserialize = function(buffer) {
-
+    this.constellation.deserialize(buffer, this.atlas);
 };
 
 /**

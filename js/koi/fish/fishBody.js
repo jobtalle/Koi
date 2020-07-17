@@ -40,6 +40,47 @@ FishBody.prototype.WAVE_TURBULENCE = .4;
 FishBody.prototype.FIN_PHASE_SPEED = .4;
 
 /**
+ * Deserialize a fish body
+ * @param {BinBuffer} buffer A buffer to deserialize from
+ * @param {Atlas} atlas The atlas
+ */
+FishBody.deserialize = function(buffer, atlas) {
+    const random = new Random(); // TODO: Debug only
+    const pattern = new Pattern(
+        new PatternBase(Color.fromCSS("fish-base")),
+        [
+            new PatternSpots(
+                1.5,
+                Color.fromCSS("fish-spots-orange"),
+                new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),
+                new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()
+            )
+        ],
+        new PatternShapeBody(0.6, 0.7),
+        new PatternShapeFin());
+
+    atlas.write(pattern);
+
+    return new FishBody(
+        pattern,
+        [
+            new Fin(.2, 1.4, 1), new Fin(.2, 1.4, -1),
+            new Fin(.5, .8, 1), new Fin(.5, .8, -1)
+        ],
+        new Tail(.3),
+        1.2,
+        .3);
+};
+
+/**
+ * Serialize this fish body
+ * @param {BinBuffer} buffer A buffer to serialize to
+ */
+FishBody.prototype.serialize = function(buffer) {
+    //
+};
+
+/**
  * Assign fins to an array matching the vertebrae
  * @param {Fin[]} fins All fins
  * @param {Number} spineLength The length of the spine

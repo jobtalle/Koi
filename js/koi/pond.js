@@ -9,6 +9,27 @@ const Pond = function(constraint) {
 };
 
 /**
+ * Serialize this pond
+ * @param {BinBuffer} buffer A buffer to serialize to
+ */
+Pond.prototype.serialize = function(buffer) {
+    buffer.writeUint16(this.fishes.length);
+
+    for (const fish of this.fishes)
+        fish.serialize(buffer);
+};
+
+/**
+ * Deserialize this pond
+ * @param {BinBuffer} buffer A buffer to deserialize from
+ * @param {Atlas} atlas The atlas
+ */
+Pond.prototype.deserialize = function(buffer, atlas) {
+    for (let fish = 0, fishCount = buffer.readUint16(); fish < fishCount; ++fish)
+        this.fishes.push(Fish.deserialize(buffer, atlas));
+};
+
+/**
  * Update the atlas, write all fish textures again
  * @param {Atlas} atlas The atlas
  */

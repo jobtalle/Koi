@@ -59,6 +59,41 @@ Fish.prototype.SIZE_MIN = .05;
 Fish.prototype.SIZE_MAX = .99;
 
 /**
+ * Deserialize a fish
+ * @param {BinBuffer} buffer A buffer to deserialize from
+ * @param {Atlas} atlas The atlas
+ * @returns {Fish} A fish
+ */
+Fish.deserialize = function(buffer, atlas) {
+    const fish = new Fish(
+        FishBody.deserialize(buffer, atlas),
+        new Vector2().deserialize(buffer),
+        new Vector2().deserialize(buffer),
+        buffer.readFloat(),
+        buffer.readFloat());
+
+    fish.speed = buffer.readFloat();
+
+    return fish;
+};
+
+/**
+ * Serialize this fish
+ * @param {BinBuffer} buffer A buffer to serialize to
+ */
+Fish.prototype.serialize = function(buffer) {
+    this.body.serialize(buffer);
+
+    this.position.serialize(buffer);
+    this.direction.serialize(buffer);
+
+    buffer.writeFloat(this.growthSpeed);
+    buffer.writeFloat(this.age);
+
+    buffer.writeFloat(this.speed);
+};
+
+/**
  * Move the fish to a given position
  * @param {Vector2} position The position to move to
  */
