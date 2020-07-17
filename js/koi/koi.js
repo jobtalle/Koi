@@ -33,7 +33,7 @@ const Koi = function(
     this.constellationMeshDepth = null;
     this.weather = new Weather(this.constellation, weatherState);
     this.spawner = new Spawner(this.constellation, spawnerState);
-    this.time = 0;
+    this.time = this.UPDATE_RATE;
 
     this.createRenderables();
 };
