@@ -54,7 +54,7 @@ Pond.prototype.replaceConstraint = function(constraint, atlas) {
 
     for (let fish = this.fishes.length; fish-- > 0;) {
         relativePositions[fish] = this.constraint.getRelativePosition(this.fishes[fish].position);
-
+        // TODO: Arc path positions sometimes don't translate properly!
         if (relativePositions[fish]) {
             const newPosition = constraint.getAbsolutePosition(relativePositions[fish])
 

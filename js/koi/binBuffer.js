@@ -1,10 +1,10 @@
 /**
  * A binary buffer
- * @param {Number[]} bytes An array of byte values
+ * @param {String} [string] A string to deserialize from
  * @constructor
  */
-const BinBuffer = function(bytes = []) {
-    this.bytes = bytes;
+const BinBuffer = function(string = null) {
+    this.bytes = string ? this.fromString(string) : [];
     this.at = 0;
 };
 
@@ -25,9 +25,10 @@ BinBuffer.prototype.toString = function() {
 /**
  * Get the contents of this buffer from a string
  * @param {String} string A base64 string
+ * @returns {Number[]} The bytes stored in this string
  */
 BinBuffer.prototype.fromString = function(string) {
-    this.bytes = new Compress(atob(string).split("").map(c => c.charCodeAt(0))).decompress();
+    return new Compress(atob(string).split("").map(c => c.charCodeAt(0))).decompress();
 };
 
 /**

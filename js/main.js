@@ -17,16 +17,20 @@ gl.getExtension("OES_element_index_uint");
 const sessionData = window["localStorage"].getItem("session");
 let session = new Session(); // TODO: Make this const, it's variable for debugging only
 
-// Clear saved session, the data is corrupted if deserialization fails
-window["localStorage"].removeItem("session");
+const onDeserializationError = () => {
+    window["localStorage"].removeItem("session");
+
+    location.reload();
+};
 
 // Retrieve last session if it exists
 if (sessionData) {
-    const buffer = new BinBuffer();
-
-    buffer.fromString(sessionData);
-
-    session.deserialize(buffer);
+    try {
+        session.deserialize(new BinBuffer(sessionData));
+    }
+    catch(error) {
+        onDeserializationError();
+    }
 }
 
 const systems = new Systems(gl, new Random(session.environmentSeed), canvas.width, canvas.height);
@@ -50,7 +54,13 @@ window.onresize = resize;
 
 resize();
 
-koi = session.makeKoi(systems);
+try {
+    koi = session.makeKoi(systems);
+}
+catch (error) {
+    onDeserializationError();
+}
+
 lastDate = new Date();
 
 const loop = () => {
