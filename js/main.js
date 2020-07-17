@@ -17,6 +17,9 @@ gl.getExtension("OES_element_index_uint");
 const sessionData = window["localStorage"].getItem("session");
 let session = new Session(); // TODO: Make this const, it's variable for debugging only
 
+// Clear saved session, the data is corrupted if deserialization fails
+window["localStorage"].removeItem("session");
+
 // Retrieve last session if it exists
 if (sessionData) {
     const buffer = new BinBuffer();
