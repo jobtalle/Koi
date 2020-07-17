@@ -28,16 +28,25 @@ Fin.prototype.X_SCALE = .6;
 Fin.prototype.SPRING = .4;
 Fin.prototype.PHASE_SHIFT = 2;
 Fin.prototype.DEPTH_FACTOR = .4;
+Fin.prototype.RADIUS_MIN = Math.fround(.3);
+Fin.prototype.RADIUS_MAX = Math.fround(2);
 
 /**
  * Deserialize a fin
  * @param {BinBuffer} buffer A buffer to deserialize from
  */
 Fin.deserialize = function(buffer) {
-    return new Fin(
-        buffer.readFloat(),
-        buffer.readFloat(),
-        buffer.readUint8() - 1);
+    const at = buffer.readFloat();
+
+    if (!(at >= 0 && at <= 1))
+        throw -1;
+
+    const radius = buffer.readFloat();
+
+    if (!(radius >= Fin.prototype.RADIUS_MIN && radius <= Fin.prototype.RADIUS_MAX))
+        throw -1;
+
+    return new Fin(at, radius, buffer.readUint8() - 1);
 };
 
 /**

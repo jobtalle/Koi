@@ -1,7 +1,7 @@
 /**
  * A relative position in a circle constraint
  * @param {Number} angle The angle from the constraint center to the point
- * @param {Number} distance The distance from the constraint center
+ * @param {Number} distance The distance from the constraint center in the range [0, 1]
  * @constructor
  */
 const ConstraintCirclePosition = function(angle, distance) {
@@ -15,9 +15,13 @@ const ConstraintCirclePosition = function(angle, distance) {
  * @returns {ConstraintCirclePosition} The deserialized position
  */
 ConstraintCirclePosition.deserialize = function(buffer) {
-    return new ConstraintCirclePosition(
-        buffer.readFloat(),
-        buffer.readFloat());
+    const angle = buffer.readFloat();
+    const distance = buffer.readFloat();
+
+    if (!(distance >= 0 && distance <= 2))
+        throw -1;
+
+    return new ConstraintCirclePosition(angle, distance);
 };
 
 /**

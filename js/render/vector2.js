@@ -31,6 +31,14 @@ Vector2.prototype.deserialize = function(buffer) {
 };
 
 /**
+ * A function that evaluates whether this vector is a normal vector
+ * @returns {Boolean} True if this vector is approximately a normal vector
+ */
+Vector2.prototype.isNormal = function() {
+    return Math.abs(this.length() - 1) < .01;
+};
+
+/**
  * Copy this vector
  * @returns {Vector2} A copy of the vector
  */

@@ -12,6 +12,10 @@ const PatternShapeBody = function(centerPower, radiusPower) {
 PatternShapeBody.prototype.SHADE_POWER = 1.8;
 PatternShapeBody.prototype.LIGHT_POWER = 0.5;
 PatternShapeBody.prototype.AMBIENT = 0.5;
+PatternShapeBody.prototype.CENTER_POWER_MIN = Math.fround(.1);
+PatternShapeBody.prototype.CENTER_POWER_MAX = Math.fround(2.5);
+PatternShapeBody.prototype.RADIUS_POWER_MIN = Math.fround(.2);
+PatternShapeBody.prototype.RADIUS_POWER_MAX = Math.fround(1);
 
 PatternShapeBody.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
@@ -54,9 +58,21 @@ void main() {
  * @param {BinBuffer} buffer A buffer to deserialize from
  */
 PatternShapeBody.deserialize = function(buffer) {
-    return new PatternShapeBody(
-        buffer.readFloat(),
-        buffer.readFloat());
+    const centerPower = buffer.readFloat();
+
+    if (!(
+        centerPower >= PatternShapeBody.prototype.CENTER_POWER_MIN &&
+        centerPower <= PatternShapeBody.prototype.CENTER_POWER_MAX))
+        throw - 1;
+
+    const radiusPower = buffer.readFloat();
+
+    if (!(
+        radiusPower >= PatternShapeBody.prototype.RADIUS_POWER_MIN &&
+        radiusPower <= PatternShapeBody.prototype.RADIUS_POWER_MAX))
+        throw - 1;
+
+    return new PatternShapeBody(centerPower, radiusPower);
 };
 
 /**

@@ -28,6 +28,8 @@ Pattern.deserialize = function(buffer) {
                 layers.push(PatternSpots.deserialize(buffer));
 
                 break;
+            default:
+                throw -1;
         }
     }
 

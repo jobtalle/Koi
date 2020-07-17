@@ -15,6 +15,10 @@ const PatternSpots = function(scale, color, anchor, x) {
 
 PatternSpots.prototype.UP = new Vector3(0, 1, 0);
 PatternSpots.prototype.UP_ALT = new Vector3(.1, 1, 0);
+PatternSpots.prototype.SCALE_MIN = Math.fround(0.5);
+PatternSpots.prototype.SCALE_MAX = Math.fround(5);
+PatternSpots.prototype.SPACE_LIMIT_MIN = Math.fround(-256);
+PatternSpots.prototype.SPACE_LIMIT_MAX = Math.fround(256);
 
 PatternSpots.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
@@ -55,11 +59,23 @@ void main() {
  * @param {BinBuffer} buffer The buffer to deserialize from
  */
 PatternSpots.deserialize = function(buffer) {
-    return new PatternSpots(
-        buffer.readFloat(),
-        Color.deserialize(buffer),
-        new Vector3().deserialize(buffer),
-        new Vector3().deserialize(buffer));
+    const scale = buffer.readFloat();
+
+    if (!(scale >= PatternSpots.prototype.SCALE_MIN && scale <= PatternSpots.prototype.SCALE_MAX))
+        throw -1;
+
+    const color = Color.deserialize(buffer);
+    const anchor = new Vector3().deserialize(buffer);
+
+    if (!anchor.withinLimits(PatternSpots.prototype.SPACE_LIMIT_MIN, PatternSpots.prototype.SPACE_LIMIT_MAX))
+        throw -1;
+
+    const x = new Vector3().deserialize(buffer);
+
+    if (!x.isNormal())
+        throw -1;
+
+    return new PatternSpots(scale, color, anchor, x);
 };
 
 /**

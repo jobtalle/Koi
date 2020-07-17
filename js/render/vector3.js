@@ -35,6 +35,24 @@ Vector3.prototype.deserialize = function(buffer) {
 };
 
 /**
+ * A function that evaluates whether this vector is a normal vector
+ * @returns {Boolean} True if this vector is approximately a normal vector
+ */
+Vector3.prototype.isNormal = function() {
+    return Math.abs(this.length() - 1) < .01;
+};
+
+/**
+ * Validate whether all vector components are within the given limits
+ * @param {Number} min The minimum value
+ * @param {Number} max The maximum value
+ * @returns {Boolean} True if all components are within limits
+ */
+Vector3.prototype.withinLimits = function(min, max) {
+    return this.x >= min && this.y >= min && this.z >= min && this.x <= max && this.y <= max && this.z <= max;
+};
+
+/**
  * Add a vector to this vector
  * @param {Vector3} other A vector
  * @returns {Vector3} The modified vector

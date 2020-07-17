@@ -47,7 +47,7 @@ Spawner.prototype.update = function(timeStep, atlas, random) {
                         new Fin(.2, 1.4, 1), new Fin(.2, 1.4, -1),
                         new Fin(.5, .8, 1), new Fin(.5, .8, -1)
                     ],
-                    new Tail(.3),
+                    new Tail(Fish.prototype.GROWTH_SPEED_MAX),
                     1.2,
                     .15),
                 this.constellation.spawnPoint,

@@ -38,7 +38,8 @@ Fish.prototype.NIBBLE_TIME_MAX = 40;
 Fish.prototype.NIBBLE_RADIUS = .1;
 Fish.prototype.NIBBLE_DISPLACEMENT = 0.25;
 Fish.prototype.NIBBLE_TURN_FORCE = .07;
-Fish.prototype.SPEED_MIN = .015;
+Fish.prototype.SPEED_MIN = Math.fround(.015);
+Fish.prototype.SPEED_MAX = Math.fround(.5);
 Fish.prototype.SPEED_NIBBLE = .0155;
 Fish.prototype.SPEED_SLOW = .025;
 Fish.prototype.SPEED_DROP = .06;
@@ -58,6 +59,8 @@ Fish.prototype.TURN_FOLLOW_CHANCE = .025;
 Fish.prototype.TURN_AMPLITUDE = Math.PI * .4;
 Fish.prototype.SIZE_MIN = .05;
 Fish.prototype.SIZE_MAX = .99;
+Fish.prototype.GROWTH_SPEED_MIN = Math.fround(.001);
+Fish.prototype.GROWTH_SPEED_MAX = Math.fround(.03);
 
 /**
  * Deserialize a fish
@@ -67,14 +70,28 @@ Fish.prototype.SIZE_MAX = .99;
  * @returns {Fish} A fish
  */
 Fish.deserialize = function(buffer, position, atlas) {
-    const fish = new Fish(
-        FishBody.deserialize(buffer, atlas),
-        position,
-        new Vector2().deserialize(buffer),
-        buffer.readFloat(),
-        buffer.readFloat());
+    const body = FishBody.deserialize(buffer, atlas);
+    const direction = new Vector2().deserialize(buffer);
+
+    if (!direction.isNormal())
+        throw -1;
+
+    const growthSpeed = buffer.readFloat();
+
+    if (!(growthSpeed >= Fish.prototype.GROWTH_SPEED_MIN && growthSpeed <= Fish.prototype.GROWTH_SPEED_MAX))
+        throw -1;
+
+    const age = buffer.readFloat();
+
+    if (age < 0)
+        throw -1;
+
+    const fish = new Fish(body, position, direction, growthSpeed, age);
 
     fish.speed = buffer.readFloat();
+
+    if (!(fish.speed >= Fish.prototype.SPEED_MIN && fish.speed <= Fish.prototype.SPEED_MAX))
+        throw -1;
 
     return fish;
 };
@@ -214,6 +231,16 @@ Fish.prototype.interact = function(other, random) {
 };
 
 /**
+ * Immediately constrain this fish within a constraint
+ * @param {Constraint} constraint A constraint
+ */
+Fish.prototype.constrainHard = function(constraint) {
+    this.velocity.set(constraint.normal);
+
+    constraint.constrain(this.position);
+};
+
+/**
  * Constrain the fish within its constraint
  * @param {Constraint} constraint A constraint
  * @returns {Boolean} A boolean indicating whether the fish left the scene
@@ -222,26 +249,30 @@ Fish.prototype.constrain = function(constraint) {
     const proximity = constraint.sample(this.position);
 
     if (proximity > 0) {
-        const magnitude = this.FORCE_CONSTRAINT * proximity;
+        if (proximity > 1)
+            this.constrainHard(constraint);
+        else {
+            const magnitude = this.FORCE_CONSTRAINT * proximity;
 
-        if (this.velocity.dot(constraint.normal) < 0) {
-            if (this.velocity.y * constraint.normal.x - this.velocity.x * constraint.normal.y > 0) {
-                this.velocity.x += this.speed * this.direction.y * magnitude;
-                this.velocity.y -= this.speed * this.direction.x * magnitude;
+            if (this.velocity.dot(constraint.normal) < 0) {
+                if (this.velocity.y * constraint.normal.x - this.velocity.x * constraint.normal.y > 0) {
+                    this.velocity.x += this.speed * this.direction.y * magnitude;
+                    this.velocity.y -= this.speed * this.direction.x * magnitude;
+                }
+                else {
+                    this.velocity.x -= this.speed * this.direction.y * magnitude;
+                    this.velocity.y += this.speed * this.direction.x * magnitude;
+                }
             }
             else {
-                this.velocity.x -= this.speed * this.direction.y * magnitude;
-                this.velocity.y += this.speed * this.direction.x * magnitude;
+                this.velocity.x += this.speed * constraint.normal.x * magnitude;
+                this.velocity.y += this.speed * constraint.normal.y * magnitude;
             }
-        }
-        else {
-            this.velocity.x += this.speed * constraint.normal.x * magnitude;
-            this.velocity.y += this.speed * constraint.normal.y * magnitude;
-        }
 
-        this.turnForce = 0;
+            this.turnForce = 0;
 
-        return false;
+            return false;
+        }
     }
     else if (proximity === -1)
         return true;
@@ -292,6 +323,9 @@ Fish.prototype.update = function(constraint, water, random) {
     if (this.boost) {
         --this.boost;
         this.speed += this.BOOST_POWER;
+
+        if (this.speed > this.SPEED_MAX)
+            this.speed = this.SPEED_MAX;
     }
 
     this.direction.set(this.velocity).normalize();

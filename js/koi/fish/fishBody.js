@@ -24,6 +24,12 @@ const FishBody = function(pattern, fins, tail, length, radius) {
     this.inverseSpacing = 1 / this.spacing;
 };
 
+FishBody.prototype.LENGTH_MIN = Math.fround(.5);
+FishBody.prototype.LENGTH_MAX = Math.fround(2);
+FishBody.prototype.RADIUS_MIN = Math.fround(.05);
+FishBody.prototype.RADIUS_MAX = Math.fround(.5);
+FishBody.prototype.FIN_PAIRS_MIN = 0;
+FishBody.prototype.FIN_PAIRS_MAX = 8;
 FishBody.prototype.RESOLUTION = .1;
 FishBody.prototype.SPRING_START = .9;
 FishBody.prototype.SPRING_END = .65;
@@ -51,15 +57,29 @@ FishBody.deserialize = function(buffer, atlas) {
 
     const fins = new Array(buffer.readUint8());
 
+    if (!(fins.length >= FishBody.prototype.FIN_PAIRS_MIN << 1 && fins.length <= FishBody.prototype.FIN_PAIRS_MAX << 1))
+        throw - 1;
+
     for (let fin = 0; fin < fins.length; ++fin)
         fins[fin] = Fin.deserialize(buffer);
+
+    const tail = Tail.deserialize(buffer);
+    const length = buffer.readFloat();
+
+    if (!(length >= FishBody.prototype.LENGTH_MIN && length <= FishBody.prototype.LENGTH_MAX))
+        throw -1;
+
+    const radius = buffer.readFloat();
+
+    if (!(radius >= FishBody.prototype.RADIUS_MIN && radius <= FishBody.prototype.RADIUS_MAX))
+        throw - 1;
 
     return new FishBody(
         pattern,
         fins,
-        Tail.deserialize(buffer),
-        buffer.readFloat(),
-        buffer.readFloat());
+        tail,
+        length,
+        radius);
 };
 
 /**
