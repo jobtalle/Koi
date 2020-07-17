@@ -61,12 +61,14 @@ FishBody.deserialize = function(buffer, atlas) {
 
     atlas.write(pattern);
 
+    const fins = new Array(buffer.readUint8());
+
+    for (let fin = 0; fin < fins.length; ++fin)
+        fins[fin] = Fin.deserialize(buffer);
+
     return new FishBody(
         pattern,
-        [
-            new Fin(.2, 1.4, 1), new Fin(.2, 1.4, -1),
-            new Fin(.5, .8, 1), new Fin(.5, .8, -1)
-        ],
+        fins,
         new Tail(.3),
         1.2,
         .3);
@@ -77,7 +79,10 @@ FishBody.deserialize = function(buffer, atlas) {
  * @param {BinBuffer} buffer A buffer to serialize to
  */
 FishBody.prototype.serialize = function(buffer) {
-    //
+    buffer.writeUint8(this.fins.length);
+
+    for (const fin of this.fins)
+        fin.serialize(buffer);
 };
 
 /**

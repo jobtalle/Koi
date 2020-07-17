@@ -61,6 +61,11 @@ if (gl) {
 
     try {
         koi = session.makeKoi(systems);
+
+        // TODO: Debug warp
+        if (!sessionData)
+            for (let i = 0; i < 1500; ++i)
+                koi.update();
     }
     catch (error) {
         onDeserializationError();
@@ -80,6 +85,9 @@ if (gl) {
     };
 
     requestAnimationFrame(loop);
+
+    // TODO: Debug save
+    save();
 
     // Autosave
     setInterval(save, 60000);

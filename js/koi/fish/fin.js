@@ -30,6 +30,27 @@ Fin.prototype.PHASE_SHIFT = 2;
 Fin.prototype.DEPTH_FACTOR = .4;
 
 /**
+ * Deserialize a fin
+ * @param {BinBuffer} buffer A buffer to deserialize from
+ */
+Fin.deserialize = function(buffer) {
+    return new Fin(
+        buffer.readFloat(),
+        buffer.readFloat(),
+        buffer.readUint8() - 1);
+};
+
+/**
+ * Serialize this fin
+ * @param {BinBuffer} buffer The buffer to serialize to
+ */
+Fin.prototype.serialize = function(buffer) {
+    buffer.writeFloat(this.at);
+    buffer.writeFloat(this.radius);
+    buffer.writeUint8(this.sign + 1);
+};
+
+/**
  * Get the index of the vertebra this fin is connected to
  * @param {Number} spineLength The length of the spine to assign this fin to
  * @returns {Number} The vertebrae index to connect the fin to
