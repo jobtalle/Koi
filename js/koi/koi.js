@@ -36,10 +36,6 @@ const Koi = function(
     this.time = 0;
 
     this.createRenderables();
-
-    // TODO: This is a debug warp
-    for (let i = 0; i < 1500; ++i)
-        this.update();
 };
 
 Koi.prototype.FRAME_TIME_MAX = 1;
@@ -47,6 +43,22 @@ Koi.prototype.UPDATE_RATE = 1 / 14;
 Koi.prototype.SCALE_FACTOR = .051;
 Koi.prototype.SCALE_MIN = 50;
 Koi.prototype.COLOR_BACKGROUND = Color.fromCSS("earth");
+
+/**
+ * Serialize the koi
+ * @param {BinBuffer} buffer A buffer to serialize to
+ */
+Koi.prototype.serialize = function(buffer) {
+
+};
+
+/**
+ * Deserialize the koi
+ * @param {BinBuffer} buffer A buffer to deserialize from
+ */
+Koi.prototype.deserialize = function(buffer) {
+
+};
 
 /**
  * Create all renderable objects

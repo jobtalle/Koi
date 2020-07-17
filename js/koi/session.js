@@ -18,7 +18,18 @@ const Session = function(
  * @returns {Koi} A koi object for this session
  */
 Session.prototype.makeKoi = function(systems) {
-    return new Koi(systems, this.environmentSeed, this.random);
+    const koi = new Koi(systems, this.environmentSeed, this.random);
+
+    if (this.buffer)
+        koi.deserialize(this.buffer);
+    else for (let i = 0; i < 1500; ++i)
+        koi.update();
+
+    // TODO: Debug warp until deserialization works
+    for (let i = 0; i < 1500; ++i)
+        koi.update();
+
+    return koi;
 };
 
 /**
@@ -35,12 +46,15 @@ Session.prototype.deserialize = function(buffer) {
 
 /**
  * Serialize a session
- * @returns {BinBuffer} A buffer containing the session
+ * @param {Koi} koi The Koi object to serialize
+ * @returns {BinBuffer} A buffer containing the serialized session data
  */
-Session.prototype.serialize = function() {
+Session.prototype.serialize = function(koi) {
     const buffer = new BinBuffer();
 
     this.random.serialize(buffer);
+
+    koi.serialize(buffer);
 
     buffer.writeUint32(this.environmentSeed);
 

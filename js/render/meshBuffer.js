@@ -85,7 +85,8 @@ MeshBuffer.prototype.uploadMeshData = function(meshData) {
  * Render the contents of this buffer
  */
 MeshBuffer.prototype.render = function() {
-    this.gl.drawElements(this.gl.TRIANGLES, this.indexCount, this.gl.UNSIGNED_SHORT, 0);
+    if (this.indexCount !== -1)
+        this.gl.drawElements(this.gl.TRIANGLES, this.indexCount, this.gl.UNSIGNED_SHORT, 0);
 };
 
 /**

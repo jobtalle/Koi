@@ -96,7 +96,7 @@ canvas.addEventListener("touchend", event => {
 });
 
 window.onbeforeunload = () => {
-    window["localStorage"].setItem("session", session.serialize().toString());
+    window["localStorage"].setItem("session", session.serialize(koi).toString());
 
     koi.free();
     systems.free();
