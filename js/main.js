@@ -16,43 +16,53 @@ if (gl) {
     gl.getExtension("OES_element_index_uint");
 
     const sessionData = window["localStorage"].getItem("session");
-    const session = new Session();
+    let session = new Session();
+    let systems = null;
+    let lastDate = null;
+    let koi = null;
+    let loaded = true;
 
+    /**
+     * Save the game state to local storage
+     */
     const save = () => {
         window["localStorage"].setItem("session", session.serialize(koi).toString());
 
         // const serialized = session.serialize(koi);
         //
         // for (let i = 0; i < serialized.bytes.length; ++i)
-        //     if (Math.random() < .0001)
+        //     if (Math.random() < .4)
         //         serialized.bytes[i] = Math.floor(Math.random() * 256);
         //
         // window["localStorage"].setItem("session", serialized.toString());
     };
 
+    /**
+     * A function that creates a default game when serialization failed
+     */
     const onDeserializationError = () => {
         window["localStorage"].removeItem("session");
 
-        location.reload(); // TODO: Avoid reloading
+        if (systems)
+            systems.free();
+
+        session = new Session();
+        systems = new Systems(gl, new Random(session.environmentSeed), canvas.width, canvas.height);
+        koi = session.makeKoi(systems);
+
+        // TODO: Debug initialization warp
+        for (let i = 0; i < 1500; ++i)
+            koi.update();
     };
 
-    // Retrieve last session if it exists
-    if (sessionData) {
-        try {
-            session.deserialize(new BinBuffer(sessionData));
-        }
-        catch(error) {
-            onDeserializationError();
-        }
-    }
-
-    const systems = new Systems(gl, new Random(session.environmentSeed), canvas.width, canvas.height);
-    let lastDate = null;
-    let koi = null;
-    let loaded = true;
-
+    /**
+     * Resize the view
+     */
     const resize = () => {
         const wrapper = document.getElementById("wrapper");
+
+        if (canvas.width === wrapper.offsetWidth && canvas.height === wrapper.offsetHeight)
+            return;
 
         canvas.width = wrapper.offsetWidth;
         canvas.height = wrapper.offsetHeight;
@@ -63,22 +73,27 @@ if (gl) {
             koi.resize();
     };
 
-    window.onresize = resize;
+    // Retrieve last session if it exists
+    if (sessionData) {
+        try {
+            session.deserialize(new BinBuffer(sessionData));
+            systems = new Systems(gl, new Random(session.environmentSeed), canvas.width, canvas.height);
 
+            // Resize systems to prevent koi from resizing twice
+            resize();
+
+            koi = session.makeKoi(systems);
+        }
+        catch(error) {
+            onDeserializationError();
+        }
+    }
+
+    // Call resize to give systems a size
+    window.onresize = resize;
     resize();
 
-    try {
-        koi = session.makeKoi(systems);
-
-        // TODO: Debug warp
-        if (!sessionData)
-            for (let i = 0; i < 1500; ++i)
-                koi.update();
-    }
-    catch (error) {
-        onDeserializationError();
-    }
-
+    // Trigger the animation frame loop
     lastDate = new Date();
 
     const loop = () => {

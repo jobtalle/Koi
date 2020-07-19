@@ -18,6 +18,7 @@ ConstraintCircle.prototype.DEPTH = 1;
  * Deserialize a relative position
  * @param {BinBuffer} buffer A buffer to deserialize from
  * @returns {ConstraintCirclePosition} The relative position
+ * @throws {RangeError} A range error if deserialized values are not valid
  */
 ConstraintCircle.prototype.deserializeRelativePosition = function(buffer) {
     return ConstraintCirclePosition.deserialize(buffer);

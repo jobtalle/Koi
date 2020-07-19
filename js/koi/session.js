@@ -20,8 +20,11 @@ const Session = function(
 Session.prototype.makeKoi = function(systems) {
     const koi = new Koi(systems, this.environmentSeed, this.random);
 
-    if (this.buffer)
+    if (this.buffer) {
         koi.deserialize(this.buffer);
+
+        this.buffer = null;
+    }
     else for (let i = 0; i < 1500; ++i)
         koi.update();
 
@@ -31,6 +34,7 @@ Session.prototype.makeKoi = function(systems) {
 /**
  * Deserialize a session
  * @param {BinBuffer} buffer The buffer to deserialize from
+ * @throws {RangeError} A range error if deserialized values are not valid
  */
 Session.prototype.deserialize = function(buffer) {
     this.buffer = buffer;

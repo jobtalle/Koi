@@ -40,6 +40,7 @@ Pond.prototype.serialize = function(buffer) {
  * Deserialize this pond
  * @param {BinBuffer} buffer A buffer to deserialize from
  * @param {Atlas} atlas The atlas
+ * @throws {RangeError} A range error if deserialized values are not valid
  */
 Pond.prototype.deserialize = function(buffer, atlas) {
     for (let fish = 0, fishCount = buffer.readUint16(); fish < fishCount; ++fish)

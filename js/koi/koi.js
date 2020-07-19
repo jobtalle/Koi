@@ -55,9 +55,17 @@ Koi.prototype.serialize = function(buffer) {
 /**
  * Deserialize the koi
  * @param {BinBuffer} buffer A buffer to deserialize from
+ * @throws {RangeError} A range error if deserialized values are not valid
  */
 Koi.prototype.deserialize = function(buffer) {
-    this.constellation.deserialize(buffer, this.atlas);
+    try {
+        this.constellation.deserialize(buffer, this.atlas);
+    }
+    catch (error) {
+        this.free();
+
+        throw error;
+    }
 };
 
 /**

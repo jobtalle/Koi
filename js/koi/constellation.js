@@ -36,6 +36,7 @@ Constellation.prototype.serialize = function(buffer) {
  * Deserialize this constellation
  * @param {BinBuffer} buffer A buffer to deserialize from
  * @param {Atlas} atlas The atlas
+ * @throws {RangeError} A range error if deserialized values are not valid
  */
 Constellation.prototype.deserialize = function(buffer, atlas) {
     this.big.deserialize(buffer, atlas);

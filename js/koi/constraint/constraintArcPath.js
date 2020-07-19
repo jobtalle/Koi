@@ -34,6 +34,7 @@ ConstraintArcPath.Arc = function(center, radius, start, end) {
  * Deserialize a relative position
  * @param {BinBuffer} buffer A buffer to deserialize from
  * @returns {ConstraintArcPathPosition} The relative position
+ * @throws {RangeError} A range error if deserialized values are not valid
  */
 ConstraintArcPath.prototype.deserializeRelativePosition = function(buffer) {
     return ConstraintArcPathPosition.deserialize(buffer);
