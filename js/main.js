@@ -98,7 +98,10 @@ if (gl) {
     save();
 
     // Autosave
-    setInterval(save, 60000);
+    setInterval(() => {
+        if (!document["hidden"])
+            save();
+    }, 60000);
 
     canvas.addEventListener("mousedown", event => {
         event.preventDefault();
