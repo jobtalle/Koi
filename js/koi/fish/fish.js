@@ -68,30 +68,31 @@ Fish.prototype.GROWTH_SPEED_MAX = Math.fround(.03);
  * @param {Vector2} position The fish position
  * @param {Atlas} atlas The atlas
  * @returns {Fish} A fish
+ * @throws {RangeError} A range error if deserialized values are not valid
  */
 Fish.deserialize = function(buffer, position, atlas) {
     const body = FishBody.deserialize(buffer, atlas);
     const direction = new Vector2().deserialize(buffer);
 
     if (!direction.isNormal())
-        throw -1;
+        throw new RangeError();
 
     const growthSpeed = buffer.readFloat();
 
     if (!(growthSpeed >= Fish.prototype.GROWTH_SPEED_MIN && growthSpeed <= Fish.prototype.GROWTH_SPEED_MAX))
-        throw -1;
+        throw new RangeError();
 
     const age = buffer.readFloat();
 
     if (age < 0)
-        throw -1;
+        throw new RangeError();
 
     const fish = new Fish(body, position, direction, growthSpeed, age);
 
     fish.speed = buffer.readFloat();
 
     if (!(fish.speed >= Fish.prototype.SPEED_MIN && fish.speed <= Fish.prototype.SPEED_MAX))
-        throw -1;
+        throw new RangeError();
 
     return fish;
 };

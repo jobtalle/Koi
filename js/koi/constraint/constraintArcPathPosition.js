@@ -15,18 +15,19 @@ const ConstraintArcPathPosition = function(index, radius, progress) {
  * Deserialize this position
  * @param buffer A buffer to deserialize from
  * @returns {ConstraintArcPathPosition} The deserialized position
+ * @throws {RangeError} A range error if deserialized values are not valid
  */
 ConstraintArcPathPosition.deserialize = function(buffer) {
     const index = buffer.readUint8();
     const radius = buffer.readFloat();
 
     if (!(radius >= -1 && radius <= 2))
-        throw -1;
+        throw new RangeError();
 
     const progress = buffer.readFloat();
 
     if (!(progress >= 0 && progress <= 1))
-        throw -1;
+        throw new RangeError();
 
     return new ConstraintArcPathPosition(index, radius, progress);
 };

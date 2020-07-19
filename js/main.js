@@ -33,7 +33,7 @@ if (gl) {
     const onDeserializationError = () => {
         window["localStorage"].removeItem("session");
 
-        location.reload();
+        location.reload(); // TODO: Avoid reloading
     };
 
     // Retrieve last session if it exists

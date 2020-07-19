@@ -17,6 +17,8 @@ const Pattern = function(base, layers, shapeBody, shapeFin) {
 /**
  * Deserialize a pattern
  * @param {BinBuffer} buffer The buffer to deserialize from
+ * @returns {Pattern} The deserialized pattern
+ * @throws {RangeError} A range error if deserialized values are not valid
  */
 Pattern.deserialize = function(buffer) {
     const layers = [];
@@ -29,7 +31,7 @@ Pattern.deserialize = function(buffer) {
 
                 break;
             default:
-                throw -1;
+                throw new RangeError();
         }
     }
 

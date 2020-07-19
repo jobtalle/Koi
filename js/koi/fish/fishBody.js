@@ -49,6 +49,8 @@ FishBody.prototype.FIN_PHASE_SPEED = .4;
  * Deserialize a fish body
  * @param {BinBuffer} buffer A buffer to deserialize from
  * @param {Atlas} atlas The atlas
+ * @returns {FishBody} The deserialized fish body
+ * @throws {RangeError} A range error if deserialized values are not valid
  */
 FishBody.deserialize = function(buffer, atlas) {
     const pattern = Pattern.deserialize(buffer);
@@ -58,7 +60,7 @@ FishBody.deserialize = function(buffer, atlas) {
     const fins = new Array(buffer.readUint8());
 
     if (!(fins.length >= FishBody.prototype.FIN_PAIRS_MIN << 1 && fins.length <= FishBody.prototype.FIN_PAIRS_MAX << 1))
-        throw - 1;
+        throw new RangeError();
 
     for (let fin = 0; fin < fins.length; ++fin)
         fins[fin] = Fin.deserialize(buffer);
@@ -67,12 +69,12 @@ FishBody.deserialize = function(buffer, atlas) {
     const length = buffer.readFloat();
 
     if (!(length >= FishBody.prototype.LENGTH_MIN && length <= FishBody.prototype.LENGTH_MAX))
-        throw -1;
+        throw new RangeError();
 
     const radius = buffer.readFloat();
 
     if (!(radius >= FishBody.prototype.RADIUS_MIN && radius <= FishBody.prototype.RADIUS_MAX))
-        throw - 1;
+        throw new RangeError();
 
     return new FishBody(
         pattern,

@@ -34,17 +34,18 @@ Fin.prototype.RADIUS_MAX = Math.fround(2);
 /**
  * Deserialize a fin
  * @param {BinBuffer} buffer A buffer to deserialize from
+ * @throws {RangeError} A range error if deserialized values are not valid
  */
 Fin.deserialize = function(buffer) {
     const at = buffer.readFloat();
 
     if (!(at >= 0 && at <= 1))
-        throw -1;
+        throw new RangeError();
 
     const radius = buffer.readFloat();
 
     if (!(radius >= Fin.prototype.RADIUS_MIN && radius <= Fin.prototype.RADIUS_MAX))
-        throw -1;
+        throw new RangeError();
 
     return new Fin(at, radius, buffer.readUint8() - 1);
 };

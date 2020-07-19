@@ -57,23 +57,25 @@ void main() {
 /**
  * Deserialize a spots pattern
  * @param {BinBuffer} buffer The buffer to deserialize from
+ * @returns {PatternSpots} The deserialized pattern
+ * @throws {RangeError} A range error if deserialized values are not valid
  */
 PatternSpots.deserialize = function(buffer) {
     const scale = buffer.readFloat();
 
     if (!(scale >= PatternSpots.prototype.SCALE_MIN && scale <= PatternSpots.prototype.SCALE_MAX))
-        throw -1;
+        throw new RangeError();
 
     const color = Color.deserialize(buffer);
     const anchor = new Vector3().deserialize(buffer);
 
     if (!anchor.withinLimits(PatternSpots.prototype.SPACE_LIMIT_MIN, PatternSpots.prototype.SPACE_LIMIT_MAX))
-        throw -1;
+        throw new RangeError();
 
     const x = new Vector3().deserialize(buffer);
 
     if (!x.isNormal())
-        throw -1;
+        throw new RangeError();
 
     return new PatternSpots(scale, color, anchor, x);
 };

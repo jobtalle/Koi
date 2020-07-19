@@ -20,12 +20,14 @@ Tail.prototype.LENGTH_MAX = Math.fround(.6);
 /**
  * Deserialize a tail
  * @param {BinBuffer} buffer The buffer to deserialize from
+ * @returns {Tail} The deserialized tail
+ * @throws {RangeError} A range error if deserialized values are not valid
  */
 Tail.deserialize = function(buffer) {
     const length = buffer.readFloat();
 
     if (!(length >= Tail.prototype.LENGTH_MIN && length <= Tail.prototype.LENGTH_MAX))
-        throw -1;
+        throw new RangeError();
 
     return new Tail(length);
 };

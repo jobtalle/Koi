@@ -56,6 +56,8 @@ void main() {
 /**
  * Deserialize this pattern
  * @param {BinBuffer} buffer A buffer to deserialize from
+ * @returns {PatternShapeBody} The deserialized pattern shape
+ * @throws {RangeError} A range error if deserialized values are not valid
  */
 PatternShapeBody.deserialize = function(buffer) {
     const centerPower = buffer.readFloat();
@@ -63,14 +65,14 @@ PatternShapeBody.deserialize = function(buffer) {
     if (!(
         centerPower >= PatternShapeBody.prototype.CENTER_POWER_MIN &&
         centerPower <= PatternShapeBody.prototype.CENTER_POWER_MAX))
-        throw - 1;
+        throw new RangeError();
 
     const radiusPower = buffer.readFloat();
 
     if (!(
         radiusPower >= PatternShapeBody.prototype.RADIUS_POWER_MIN &&
         radiusPower <= PatternShapeBody.prototype.RADIUS_POWER_MAX))
-        throw - 1;
+        throw new RangeError();
 
     return new PatternShapeBody(centerPower, radiusPower);
 };

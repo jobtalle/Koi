@@ -13,13 +13,14 @@ const ConstraintCirclePosition = function(angle, distance) {
  * Deserialize this position
  * @param buffer A buffer to deserialize from
  * @returns {ConstraintCirclePosition} The deserialized position
+ * @throws {RangeError} A range error if deserialized values are not valid
  */
 ConstraintCirclePosition.deserialize = function(buffer) {
     const angle = buffer.readFloat();
     const distance = buffer.readFloat();
 
     if (!(distance >= 0 && distance <= 2))
-        throw -1;
+        throw new RangeError();
 
     return new ConstraintCirclePosition(angle, distance);
 };
