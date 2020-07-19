@@ -67,11 +67,12 @@ Fish.prototype.GROWTH_SPEED_MAX = Math.fround(.03);
  * @param {BinBuffer} buffer A buffer to deserialize from
  * @param {Vector2} position The fish position
  * @param {Atlas} atlas The atlas
+ * @param {RandomSource} randomSource A random source
  * @returns {Fish} A fish
  * @throws {RangeError} A range error if deserialized values are not valid
  */
-Fish.deserialize = function(buffer, position, atlas) {
-    const body = FishBody.deserialize(buffer, atlas);
+Fish.deserialize = function(buffer, position, atlas, randomSource) {
+    const body = FishBody.deserialize(buffer, atlas, randomSource);
     const direction = new Vector2().deserialize(buffer);
 
     if (!direction.isNormal())

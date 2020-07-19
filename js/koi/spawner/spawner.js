@@ -18,9 +18,10 @@ Spawner.prototype.SPAWN_OVERHEAD = 8;
  * Update the spawner
  * @param {Number} timeStep The amount of time passed since the last update
  * @param {Atlas} atlas The atlas to render newly spawned patterns on
+ * @param {RandomSource} randomSource A random source
  * @param {Random} random A randomizer
  */
-Spawner.prototype.update = function(timeStep, atlas, random) {
+Spawner.prototype.update = function(timeStep, atlas, randomSource, random) {
     if ((this.time -= timeStep) < 0) {
         this.time += this.SPAWN_TIME_MIN + (this.SPAWN_TIME_MAX - this.SPAWN_TIME_MIN) * random.getFloat();
 
@@ -38,7 +39,7 @@ Spawner.prototype.update = function(timeStep, atlas, random) {
                 new PatternShapeBody(0.6, 0.7),
                 new PatternShapeFin());
 
-            atlas.write(pattern);
+            atlas.write(pattern, randomSource);
 
             this.constellation.river.addFish(new Fish(
                 new FishBody(

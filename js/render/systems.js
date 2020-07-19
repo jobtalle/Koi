@@ -12,9 +12,8 @@ const Systems = function(gl, random, width, height) {
     this.height = height;
     this.blit = new Blit(gl);
     this.quad = new Quad(gl, this.blit);
-    this.randomSource = new RandomSource(gl, random);
-    this.patterns = new Patterns(gl, this.randomSource);
-    this.sand = new Sand(gl, this.randomSource);
+    this.patterns = new Patterns(gl);
+    this.sand = new Sand(gl);
     this.waves = new Waves(gl);
     this.ponds = new Ponds(gl);
     this.influencePainter = new InfluencePainter(gl);
@@ -49,7 +48,6 @@ Systems.prototype.targetMain = function() {
  */
 Systems.prototype.free = function() {
     this.blit.free();
-    this.randomSource.free();
     this.patterns.free();
     this.sand.free();
     this.waves.free();

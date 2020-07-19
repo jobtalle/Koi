@@ -40,23 +40,26 @@ Pond.prototype.serialize = function(buffer) {
  * Deserialize this pond
  * @param {BinBuffer} buffer A buffer to deserialize from
  * @param {Atlas} atlas The atlas
+ * @param {RandomSource} randomSource A random source
  * @throws {RangeError} A range error if deserialized values are not valid
  */
-Pond.prototype.deserialize = function(buffer, atlas) {
+Pond.prototype.deserialize = function(buffer, atlas, randomSource) {
     for (let fish = 0, fishCount = buffer.readUint16(); fish < fishCount; ++fish)
         this.fishes.push(Fish.deserialize(
             buffer,
             this.constraint.getAbsolutePosition(this.constraint.deserializeRelativePosition(buffer)),
-            atlas));
+            atlas,
+            randomSource));
 };
 
 /**
  * Update the atlas, write all fish textures again
  * @param {Atlas} atlas The atlas
+ * @param {RandomSource} randomSource A random source
  */
-Pond.prototype.updateAtlas = function(atlas) {
+Pond.prototype.updateAtlas = function(atlas, randomSource) {
     for (const fish of this.fishes)
-        atlas.write(fish.body.pattern);
+        atlas.write(fish.body.pattern, randomSource);
 };
 
 /**

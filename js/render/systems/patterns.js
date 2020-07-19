@@ -1,12 +1,10 @@
 /**
  * The pattern renderer
  * @param {WebGLRenderingContext} gl A webGL context
- * @param {RandomSource} randomSource A random source
  * @constructor
  */
-const Patterns = function(gl, randomSource) {
+const Patterns = function(gl) {
     this.gl = gl;
-    this.randomSource = randomSource;
     this.buffer = gl.createBuffer();
     this.programBase = PatternBase.prototype.createShader(gl);
     this.vaoBase = this.createVAO(gl, this.programBase);
@@ -65,10 +63,11 @@ Patterns.prototype.writeLayer = function(layer, program, vao) {
 /**
  * Write a pattern
  * @param {Pattern} pattern A pattern
+ * @param {RandomSource} randomSource A random source
  * @param {AtlasRegion} region A region on the atlas on which the pattern may be written
  * @param {Number} pixelSize The pixel size
  */
-Patterns.prototype.write = function(pattern, region, pixelSize) {
+Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
     this.gl.vao.bindVertexArrayOES(this.vao);
 
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
@@ -105,7 +104,7 @@ Patterns.prototype.write = function(pattern, region, pixelSize) {
     ]));
 
     this.gl.activeTexture(this.gl.TEXTURE0);
-    this.gl.bindTexture(this.gl.TEXTURE_2D, this.randomSource.texture);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, randomSource.texture);
 
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);

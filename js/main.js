@@ -18,7 +18,7 @@ if (gl) {
     const wrapper = document.getElementById("wrapper");
     const sessionData = window["localStorage"].getItem("session");
     let session = new Session();
-    let systems = null;
+    const systems = new Systems(gl, new Random(session.environmentSeed), wrapper.clientWidth, wrapper.clientHeight);
     let lastDate = null;
     let koi = null;
     let loaded = true;
@@ -58,13 +58,7 @@ if (gl) {
      * A function that creates a default game when serialization failed
      */
     const onDeserializationError = () => {
-        window["localStorage"].removeItem("session");
-
-        if (systems)
-            systems.free();
-
         session = new Session();
-        systems = new Systems(gl, new Random(session.environmentSeed), canvas.width, canvas.height);
         koi = session.makeKoi(systems);
     };
 
@@ -72,7 +66,6 @@ if (gl) {
     if (sessionData) {
         try {
             session.deserialize(new BinBuffer(sessionData));
-            systems = new Systems(gl, new Random(session.environmentSeed), canvas.width, canvas.height);
             koi = session.makeKoi(systems);
         }
         catch(error) {

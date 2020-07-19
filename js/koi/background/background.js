@@ -5,6 +5,7 @@
  * @param {Blit} blit The blit system
  * @param {Number} width The width in pixels
  * @param {Number} height The height in pixels
+ * @param {RandomSource} randomSource A random source
  * @param {Number} scale The render scale
  * @constructor
  */
@@ -14,6 +15,7 @@ const Background = function(
     blit,
     width,
     height,
+    randomSource,
     scale) {
     this.gl = gl;
     this.blit = blit;
@@ -21,7 +23,7 @@ const Background = function(
     this.bottom.target();
     this.vao = gl.vao.createVertexArrayOES();
 
-    sand.write(scale);
+    sand.write(randomSource, scale);
 
     Meshed.call(this, gl, [
         new Meshed.VAOConfiguration(

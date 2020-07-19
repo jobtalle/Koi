@@ -1,11 +1,9 @@
 /**
  * A sand synthesizer
  * @param {WebGLRenderingContext} gl A WebGL rendering context
- * @param {RandomSource} randomSource A random source
  * @constructor
  */
-const Sand = function(gl, randomSource) {
-    this.randomSource = randomSource;
+const Sand = function(gl) {
     this.program = new Shader(
         gl,
         this.SHADER_VERTEX,
@@ -67,14 +65,15 @@ void main() {
 
 /**
  * Write a sand texture
+ * @param {RandomSource} randomSource A random source
  * @param {Number} scale The render scale
  */
-Sand.prototype.write = function(scale) {
+Sand.prototype.write = function(randomSource, scale) {
     this.program.use();
     this.gl.vao.bindVertexArrayOES(this.vao);
 
     this.gl.activeTexture(this.gl.TEXTURE0);
-    this.gl.bindTexture(this.gl.TEXTURE_2D, this.randomSource.texture);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, randomSource.texture);
 
     this.gl.uniform1f(this.program["uScale"], scale);
     this.gl.uniform3f(this.program["uColorDeep"], this.COLOR_DEEP.r, this.COLOR_DEEP.g, this.COLOR_DEEP.b);

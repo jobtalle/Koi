@@ -36,12 +36,13 @@ Constellation.prototype.serialize = function(buffer) {
  * Deserialize this constellation
  * @param {BinBuffer} buffer A buffer to deserialize from
  * @param {Atlas} atlas The atlas
+ * @param {RandomSource} randomSource A random source
  * @throws {RangeError} A range error if deserialized values are not valid
  */
-Constellation.prototype.deserialize = function(buffer, atlas) {
-    this.big.deserialize(buffer, atlas);
-    this.small.deserialize(buffer, atlas);
-    this.river.deserialize(buffer, atlas);
+Constellation.prototype.deserialize = function(buffer, atlas, randomSource) {
+    this.big.deserialize(buffer, atlas, randomSource);
+    this.small.deserialize(buffer, atlas, randomSource);
+    this.river.deserialize(buffer, atlas, randomSource);
 };
 
 /**
@@ -65,11 +66,12 @@ Constellation.prototype.getWorldY = function(y, scale) {
 /**
  * Update the atlas, write all fish textures again
  * @param {Atlas} atlas The atlas
+ * @param {RandomSource} randomSource A random source
  */
-Constellation.prototype.updateAtlas = function(atlas) {
-    this.big.updateAtlas(atlas);
-    this.small.updateAtlas(atlas);
-    this.river.updateAtlas(atlas);
+Constellation.prototype.updateAtlas = function(atlas, randomSource) {
+    this.big.updateAtlas(atlas, randomSource);
+    this.small.updateAtlas(atlas, randomSource);
+    this.river.updateAtlas(atlas, randomSource);
 };
 
 /**

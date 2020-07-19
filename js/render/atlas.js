@@ -71,13 +71,14 @@ Atlas.prototype.returnRegion = function(region) {
 /**
  * Write a texture to the atlas
  * @param {Pattern} pattern The pattern to write to the atlas
+ * @param {RandomSource} randomSource A random source
  */
-Atlas.prototype.write = function(pattern) {
+Atlas.prototype.write = function(pattern, randomSource) {
     // TODO: slot is sometimes undefined after resizing
     pattern.region = new AtlasRegion(this.getSlot(), this.slotSize);
 
     this.renderTarget.target();
-    this.patterns.write(pattern, pattern.region, 1 / this.renderTarget.width);
+    this.patterns.write(pattern, randomSource, pattern.region, 1 / this.renderTarget.width);
 };
 
 /**

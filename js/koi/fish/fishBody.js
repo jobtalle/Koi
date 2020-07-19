@@ -49,13 +49,14 @@ FishBody.prototype.FIN_PHASE_SPEED = .4;
  * Deserialize a fish body
  * @param {BinBuffer} buffer A buffer to deserialize from
  * @param {Atlas} atlas The atlas
+ * @param {RandomSource} randomSource A random source
  * @returns {FishBody} The deserialized fish body
  * @throws {RangeError} A range error if deserialized values are not valid
  */
-FishBody.deserialize = function(buffer, atlas) {
+FishBody.deserialize = function(buffer, atlas, randomSource) {
     const pattern = Pattern.deserialize(buffer);
 
-    atlas.write(pattern);
+    atlas.write(pattern, randomSource);
 
     const fins = new Array(buffer.readUint8());
 

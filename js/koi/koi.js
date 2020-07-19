@@ -31,6 +31,7 @@ const Koi = function(
     this.air = null;
     this.constellationMeshWater = null;
     this.constellationMeshDepth = null;
+    this.randomSource = null;
     this.weather = new Weather(this.constellation, weatherState);
     this.spawner = new Spawner(this.constellation, spawnerState);
     this.time = this.UPDATE_RATE;
@@ -59,7 +60,7 @@ Koi.prototype.serialize = function(buffer) {
  */
 Koi.prototype.deserialize = function(buffer) {
     try {
-        this.constellation.deserialize(buffer, this.atlas);
+        this.constellation.deserialize(buffer, this.atlas, this.randomSource);
     }
     catch (error) {
         this.free();
@@ -73,6 +74,8 @@ Koi.prototype.deserialize = function(buffer) {
  */
 Koi.prototype.createRenderables = function() {
     const environmentRandomizer = new Random(this.environmentSeed);
+
+    this.randomSource = new RandomSource(this.systems.gl, environmentRandomizer);
 
     // Create constellation meshes
     this.constellationMeshWater = this.constellation.makeMeshWater(this.systems.gl);
@@ -100,6 +103,7 @@ Koi.prototype.createRenderables = function() {
         this.systems.blit,
         this.systems.width,
         this.systems.height,
+        this.randomSource,
         this.scale);
     this.foreground = new Foreground(
         this.systems.gl,
@@ -143,6 +147,7 @@ Koi.prototype.createRenderables = function() {
  * Free all renderable objects
  */
 Koi.prototype.freeRenderables = function() {
+    this.randomSource.free();
     this.shadowBuffer.free();
     this.atlas.free();
     this.background.free();
@@ -212,14 +217,14 @@ Koi.prototype.resize = function() {
     this.freeRenderables();
     this.createRenderables();
 
-    this.constellation.updateAtlas(this.atlas);
+    this.constellation.updateAtlas(this.atlas, this.randomSource);
 };
 
 /**
  * Update the scene
  */
 Koi.prototype.update = function() {
-    this.spawner.update(this.UPDATE_RATE, this.atlas, this.random);
+    this.spawner.update(this.UPDATE_RATE, this.atlas, this.randomSource, this.random);
     this.constellation.update(this.atlas, this.water, this.random);
     this.weather.update(this.air, this.water, this.random);
     this.mover.update();
