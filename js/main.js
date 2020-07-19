@@ -15,12 +15,29 @@ if (gl) {
     // Enable 32 bit element indices
     gl.getExtension("OES_element_index_uint");
 
+    const wrapper = document.getElementById("wrapper");
     const sessionData = window["localStorage"].getItem("session");
     let session = new Session();
     let systems = null;
     let lastDate = null;
     let koi = null;
     let loaded = true;
+
+    canvas.width = wrapper.clientWidth;
+    canvas.height = wrapper.clientHeight;
+
+    window.onresize = () => {
+        if (canvas.width === wrapper.offsetWidth && canvas.height === wrapper.offsetHeight)
+            return;
+
+        canvas.width = wrapper.offsetWidth;
+        canvas.height = wrapper.offsetHeight;
+
+        systems.resize(canvas.width, canvas.height);
+
+        if (koi)
+            koi.resize();
+    };
 
     /**
      * Save the game state to local storage
@@ -49,28 +66,6 @@ if (gl) {
         session = new Session();
         systems = new Systems(gl, new Random(session.environmentSeed), canvas.width, canvas.height);
         koi = session.makeKoi(systems);
-
-        // TODO: Debug initialization warp
-        for (let i = 0; i < 1500; ++i)
-            koi.update();
-    };
-
-    /**
-     * Resize the view
-     */
-    const resize = () => {
-        const wrapper = document.getElementById("wrapper");
-
-        if (canvas.width === wrapper.offsetWidth && canvas.height === wrapper.offsetHeight)
-            return;
-
-        canvas.width = wrapper.offsetWidth;
-        canvas.height = wrapper.offsetHeight;
-
-        systems.resize(canvas.width, canvas.height);
-
-        if (koi)
-            koi.resize();
     };
 
     // Retrieve last session if it exists
@@ -78,20 +73,12 @@ if (gl) {
         try {
             session.deserialize(new BinBuffer(sessionData));
             systems = new Systems(gl, new Random(session.environmentSeed), canvas.width, canvas.height);
-
-            // Resize systems to prevent koi from resizing twice
-            resize();
-
             koi = session.makeKoi(systems);
         }
         catch(error) {
             onDeserializationError();
         }
     }
-
-    // Call resize to give systems a size
-    window.onresize = resize;
-    resize();
 
     // Trigger the animation frame loop
     lastDate = new Date();
