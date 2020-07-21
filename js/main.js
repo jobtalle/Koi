@@ -68,7 +68,7 @@ if (gl) {
             session.deserialize(new BinBuffer(sessionData));
             koi = session.makeKoi(systems);
         }
-        catch(error) {
+        catch (error) {
             onDeserializationError();
         }
     }

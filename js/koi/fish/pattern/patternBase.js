@@ -25,6 +25,7 @@ void main() {
 
 PatternBase.prototype.PALETTE = new Palette([
     new Palette.Color(new Palette.Sample(50, 30), Color.fromCSS("fish-base-1")),
+    new Palette.Color(new Palette.Sample(150, 30), Color.fromCSS("fish-base-1")),
     new Palette.Color(new Palette.Sample(200, 50), Color.fromCSS("fish-base-2")),
     new Palette.Color(new Palette.Sample(60, 20), Color.fromCSS("fish-base-3")),
     new Palette.Color(new Palette.Sample(160, 180), Color.fromCSS("fish-base-4"))
@@ -35,7 +36,7 @@ PatternBase.prototype.PALETTE = new Palette([
  * @param {BinBuffer} buffer A buffer to deserialize from
  */
 PatternBase.deserialize = function(buffer) {
-    return new PatternBase(Pattern.Sample.deserialize(buffer));
+    return new PatternBase(Palette.Sample.deserialize(buffer));
 };
 
 /**
