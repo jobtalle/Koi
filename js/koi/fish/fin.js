@@ -47,7 +47,7 @@ Fin.deserialize = function(buffer) {
     if (!(radius >= Fin.prototype.RADIUS_MIN && radius <= Fin.prototype.RADIUS_MAX))
         throw new RangeError();
 
-    return new Fin(at, radius, buffer.readUint8() - 1);
+    return new Fin(at, radius, 1);
 };
 
 /**
@@ -57,7 +57,14 @@ Fin.deserialize = function(buffer) {
 Fin.prototype.serialize = function(buffer) {
     buffer.writeFloat(this.at);
     buffer.writeFloat(this.radius);
-    buffer.writeUint8(this.sign + 1);
+};
+
+/**
+ * Make a mirrored copy of this fin
+ * @returns {Fin} The copy
+ */
+Fin.prototype.copyMirrored = function() {
+    return new Fin(this.at, this.radius, -this.sign);
 };
 
 /**

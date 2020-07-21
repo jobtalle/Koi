@@ -9,7 +9,7 @@
  */
 const FishBody = function(pattern, fins, tail, length, radius) {
     this.pattern = pattern;
-    this.fins = fins;
+    this.fins = this.makeAllFins(fins);
     this.tail = tail;
     this.length = length;
     this.radius = radius;
@@ -60,7 +60,7 @@ FishBody.deserialize = function(buffer, atlas, randomSource) {
 
     const fins = new Array(buffer.readUint8());
 
-    if (!(fins.length >= FishBody.prototype.FIN_PAIRS_MIN << 1 && fins.length <= FishBody.prototype.FIN_PAIRS_MAX << 1))
+    if (!(fins.length >= FishBody.prototype.FIN_PAIRS_MIN && fins.length <= FishBody.prototype.FIN_PAIRS_MAX))
         throw new RangeError();
 
     for (let fin = 0; fin < fins.length; ++fin)
@@ -92,15 +92,26 @@ FishBody.deserialize = function(buffer, atlas, randomSource) {
 FishBody.prototype.serialize = function(buffer) {
     this.pattern.serialize(buffer);
 
-    buffer.writeUint8(this.fins.length);
+    buffer.writeUint8(this.fins.length >> 1);
 
-    for (const fin of this.fins)
-        fin.serialize(buffer);
+    for (let fin = 0, finCount = this.fins.length >> 1; fin < finCount; ++fin)
+        this.fins[fin].serialize(buffer);
 
     this.tail.serialize(buffer);
 
     buffer.writeFloat(this.length);
     buffer.writeFloat(this.radius);
+};
+
+/**
+ * Make all fins by mirroring the initial fins
+ * @param {Fin[]} fins All fins
+ */
+FishBody.prototype.makeAllFins = function(fins) {
+    for (let fin = 0, finCount = fins.length; fin < finCount; ++fin)
+        fins.push(fins[fin].copyMirrored());
+
+    return fins;
 };
 
 /**
@@ -112,7 +123,7 @@ FishBody.prototype.serialize = function(buffer) {
 FishBody.prototype.assignFins = function(fins, spineLength) {
     const spineFins = new Array(spineLength).fill(null);
 
-    for (const fin of fins) {
+    for (const fin of this.fins) {
         const index = fin.getVertebraIndex(spineLength);
 
         if (!spineFins[index])

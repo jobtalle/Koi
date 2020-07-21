@@ -45,8 +45,8 @@ Spawner.prototype.update = function(timeStep, atlas, randomSource, random) {
                 new FishBody(
                     pattern,
                     [
-                        new Fin(.2, 1.4, 1), new Fin(.2, 1.4, -1),
-                        new Fin(.5, .8, 1), new Fin(.5, .8, -1)
+                        new Fin(.2, 1.4, 1),
+                        new Fin(.5, .8, 1)
                     ],
                     new Tail(.3),
                     1.2,
