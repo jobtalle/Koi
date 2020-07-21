@@ -38,6 +38,7 @@ Fish.prototype.NIBBLE_TIME_MAX = 40;
 Fish.prototype.NIBBLE_RADIUS = .1;
 Fish.prototype.NIBBLE_DISPLACEMENT = 0.25;
 Fish.prototype.NIBBLE_TURN_FORCE = .07;
+Fish.prototype.SPEED_BASE = .4;
 Fish.prototype.SPEED_MIN = Math.fround(.015);
 Fish.prototype.SPEED_MAX = Math.fround(.5);
 Fish.prototype.SPEED_NIBBLE = .0155;
@@ -57,8 +58,8 @@ Fish.prototype.TURN_THRESHOLD = .005;
 Fish.prototype.TURN_CARRY = .95;
 Fish.prototype.TURN_FOLLOW_CHANCE = .025;
 Fish.prototype.TURN_AMPLITUDE = Math.PI * .4;
-Fish.prototype.GROWTH_SPEED_DEFAULT = .0005;
-Fish.prototype.GROWTH_SPEED_INCREMENT = .00003;
+Fish.prototype.GROWTH_SPEED_DEFAULT = .0005 * 2;
+Fish.prototype.GROWTH_SPEED_INCREMENT = .00003 * 2;
 Fish.prototype.AGE_MAX = 0xFFFF;
 
 /**
@@ -282,7 +283,7 @@ Fish.prototype.boostSpeed = function(random) {
  */
 Fish.prototype.updateSize = function() {
     if (this.age !== this.AGE_MAX) {
-        const growthSpeedFactor = this.growthSpeed * this.growthSpeed / 64770;
+        const growthSpeedFactor = this.growthSpeed * this.growthSpeed / 64770; // 255 * 254
         const ageMultiplier = this.GROWTH_SPEED_DEFAULT + this.GROWTH_SPEED_INCREMENT * growthSpeedFactor;
 
         this.size = 1 - 1 / (++this.age * ageMultiplier + 1);
@@ -340,9 +341,11 @@ Fish.prototype.update = function(constraint, water, random) {
         }
     }
 
+    const adjustedSpeed = this.speed * (this.SPEED_BASE + (1 - this.SPEED_BASE) * this.size);
+
     this.positionPrevious.set(this.position);
-    this.position.add(this.velocity.multiply(this.speed));
-    this.body.update(this.position, this.direction, this.speed, this.size, water, random);
+    this.position.add(this.velocity.multiply(adjustedSpeed));
+    this.body.update(this.position, this.direction, adjustedSpeed, this.size, water, random);
 
     return false;
 };
