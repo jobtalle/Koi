@@ -53,7 +53,7 @@ Spawner.prototype.update = function(timeStep, atlas, randomSource, random) {
                     .15),
                 this.constellation.spawnPoint,
                 this.constellation.spawnDirection,
-                Fish.prototype.GROWTH_SPEED_MAX));
+                Math.round(random.getFloat() * 0xFF)));
         }
     }
 };

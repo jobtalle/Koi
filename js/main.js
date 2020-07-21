@@ -15,9 +15,9 @@ if (gl) {
     // Enable 32 bit element indices
     gl.getExtension("OES_element_index_uint");
 
+    let session = new Session();
     const wrapper = document.getElementById("wrapper");
     const sessionData = window["localStorage"].getItem("session");
-    let session = new Session();
     const systems = new Systems(gl, new Random(session.environmentSeed), wrapper.clientWidth, wrapper.clientHeight);
     let lastDate = null;
     let koi = null;

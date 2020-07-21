@@ -4,7 +4,7 @@
  * @param {Vector2} position The initial position
  * @param {Vector2} direction The initial direction vector, which must be normalized
  * @param {Number} growthSpeed The growth speed
- * @param {Number} [age] The fish age in seconds, zero by default
+ * @param {Number} [age] The fish age in updates, zero by default
  * @constructor
  */
 const Fish = function(body, position, direction, growthSpeed, age = 0) {
@@ -57,10 +57,9 @@ Fish.prototype.TURN_THRESHOLD = .005;
 Fish.prototype.TURN_CARRY = .95;
 Fish.prototype.TURN_FOLLOW_CHANCE = .025;
 Fish.prototype.TURN_AMPLITUDE = Math.PI * .4;
-Fish.prototype.SIZE_MIN = .05;
-Fish.prototype.SIZE_MAX = .99;
-Fish.prototype.GROWTH_SPEED_MIN = Math.fround(.001);
-Fish.prototype.GROWTH_SPEED_MAX = Math.fround(.03);
+Fish.prototype.GROWTH_SPEED_DEFAULT = .0005;
+Fish.prototype.GROWTH_SPEED_INCREMENT = .00003;
+Fish.prototype.AGE_MAX = 0xFFFF;
 
 /**
  * Deserialize a fish
@@ -78,17 +77,7 @@ Fish.deserialize = function(buffer, position, atlas, randomSource) {
     if (!direction.isNormal())
         throw new RangeError();
 
-    const growthSpeed = buffer.readFloat();
-
-    if (!(growthSpeed >= Fish.prototype.GROWTH_SPEED_MIN && growthSpeed <= Fish.prototype.GROWTH_SPEED_MAX))
-        throw new RangeError();
-
-    const age = buffer.readFloat();
-
-    if (age < 0)
-        throw new RangeError();
-
-    const fish = new Fish(body, position, direction, growthSpeed, age);
+    const fish = new Fish(body, position, direction, buffer.readUint8(), buffer.readUint16());
 
     fish.speed = buffer.readFloat();
 
@@ -106,8 +95,8 @@ Fish.prototype.serialize = function(buffer) {
     this.body.serialize(buffer);
     this.direction.serialize(buffer);
 
-    buffer.writeFloat(this.growthSpeed);
-    buffer.writeFloat(this.age);
+    buffer.writeUint8(this.growthSpeed);
+    buffer.writeUint16(this.age);
 
     buffer.writeFloat(this.speed);
 };
@@ -292,12 +281,11 @@ Fish.prototype.boostSpeed = function(random) {
  * Update the size of this fish
  */
 Fish.prototype.updateSize = function() {
-    if (this.size !== 1) {
-        this.age += Koi.prototype.UPDATE_RATE;
-        this.size = this.SIZE_MIN + (1 - this.SIZE_MIN) * (1 - 1 / (this.age * this.growthSpeed + 1));
+    if (this.age !== this.AGE_MAX) {
+        const growthSpeedFactor = this.growthSpeed * this.growthSpeed / 64770;
+        const ageMultiplier = this.GROWTH_SPEED_DEFAULT + this.GROWTH_SPEED_INCREMENT * growthSpeedFactor;
 
-        if (this.size > this.SIZE_MAX)
-            this.size = 1;
+        this.size = 1 - 1 / (++this.age * ageMultiplier + 1);
     }
 };
 
