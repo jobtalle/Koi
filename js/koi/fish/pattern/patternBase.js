@@ -1,10 +1,10 @@
 /**
  * A base color for a fish pattern
- * @param {Palette.Sample} color A color
+ * @param {Palette.Sample} sample A palette sample
  * @constructor
  */
-const PatternBase = function(color) {
-    this.color = color;
+const PatternBase = function(sample) {
+    this.sample = sample;
 };
 
 PatternBase.prototype.SHADER_VERTEX = `#version 100
@@ -15,18 +15,19 @@ void main() {
 }
 `;
 PatternBase.prototype.SHADER_FRAGMENT = `#version 100
-uniform lowp vec3 color;
+uniform sampler2D palette;
+uniform mediump vec2 sample;
 
 void main() {
-  gl_FragColor = vec4(color, 1.0);
+  gl_FragColor = vec4(texture2D(palette, sample).rgb, 1.0);
 }
 `;
 
 PatternBase.prototype.PALETTE = new Palette([
-    new Palette.Color(new Palette.Sample(30, 30), Color.fromCSS("--color-fish-base-1")),
-    new Palette.Color(new Palette.Sample(200, 30), Color.fromCSS("--color-fish-base-2")),
-    new Palette.Color(new Palette.Sample(60, 60), Color.fromCSS("--color-fish-base-3")),
-    new Palette.Color(new Palette.Sample(60, 180), Color.fromCSS("--color-fish-base-4"))
+    new Palette.Color(new Palette.Sample(50, 30), Color.fromCSS("fish-base-1")),
+    new Palette.Color(new Palette.Sample(200, 50), Color.fromCSS("fish-base-2")),
+    new Palette.Color(new Palette.Sample(60, 20), Color.fromCSS("fish-base-3")),
+    new Palette.Color(new Palette.Sample(160, 180), Color.fromCSS("fish-base-4"))
 ]);
 
 /**
@@ -42,7 +43,7 @@ PatternBase.deserialize = function(buffer) {
  * @param {BinBuffer} buffer A buffer to serialize to
  */
 PatternBase.prototype.serialize = function(buffer) {
-    this.color.serialize(buffer);
+    this.sample.serialize(buffer);
 };
 
 /**
@@ -51,7 +52,8 @@ PatternBase.prototype.serialize = function(buffer) {
  * @param {Shader} program A shader program created from this patterns' shaders
  */
 PatternBase.prototype.configure = function(gl, program) {
-    gl.uniform3f(program["uColor"], this.color.r, this.color.g, this.color.b);
+    gl.uniform1i(program["uPalette"], Patterns.prototype.TEXTURE_PALETTE_BASE);
+    gl.uniform2f(program["uSample"], (this.sample.x + .5) / 256, (this.sample.y + .5) / 256);
 };
 
 /**
@@ -64,6 +66,6 @@ PatternBase.prototype.createShader = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["color"],
+        ["palette", "sample"],
         ["position"]);
 };

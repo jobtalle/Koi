@@ -12,7 +12,6 @@ const Systems = function(gl, random, width, height) {
     this.height = height;
     this.blit = new Blit(gl);
     this.quad = new Quad(gl, this.blit);
-    this.patterns = new Patterns(gl);
     this.sand = new Sand(gl);
     this.waves = new Waves(gl);
     this.ponds = new Ponds(gl);
@@ -23,6 +22,8 @@ const Systems = function(gl, random, width, height) {
     this.shadows = new Shadows(gl);
     this.blur = new Blur(gl, this.quad);
     this.wind = new Wind(gl, this.quad);
+    this.voronoi = new Voronoi(gl, this.quad);
+    this.patterns = new Patterns(gl, this.voronoi);
 };
 
 /**
@@ -60,4 +61,5 @@ Systems.prototype.free = function() {
     this.shadows.free();
     this.blur.free();
     this.wind.free();
+    this.voronoi.free();
 };

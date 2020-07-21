@@ -3,7 +3,7 @@
  * @param {WebGLRenderingContext} gl A webGL context
  * @constructor
  */
-const Patterns = function(gl) {
+const Patterns = function(gl, voronoi) {
     this.gl = gl;
     this.buffer = gl.createBuffer();
     this.programBase = PatternBase.prototype.createShader(gl);
@@ -15,9 +15,14 @@ const Patterns = function(gl) {
     this.programShapeFin = PatternShapeFin.prototype.createShader(gl);
     this.vaoShapeFin = this.createVAO(gl, this.programShapeFin);
 
+    this.paletteBase = new PaletteTexture(gl, PatternBase.prototype.PALETTE, voronoi);
+
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
     gl.bufferData(gl.ARRAY_BUFFER, 64, gl.DYNAMIC_DRAW);
 };
+
+Patterns.prototype.TEXTURE_RANDOM = 0;
+Patterns.prototype.TEXTURE_PALETTE_BASE = 1;
 
 /**
  * Create a VAO for a pattern shader
@@ -68,6 +73,11 @@ Patterns.prototype.writeLayer = function(layer, program, vao) {
  * @param {Number} pixelSize The pixel size
  */
 Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
+    this.gl.activeTexture(this.gl.TEXTURE0 + this.TEXTURE_RANDOM);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, randomSource.texture);
+    this.gl.activeTexture(this.gl.TEXTURE0 + this.TEXTURE_PALETTE_BASE);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, this.paletteBase.texture);
+
     this.gl.vao.bindVertexArrayOES(this.vao);
 
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
@@ -102,9 +112,6 @@ Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
         2 * (region.vStart + pixelSize) - 1,
         1, 0
     ]));
-
-    this.gl.activeTexture(this.gl.TEXTURE0);
-    this.gl.bindTexture(this.gl.TEXTURE_2D, randomSource.texture);
 
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
@@ -152,6 +159,8 @@ Patterns.prototype.free = function() {
     this.gl.vao.deleteVertexArrayOES(this.vaoShapeBody);
     this.programShapeFin.free();
     this.gl.vao.deleteVertexArrayOES(this.vaoShapeFin);
+
+    this.paletteBase.free();
 
     this.gl.deleteBuffer(this.buffer);
 };

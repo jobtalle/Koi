@@ -283,7 +283,7 @@ Fish.prototype.boostSpeed = function(random) {
  */
 Fish.prototype.updateSize = function() {
     if (this.age !== this.AGE_MAX) {
-        const growthSpeedFactor = this.growthSpeed * this.growthSpeed / 64770; // 255 * 254
+        const growthSpeedFactor = this.growthSpeed * this.growthSpeed * this.growthSpeed / 65025
         const ageMultiplier = this.GROWTH_SPEED_DEFAULT + this.GROWTH_SPEED_INCREMENT * growthSpeedFactor;
 
         this.size = 1 - 1 / (++this.age * ageMultiplier + 1);

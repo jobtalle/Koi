@@ -2,44 +2,27 @@
  * A texture for a palette sampler
  * @param {WebGLRenderingContext} gl A WebGL rendering context
  * @param {Palette} palette The palette to create this texture for
+ * @param {Voronoi} voronoi The voronoi diagram renderer
  * @constructor
  */
-const PaletteTexture = function(gl, palette) {
+const PaletteTexture = function(gl, palette, voronoi) {
     this.gl = gl;
     this.texture = gl.createTexture();
 
-    this.initialize(palette);
-};
-
-/**
- * Create the initial pixels
- * @param {Palette} palette The palette to create a Voronoi diagram from
- * @returns {Uint8Array} The initial pixel array
- */
-PaletteTexture.prototype.createInitialPixels = function(palette) {
-    const pixels = new Array(196608); // 256 * 256 * 3
-
-    for (const color of palette.colors) {
-        const index = 3 * (color.sample.x + color.sample.y * 256);
-
-        pixels[index] = color.r;
-        pixels[index] = color.g;
-        pixels[index] = color.b;
-    }
-
-    return new Uint8Array(pixels);
+    this.initialize(palette, voronoi);
 };
 
 /**
  * Initialize the texture
  * @param {Palette} palette The palette to create a Voronoi diagram from
+ * @param {Voronoi} voronoi The voronoi diagram renderer
  */
-PaletteTexture.prototype.initialize = function(palette) {
+PaletteTexture.prototype.initialize = function(palette, voronoi) {
     this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.REPEAT);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.REPEAT);
     this.gl.texImage2D(
         this.gl.TEXTURE_2D,
         0,
@@ -49,7 +32,23 @@ PaletteTexture.prototype.initialize = function(palette) {
         0,
         this.gl.RGB,
         this.gl.UNSIGNED_BYTE,
-        this.createInitialPixels(palette));
+        null);
+
+    const locations = [];
+    const colors = [];
+
+    for (const color of palette.colors) {
+        locations.push(new Vector2(color.sample.x, color.sample.y));
+        colors.push(color.color);
+    }
+
+    voronoi.apply(
+        this.texture,
+        256,
+        256,
+        palette.colors.length,
+        locations,
+        colors);
 };
 
 /**

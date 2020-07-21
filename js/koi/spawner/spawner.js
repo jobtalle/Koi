@@ -27,7 +27,7 @@ Spawner.prototype.update = function(timeStep, atlas, randomSource, random) {
 
         if (this.constellation.getFishCount() < this.constellation.getCapacity() - this.SPAWN_OVERHEAD) {
             const pattern = new Pattern(
-                new PatternBase(Color.fromCSS("fish-base")),
+                new PatternBase(new Palette.Sample().randomize(random)),
                 [
                     new PatternSpots(
                         1.5,

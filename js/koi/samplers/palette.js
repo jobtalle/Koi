@@ -9,11 +9,11 @@ const Palette = function(colors) {
 
 /**
  * A palette sample
- * @param {Number} x The X coordinate of this sample
- * @param {Number} y The Y coordinate of this sample
+ * @param {Number} [x] The X coordinate of this sample
+ * @param {Number} [y] The Y coordinate of this sample
  * @constructor
  */
-Palette.Sample = function(x, y) {
+Palette.Sample = function(x = 0, y = 0) {
     this.x = x;
     this.y = y;
 };
@@ -33,6 +33,18 @@ Palette.Sample.deserialize = function(buffer) {
 Palette.Sample.prototype.serialize = function(buffer) {
     buffer.writeUint8(this.x);
     buffer.writeUint8(this.y);
+};
+
+/**
+ * Randomize this sample
+ * @param {Random} random A randomizer
+ * @returns {Palette.Sample} This sample
+ */
+Palette.Sample.prototype.randomize = function(random) {
+    this.x = Math.floor(256 * random.getFloat());
+    this.y = Math.floor(256 * random.getFloat());
+
+    return this;
 };
 
 /**
