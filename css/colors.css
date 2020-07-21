@@ -14,6 +14,9 @@
     --color-cattail-capsule: #CECD9B;
 
     /* Fish colors */
-    --color-fish-base: #ececec;
+    --color-fish-base-1: #ececec;
+    --color-fish-base-2: #bfaf9b;
+    --color-fish-base-3: #efdbc0;
+    --color-fish-base-4: #9eaeb4;
     --color-fish-spots-orange: #cd3712;
 }

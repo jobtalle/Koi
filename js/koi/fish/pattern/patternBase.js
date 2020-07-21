@@ -1,10 +1,10 @@
 /**
  * A base color for a fish pattern
- * @param {Color} color A color
+ * @param {Palette.Sample} color A color
  * @constructor
  */
 const PatternBase = function(color) {
-    this.color = color; // TODO: Use gradient location instead
+    this.color = color;
 };
 
 PatternBase.prototype.SHADER_VERTEX = `#version 100
@@ -22,12 +22,19 @@ void main() {
 }
 `;
 
+PatternBase.prototype.PALETTE = new Palette([
+    new Palette.Color(new Palette.Sample(30, 30), Color.fromCSS("--color-fish-base-1")),
+    new Palette.Color(new Palette.Sample(200, 30), Color.fromCSS("--color-fish-base-2")),
+    new Palette.Color(new Palette.Sample(60, 60), Color.fromCSS("--color-fish-base-3")),
+    new Palette.Color(new Palette.Sample(60, 180), Color.fromCSS("--color-fish-base-4"))
+]);
+
 /**
  * Deserialize a base pattern
  * @param {BinBuffer} buffer A buffer to deserialize from
  */
 PatternBase.deserialize = function(buffer) {
-    return new PatternBase(Color.deserialize(buffer));
+    return new PatternBase(Pattern.Sample.deserialize(buffer));
 };
 
 /**
