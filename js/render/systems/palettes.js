@@ -27,6 +27,8 @@ const Palettes = function(gl, voronoi) {
         voronoi);
 };
 
+Palettes.prototype.LAYERS = 2;
+
 /**
  * Bind the palette textures
  * @param {GLenum} first The first texture unit to bind at

@@ -117,12 +117,23 @@ Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
 
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
-    // TODO: Implement palette rules
-    for (const layer of pattern.layers) switch (layer.id) {
-        case LayerSpots.prototype.ID:
-            this.writeLayer(layer, this.programSpots, this.vaoSpots, 2);
 
-            break;
+    let texture = 1;
+    let previousLayer = pattern.base;
+
+    for (const layer of pattern.layers) {
+        if (texture !== this.palettes.LAYERS)
+            if (!(previousLayer.flags & previousLayer.FLAG_ALLOW_OVERLAP) || !(layer.flags & layer.FLAG_OVERLAPS))
+                ++texture;
+
+        switch (layer.id) {
+            case LayerSpots.prototype.ID:
+                this.writeLayer(layer, this.programSpots, this.vaoSpots, texture);
+
+                break;
+        }
+
+        previousLayer = layer;
     }
 
     this.gl.blendFunc(this.gl.ZERO, this.gl.SRC_COLOR)

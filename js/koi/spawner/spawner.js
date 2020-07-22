@@ -34,6 +34,12 @@ Spawner.prototype.update = function(timeStep, atlas, randomSource, random) {
                         new Palette.Sample().randomize(random),
                         new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),
                         new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()
+                    ),
+                    new LayerSpots(
+                        1.5,
+                        new Palette.Sample().randomize(random),
+                        new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),
+                        new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()
                     )
                 ],
                 new LayerShapeBody(0.6, 0.7),
