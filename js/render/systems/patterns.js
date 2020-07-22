@@ -8,13 +8,13 @@ const Patterns = function(gl, palettes) {
     this.gl = gl;
     this.palettes = palettes;
     this.buffer = gl.createBuffer();
-    this.programBase = PatternBase.prototype.createShader(gl);
+    this.programBase = LayerBase.prototype.createShader(gl);
     this.vaoBase = this.createVAO(gl, this.programBase);
-    this.programSpots = PatternSpots.prototype.createShader(gl);
+    this.programSpots = LayerSpots.prototype.createShader(gl);
     this.vaoSpots = this.createVAO(gl, this.programSpots);
-    this.programShapeBody = PatternShapeBody.prototype.createShader(gl);
+    this.programShapeBody = LayerShapeBody.prototype.createShader(gl);
     this.vaoShapeBody = this.createVAO(gl, this.programShapeBody);
-    this.programShapeFin = PatternShapeFin.prototype.createShader(gl);
+    this.programShapeFin = LayerShapeFin.prototype.createShader(gl);
     this.vaoShapeFin = this.createVAO(gl, this.programShapeFin);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
@@ -118,10 +118,10 @@ Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
 
-    for (const layer of pattern.layers) switch (layer.constructor) {
-        case PatternSpots:
+    for (const layer of pattern.layers) switch (layer.id) {
+        case LayerSpots.prototype.ID:
             this.writeLayer(layer, this.programSpots, this.vaoSpots, 2);
-
+            
             break;
     }
 

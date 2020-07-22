@@ -1,9 +1,9 @@
 /**
  * A fish pattern
- * @param {Object[]} layers The layers making up this pattern
- * @param {PatternBase} base The base color pattern, also applied to fins
- * @param {PatternShapeBody} shapeBody The body shape for this pattern
- * @param {PatternShapeFin} shapeFin The fin shape for this pattern
+ * @param {Layer[]} layers The layers making up this pattern
+ * @param {LayerBase} base The base color pattern, also applied to fins
+ * @param {LayerShapeBody} shapeBody The body shape for this pattern
+ * @param {LayerShapeFin} shapeFin The fin shape for this pattern
  * @constructor
  */
 const Pattern = function(base, layers, shapeBody, shapeFin) {
@@ -26,8 +26,8 @@ Pattern.deserialize = function(buffer) {
 
     while (layerID = buffer.readUint8()) {
         switch (layerID) {
-            case PatternSpots.prototype.ID:
-                layers.push(PatternSpots.deserialize(buffer));
+            case LayerSpots.prototype.ID:
+                layers.push(LayerSpots.deserialize(buffer));
 
                 break;
             default:
@@ -36,10 +36,10 @@ Pattern.deserialize = function(buffer) {
     }
 
     return new Pattern(
-        PatternBase.deserialize(buffer),
+        LayerBase.deserialize(buffer),
         layers,
-        PatternShapeBody.deserialize(buffer),
-        PatternShapeFin.deserialize(buffer));
+        LayerShapeBody.deserialize(buffer),
+        LayerShapeFin.deserialize(buffer));
 };
 
 /**

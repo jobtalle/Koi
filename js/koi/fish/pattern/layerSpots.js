@@ -6,21 +6,25 @@
  * @param {Vector3} x The noise sample X direction
  * @constructor
  */
-const PatternSpots = function(scale, sample, anchor, x) {
+const LayerSpots = function(scale, sample, anchor, x) {
     this.scale = scale;
     this.sample = sample;
     this.anchor = anchor;
     this.x = x;
+
+    Layer.call(this, this.ID, true, false);
 };
 
-PatternSpots.prototype.UP = new Vector3(0, 1, 0);
-PatternSpots.prototype.UP_ALT = new Vector3(.1, 1, 0);
-PatternSpots.prototype.SCALE_MIN = Math.fround(0.5);
-PatternSpots.prototype.SCALE_MAX = Math.fround(5);
-PatternSpots.prototype.SPACE_LIMIT_MIN = Math.fround(-256);
-PatternSpots.prototype.SPACE_LIMIT_MAX = Math.fround(256);
+LayerSpots.prototype = Object.create(Layer.prototype);
 
-PatternSpots.prototype.SHADER_VERTEX = `#version 100
+LayerSpots.prototype.UP = new Vector3(0, 1, 0);
+LayerSpots.prototype.UP_ALT = new Vector3(.1, 1, 0);
+LayerSpots.prototype.SCALE_MIN = Math.fround(0.5);
+LayerSpots.prototype.SCALE_MAX = Math.fround(5);
+LayerSpots.prototype.SPACE_LIMIT_MIN = Math.fround(-256);
+LayerSpots.prototype.SPACE_LIMIT_MAX = Math.fround(256);
+
+LayerSpots.prototype.SHADER_VERTEX = `#version 100
 uniform sampler2D palette;
 uniform mediump vec2 sample;
 
@@ -38,7 +42,7 @@ void main() {
 }
 `;
 
-PatternSpots.prototype.SHADER_FRAGMENT = `#version 100
+LayerSpots.prototype.SHADER_FRAGMENT = `#version 100
 ` + CommonShaders.cubicNoise + `
 uniform mediump float scale;
 uniform mediump vec2 size;
@@ -62,19 +66,19 @@ void main() {
 /**
  * Deserialize a spots pattern
  * @param {BinBuffer} buffer The buffer to deserialize from
- * @returns {PatternSpots} The deserialized pattern
+ * @returns {LayerSpots} The deserialized pattern
  * @throws {RangeError} A range error if deserialized values are not valid
  */
-PatternSpots.deserialize = function(buffer) {
+LayerSpots.deserialize = function(buffer) {
     const scale = buffer.readFloat();
 
-    if (!(scale >= PatternSpots.prototype.SCALE_MIN && scale <= PatternSpots.prototype.SCALE_MAX))
+    if (!(scale >= LayerSpots.prototype.SCALE_MIN && scale <= LayerSpots.prototype.SCALE_MAX))
         throw new RangeError();
 
     const sample = Palette.Sample.deserialize(buffer);
     const anchor = new Vector3().deserialize(buffer);
 
-    if (!anchor.withinLimits(PatternSpots.prototype.SPACE_LIMIT_MIN, PatternSpots.prototype.SPACE_LIMIT_MAX))
+    if (!anchor.withinLimits(LayerSpots.prototype.SPACE_LIMIT_MIN, LayerSpots.prototype.SPACE_LIMIT_MAX))
         throw new RangeError();
 
     const x = new Vector3().deserialize(buffer);
@@ -82,14 +86,14 @@ PatternSpots.deserialize = function(buffer) {
     if (!x.isNormal())
         throw new RangeError();
 
-    return new PatternSpots(scale, sample, anchor, x);
+    return new LayerSpots(scale, sample, anchor, x);
 };
 
 /**
  * Serialize this pattern
  * @param {BinBuffer} buffer The buffer to serialize to
  */
-PatternSpots.prototype.serialize = function(buffer) {
+LayerSpots.prototype.serialize = function(buffer) {
     buffer.writeFloat(this.scale);
 
     this.sample.serialize(buffer);
@@ -101,7 +105,7 @@ PatternSpots.prototype.serialize = function(buffer) {
  * Get the z direction vector, which depends on the X direction vector
  * @returns {Vector3} The Z direction vector
  */
-PatternSpots.prototype.getZ = function() {
+LayerSpots.prototype.getZ = function() {
     if (this.x.equals(this.UP))
         return this.x.cross(this.UP_ALT).normalize();
 
@@ -113,7 +117,7 @@ PatternSpots.prototype.getZ = function() {
  * @param {Vector3} z The Z direction vector
  * @returns {Vector3} The Y direction vector
  */
-PatternSpots.prototype.getY = function(z) {
+LayerSpots.prototype.getY = function(z) {
     return this.x.cross(z);
 };
 
@@ -123,7 +127,7 @@ PatternSpots.prototype.getY = function(z) {
  * @param {Shader} program A shader program created from this patterns' shaders
  * @param {Number} texture The index of the color palette for this layer
  */
-PatternSpots.prototype.configure = function(gl, program, texture) {
+LayerSpots.prototype.configure = function(gl, program, texture) {
     const z = this.getZ();
     const y = this.getY(z);
 
@@ -146,7 +150,7 @@ PatternSpots.prototype.configure = function(gl, program, texture) {
  * @param {WebGLRenderingContext} gl A webGL context
  * @returns {Shader} The shader program
  */
-PatternSpots.prototype.createShader = function(gl) {
+LayerSpots.prototype.createShader = function(gl) {
     return new Shader(
         gl,
         this.SHADER_VERTEX,

@@ -3,11 +3,15 @@
  * @param {Palette.Sample} sample A palette sample
  * @constructor
  */
-const PatternBase = function(sample) {
+const LayerBase = function(sample) {
     this.sample = sample;
+
+    Layer.call(this, -1, false);
 };
 
-PatternBase.prototype.SHADER_VERTEX = `#version 100
+LayerBase.prototype = Object.create(Layer.prototype);
+
+LayerBase.prototype.SHADER_VERTEX = `#version 100
 uniform sampler2D palette;
 uniform mediump vec2 sample;
 
@@ -21,7 +25,7 @@ void main() {
   gl_Position = vec4(position, 0.0, 1.0);
 }
 `;
-PatternBase.prototype.SHADER_FRAGMENT = `#version 100
+LayerBase.prototype.SHADER_FRAGMENT = `#version 100
 varying lowp vec3 iColor;
 
 void main() {
@@ -33,15 +37,15 @@ void main() {
  * Deserialize a base pattern
  * @param {BinBuffer} buffer A buffer to deserialize from
  */
-PatternBase.deserialize = function(buffer) {
-    return new PatternBase(Palette.Sample.deserialize(buffer));
+LayerBase.deserialize = function(buffer) {
+    return new LayerBase(Palette.Sample.deserialize(buffer));
 };
 
 /**
  * Serialize this base pattern
  * @param {BinBuffer} buffer A buffer to serialize to
  */
-PatternBase.prototype.serialize = function(buffer) {
+LayerBase.prototype.serialize = function(buffer) {
     this.sample.serialize(buffer);
 };
 
@@ -51,7 +55,7 @@ PatternBase.prototype.serialize = function(buffer) {
  * @param {Shader} program A shader program created from this patterns' shaders
  * @param {Number} texture The index of the color palette for this layer
  */
-PatternBase.prototype.configure = function(gl, program, texture) {
+LayerBase.prototype.configure = function(gl, program, texture) {
     gl.uniform1i(program["uPalette"], texture);
     gl.uniform2f(program["uSample"], (this.sample.x + .5) / 256, (this.sample.y + .5) / 256);
 };
@@ -61,7 +65,7 @@ PatternBase.prototype.configure = function(gl, program, texture) {
  * @param {WebGLRenderingContext} gl A webGL context
  * @returns {Shader} The shader program
  */
-PatternBase.prototype.createShader = function(gl) {
+LayerBase.prototype.createShader = function(gl) {
     return new Shader(
         gl,
         this.SHADER_VERTEX,

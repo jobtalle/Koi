@@ -4,20 +4,24 @@
  * @param {Number} radiusPower A power value to apply to the body radius
  * @constructor
  */
-const PatternShapeBody = function(centerPower, radiusPower) {
+const LayerShapeBody = function(centerPower, radiusPower) {
     this.centerPower = centerPower;
     this.radiusPower = radiusPower;
+
+    Layer.call(this);
 };
 
-PatternShapeBody.prototype.SHADE_POWER = 1.8;
-PatternShapeBody.prototype.LIGHT_POWER = 0.5;
-PatternShapeBody.prototype.AMBIENT = 0.5;
-PatternShapeBody.prototype.CENTER_POWER_MIN = Math.fround(.1);
-PatternShapeBody.prototype.CENTER_POWER_MAX = Math.fround(2.5);
-PatternShapeBody.prototype.RADIUS_POWER_MIN = Math.fround(.2);
-PatternShapeBody.prototype.RADIUS_POWER_MAX = Math.fround(1);
+LayerShapeBody.prototype = Object.create(Layer.prototype);
 
-PatternShapeBody.prototype.SHADER_VERTEX = `#version 100
+LayerShapeBody.prototype.SHADE_POWER = 1.8;
+LayerShapeBody.prototype.LIGHT_POWER = 0.5;
+LayerShapeBody.prototype.AMBIENT = 0.5;
+LayerShapeBody.prototype.CENTER_POWER_MIN = Math.fround(.1);
+LayerShapeBody.prototype.CENTER_POWER_MAX = Math.fround(2.5);
+LayerShapeBody.prototype.RADIUS_POWER_MIN = Math.fround(.2);
+LayerShapeBody.prototype.RADIUS_POWER_MAX = Math.fround(1);
+
+LayerShapeBody.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
 attribute vec2 uv;
 
@@ -30,7 +34,7 @@ void main() {
 }
 `;
 
-PatternShapeBody.prototype.SHADER_FRAGMENT = `#version 100
+LayerShapeBody.prototype.SHADER_FRAGMENT = `#version 100
 uniform mediump float centerPower;
 uniform mediump float shadePower;
 uniform mediump float lightPower;
@@ -56,32 +60,32 @@ void main() {
 /**
  * Deserialize this pattern
  * @param {BinBuffer} buffer A buffer to deserialize from
- * @returns {PatternShapeBody} The deserialized pattern shape
+ * @returns {LayerShapeBody} The deserialized pattern shape
  * @throws {RangeError} A range error if deserialized values are not valid
  */
-PatternShapeBody.deserialize = function(buffer) {
+LayerShapeBody.deserialize = function(buffer) {
     const centerPower = buffer.readFloat();
 
     if (!(
-        centerPower >= PatternShapeBody.prototype.CENTER_POWER_MIN &&
-        centerPower <= PatternShapeBody.prototype.CENTER_POWER_MAX))
+        centerPower >= LayerShapeBody.prototype.CENTER_POWER_MIN &&
+        centerPower <= LayerShapeBody.prototype.CENTER_POWER_MAX))
         throw new RangeError();
 
     const radiusPower = buffer.readFloat();
 
     if (!(
-        radiusPower >= PatternShapeBody.prototype.RADIUS_POWER_MIN &&
-        radiusPower <= PatternShapeBody.prototype.RADIUS_POWER_MAX))
+        radiusPower >= LayerShapeBody.prototype.RADIUS_POWER_MIN &&
+        radiusPower <= LayerShapeBody.prototype.RADIUS_POWER_MAX))
         throw new RangeError();
 
-    return new PatternShapeBody(centerPower, radiusPower);
+    return new LayerShapeBody(centerPower, radiusPower);
 };
 
 /**
  * Serialize this pattern
  * @param {BinBuffer} buffer The buffer to serialize to
  */
-PatternShapeBody.prototype.serialize = function(buffer) {
+LayerShapeBody.prototype.serialize = function(buffer) {
     buffer.writeFloat(this.centerPower);
     buffer.writeFloat(this.radiusPower);
 };
@@ -91,7 +95,7 @@ PatternShapeBody.prototype.serialize = function(buffer) {
  * @param {Number} x The X position to sample at in the range [0, 1]
  * @returns {Number} The thickness in the range [0, 1]
  */
-PatternShapeBody.prototype.sample = function(x) {
+LayerShapeBody.prototype.sample = function(x) {
     return Math.pow(Math.cos(Math.PI * (Math.pow(x, this.centerPower) - .5)), this.radiusPower);
 };
 
@@ -100,7 +104,7 @@ PatternShapeBody.prototype.sample = function(x) {
  * @param {WebGLRenderingContext} gl A webGL context
  * @param {Shader} program A shader program created from this patterns' shaders
  */
-PatternShapeBody.prototype.configure = function(gl, program) {
+LayerShapeBody.prototype.configure = function(gl, program) {
     gl.uniform1f(program["uCenterPower"], this.centerPower);
     gl.uniform1f(program["uShadePower"], this.SHADE_POWER);
     gl.uniform1f(program["uLightPower"], this.LIGHT_POWER);
@@ -113,7 +117,7 @@ PatternShapeBody.prototype.configure = function(gl, program) {
  * @param {WebGLRenderingContext} gl A webGL context
  * @returns {Shader} The shader program
  */
-PatternShapeBody.prototype.createShader = function(gl) {
+LayerShapeBody.prototype.createShader = function(gl) {
     return new Shader(
         gl,
         this.SHADER_VERTEX,

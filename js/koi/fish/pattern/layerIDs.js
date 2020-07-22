@@ -1,0 +1,1 @@
+LayerSpots.prototype.ID = 1;

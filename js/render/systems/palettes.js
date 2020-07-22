@@ -13,8 +13,7 @@ const Palettes = function(gl, voronoi) {
             new Palette.Color(new Palette.Sample(50, 30), Color.fromCSS("fish-base-1")),
             new Palette.Color(new Palette.Sample(150, 30), Color.fromCSS("fish-base-1")),
             new Palette.Color(new Palette.Sample(200, 50), Color.fromCSS("fish-base-2")),
-            new Palette.Color(new Palette.Sample(60, 20), Color.fromCSS("fish-base-3")),
-            new Palette.Color(new Palette.Sample(160, 180), Color.fromCSS("fish-base-4"))
+            new Palette.Color(new Palette.Sample(60, 20), Color.fromCSS("fish-base-3"))
         ]),
         voronoi);
 

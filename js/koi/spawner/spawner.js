@@ -27,17 +27,17 @@ Spawner.prototype.update = function(timeStep, atlas, randomSource, random) {
 
         if (this.constellation.getFishCount() < this.constellation.getCapacity() - this.SPAWN_OVERHEAD) {
             const pattern = new Pattern(
-                new PatternBase(new Palette.Sample().randomize(random)),
+                new LayerBase(new Palette.Sample().randomize(random)),
                 [
-                    new PatternSpots(
+                    new LayerSpots(
                         1.5,
                         new Palette.Sample().randomize(random),
                         new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),
                         new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()
                     )
                 ],
-                new PatternShapeBody(0.6, 0.7),
-                new PatternShapeFin());
+                new LayerShapeBody(0.6, 0.7),
+                new LayerShapeFin());
 
             atlas.write(pattern, randomSource);
 

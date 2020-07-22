@@ -2,11 +2,13 @@
  * A fish fin shape which will be superimposed over a pattern
  * @constructor
  */
-const PatternShapeFin = function() {
-
+const LayerShapeFin = function() {
+    Layer.call(this);
 };
 
-PatternShapeFin.prototype.SHADER_VERTEX = `#version 100
+LayerShapeFin.prototype = Object.create(Layer.prototype);
+
+LayerShapeFin.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
 attribute vec2 uv;
 
@@ -19,7 +21,7 @@ void main() {
 }
 `;
 
-PatternShapeFin.prototype.SHADER_FRAGMENT = `#version 100
+LayerShapeFin.prototype.SHADER_FRAGMENT = `#version 100
 varying mediump vec2 iUv;
 
 void main() {
@@ -37,15 +39,15 @@ void main() {
  * Deserialize this pattern
  * @param {BinBuffer} buffer A buffer to deserialize from
  */
-PatternShapeFin.deserialize = function(buffer) {
-    return new PatternShapeFin();
+LayerShapeFin.deserialize = function(buffer) {
+    return new LayerShapeFin();
 };
 
 /**
  * Serialize this pattern
  * @param {BinBuffer} buffer A buffer to serialize to
  */
-PatternShapeFin.prototype.serialize = function(buffer) {
+LayerShapeFin.prototype.serialize = function(buffer) {
 
 };
 
@@ -54,7 +56,7 @@ PatternShapeFin.prototype.serialize = function(buffer) {
  * @param {WebGLRenderingContext} gl A webGL context
  * @param {Shader} program A shader program created from this patterns' shaders
  */
-PatternShapeFin.prototype.configure = function(gl, program) {
+LayerShapeFin.prototype.configure = function(gl, program) {
 
 };
 
@@ -63,7 +65,7 @@ PatternShapeFin.prototype.configure = function(gl, program) {
  * @param {WebGLRenderingContext} gl A webGL context
  * @returns {Shader} The shader program
  */
-PatternShapeFin.prototype.createShader = function(gl) {
+LayerShapeFin.prototype.createShader = function(gl) {
     return new Shader(
         gl,
         this.SHADER_VERTEX,
