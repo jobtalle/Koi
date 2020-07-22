@@ -128,7 +128,7 @@ PatternSpots.prototype.configure = function(gl, program, texture) {
     const y = this.getY(z);
 
     gl.uniform1i(program["uPalette"], texture);
-    gl.uniform2f(program["uSample"], this.sample.x + .5, this.sample.y + .5);
+    gl.uniform2f(program["uSample"], (this.sample.x + .5) / 256, (this.sample.y + .5) / 256);
     gl.uniform1f(program["uScale"], this.scale);
     gl.uniform3f(program["uAnchor"], this.anchor.x, this.anchor.y, this.anchor.z);
     gl.uniformMatrix3fv(
