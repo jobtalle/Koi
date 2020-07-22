@@ -51,7 +51,7 @@ Fish.prototype.BOOST_POWER = .0015;
 Fish.prototype.BOOST_MIN = 5;
 Fish.prototype.BOOST_MAX = 30;
 Fish.prototype.TURN_CHANCE = .0013;
-Fish.prototype.TURN_FORCE = .06;
+Fish.prototype.TURN_FORCE = Math.fround(.06);
 Fish.prototype.TURN_POWER = .4;
 Fish.prototype.TURN_DECAY = .94;
 Fish.prototype.TURN_THRESHOLD = .005;
@@ -80,10 +80,32 @@ Fish.deserialize = function(buffer, position, atlas, randomSource) {
 
     const fish = new Fish(body, position, direction, buffer.readUint8(), buffer.readUint16());
 
+    fish.nibbleTime = buffer.readUint8();
+
+    if (fish.nibbleTime > Fish.prototype.NIBBLE_TIME_MAX)
+        throw new RangeError();
+
     fish.speed = buffer.readFloat();
 
     if (!(fish.speed >= Fish.prototype.SPEED_MIN && fish.speed <= Fish.prototype.SPEED_MAX))
         throw new RangeError();
+
+    fish.boost = buffer.readUint8();
+
+    if (fish.boost > Fish.prototype.BOOST_MAX)
+        throw new RangeError();
+
+    fish.turnForce = buffer.readFloat();
+
+    if (!(fish.turnForce >= 0 && fish.turnForce < Fish.prototype.TURN_FORCE))
+        throw new RangeError();
+
+    if (fish.turnForce !== 0) {
+        fish.turnDirection.deserialize(buffer);
+
+        if (!fish.turnDirection.isNormal())
+            throw new RangeError();
+    }
 
     return fish;
 };
@@ -99,7 +121,13 @@ Fish.prototype.serialize = function(buffer) {
     buffer.writeUint8(this.growthSpeed);
     buffer.writeUint16(this.age);
 
+    buffer.writeUint8(this.nibbleTime);
     buffer.writeFloat(this.speed);
+    buffer.writeUint8(this.boost);
+    buffer.writeFloat(this.turnForce);
+
+    if (this.turnForce !== 0)
+        this.turnDirection.serialize(buffer);
 };
 
 /**
@@ -313,6 +341,7 @@ Fish.prototype.update = function(constraint, water, random) {
 
     if (this.boost) {
         --this.boost;
+
         this.speed += this.BOOST_POWER;
 
         if (this.speed > this.SPEED_MAX)

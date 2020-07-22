@@ -117,11 +117,11 @@ Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
 
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
-
+    // TODO: Implement palette rules
     for (const layer of pattern.layers) switch (layer.id) {
         case LayerSpots.prototype.ID:
             this.writeLayer(layer, this.programSpots, this.vaoSpots, 2);
-            
+
             break;
     }
 
