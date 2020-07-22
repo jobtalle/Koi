@@ -31,7 +31,7 @@ Spawner.prototype.update = function(timeStep, atlas, randomSource, random) {
                 [
                     new PatternSpots(
                         1.5,
-                        Color.fromCSS("fish-spots-orange"),
+                        new Palette.Sample().randomize(random),
                         new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),
                         new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()
                     )

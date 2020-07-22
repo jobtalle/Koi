@@ -1,6 +1,7 @@
 /**
  * The pattern renderer
  * @param {WebGLRenderingContext} gl A webGL context
+ * @param {Voronoi} voronoi The voronoi renderer to initialize palette textures
  * @constructor
  */
 const Patterns = function(gl, voronoi) {
@@ -16,6 +17,7 @@ const Patterns = function(gl, voronoi) {
     this.vaoShapeFin = this.createVAO(gl, this.programShapeFin);
 
     this.paletteBase = new PaletteTexture(gl, PatternBase.prototype.PALETTE, voronoi);
+    this.paletteSpots = new PaletteTexture(gl, PatternSpots.prototype.PALETTE, voronoi);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
     gl.bufferData(gl.ARRAY_BUFFER, 64, gl.DYNAMIC_DRAW);
@@ -23,6 +25,7 @@ const Patterns = function(gl, voronoi) {
 
 Patterns.prototype.TEXTURE_RANDOM = 0;
 Patterns.prototype.TEXTURE_PALETTE_BASE = 1;
+Patterns.prototype.TEXTURE_PALETTE_SPOTS = 2;
 
 /**
  * Create a VAO for a pattern shader
@@ -77,6 +80,8 @@ Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
     this.gl.bindTexture(this.gl.TEXTURE_2D, randomSource.texture);
     this.gl.activeTexture(this.gl.TEXTURE0 + this.TEXTURE_PALETTE_BASE);
     this.gl.bindTexture(this.gl.TEXTURE_2D, this.paletteBase.texture);
+    this.gl.activeTexture(this.gl.TEXTURE0 + this.TEXTURE_PALETTE_SPOTS);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, this.paletteSpots.texture);
 
     this.gl.vao.bindVertexArrayOES(this.vao);
 
@@ -161,6 +166,7 @@ Patterns.prototype.free = function() {
     this.gl.vao.deleteVertexArrayOES(this.vaoShapeFin);
 
     this.paletteBase.free();
+    this.paletteSpots.free();
 
     this.gl.deleteBuffer(this.buffer);
 };

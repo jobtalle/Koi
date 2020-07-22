@@ -8,18 +8,24 @@ const PatternBase = function(sample) {
 };
 
 PatternBase.prototype.SHADER_VERTEX = `#version 100
+uniform sampler2D palette;
+uniform mediump vec2 sample;
+
 attribute vec2 position;
 
+varying lowp vec3 iColor;
+
 void main() {
+  iColor = texture2D(palette, sample).rgb;
+  
   gl_Position = vec4(position, 0.0, 1.0);
 }
 `;
 PatternBase.prototype.SHADER_FRAGMENT = `#version 100
-uniform sampler2D palette;
-uniform mediump vec2 sample;
+varying lowp vec3 iColor;
 
 void main() {
-  gl_FragColor = vec4(texture2D(palette, sample).rgb, 1.0);
+  gl_FragColor = vec4(iColor, 1.0);
 }
 `;
 
