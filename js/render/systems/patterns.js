@@ -1,11 +1,12 @@
 /**
  * The pattern renderer
  * @param {WebGLRenderingContext} gl A webGL context
- * @param {Voronoi} voronoi The voronoi renderer to initialize palette textures
+ * @param {Palettes} palettes The palettes
  * @constructor
  */
-const Patterns = function(gl, voronoi) {
+const Patterns = function(gl, palettes) {
     this.gl = gl;
+    this.palettes = palettes;
     this.buffer = gl.createBuffer();
     this.programBase = PatternBase.prototype.createShader(gl);
     this.vaoBase = this.createVAO(gl, this.programBase);
@@ -16,16 +17,9 @@ const Patterns = function(gl, voronoi) {
     this.programShapeFin = PatternShapeFin.prototype.createShader(gl);
     this.vaoShapeFin = this.createVAO(gl, this.programShapeFin);
 
-    this.paletteBase = new PaletteTexture(gl, PatternBase.prototype.PALETTE, voronoi);
-    this.paletteSpots = new PaletteTexture(gl, PatternSpots.prototype.PALETTE, voronoi);
-
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
     gl.bufferData(gl.ARRAY_BUFFER, 64, gl.DYNAMIC_DRAW);
 };
-
-Patterns.prototype.TEXTURE_RANDOM = 0;
-Patterns.prototype.TEXTURE_PALETTE_BASE = 1;
-Patterns.prototype.TEXTURE_PALETTE_SPOTS = 2;
 
 /**
  * Create a VAO for a pattern shader
@@ -54,11 +48,16 @@ Patterns.prototype.createVAO = function(gl, program) {
  * @param {Object} layer A valid pattern layer object
  * @param {Shader} program The shader program for this layer type
  * @param {WebGLVertexArrayObjectOES} vao The VAO for this layer type
+ * @param {Number} texture The index of the color palette for this layer
  */
-Patterns.prototype.writeLayer = function(layer, program, vao) {
+Patterns.prototype.writeLayer = function(
+    layer,
+    program,
+    vao,
+    texture = -1) {
     program.use();
 
-    layer.configure(this.gl, program);
+    layer.configure(this.gl, program, texture);
 
     this.gl.vao.bindVertexArrayOES(vao);
 
@@ -76,12 +75,10 @@ Patterns.prototype.writeLayer = function(layer, program, vao) {
  * @param {Number} pixelSize The pixel size
  */
 Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
-    this.gl.activeTexture(this.gl.TEXTURE0 + this.TEXTURE_RANDOM);
+    this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, randomSource.texture);
-    this.gl.activeTexture(this.gl.TEXTURE0 + this.TEXTURE_PALETTE_BASE);
-    this.gl.bindTexture(this.gl.TEXTURE_2D, this.paletteBase.texture);
-    this.gl.activeTexture(this.gl.TEXTURE0 + this.TEXTURE_PALETTE_SPOTS);
-    this.gl.bindTexture(this.gl.TEXTURE_2D, this.paletteSpots.texture);
+
+    this.palettes.bindTextures(this.gl.TEXTURE1);
 
     this.gl.vao.bindVertexArrayOES(this.vao);
 
@@ -101,7 +98,7 @@ Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
         1, 0
     ]));
 
-    this.writeLayer(pattern.base, this.programBase, this.vaoBase);
+    this.writeLayer(pattern.base, this.programBase, this.vaoBase, 1);
 
     this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array([
         2 * (region.uBodyStart + pixelSize) - 1,
@@ -123,7 +120,7 @@ Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
 
     for (const layer of pattern.layers) switch (layer.constructor) {
         case PatternSpots:
-            this.writeLayer(layer, this.programSpots, this.vaoSpots);
+            this.writeLayer(layer, this.programSpots, this.vaoSpots, 2);
 
             break;
     }
@@ -164,9 +161,6 @@ Patterns.prototype.free = function() {
     this.gl.vao.deleteVertexArrayOES(this.vaoShapeBody);
     this.programShapeFin.free();
     this.gl.vao.deleteVertexArrayOES(this.vaoShapeFin);
-
-    this.paletteBase.free();
-    this.paletteSpots.free();
 
     this.gl.deleteBuffer(this.buffer);
 };

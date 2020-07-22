@@ -313,7 +313,7 @@ Koi.prototype.render = function(deltaTime) {
         this.constellation.height,
         timeFactor);
 
-    // this.systems.quad.render(this.systems.patterns.paletteSpots.texture);
+    // this.systems.quad.render(this.systems.palettes.textureLayer1.texture);
 };
 
 /**

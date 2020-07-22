@@ -59,10 +59,6 @@ void main() {
 }
 `;
 
-PatternSpots.prototype.PALETTE = new Palette([
-    new Palette.Color(new Palette.Sample(128, 128), Color.fromCSS("fish-spots-1"))
-]);
-
 /**
  * Deserialize a spots pattern
  * @param {BinBuffer} buffer The buffer to deserialize from
@@ -125,12 +121,13 @@ PatternSpots.prototype.getY = function(z) {
  * Configure this pattern to a shader
  * @param {WebGLRenderingContext} gl A webGL context
  * @param {Shader} program A shader program created from this patterns' shaders
+ * @param {Number} texture The index of the color palette for this layer
  */
-PatternSpots.prototype.configure = function(gl, program) {
+PatternSpots.prototype.configure = function(gl, program, texture) {
     const z = this.getZ();
     const y = this.getY(z);
 
-    gl.uniform1i(program["uPalette"], Patterns.prototype.TEXTURE_PALETTE_SPOTS);
+    gl.uniform1i(program["uPalette"], texture);
     gl.uniform2f(program["uSample"], this.sample.x + .5, this.sample.y + .5);
     gl.uniform1f(program["uScale"], this.scale);
     gl.uniform3f(program["uAnchor"], this.anchor.x, this.anchor.y, this.anchor.z);

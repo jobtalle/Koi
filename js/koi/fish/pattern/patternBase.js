@@ -29,14 +29,6 @@ void main() {
 }
 `;
 
-PatternBase.prototype.PALETTE = new Palette([
-    new Palette.Color(new Palette.Sample(50, 30), Color.fromCSS("fish-base-1")),
-    new Palette.Color(new Palette.Sample(150, 30), Color.fromCSS("fish-base-1")),
-    new Palette.Color(new Palette.Sample(200, 50), Color.fromCSS("fish-base-2")),
-    new Palette.Color(new Palette.Sample(60, 20), Color.fromCSS("fish-base-3")),
-    new Palette.Color(new Palette.Sample(160, 180), Color.fromCSS("fish-base-4"))
-]);
-
 /**
  * Deserialize a base pattern
  * @param {BinBuffer} buffer A buffer to deserialize from
@@ -57,9 +49,10 @@ PatternBase.prototype.serialize = function(buffer) {
  * Configure this pattern to a shader
  * @param {WebGLRenderingContext} gl A webGL context
  * @param {Shader} program A shader program created from this patterns' shaders
+ * @param {Number} texture The index of the color palette for this layer
  */
-PatternBase.prototype.configure = function(gl, program) {
-    gl.uniform1i(program["uPalette"], Patterns.prototype.TEXTURE_PALETTE_BASE);
+PatternBase.prototype.configure = function(gl, program, texture) {
+    gl.uniform1i(program["uPalette"], texture);
     gl.uniform2f(program["uSample"], (this.sample.x + .5) / 256, (this.sample.y + .5) / 256);
 };
 

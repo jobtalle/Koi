@@ -23,7 +23,8 @@ const Systems = function(gl, random, width, height) {
     this.blur = new Blur(gl, this.quad);
     this.wind = new Wind(gl, this.quad);
     this.voronoi = new Voronoi(gl, this.quad);
-    this.patterns = new Patterns(gl, this.voronoi);
+    this.palettes = new Palettes(gl, this.voronoi);
+    this.patterns = new Patterns(gl, this.palettes);
 };
 
 /**
@@ -61,5 +62,6 @@ Systems.prototype.free = function() {
     this.shadows.free();
     this.blur.free();
     this.wind.free();
+    this.palettes.free();
     this.voronoi.free();
 };
