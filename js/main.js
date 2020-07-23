@@ -70,6 +70,8 @@ if (gl) {
         }
         catch (error) {
             onDeserializationError();
+
+            console.warn(error);
         }
     }
 

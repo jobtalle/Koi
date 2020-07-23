@@ -122,10 +122,12 @@ Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
     let previousLayer = pattern.base;
 
     for (const layer of pattern.layers) {
-        if (texture !== this.palettes.LAYERS)
-            if (!(previousLayer.flags & previousLayer.FLAG_ALLOW_OVERLAP) || !(layer.flags & layer.FLAG_OVERLAPS))
-                ++texture;
+        if (!(previousLayer.flags & previousLayer.FLAG_ALLOW_OVERLAP) || !(layer.flags & layer.FLAG_OVERLAPS))
+            ++texture;
 
+        if (texture > this.palettes.LAYERS)
+            break;
+        // TODO: Return used color, and determine next palette from that
         switch (layer.id) {
             case LayerSpots.prototype.ID:
                 this.writeLayer(layer, this.programSpots, this.vaoSpots, texture);

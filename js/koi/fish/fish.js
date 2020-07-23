@@ -97,7 +97,7 @@ Fish.deserialize = function(buffer, position, atlas, randomSource) {
 
     fish.turnForce = buffer.readFloat();
 
-    if (!(fish.turnForce >= 0 && fish.turnForce < Fish.prototype.TURN_FORCE))
+    if (!(fish.turnForce >= 0 && fish.turnForce <= Fish.prototype.TURN_FORCE))
         throw new RangeError();
 
     if (fish.turnForce !== 0) {
