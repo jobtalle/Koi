@@ -77,8 +77,8 @@ Patterns.prototype.writeLayer = function(
  */
 Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
     let previousLayer = pattern.base;
+    let sample = this.palettes.base.sample(pattern.base.paletteSample);
     let palette = this.palettes.base;
-    let color = palette.sample(pattern.base.paletteSample).color;
 
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, randomSource.texture);
@@ -101,7 +101,7 @@ Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
         1, 0
     ]));
 
-    this.writeLayer(pattern.base, this.programBase, this.vaoBase, color);
+    this.writeLayer(pattern.base, this.programBase, this.vaoBase, sample.color);
 
     this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array([
         2 * (region.uBodyStart + pixelSize) - 1,
@@ -121,22 +121,22 @@ Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
 
-    for (const layer of pattern.layers) {
+    for (let layerIndex = 0, layers = pattern.layers.length; layerIndex < layers; ++layerIndex) {
+        const layer = pattern.layers[layerIndex];
+
         if (layer.paletteSample !== null) {
-            if (palette === null)
-                break;
+            if (layerIndex === 0 ||
+                !(previousLayer.flags & previousLayer.FLAG_ALLOW_OVERLAP) || !(layer.flags & layer.FLAG_OVERLAPS)) {
+                if ((palette = sample.palette) === null)
+                    break;
 
-            if (!(previousLayer.flags & previousLayer.FLAG_ALLOW_OVERLAP) || !(layer.flags & layer.FLAG_OVERLAPS)) {
-                const sample = palette.sample(layer.paletteSample);
-
-                color = sample.color;
-                palette = sample.palette;
+                sample = palette.sample(layer.paletteSample);
             }
         }
 
         switch (layer.id) {
             case LayerSpots.prototype.ID:
-                this.writeLayer(layer, this.programSpots, this.vaoSpots, color);
+                this.writeLayer(layer, this.programSpots, this.vaoSpots, sample.color);
 
                 break;
         }
