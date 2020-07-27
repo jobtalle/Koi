@@ -8,11 +8,10 @@
  */
 const LayerSpots = function(scale, sample, anchor, x) {
     this.scale = scale;
-    this.sample = sample;
     this.anchor = anchor;
     this.x = x;
 
-    Layer.call(this, this.ID, true, false);
+    Layer.call(this, this.ID, sample, true, false);
 };
 
 LayerSpots.prototype = Object.create(Layer.prototype);
@@ -25,8 +24,7 @@ LayerSpots.prototype.SPACE_LIMIT_MIN = Math.fround(-256);
 LayerSpots.prototype.SPACE_LIMIT_MAX = Math.fround(256);
 
 LayerSpots.prototype.SHADER_VERTEX = `#version 100
-uniform sampler2D palette;
-uniform mediump vec2 sample;
+uniform lowp vec3 color;
 
 attribute vec2 position;
 attribute vec2 uv;
@@ -36,7 +34,7 @@ varying lowp vec3 iColor;
 
 void main() {
   iUv = uv;
-  iColor = texture2D(palette, sample).rgb;
+  iColor = color;
 
   gl_Position = vec4(position, 0.0, 1.0);
 }
@@ -96,7 +94,7 @@ LayerSpots.deserialize = function(buffer) {
 LayerSpots.prototype.serialize = function(buffer) {
     buffer.writeFloat(this.scale);
 
-    this.sample.serialize(buffer);
+    this.paletteSample.serialize(buffer);
     this.anchor.serialize(buffer);
     this.x.serialize(buffer);
 };
@@ -125,14 +123,13 @@ LayerSpots.prototype.getY = function(z) {
  * Configure this pattern to a shader
  * @param {WebGLRenderingContext} gl A webGL context
  * @param {Shader} program A shader program created from this patterns' shaders
- * @param {Number} texture The index of the color palette for this layer
+ * @param {Color} color The palette color
  */
-LayerSpots.prototype.configure = function(gl, program, texture) {
+LayerSpots.prototype.configure = function(gl, program, color) {
     const z = this.getZ();
     const y = this.getY(z);
 
-    gl.uniform1i(program["uPalette"], texture);
-    gl.uniform2f(program["uSample"], (this.sample.x + .5) / 256, (this.sample.y + .5) / 256);
+    gl.uniform3f(program["uColor"], color.r, color.g, color.b);
     gl.uniform1f(program["uScale"], this.scale);
     gl.uniform3f(program["uAnchor"], this.anchor.x, this.anchor.y, this.anchor.z);
     gl.uniformMatrix3fv(
@@ -155,6 +152,6 @@ LayerSpots.prototype.createShader = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["scale", "size", "anchor", "rotate", "palette", "sample"],
+        ["scale", "size", "anchor", "rotate", "color"],
         ["position", "uv"]);
 };

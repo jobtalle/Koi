@@ -16,6 +16,7 @@ const Patterns = function(gl, palettes) {
     this.vaoShapeBody = this.createVAO(gl, this.programShapeBody);
     this.programShapeFin = LayerShapeFin.prototype.createShader(gl);
     this.vaoShapeFin = this.createVAO(gl, this.programShapeFin);
+    this.palettes = new Palettes();
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
     gl.bufferData(gl.ARRAY_BUFFER, 64, gl.DYNAMIC_DRAW);
@@ -48,16 +49,16 @@ Patterns.prototype.createVAO = function(gl, program) {
  * @param {Object} layer A valid pattern layer object
  * @param {Shader} program The shader program for this layer type
  * @param {WebGLVertexArrayObjectOES} vao The VAO for this layer type
- * @param {Number} texture The index of the color palette for this layer
+ * @param {Color} [color] The palette sample, if this layer samples
  */
 Patterns.prototype.writeLayer = function(
     layer,
     program,
     vao,
-    texture = -1) {
+    color = null) {
     program.use();
 
-    layer.configure(this.gl, program, texture);
+    layer.configure(this.gl, program, color);
 
     this.gl.vao.bindVertexArrayOES(vao);
 
@@ -75,10 +76,12 @@ Patterns.prototype.writeLayer = function(
  * @param {Number} pixelSize The pixel size
  */
 Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
+    let previousLayer = pattern.base;
+    let palette = this.palettes.base;
+    let color = palette.sample(pattern.base.paletteSample).color;
+
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, randomSource.texture);
-
-    this.palettes.bindTextures(this.gl.TEXTURE1);
 
     this.gl.vao.bindVertexArrayOES(this.vao);
 
@@ -98,7 +101,7 @@ Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
         1, 0
     ]));
 
-    this.writeLayer(pattern.base, this.programBase, this.vaoBase, 1);
+    this.writeLayer(pattern.base, this.programBase, this.vaoBase, color);
 
     this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array([
         2 * (region.uBodyStart + pixelSize) - 1,
@@ -118,19 +121,22 @@ Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
 
-    let texture = 1;
-    let previousLayer = pattern.base;
-
     for (const layer of pattern.layers) {
-        if (!(previousLayer.flags & previousLayer.FLAG_ALLOW_OVERLAP) || !(layer.flags & layer.FLAG_OVERLAPS))
-            ++texture;
+        if (layer.paletteSample !== null) {
+            if (palette === null)
+                break;
 
-        if (texture > this.palettes.LAYERS)
-            break;
-        // TODO: Return used color, and determine next palette from that
+            if (!(previousLayer.flags & previousLayer.FLAG_ALLOW_OVERLAP) || !(layer.flags & layer.FLAG_OVERLAPS)) {
+                const sample = palette.sample(layer.paletteSample);
+
+                color = sample.color;
+                palette = sample.palette;
+            }
+        }
+
         switch (layer.id) {
             case LayerSpots.prototype.ID:
-                this.writeLayer(layer, this.programSpots, this.vaoSpots, texture);
+                this.writeLayer(layer, this.programSpots, this.vaoSpots, color);
 
                 break;
         }

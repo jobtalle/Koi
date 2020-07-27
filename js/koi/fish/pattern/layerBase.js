@@ -4,23 +4,20 @@
  * @constructor
  */
 const LayerBase = function(sample) {
-    this.sample = sample;
-
-    Layer.call(this, -1, false);
+    Layer.call(this, -1, sample, false);
 };
 
 LayerBase.prototype = Object.create(Layer.prototype);
 
 LayerBase.prototype.SHADER_VERTEX = `#version 100
-uniform sampler2D palette;
-uniform mediump vec2 sample;
+uniform lowp vec3 color;
 
 attribute vec2 position;
 
 varying lowp vec3 iColor;
 
 void main() {
-  iColor = texture2D(palette, sample).rgb;
+  iColor = color;
   
   gl_Position = vec4(position, 0.0, 1.0);
 }
@@ -46,18 +43,17 @@ LayerBase.deserialize = function(buffer) {
  * @param {BinBuffer} buffer A buffer to serialize to
  */
 LayerBase.prototype.serialize = function(buffer) {
-    this.sample.serialize(buffer);
+    this.paletteSample.serialize(buffer);
 };
 
 /**
  * Configure this pattern to a shader
  * @param {WebGLRenderingContext} gl A webGL context
  * @param {Shader} program A shader program created from this patterns' shaders
- * @param {Number} texture The index of the color palette for this layer
+ * @param {Color} color The palette color
  */
-LayerBase.prototype.configure = function(gl, program, texture) {
-    gl.uniform1i(program["uPalette"], texture);
-    gl.uniform2f(program["uSample"], (this.sample.x + .5) / 256, (this.sample.y + .5) / 256);
+LayerBase.prototype.configure = function(gl, program, color) {
+    gl.uniform3f(program["uColor"], color.r, color.g, color.b);
 };
 
 /**
@@ -70,6 +66,6 @@ LayerBase.prototype.createShader = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["palette", "sample"],
+        ["color"],
         ["position"]);
 };

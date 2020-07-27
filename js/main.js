@@ -55,9 +55,9 @@ if (gl) {
     };
 
     /**
-     * A function that creates a default game when serialization failed
+     * A function that creates a new game session
      */
-    const onDeserializationError = () => {
+    const newSession = () => {
         session = new Session();
         koi = session.makeKoi(systems);
     };
@@ -69,11 +69,13 @@ if (gl) {
             koi = session.makeKoi(systems);
         }
         catch (error) {
-            onDeserializationError();
+            newSession();
 
             console.warn(error);
         }
     }
+    else
+        newSession();
 
     // Trigger the animation frame loop
     lastDate = new Date();
