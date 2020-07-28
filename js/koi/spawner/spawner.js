@@ -59,6 +59,7 @@ Spawner.prototype.update = function(timeStep, atlas, randomSource, random) {
                     .15),
                 this.constellation.spawnPoint,
                 this.constellation.spawnDirection,
+                Math.round(random.getFloat() * 0xFF),
                 Math.round(random.getFloat() * 0xFF)));
         }
     }

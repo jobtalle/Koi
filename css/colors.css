@@ -15,10 +15,10 @@
 
     /* Fish colors */
     --color-fish-base-white: #E1E0C4;
-    --color-fish-base-black: #292C31;
+    --color-fish-base-black: #393b3e;
 
     --color-fish-detail-gold: #d09838;
     --color-fish-detail-red: #C84B2F;
     --color-fish-detail-orange: #BE6D42;
-    --color-fish-detail-white: #bbbba7;
+    --color-fish-detail-white: var(--color-fish-base-white);
 }

@@ -4,15 +4,23 @@
  * @param {Vector2} position The initial position
  * @param {Vector2} direction The initial direction vector, which must be normalized
  * @param {Number} growthSpeed The growth speed
+ * @param {Number} matingFrequency The frequency with which this fish can mate in the range [0, 255]
  * @param {Number} [age] The fish age in updates, zero by default
  * @constructor
  */
-const Fish = function(body, position, direction, growthSpeed, age = 0) {
+const Fish = function(
+    body,
+    position,
+    direction,
+    growthSpeed,
+    matingFrequency,
+    age = 0) {
     this.position = position.copy();
     this.positionPrevious = position.copy();
     this.direction = direction.copy();
     this.velocity = direction.copy();
     this.growthSpeed = growthSpeed;
+    this.matingFrequency = matingFrequency;
     this.body = body;
     this.speed = this.SPEED_MIN;
     this.boost = 0;
@@ -21,6 +29,13 @@ const Fish = function(body, position, direction, growthSpeed, age = 0) {
     this.nibbleTime = this.NIBBLE_TIME_MIN;
     this.age = age;
     this.size = 0;
+
+    /*    if (this.age !== this.AGE_MAX) {
+        const growthSpeedFactor = this.growthSpeed * this.growthSpeed * this.growthSpeed / 65025
+        const ageMultiplier = this.GROWTH_SPEED_DEFAULT + this.GROWTH_SPEED_INCREMENT * growthSpeedFactor;
+
+        this.size = 1 - 1 / (++this.age * ageMultiplier + 1);
+    }*/
 
     this.updateSize();
     this.body.initializeSpine(position, direction, this.size);
@@ -61,6 +76,8 @@ Fish.prototype.TURN_AMPLITUDE = Math.PI * .4;
 Fish.prototype.GROWTH_SPEED_DEFAULT = .0005 * 2;
 Fish.prototype.GROWTH_SPEED_INCREMENT = .00003 * 2;
 Fish.prototype.AGE_MAX = 0xFFFF;
+Fish.prototype.SAMPLER_GROWTH
+Fish.prototype.SAMPLER_MATING_FREQUENCY = new SamplerQuadratic(300, 4500, .3);
 
 /**
  * Deserialize a fish
@@ -78,7 +95,7 @@ Fish.deserialize = function(buffer, position, atlas, randomSource) {
     if (!direction.isNormal())
         throw new RangeError();
 
-    const fish = new Fish(body, position, direction, buffer.readUint8(), buffer.readUint16());
+    const fish = new Fish(body, position, direction, buffer.readUint8(), buffer.readUint8(), buffer.readUint16());
 
     fish.nibbleTime = buffer.readUint8();
 
@@ -119,6 +136,7 @@ Fish.prototype.serialize = function(buffer) {
     this.direction.serialize(buffer);
 
     buffer.writeUint8(this.growthSpeed);
+    buffer.writeUint8(this.matingFrequency);
     buffer.writeUint16(this.age);
 
     buffer.writeUint8(this.nibbleTime);
