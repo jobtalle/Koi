@@ -31,7 +31,12 @@ const Fish = function(
     this.samplerSize = new SamplerInverse(
         this.SIZE_MIN, 1,
         this.SAMPLER_GROWTH_MULTIPLIER.sample(growthSpeed / 0xFF));
-    this.size = this.samplerSize.sample(this.age / this.AGE_MAX);
+    this.size = this.samplerSize.sample(this.age / 0xFFFF);
+    this.mateTimeout = this.SAMPLER_MATING_FREQUENCY.sample(matingFrequency / 0xFF);
+    this.mateTime = 0;
+    this.mated = 0;
+    this.interactions = 0;
+    this.lastInteraction = null;
 
     this.body.initializeSpine(position, direction, this.size);
 };
@@ -68,9 +73,10 @@ Fish.prototype.TURN_THRESHOLD = .005;
 Fish.prototype.TURN_CARRY = .95;
 Fish.prototype.TURN_FOLLOW_CHANCE = .025;
 Fish.prototype.TURN_AMPLITUDE = Math.PI * .4;
-Fish.prototype.AGE_MAX = 0xFFFF;
 Fish.prototype.SIZE_MIN = .1;
-Fish.prototype.SAMPLER_GROWTH_MULTIPLIER = new SamplerQuadratic(100, 200, 4);
+Fish.prototype.SIZE_MATING = .7;
+Fish.prototype.MATE_PROXIMITY_TIME = 100;
+Fish.prototype.SAMPLER_GROWTH_MULTIPLIER = new SamplerQuadratic(50, 100, 4);
 Fish.prototype.SAMPLER_MATING_FREQUENCY = new SamplerQuadratic(300, 4500, .3);
 
 /**
@@ -90,6 +96,12 @@ Fish.deserialize = function(buffer, position, atlas, randomSource) {
         throw new RangeError();
 
     const fish = new Fish(body, position, direction, buffer.readUint8(), buffer.readUint8(), buffer.readUint16());
+
+    fish.mated = buffer.readUint16();
+    fish.mateTime = buffer.readUint8();
+
+    if (fish.mateTime > Fish.prototype.MATE_PROXIMITY_TIME)
+        throw new RangeError();
 
     fish.nibbleTime = buffer.readUint8();
 
@@ -133,6 +145,8 @@ Fish.prototype.serialize = function(buffer) {
     buffer.writeUint8(this.matingFrequency);
     buffer.writeUint16(this.age);
 
+    buffer.writeUint16(Math.min(0xFFFF, this.mated));
+    buffer.writeUint8(this.mateTime);
     buffer.writeUint8(this.nibbleTime);
     buffer.writeFloat(this.speed);
     buffer.writeUint8(this.boost);
@@ -210,6 +224,14 @@ Fish.prototype.applyTurn = function() {
 };
 
 /**
+ * This fish has just mated
+ */
+Fish.prototype.mate = function() {
+    this.mateTime = 0;
+    this.mated = 0;
+};
+
+/**
  * Interact with another fish that may be in range, applying interaction to both fishes
  * @param {Fish} other Another fish
  * @param {Random} random A randomizer
@@ -221,6 +243,12 @@ Fish.prototype.interact = function(other, random) {
 
     if (squaredDistance < this.RADIUS_ATTRACTION * this.RADIUS_ATTRACTION) {
         const distance = Math.sqrt(squaredDistance);
+
+        ++this.interactions;
+        ++other.interactions;
+
+        this.lastInteraction = other;
+        other.lastInteraction = this;
 
         if (this.speed < other.speed)
             this.speed += (other.speed - this.speed) * this.SPEED_CATCH_UP;
@@ -319,6 +347,14 @@ Fish.prototype.boostSpeed = function(random) {
 };
 
 /**
+ * Check whether this fish can mate
+ * @returns {Boolean} true if this fish can mate
+ */
+Fish.prototype.canMate = function() {
+    return this.mateTime === this.MATE_PROXIMITY_TIME;
+};
+
+/**
  * Update the fish
  * @param {Constraint} constraint A constraint
  * @param {Water} water A water plane to disturb
@@ -329,8 +365,17 @@ Fish.prototype.update = function(constraint, water, random) {
     if (this.constrain(constraint))
         return true;
 
-    if (this.age !== this.AGE_MAX)
-        this.size = this.samplerSize.sample(++this.age / this.AGE_MAX);
+    ++this.mated;
+
+    if (this.mated > this.mateTimeout && this.size > this.SIZE_MATING) {
+        if (this.mateTime < this.MATE_PROXIMITY_TIME)
+            ++this.mateTime;
+    }
+    else
+        this.mateTime = 0;
+
+    if (this.age !== 0xFFFF)
+        this.size = this.samplerSize.sample(++this.age / 0xFFFF);
 
     if (this.turnDirection)
         this.applyTurn();

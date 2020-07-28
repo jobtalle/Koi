@@ -134,12 +134,28 @@ Pond.prototype.pick = function(x, y) {
  * @param {Random} random A randomizer
  */
 Pond.prototype.update = function(atlas, water, random) {
-    for (let fish = this.fishes.length; fish-- > 0;) {
-        for (let other = fish; other-- > 0;)
-            this.fishes[fish].interact(this.fishes[other], random);
+    for (let a = this.fishes.length; a-- > 0;) {
+        const fish = this.fishes[a];
 
-        if (this.fishes[fish].update(this.constraint, water, random))
-            this.removeFish(fish, atlas);
+        for (let b = a; b-- > 0;)
+            fish.interact(this.fishes[b], random);
+
+        if (fish.update(this.constraint, water, random))
+            this.removeFish(a, atlas);
+        else {
+            if (fish.interactions === 1) {
+                if (fish.canMate() && fish.lastInteraction.canMate()) {
+                    console.log("M8");
+
+                    fish.mate();
+                    fish.lastInteraction.mate();
+                }
+            }
+            else
+                fish.mateTime = 0;
+
+            fish.interactions = 0;
+        }
     }
 };
 
