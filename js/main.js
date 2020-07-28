@@ -65,6 +65,7 @@ if (gl) {
     // Retrieve last session if it exists
     if (sessionData) {
         try {
+            // throw new Error();
             session.deserialize(new BinBuffer(sessionData));
             koi = session.makeKoi(systems);
         }

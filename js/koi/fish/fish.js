@@ -28,16 +28,11 @@ const Fish = function(
     this.turnForce = 0;
     this.nibbleTime = this.NIBBLE_TIME_MIN;
     this.age = age;
-    this.size = 0;
+    this.samplerSize = new SamplerInverse(
+        this.SIZE_MIN, 1,
+        this.SAMPLER_GROWTH_MULTIPLIER.sample(growthSpeed / 0xFF));
+    this.size = this.samplerSize.sample(this.age / this.AGE_MAX);
 
-    /*    if (this.age !== this.AGE_MAX) {
-        const growthSpeedFactor = this.growthSpeed * this.growthSpeed * this.growthSpeed / 65025
-        const ageMultiplier = this.GROWTH_SPEED_DEFAULT + this.GROWTH_SPEED_INCREMENT * growthSpeedFactor;
-
-        this.size = 1 - 1 / (++this.age * ageMultiplier + 1);
-    }*/
-
-    this.updateSize();
     this.body.initializeSpine(position, direction, this.size);
 };
 
@@ -73,10 +68,9 @@ Fish.prototype.TURN_THRESHOLD = .005;
 Fish.prototype.TURN_CARRY = .95;
 Fish.prototype.TURN_FOLLOW_CHANCE = .025;
 Fish.prototype.TURN_AMPLITUDE = Math.PI * .4;
-Fish.prototype.GROWTH_SPEED_DEFAULT = .0005 * 2;
-Fish.prototype.GROWTH_SPEED_INCREMENT = .00003 * 2;
 Fish.prototype.AGE_MAX = 0xFFFF;
-Fish.prototype.SAMPLER_GROWTH
+Fish.prototype.SIZE_MIN = .1;
+Fish.prototype.SAMPLER_GROWTH_MULTIPLIER = new SamplerQuadratic(100, 200, 4);
 Fish.prototype.SAMPLER_MATING_FREQUENCY = new SamplerQuadratic(300, 4500, .3);
 
 /**
@@ -325,18 +319,6 @@ Fish.prototype.boostSpeed = function(random) {
 };
 
 /**
- * Update the size of this fish
- */
-Fish.prototype.updateSize = function() {
-    if (this.age !== this.AGE_MAX) {
-        const growthSpeedFactor = this.growthSpeed * this.growthSpeed * this.growthSpeed / 65025
-        const ageMultiplier = this.GROWTH_SPEED_DEFAULT + this.GROWTH_SPEED_INCREMENT * growthSpeedFactor;
-
-        this.size = 1 - 1 / (++this.age * ageMultiplier + 1);
-    }
-};
-
-/**
  * Update the fish
  * @param {Constraint} constraint A constraint
  * @param {Water} water A water plane to disturb
@@ -347,7 +329,8 @@ Fish.prototype.update = function(constraint, water, random) {
     if (this.constrain(constraint))
         return true;
 
-    this.updateSize();
+    if (this.age !== this.AGE_MAX)
+        this.size = this.samplerSize.sample(++this.age / this.AGE_MAX);
 
     if (this.turnDirection)
         this.applyTurn();
