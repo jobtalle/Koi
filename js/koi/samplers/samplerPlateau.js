@@ -16,7 +16,7 @@ const SamplerPlateau = function(min, plateau, max, width) {
 SamplerPlateau.prototype = Object.create(Sampler.prototype);
 
 /**
- * Sampler this sample
+ * Sample this sample
  * @param {Number} x A value in the range [0, 1]
  * @returns {Number} A number in the range [min, max]
  */
