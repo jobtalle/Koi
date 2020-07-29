@@ -147,8 +147,8 @@ Pond.prototype.update = function(atlas, water, random) {
                 if (fish.canMate() && fish.lastInteraction.canMate()) {
                     console.log("M8");
 
-                    fish.mate();
-                    fish.lastInteraction.mate();
+                    fish.mate(random);
+                    fish.lastInteraction.mate(random);
                 }
             }
             else

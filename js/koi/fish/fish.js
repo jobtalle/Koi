@@ -75,7 +75,7 @@ Fish.prototype.TURN_FOLLOW_CHANCE = .025;
 Fish.prototype.TURN_AMPLITUDE = Math.PI * .4;
 Fish.prototype.SIZE_MIN = .1;
 Fish.prototype.SIZE_MATING = .7;
-Fish.prototype.MATE_PROXIMITY_TIME = 100;
+Fish.prototype.MATE_PROXIMITY_TIME = 120;
 Fish.prototype.SAMPLER_GROWTH_MULTIPLIER = new SamplerQuadratic(50, 100, 4);
 Fish.prototype.SAMPLER_MATING_FREQUENCY = new SamplerQuadratic(300, 4500, .3);
 
@@ -225,10 +225,14 @@ Fish.prototype.applyTurn = function() {
 
 /**
  * This fish has just mated
+ * @param {Random} random A randomizer
  */
-Fish.prototype.mate = function() {
+Fish.prototype.mate = function(random) {
     this.mateTime = 0;
     this.mated = 0;
+
+    this.turn(random);
+    this.boostSpeed(random);
 };
 
 /**
@@ -431,6 +435,7 @@ Fish.prototype.update = function(constraint, water, random) {
  * @param {Number} time The interpolation factor
  */
 Fish.prototype.render = function(bodies, time) {
+    if (this.mated > this.mateTimeout)this.body.render(bodies, this.size * 1.5, time);
     this.body.render(bodies, this.size, time);
 };
 
