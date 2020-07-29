@@ -3,8 +3,9 @@
  * @param {FishBody} body The fish body
  * @param {Vector2} position The initial position
  * @param {Vector2} direction The initial direction vector, which must be normalized
- * @param {Number} growthSpeed The growth speed
+ * @param {Number} growthSpeed The growth speed in the range [0, 255]
  * @param {Number} matingFrequency The frequency with which this fish can mate in the range [0, 255]
+ * @param {Number} offspringCount The offspring count in the range [0, 255]
  * @param {Number} [age] The fish age in updates, zero by default
  * @constructor
  */
@@ -14,6 +15,7 @@ const Fish = function(
     direction,
     growthSpeed,
     matingFrequency,
+    offspringCount,
     age = 0) {
     this.position = position.copy();
     this.positionPrevious = position.copy();
@@ -21,6 +23,7 @@ const Fish = function(
     this.velocity = direction.copy();
     this.growthSpeed = growthSpeed;
     this.matingFrequency = matingFrequency;
+    this.offspringCount = offspringCount;
     this.body = body;
     this.speed = this.SPEED_MIN;
     this.boost = 0;
@@ -78,6 +81,7 @@ Fish.prototype.SIZE_MATING = .7;
 Fish.prototype.MATE_PROXIMITY_TIME = 120;
 Fish.prototype.SAMPLER_GROWTH_MULTIPLIER = new SamplerQuadratic(50, 100, 4);
 Fish.prototype.SAMPLER_MATING_FREQUENCY = new SamplerQuadratic(300, 4500, .3);
+Fish.prototype.SAMPLER_OFFSPRING_COUNT = new SamplerPlateau(1, 2.5, 8, 2);
 
 /**
  * Deserialize a fish
@@ -95,7 +99,14 @@ Fish.deserialize = function(buffer, position, atlas, randomSource) {
     if (!direction.isNormal())
         throw new RangeError();
 
-    const fish = new Fish(body, position, direction, buffer.readUint8(), buffer.readUint8(), buffer.readUint16());
+    const fish = new Fish(
+        body,
+        position,
+        direction,
+        buffer.readUint8(),
+        buffer.readUint8(),
+        buffer.readUint8(),
+        buffer.readUint16());
 
     fish.mated = buffer.readUint16();
     fish.mateTime = buffer.readUint8();
@@ -143,6 +154,7 @@ Fish.prototype.serialize = function(buffer) {
 
     buffer.writeUint8(this.growthSpeed);
     buffer.writeUint8(this.matingFrequency);
+    buffer.writeUint8(this.offspringCount);
     buffer.writeUint16(this.age);
 
     buffer.writeUint16(Math.min(0xFFFF, this.mated));
