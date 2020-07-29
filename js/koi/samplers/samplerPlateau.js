@@ -7,11 +7,13 @@
  * @constructor
  */
 const SamplerPlateau = function(min, plateau, max, width) {
-    this.min = min;
-    this.max = max;
     this.width = width;
     this.power = Math.log((plateau - min) / (max - min)) / Math.log(.5);
+
+    Sampler.call(this, min, max);
 };
+
+SamplerPlateau.prototype = Object.create(Sampler.prototype);
 
 /**
  * Sampler this sample

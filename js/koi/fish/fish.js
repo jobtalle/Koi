@@ -236,6 +236,14 @@ Fish.prototype.applyTurn = function() {
 };
 
 /**
+ * Get the number of children this fish should produce
+ * @returns {Number} The number of children this fish should produce
+ */
+Fish.prototype.getOffspringCount = function() {
+    return Math.round(this.SAMPLER_OFFSPRING_COUNT.sample(this.offspringCount / 0xFF));
+};
+
+/**
  * This fish has just mated
  * @param {Random} random A randomizer
  */

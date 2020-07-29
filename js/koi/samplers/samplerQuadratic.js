@@ -6,10 +6,12 @@
  * @constructor
  */
 const SamplerQuadratic = function(min, max, power) {
-    this.min = min;
-    this.max = max;
     this.power = power;
+
+    Sampler.call(this, min, max);
 };
+
+SamplerQuadratic.prototype = Object.create(Sampler.prototype);
 
 /**
  * Sample this sampler

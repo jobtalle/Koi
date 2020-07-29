@@ -145,10 +145,16 @@ Pond.prototype.update = function(atlas, water, random) {
         else {
             if (fish.interactions === 1) {
                 if (fish.canMate() && fish.lastInteraction.canMate()) {
-                    console.log("M8");
-
                     fish.mate(random);
                     fish.lastInteraction.mate(random);
+
+                    const breeder = random.getFloat() < .5 ?
+                        new Breeder(fish, fish.lastInteraction) :
+                        new Breeder(fish.lastInteraction, fish);
+                    // const offspring = breeder.breed(random);
+                    //
+                    // for (const fish of offspring)
+                    //     this.addFish(fish);
                 }
             }
             else
