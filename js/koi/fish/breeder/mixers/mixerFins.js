@@ -16,6 +16,11 @@ MixerFins.prototype = Object.create(Mixer.prototype);
  * @param {Random} random A randomizer
  * @returns {Fin[]} The mixed fin array
  */
-MixerFins.prototype.mix = function(random) {
+MixerFins.prototype.mix = function(random) { // TODO: mix
+    const fins = [];
 
+    for (let fin = 0; fin < this.mother.length * .5; ++fin)
+        fins.push(new Fin(this.mother[fin].at, this.mother[fin].radius));
+
+    return fins;
 };

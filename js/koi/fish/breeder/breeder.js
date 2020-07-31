@@ -13,14 +13,17 @@ const Breeder = function(mother, father) {
 
 /**
  * Breed the two given fish and produce offspring
+ * @param {Atlas} atlas The atlas to render newly spawned patterns on
+ * @param {RandomSource} randomSource A random source
  * @param {Random} random A randomizer
  * @returns {Fish[]} An array of offspring
  */
-Breeder.prototype.breed = function(random) {
+Breeder.prototype.breed = function(atlas, randomSource, random) {
     const offspring = new Array(this.mother.getOffspringCount());
 
     for (let fish = 0, fishCount = offspring.length; fish < fishCount; ++fish)
-        offspring[fish] = this.mixer.mix(random);
-
+        offspring[fish] = this.mixer.mix(atlas,randomSource, random);
+    console.log("Created offspring:");
+    console.log(offspring);
     return offspring;
 };

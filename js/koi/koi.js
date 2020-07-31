@@ -225,7 +225,7 @@ Koi.prototype.resize = function() {
  */
 Koi.prototype.update = function() {
     this.spawner.update(this.UPDATE_RATE, this.atlas, this.randomSource, this.random);
-    this.constellation.update(this.atlas, this.water, this.random);
+    this.constellation.update(this.atlas, this.randomSource, this.water, this.random);
     this.weather.update(this.air, this.water, this.random);
     this.mover.update();
 

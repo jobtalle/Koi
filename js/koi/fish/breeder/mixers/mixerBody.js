@@ -21,12 +21,14 @@ MixerBody.prototype.SAMPLER_MUTATE_RADIUS = MixerBody.prototype.SAMPLER_MUTATE_L
 
 /**
  * Create a new body that combines properties from both parents
+ * @param {Atlas} atlas The atlas to render newly spawned patterns on
+ * @param {RandomSource} randomSource A random source
  * @param {Random} random A randomizer
  * @returns {FishBody} The mixed body
  */
-MixerBody.prototype.mix = function(random) {
+MixerBody.prototype.mix = function(atlas, randomSource, random) {
     return new FishBody(
-        this.mixerPattern.mix(random),
+        this.mixerPattern.mix(atlas, randomSource, random),
         this.mixerFins.mix(random),
         this.mixerTail.mix(random),
         this.mixUint8Blend(

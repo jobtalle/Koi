@@ -77,10 +77,10 @@ Fish.prototype.TURN_CARRY = .95;
 Fish.prototype.TURN_FOLLOW_CHANCE = .025;
 Fish.prototype.TURN_AMPLITUDE = Math.PI * .4;
 Fish.prototype.SIZE_MIN = .1;
-Fish.prototype.SIZE_MATING = .7;
+Fish.prototype.SIZE_MATING = .1;
 Fish.prototype.MATE_PROXIMITY_TIME = 120;
 Fish.prototype.SAMPLER_GROWTH_MULTIPLIER = new SamplerQuadratic(50, 100, 4);
-Fish.prototype.SAMPLER_MATING_FREQUENCY = new SamplerQuadratic(300, 4500, .3);
+Fish.prototype.SAMPLER_MATING_FREQUENCY = new SamplerQuadratic(300 * .1, 4500 * .1, .3);
 Fish.prototype.SAMPLER_OFFSPRING_COUNT = new SamplerPlateau(1, 2.5, 8, 2);
 
 /**
@@ -263,6 +263,10 @@ Fish.prototype.mate = function(random) {
 Fish.prototype.interact = function(other, random) {
     const dx = this.position.x - other.position.x;
     const dy = this.position.y - other.position.y;
+
+    if (dx === 0 && dy === 0)
+        return;
+
     const squaredDistance = dx * dx + dy * dy;
 
     if (squaredDistance < this.RADIUS_ATTRACTION * this.RADIUS_ATTRACTION) {

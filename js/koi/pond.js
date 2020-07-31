@@ -129,11 +129,12 @@ Pond.prototype.pick = function(x, y) {
 
 /**
  * Update this pond and its contents
- * @param {Atlas} atlas The texture atlas
+ * @param {Atlas} atlas The atlas to render newly spawned patterns on
+ * @param {RandomSource} randomSource A random source
  * @param {Water} water A water plane to disturb
  * @param {Random} random A randomizer
  */
-Pond.prototype.update = function(atlas, water, random) {
+Pond.prototype.update = function(atlas, randomSource, water, random) {
     for (let a = this.fishes.length; a-- > 0;) {
         const fish = this.fishes[a];
 
@@ -151,10 +152,10 @@ Pond.prototype.update = function(atlas, water, random) {
                     const breeder = random.getFloat() < .5 ?
                         new Breeder(fish, fish.lastInteraction) :
                         new Breeder(fish.lastInteraction, fish);
-                    // const offspring = breeder.breed(random);
-                    //
-                    // for (const fish of offspring)
-                    //     this.addFish(fish);
+                    const offspring = breeder.breed(atlas, randomSource, random);
+
+                    for (const fish of offspring)
+                        this.addFish(fish);
                 }
             }
             else

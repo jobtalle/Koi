@@ -2,10 +2,10 @@
  * A fin
  * @param {Number} at The position on the body in the range [0, 1]
  * @param {Number} radius The radius as a factor of body width
- * @param {Number} sign The sign of the fin direction, 1 or -1
+ * @param {Number} [sign] The sign of the fin direction, 1 (default) or -1
  * @constructor
  */
-const Fin = function(at, radius, sign) {
+const Fin = function(at, radius, sign = 1) {
     this.at = at;
     this.radius = radius;
     this.sign = sign;
@@ -47,7 +47,7 @@ Fin.deserialize = function(buffer) {
     if (!(radius >= Fin.prototype.RADIUS_MIN && radius <= Fin.prototype.RADIUS_MAX))
         throw new RangeError();
 
-    return new Fin(at, radius, 1);
+    return new Fin(at, radius);
 };
 
 /**

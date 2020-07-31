@@ -16,6 +16,6 @@ MixerTail.prototype = Object.create(Mixer.prototype);
  * @param {Random} random A randomizer
  * @returns {Tail} The mixed tail
  */
-MixerTail.prototype.mix = function(random) {
-
+MixerTail.prototype.mix = function(random) { // TODO: mix
+    return new Tail(this.mother.length);
 };

@@ -123,7 +123,7 @@ Mover.prototype.pickUp = function(fish, x, y, waterPlane, random) {
     this.offset.x = fish.position.x - this.cursor.x;
     this.offset.y = fish.position.y - this.cursor.y;
     this.touch = true;
-
+    console.log(fish);
     this.createBodySplash(fish.body, waterPlane, random);
 };
 
