@@ -12,8 +12,10 @@ const FishBody = function(pattern, fins, tail, length, radius) {
     this.fins = this.makeAllFins(fins);
     this.tail = tail;
     this.length = length;
+    this.lengthSampled = this.SAMPLER_LENGTH.sample(length / 0xFF);
     this.radius = radius;
-    this.spine = new Array(Math.ceil(length / this.RESOLUTION));
+    this.radiusSampled = this.lengthSampled * this.SAMPLER_RADIUS.sample(radius / 0xFF);
+    this.spine = new Array(Math.ceil(this.lengthSampled / this.RESOLUTION));
     this.tailOffset = this.spine.length - 1;
     this.finGroups = this.assignFins(fins, this.spine.length);
     this.spinePrevious = new Array(this.spine.length);
@@ -24,10 +26,6 @@ const FishBody = function(pattern, fins, tail, length, radius) {
     this.inverseSpacing = 1 / this.spacing;
 };
 
-FishBody.prototype.LENGTH_MIN = Math.fround(.5);
-FishBody.prototype.LENGTH_MAX = Math.fround(2);
-FishBody.prototype.RADIUS_MIN = Math.fround(.05);
-FishBody.prototype.RADIUS_MAX = Math.fround(.5);
 FishBody.prototype.FIN_PAIRS_MIN = 0;
 FishBody.prototype.FIN_PAIRS_MAX = 8;
 FishBody.prototype.RESOLUTION = .1;
@@ -44,6 +42,8 @@ FishBody.prototype.WAVE_INTENSITY_MIN = .05;
 FishBody.prototype.WAVE_INTENSITY_MULTIPLIER = 2;
 FishBody.prototype.WAVE_TURBULENCE = .4;
 FishBody.prototype.FIN_PHASE_SPEED = .4;
+FishBody.prototype.SAMPLER_LENGTH = new SamplerQuadratic(1, 1.5, 2.2);
+FishBody.prototype.SAMPLER_RADIUS = new SamplerLinear(.15, .3);
 
 /**
  * Deserialize a fish body
@@ -67,15 +67,8 @@ FishBody.deserialize = function(buffer, atlas, randomSource) {
         fins[fin] = Fin.deserialize(buffer);
 
     const tail = Tail.deserialize(buffer);
-    const length = buffer.readFloat();
-
-    if (!(length >= FishBody.prototype.LENGTH_MIN && length <= FishBody.prototype.LENGTH_MAX))
-        throw new RangeError();
-
-    const radius = buffer.readFloat();
-
-    if (!(radius >= FishBody.prototype.RADIUS_MIN && radius <= FishBody.prototype.RADIUS_MAX))
-        throw new RangeError();
+    const length = buffer.readUint8();
+    const radius = buffer.readUint8();
 
     return new FishBody(
         pattern,
@@ -99,8 +92,8 @@ FishBody.prototype.serialize = function(buffer) {
 
     this.tail.serialize(buffer);
 
-    buffer.writeFloat(this.length);
-    buffer.writeFloat(this.radius);
+    buffer.writeUint8(this.length);
+    buffer.writeUint8(this.radius);
 };
 
 /**
@@ -131,7 +124,7 @@ FishBody.prototype.assignFins = function(fins, spineLength) {
 
         spineFins[index].push(fin);
 
-        fin.connect(this.pattern, this.pattern.shapeBody.sample(index / (spineLength - 1)) * this.radius);
+        fin.connect(this.pattern, this.pattern.shapeBody.sample(index / (spineLength - 1)) * this.radiusSampled);
     }
 
     return spineFins;
@@ -199,7 +192,8 @@ FishBody.prototype.atPosition = function(x, y) {
     for (let segment = 1; segment < this.spine.length - 1; ++segment) {
         dx = x - this.spine[segment].x;
         dy = y - this.spine[segment].y;
-        radius = this.pattern.shapeBody.sample(segment / (this.spine.length - 1)) * this.radius * this.OVERLAP_PADDING;
+        radius = this.pattern.shapeBody.sample(segment / (this.spine.length - 1)) *
+            this.radiusSampled * this.OVERLAP_PADDING;
 
         if (dx * dx + dy * dy < radius * radius)
             return true;
@@ -259,7 +253,7 @@ FishBody.prototype.storePreviousState = function() {
  * @param {Number} size The fish size in the range [0, 1]
  */
 FishBody.prototype.calculateSpacing = function(size) {
-    this.spacing = size * this.length / (this.spine.length - 1);
+    this.spacing = size * this.lengthSampled / (this.spine.length - 1);
     this.inverseSpacing = 1 / this.spacing;
 };
 
@@ -372,7 +366,7 @@ FishBody.prototype.render = function(bodies, size, time) {
         dx = x - xp;
         dy = y - yp;
 
-        const radius = this.radius * size;
+        const radius = this.radiusSampled * size;
         const dxAveraged = (dx + dxp) * .5;
         const dyAveraged = (dy + dyp) * .5;
         const u = this.pattern.region.uBodyStart + (this.pattern.region.uBodyEnd - this.pattern.region.uBodyStart) *

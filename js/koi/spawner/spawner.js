@@ -55,8 +55,8 @@ Spawner.prototype.update = function(timeStep, atlas, randomSource, random) {
                         new Fin(.5, .8, 1)
                     ],
                     new Tail(.3),
-                    1.2,
-                    .15),
+                    128,
+                    128),
                 this.constellation.spawnPoint,
                 this.constellation.spawnDirection,
                 Math.round(random.getFloat() * 0xFF),

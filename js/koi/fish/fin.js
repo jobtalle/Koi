@@ -42,7 +42,7 @@ Fin.deserialize = function(buffer) {
     if (!(at >= 0 && at <= 1))
         throw new RangeError();
 
-    const radius = buffer.readFloat();
+    const radius = buffer.readFloat(); // TODO: Use sampler
 
     if (!(radius >= Fin.prototype.RADIUS_MIN && radius <= Fin.prototype.RADIUS_MAX))
         throw new RangeError();

@@ -7,6 +7,8 @@
 const MixerFish = function(mother, father) {
     this.mother = mother;
     this.father = father;
+
+    this.mixerBody = new MixerBody(mother.body, father.body);
 };
 
 MixerFish.prototype = Object.create(Mixer.prototype);
@@ -16,13 +18,12 @@ MixerFish.prototype.SAMPLER_MUTATE_OFFSPRING_COUNT = new SamplerPlateau(-1, 0, 1
 
 /**
  * Create a new fish that combines properties from both parents
- * @param {MixerBody} mixBody A body mixer
  * @param {Random} random A randomizer
  * @returns {Fish} The mixed fish
  */
-MixerFish.prototype.mix = function(mixBody, random) {
+MixerFish.prototype.mix = function(random) {
     return new Fish(
-        mixBody.mix(random),
+        this.mixerBody.mix(random),
         this.mother.position.copy(),
         new Vector2().fromAngle(random.getFloat() * Math.PI * 2),
         this.mixUint8Average(
@@ -35,7 +36,7 @@ MixerFish.prototype.mix = function(mixBody, random) {
             this.father.matingFrequency,
             this.SAMPLER_MUTATE_MATING_FREQUENCY,
             random),
-        this.mixUint8Average(
+        this.mixUint8Average( // TODO: Recessive mixing
             this.mother.offspringCount,
             this.father.offspringCount,
             this.SAMPLER_MUTATE_OFFSPRING_COUNT,
