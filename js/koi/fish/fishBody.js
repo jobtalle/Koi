@@ -13,7 +13,7 @@ const FishBody = function(pattern, fins, tail, length, radius) {
     this.tail = tail;
     this.length = length;
     this.lengthSampled = this.SAMPLER_LENGTH.sample(length / 0xFF);
-    this.radius = radius;
+    this.radius = radius;console.log(radius);
     this.radiusSampled = this.lengthSampled * this.SAMPLER_RADIUS.sample(radius / 0xFF);
     this.spine = new Array(Math.ceil(this.lengthSampled / this.RESOLUTION));
     this.tailOffset = this.spine.length - 1;
@@ -43,7 +43,7 @@ FishBody.prototype.WAVE_INTENSITY_MULTIPLIER = 2;
 FishBody.prototype.WAVE_TURBULENCE = .4;
 FishBody.prototype.FIN_PHASE_SPEED = .4;
 FishBody.prototype.SAMPLER_LENGTH = new SamplerQuadratic(1, 1.5, 2.2);
-FishBody.prototype.SAMPLER_RADIUS = new SamplerLinear(.15, .3);
+FishBody.prototype.SAMPLER_RADIUS = new SamplerPlateau(.1, .13, .2, 0);
 
 /**
  * Deserialize a fish body
