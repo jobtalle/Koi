@@ -14,9 +14,9 @@ const MixerFish = function(mother, father) {
 MixerFish.prototype = Object.create(Mixer.prototype);
 MixerFish.prototype.SAMPLER_BLEND_MATING_FREQUENCY = new SamplerQuadratic(0, 1, 3);
 MixerFish.prototype.SAMPLER_BLEND_OFFSPRING_COUNT = new SamplerQuadratic(0, 1, 4);
-MixerFish.prototype.SAMPLER_MUTATE_GROWTH_SPEED = new SamplerPlateau(-2, 0, 2, 1.5);
-MixerFish.prototype.SAMPLER_MUTATE_MATING_FREQUENCY = new SamplerPlateau(-2, 0, 2, .5);
-MixerFish.prototype.SAMPLER_MUTATE_OFFSPRING_COUNT = new SamplerPlateau(-1, 0, 1, 1);
+MixerFish.prototype.SAMPLER_MUTATE_GROWTH_SPEED = new SamplerPlateau(-3, 0, 3, 1.5);
+MixerFish.prototype.SAMPLER_MUTATE_MATING_FREQUENCY = new SamplerPlateau(-5, 0, 5, .5);
+MixerFish.prototype.SAMPLER_MUTATE_OFFSPRING_COUNT = new SamplerPlateau(-15, 0, 15, 1);
 
 /**
  * Create a new fish that combines properties from both parents

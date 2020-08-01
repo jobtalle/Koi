@@ -11,11 +11,12 @@ const LayerSpots = function(scale, sample, anchor, x) {
     this.anchor = anchor;
     this.x = x;
 
-    Layer.call(this, this.ID, sample, true, false);
+    Layer.call(this, this.ID, sample, true, false, false, this.DOMINANCE);
 };
 
 LayerSpots.prototype = Object.create(Layer.prototype);
 
+LayerSpots.prototype.DOMINANCE = .25;
 LayerSpots.prototype.UP = new Vector3(0, 1, 0);
 LayerSpots.prototype.UP_ALT = new Vector3(.1, 1, 0);
 LayerSpots.prototype.SCALE_MIN = Math.fround(0.5);
@@ -85,6 +86,18 @@ LayerSpots.deserialize = function(buffer) {
         throw new RangeError();
 
     return new LayerSpots(scale, sample, anchor, x);
+};
+
+/**
+ * Make a deep copy of this layer
+ * @returns {LayerSpots} A copy of this layer
+ */
+LayerSpots.prototype.copy = function() {
+    return new LayerSpots(
+        this.scale,
+        this.paletteSample.copy(),
+        this.anchor.copy(),
+        this.x.copy());
 };
 
 /**

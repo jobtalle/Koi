@@ -22,13 +22,13 @@ const FishBody = function(pattern, fins, tail, length, radius) {
     this.springs = this.makeSprings(this.SPRING_START, this.SPRING_END, this.SPRING_POWER);
     this.phase = 0;
     this.finPhase = 0;
-    this.spacing = .1;
+    this.spacing = this.RESOLUTION;
     this.inverseSpacing = 1 / this.spacing;
 };
 
 FishBody.prototype.FIN_PAIRS_MIN = 0;
 FishBody.prototype.FIN_PAIRS_MAX = 8;
-FishBody.prototype.RESOLUTION = .1;
+FishBody.prototype.RESOLUTION = .12;
 FishBody.prototype.SPRING_START = .9;
 FishBody.prototype.SPRING_END = .65;
 FishBody.prototype.SPRING_POWER = 1.7;
@@ -42,8 +42,8 @@ FishBody.prototype.WAVE_INTENSITY_MIN = .05;
 FishBody.prototype.WAVE_INTENSITY_MULTIPLIER = 2;
 FishBody.prototype.WAVE_TURBULENCE = .4;
 FishBody.prototype.FIN_PHASE_SPEED = .4;
-FishBody.prototype.SAMPLER_LENGTH = new SamplerQuadratic(1, 1.5, 2.2);
-FishBody.prototype.SAMPLER_RADIUS = new SamplerPlateau(.1, .13, .2, 0);
+FishBody.prototype.SAMPLER_LENGTH = new SamplerQuadratic(.6, 1.5, 1.8);
+FishBody.prototype.SAMPLER_RADIUS = new SamplerPlateau(.08, .13, .18, 0);
 
 /**
  * Deserialize a fish body

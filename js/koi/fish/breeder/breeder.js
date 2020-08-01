@@ -23,7 +23,6 @@ Breeder.prototype.breed = function(atlas, randomSource, random) {
 
     for (let fish = 0, fishCount = offspring.length; fish < fishCount; ++fish)
         offspring[fish] = this.mixer.mix(atlas,randomSource, random);
-    console.log("Created offspring:");
-    console.log(offspring);
+
     return offspring;
 };

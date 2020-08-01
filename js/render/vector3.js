@@ -35,6 +35,27 @@ Vector3.prototype.deserialize = function(buffer) {
 };
 
 /**
+ * Copy this vector
+ * @returns {Vector3} A copy of this vector
+ */
+Vector3.prototype.copy = function() {
+    return new Vector3(this.x, this.y, this.z);
+};
+
+/**
+ * Create an interpolated vector from this one to another vector
+ * @param {Vector3} to The vector to interpolate towards
+ * @param {Number} x The interpolation factor in the range [0, 1]
+ * @returns {Vector3} A new vector
+ */
+Vector3.prototype.interpolate = function(to, x) {
+    return new Vector3(
+        this.x + (to.x - this.x) * x,
+        this.y + (to.y - this.y) * x,
+        this.z + (to.z - this.z) * x);
+};
+
+/**
  * A function that evaluates whether this vector is a normal vector
  * @returns {Boolean} True if this vector is approximately a normal vector
  */

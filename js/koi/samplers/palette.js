@@ -50,6 +50,26 @@ Palette.Sample.prototype.randomize = function(random) {
 };
 
 /**
+ * Make a copy of this palette sample
+ * @returns {Palette.Sample} A copy of this sample
+ */
+Palette.Sample.prototype.copy = function() {
+    return new Palette.Sample(this.x, this.y);
+};
+
+/**
+ * Create an interpolated palette sample from this one to another sample
+ * @param {Palette.Sample} to The palette sample to interpolate towards
+ * @param {Number} x The interpolation factor in the range [0, 1]
+ * @returns {Palette.Sample} The interpolated sample
+ */
+Palette.Sample.prototype.interpolate = function(to, x) {
+    return new Palette.Sample(
+        Math.min(0xFF, Math.max(0, Math.round(this.x + (to.x - this.x) * x))),
+        Math.min(0xFF, Math.max(0, Math.round(this.y + (to.y - this.y) * x))));
+};
+
+/**
  * A color on a palette
  * @param {Palette.Sample} sample A sample location for this color
  * @param {Color} color The color

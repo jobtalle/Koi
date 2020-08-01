@@ -22,5 +22,5 @@ SamplerSigmoid.prototype.sample = function(x) {
     if (x < .5)
         return this.min + (this.max - this.min) * .5 * Math.pow(x + x, this.power);
     else
-        return this.min + (this.max - this.min) * (1 - .5 * Math.pow(x + x - 2, this.power));
+        return this.min + (this.max - this.min) * (1 - .5 * Math.pow(2 - x - x, this.power));
 };

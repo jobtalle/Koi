@@ -16,8 +16,8 @@ const MixerBody = function(mother, father) {
 MixerBody.prototype = Object.create(Mixer.prototype);
 MixerBody.prototype.SAMPLER_BLEND_LENGTH = new SamplerPlateau(0, .4, 1, .5);
 MixerBody.prototype.SAMPLER_BLEND_RADIUS = MixerBody.prototype.SAMPLER_BLEND_LENGTH;
-MixerBody.prototype.SAMPLER_MUTATE_LENGTH = new SamplerPlateau(-1.5, 0, 1.5, 0);
-MixerBody.prototype.SAMPLER_MUTATE_RADIUS = MixerBody.prototype.SAMPLER_MUTATE_LENGTH;
+MixerBody.prototype.SAMPLER_MUTATE_LENGTH = new SamplerPlateau(-40, 0, 40, 1.5);
+MixerBody.prototype.SAMPLER_MUTATE_RADIUS = new SamplerPlateau(-40, 0, 40, 1);
 
 /**
  * Create a new body that combines properties from both parents
