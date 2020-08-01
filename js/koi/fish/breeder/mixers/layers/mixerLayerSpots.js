@@ -10,7 +10,7 @@ const MixerLayerSpots = function(mother, father) {
 };
 
 MixerLayerSpots.prototype = Object.create(Mixer.prototype);
-MixerLayerSpots.prototype.SAMPLER_BLEND_SCALE = new SamplerSigmoid(0, 1, 26);
+MixerLayerSpots.prototype.SAMPLER_BLEND_SCALE = new SamplerSigmoid(0, 1, 33);
 
 /**
  * Create a new layer that mixes the properties from both parents

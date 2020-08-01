@@ -95,15 +95,6 @@ MixerPattern.prototype.mix = function(atlas, randomSource, random) { // TODO: mi
             ++layerFather;
     }
 
-    for (const layer of this.mother.layers) {
-        switch (layer.ID) {
-            case LayerSpots.prototype.ID:
-                layers.push(new LayerSpots(layer.scale, layer.paletteSample, layer.anchor, layer.x));
-
-                break;
-        }
-    }
-
     const pattern = new Pattern(
         new LayerBase(this.mother.base.paletteSample),
         layers,
