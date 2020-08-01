@@ -24,7 +24,7 @@ MixerLayerSpots.prototype.mix = function(random) {
         this.mother.scale + (this.father.scale - this.mother.scale) * interpolate,
         this.mother.paletteSample.interpolate(this.father.paletteSample, interpolate),
         this.mother.anchor.interpolate(this.father.anchor, interpolate),
-        this.mother.x.interpolate(this.father.x, interpolate));
+        this.mother.x.interpolate(this.father.x, interpolate).normalize());
 };
 
 /**
