@@ -96,7 +96,7 @@ MixerPattern.prototype.mix = function(atlas, randomSource, random) { // TODO: mi
     }
 
     const pattern = new Pattern(
-        new LayerBase(this.mother.base.paletteSample),
+        MixerLayerBase.mutate(new MixerLayerBase(this.mother.base, this.father.base).mix(random), random),
         layers,
         new LayerShapeBody(this.mother.shapeBody.centerPower, this.mother.shapeBody.radiusPower),
         new LayerShapeFin());

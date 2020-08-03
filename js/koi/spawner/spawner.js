@@ -62,7 +62,7 @@ Spawner.prototype.update = function(timeStep, atlas, randomSource, random) {
                 Math.round(random.getFloat() * 0xFF),
                 Math.round(random.getFloat() * 0xFF),
                 Math.round(random.getFloat() * 0xFF),
-                1500));
+                30000));
         }
     }
 };
