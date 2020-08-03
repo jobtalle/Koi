@@ -4,7 +4,7 @@
  * @param {FishBody} father The second fish body
  * @constructor
  */
-const MixerBody = function(mother, father) {
+const MixerFishBody = function(mother, father) {
     this.mother = mother;
     this.father = father;
 
@@ -13,11 +13,9 @@ const MixerBody = function(mother, father) {
     this.mixerTail = new MixerTail(mother.tail, father.tail);
 };
 
-MixerBody.prototype = Object.create(Mixer.prototype);
-MixerBody.prototype.SAMPLER_BLEND_LENGTH = new SamplerPlateau(0, .4, 1, .5);
-MixerBody.prototype.SAMPLER_BLEND_RADIUS = MixerBody.prototype.SAMPLER_BLEND_LENGTH;
-MixerBody.prototype.SAMPLER_MUTATE_LENGTH = new SamplerPlateau(-40, 0, 40, 1.5);
-MixerBody.prototype.SAMPLER_MUTATE_RADIUS = new SamplerPlateau(-40, 0, 40, 1);
+MixerFishBody.prototype = Object.create(Mixer.prototype);
+MixerFishBody.prototype.SAMPLER_LENGTH = new SamplerPlateau(0, .4, 1, .5);
+MixerFishBody.prototype.SAMPLER_RADIUS = MixerFishBody.prototype.SAMPLER_LENGTH;
 
 /**
  * Create a new body that combines properties from both parents
@@ -26,21 +24,19 @@ MixerBody.prototype.SAMPLER_MUTATE_RADIUS = new SamplerPlateau(-40, 0, 40, 1);
  * @param {Random} random A randomizer
  * @returns {FishBody} The mixed body
  */
-MixerBody.prototype.mix = function(atlas, randomSource, random) {
+MixerFishBody.prototype.mix = function(atlas, randomSource, random) {
     return new FishBody(
         this.mixerPattern.mix(atlas, randomSource, random),
         this.mixerFins.mix(random),
         this.mixerTail.mix(random),
-        this.mixUint8Blend(
+        this.mixUint8(
             this.mother.length,
             this.father.length,
-            this.SAMPLER_BLEND_LENGTH,
-            this.SAMPLER_MUTATE_LENGTH,
+            this.SAMPLER_LENGTH,
             random),
-        this.mixUint8Blend(
+        this.mixUint8(
             this.mother.radius,
             this.father.radius,
-            this.SAMPLER_BLEND_RADIUS,
-            this.SAMPLER_MUTATE_RADIUS,
+            this.SAMPLER_RADIUS,
             random));
 };

@@ -42,7 +42,7 @@ Spawner.prototype.update = function(timeStep, atlas, randomSource, random) {
                         new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()
                     )
                 ],
-                new LayerShapeBody(0.6, 0.7),
+                new LayerShapeBody(.6, .7),
                 new LayerShapeFin());
 
             atlas.write(pattern, randomSource);

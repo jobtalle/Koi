@@ -44,14 +44,6 @@ if (gl) {
      */
     const save = () => {
         window["localStorage"].setItem("session", session.serialize(koi).toString());
-
-        // const serialized = session.serialize(koi);
-        //
-        // for (let i = 0; i < serialized.bytes.length; ++i)
-        //     if (Math.random() < .4)
-        //         serialized.bytes[i] = Math.floor(Math.random() * 256);
-        //
-        // window["localStorage"].setItem("session", serialized.toString());
     };
 
     /**

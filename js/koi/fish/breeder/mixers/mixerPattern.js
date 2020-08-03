@@ -13,23 +13,6 @@ MixerPattern.prototype = Object.create(Mixer.prototype);
 MixerPattern.prototype.LAYER_SKIP_CHANCE = .06;
 
 /**
- * Mutate a layer
- * @param {Layer} layer A layer
- * @param {Random} random A randomizer
- * @returns {Layer} The given layer
- */
-MixerPattern.prototype.mutate = function(layer, random) {
-    switch (layer.id) {
-        case LayerSpots.prototype.ID:
-            MixerLayerSpots.mutate(layer, random);
-
-            break;
-    }
-
-    return layer;
-};
-
-/**
  * Mix two layers of the same type
  * @param {Layer} mother The mother layer
  * @param {Layer} father The father layer
@@ -37,14 +20,10 @@ MixerPattern.prototype.mutate = function(layer, random) {
  * @returns {Layer} The mixed layers
  */
 MixerPattern.prototype.mixLayers = function(mother, father, random) {
-    let layer = null;
-
     switch (mother.id) {
         case LayerSpots.prototype.ID:
-            layer = new MixerLayerSpots(mother, father).mix(random);
+            return new MixerLayerSpots(mother, father).mix(random);
     }
-
-    return this.mutate(layer, random);
 };
 
 /**
@@ -54,7 +33,7 @@ MixerPattern.prototype.mixLayers = function(mother, father, random) {
  * @param {Random} random A randomizer
  * @returns {Pattern} The mixed pattern
  */
-MixerPattern.prototype.mix = function(atlas, randomSource, random) { // TODO: mix
+MixerPattern.prototype.mix = function(atlas, randomSource, random) {
     const layers = [];
     const layersMother = this.mother.layers.length;
     const layersFather = this.father.layers.length;
@@ -66,24 +45,25 @@ MixerPattern.prototype.mix = function(atlas, randomSource, random) { // TODO: mi
         const father = layerFather >= layersFather ? null : this.father.layers[layerFather];
 
         if (mother === null)
-            layers.push(this.mutate(father.copy(), random));
+            layers.push(father.copy());
         else if (father === null)
-            layers.push(this.mutate(mother.copy(), random));
+            layers.push(mother.copy());
         else if (mother.id === father.id)
             layers.push(this.mixLayers(mother, father, random));
         else {
             if (mother.isRecessive() === father.isRecessive()) {
                 if (mother.sampleDominance(random) > father.sampleDominance(random))
-                    layers.push(this.mutate(mother.copy(), random));
+                    layers.push(mother.copy());
                 else
-                    layers.push(this.mutate(father.copy(), random));
+                    layers.push(father.copy());
             }
             else if (mother.isRecessive())
-                layers.push(this.mutate(father.copy(), random));
+                layers.push(father.copy());
             else
-                layers.push(this.mutate(mother.copy(), random));
+                layers.push(mother.copy());
         }
 
+        // TODO: This may allow recessive patterns to win, probably not desirable
         if (random.getFloat() < this.LAYER_SKIP_CHANCE)
             layerMother += 2;
         else
@@ -96,9 +76,9 @@ MixerPattern.prototype.mix = function(atlas, randomSource, random) { // TODO: mi
     }
 
     const pattern = new Pattern(
-        MixerLayerBase.mutate(new MixerLayerBase(this.mother.base, this.father.base).mix(random), random),
+        new MixerLayerBase(this.mother.base, this.father.base).mix(random),
         layers,
-        new LayerShapeBody(this.mother.shapeBody.centerPower, this.mother.shapeBody.radiusPower),
+        new MixerLayerShapeBody(this.mother.shapeBody, this.father.shapeBody).mix(random),
         new LayerShapeFin());
 
     atlas.write(pattern, randomSource);
