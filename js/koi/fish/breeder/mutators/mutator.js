@@ -6,6 +6,8 @@ const Mutator = function() {
 
 };
 
+Mutator.prototype = Object.create(NumericManipulator.prototype);
+
 /**
  * Mutate an unsigned 8 bit integer
  * @param {Number} n The 8 bit integer
@@ -14,7 +16,5 @@ const Mutator = function() {
  * @returns {Number} The mutated integer
  */
 Mutator.prototype.mutateUint8 = function(n, sampler, x) {
-    const offset = sampler.sample(x);
-
-    return Math.min(0xFF, Math.max(0, Math.round(n + offset)));
+    return this.asUint8(n + sampler.sample(x));
 };

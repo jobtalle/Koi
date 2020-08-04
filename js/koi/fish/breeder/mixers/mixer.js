@@ -6,6 +6,8 @@ const Mixer = function() {
 
 };
 
+Mixer.prototype = Object.create(NumericManipulator.prototype);
+
 /**
  * Choose a point between two values based on a sampler
  * @param {Number} a The first value
@@ -14,9 +16,7 @@ const Mixer = function() {
  * @param {Number} x The interpolation factor in the range [0, 1]
  */
 Mixer.prototype.mixUint8 = function(a, b, sampler, x) {
-    const sampled = a + (b - a) * sampler.sample(x);
-
-    return Math.min(0xFF, Math.max(0, Math.round(sampled)));
+    return this.asUint8(a + (b - a) * sampler.sample(x));
 };
 
 /**
@@ -27,9 +27,8 @@ Mixer.prototype.mixUint8 = function(a, b, sampler, x) {
  * @param {Number} x The interpolation factor in the range [0, 1]
  */
 Mixer.prototype.mixUint8Ordered = function(a, b, sampler, x) {
-    const sampled = a < b ?
-        a + (b - a) * sampler.sample(x) :
-        b + (a - b) * sampler.sample(x);
+    if (a < b)
+        return this.asUint8(a + (b - a) * sampler.sample(x));
 
-    return Math.min(0xFF, Math.max(0, Math.round(sampled)));
+    return this.asUint8(b + (a - b) * sampler.sample(x));
 };
