@@ -1,6 +1,6 @@
 /**
  * A coloured spots pattern
- * @param {Number} scale The noise scale
+ * @param {Number} scale The noise scale in the range [0, 255]
  * @param {Palette.Sample} sample A palette sample
  * @param {Vector3} anchor The noise sample position
  * @param {Vector3} x The noise sample X direction
@@ -19,8 +19,7 @@ LayerSpots.prototype = Object.create(Layer.prototype);
 LayerSpots.prototype.DOMINANCE = .25;
 LayerSpots.prototype.UP = new Vector3(0, 1, 0);
 LayerSpots.prototype.UP_ALT = new Vector3(.1, 1, 0);
-LayerSpots.prototype.SCALE_MIN = Math.fround(0.5);
-LayerSpots.prototype.SCALE_MAX = Math.fround(5);
+LayerSpots.prototype.SAMPLER_SCALE = new SamplerPlateau(.5, 1.8, 6, 5);
 LayerSpots.prototype.SPACE_LIMIT_MIN = Math.fround(-256);
 LayerSpots.prototype.SPACE_LIMIT_MAX = Math.fround(256);
 
@@ -69,11 +68,7 @@ void main() {
  * @throws {RangeError} A range error if deserialized values are not valid
  */
 LayerSpots.deserialize = function(buffer) {
-    const scale = buffer.readFloat();
-
-    if (!(scale >= LayerSpots.prototype.SCALE_MIN && scale <= LayerSpots.prototype.SCALE_MAX))
-        throw new RangeError();
-
+    const scale = buffer.readByte();
     const sample = Palette.Sample.deserialize(buffer);
     const anchor = new Vector3().deserialize(buffer);
 
@@ -89,6 +84,18 @@ LayerSpots.deserialize = function(buffer) {
 };
 
 /**
+ * Serialize this pattern
+ * @param {BinBuffer} buffer The buffer to serialize to
+ */
+LayerSpots.prototype.serialize = function(buffer) {
+    buffer.writeUint8(this.scale);
+
+    this.paletteSample.serialize(buffer);
+    this.anchor.serialize(buffer);
+    this.x.serialize(buffer);
+};
+
+/**
  * Make a deep copy of this layer
  * @returns {LayerSpots} A copy of this layer
  */
@@ -98,18 +105,6 @@ LayerSpots.prototype.copy = function() {
         this.paletteSample.copy(),
         this.anchor.copy(),
         this.x.copy());
-};
-
-/**
- * Serialize this pattern
- * @param {BinBuffer} buffer The buffer to serialize to
- */
-LayerSpots.prototype.serialize = function(buffer) {
-    buffer.writeFloat(this.scale);
-
-    this.paletteSample.serialize(buffer);
-    this.anchor.serialize(buffer);
-    this.x.serialize(buffer);
 };
 
 /**
@@ -143,7 +138,7 @@ LayerSpots.prototype.configure = function(gl, program, color) {
     const y = this.getY(z);
 
     gl.uniform3f(program["uColor"], color.r, color.g, color.b);
-    gl.uniform1f(program["uScale"], this.scale);
+    gl.uniform1f(program["uScale"], this.SAMPLER_SCALE.sample(this.scale / 0xFF));
     gl.uniform3f(program["uAnchor"], this.anchor.x, this.anchor.y, this.anchor.z);
     gl.uniformMatrix3fv(
         program["uRotate"],
