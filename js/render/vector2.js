@@ -125,7 +125,16 @@ Vector2.prototype.length = function() {
  * @returns {Vector2} The modified vector
  */
 Vector2.prototype.normalize = function() {
-    return this.divide(this.length());
+    const length = this.length();
+
+    if (length !== 0)
+        return this.divide(length);
+    else {
+        this.x = 1;
+        this.y = 0;
+
+        return this;
+    }
 };
 
 /**

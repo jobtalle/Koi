@@ -19,7 +19,7 @@ LayerSpots.prototype = Object.create(Layer.prototype);
 LayerSpots.prototype.DOMINANCE = .25;
 LayerSpots.prototype.UP = new Vector3(0, 1, 0);
 LayerSpots.prototype.UP_ALT = new Vector3(.1, 1, 0);
-LayerSpots.prototype.SAMPLER_SCALE = new SamplerPlateau(.5, 1.8, 6, 5);
+LayerSpots.prototype.SAMPLER_SCALE = new SamplerPlateau(.5, 1.8, 6, 11);
 LayerSpots.prototype.SPACE_LIMIT_MIN = Math.fround(-256);
 LayerSpots.prototype.SPACE_LIMIT_MAX = Math.fround(256);
 

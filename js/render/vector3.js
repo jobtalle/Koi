@@ -139,7 +139,16 @@ Vector3.prototype.equals = function(other) {
  * @returns {Vector3} The modified vector
  */
 Vector3.prototype.normalize = function() {
-    return this.divide(this.length());
+    const length = this.length();
+
+    if (length !== 0)
+        return this.divide(length);
+    else {
+        this.x = 1;
+        this.y = this.z = 0;
+
+        return this;
+    }
 };
 
 /**
