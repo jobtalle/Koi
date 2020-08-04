@@ -22,9 +22,18 @@ MutatorFish.prototype.SAMPLER_OFFSPRING_COUNT = new SamplerPlateau(-15, 0, 15, 1
 MutatorFish.prototype.mutate = function(random) {
     this.mutateBody.mutate(random);
 
-    this.fish.growthSpeed = this.mutateUint8(this.fish.growthSpeed, this.SAMPLER_GROWTH_SPEED, random);
-    this.fish.matingFrequency = this.mutateUint8(this.fish.matingFrequency, this.SAMPLER_MATING_FREQUENCY, random);
-    this.fish.offspringCount = this.mutateUint8(this.fish.offspringCount, this.SAMPLER_OFFSPRING_COUNT, random);
+    this.fish.growthSpeed = this.mutateUint8(
+        this.fish.growthSpeed,
+        this.SAMPLER_GROWTH_SPEED,
+        random.getFloat());
+    this.fish.matingFrequency = this.mutateUint8(
+        this.fish.matingFrequency,
+        this.SAMPLER_MATING_FREQUENCY,
+        random.getFloat());
+    this.fish.offspringCount = this.mutateUint8(
+        this.fish.offspringCount,
+        this.SAMPLER_OFFSPRING_COUNT,
+        random.getFloat());
 
     return this.fish;
 };

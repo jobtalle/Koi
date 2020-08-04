@@ -10,11 +10,11 @@ const Mutator = function() {
  * Mutate an unsigned 8 bit integer
  * @param {Number} n The 8 bit integer
  * @param {Sampler} sampler A sample to sample mutation offset from
- * @param {Random} random A randomizer
+ * @param {Number} x A random number in the range [0, 1] to use for sampling
  * @returns {Number} The mutated integer
  */
-Mutator.prototype.mutateUint8 = function(n, sampler, random) {
-    const offset = sampler.sample(random.getFloat());
+Mutator.prototype.mutateUint8 = function(n, sampler, x) {
+    const offset = sampler.sample(x);
 
     return Math.min(0xFF, Math.max(0, Math.round(n + offset)));
 };

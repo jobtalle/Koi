@@ -32,15 +32,15 @@ MixerFish.prototype.mix = function(atlas, randomSource, random) {
             this.mother.growthSpeed,
             this.father.growthSpeed,
             this.SAMPLER_GROWTH_SPEED,
-            random),
-        this.mixUint8(
+            random.getFloat()),
+        this.mixUint8Ordered(
             this.mother.matingFrequency,
             this.father.matingFrequency,
             this.SAMPLER_MATING_FREQUENCY,
-            random),
-        this.mixUint8(
+            random.getFloat()),
+        this.mixUint8Ordered(
             this.mother.offspringCount,
             this.father.offspringCount,
             this.SAMPLER_OFFSPRING_COUNT,
-            random));
+            random.getFloat()));
 };

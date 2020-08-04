@@ -29,14 +29,14 @@ MixerFishBody.prototype.mix = function(atlas, randomSource, random) {
         this.mixerPattern.mix(atlas, randomSource, random),
         this.mixerFins.mix(random),
         this.mixerTail.mix(random),
-        this.mixUint8(
+        this.mixUint8Ordered(
             this.mother.length,
             this.father.length,
             this.SAMPLER_LENGTH,
-            random),
-        this.mixUint8(
+            random.getFloat()),
+        this.mixUint8Ordered(
             this.mother.radius,
             this.father.radius,
             this.SAMPLER_RADIUS,
-            random));
+            random.getFloat()));
 };
