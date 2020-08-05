@@ -11,6 +11,6 @@ const NumericManipulator = function() {
  * @param {Number} n The number to convert
  * @returns {Number} An 8 bit integer
  */
-NumericManipulator.prototype.asUint8 = function(n) {
+NumericManipulator.prototype.clampUint8 = function(n) {
     return Math.min(0xFF, Math.max(0, Math.round(n)));
 };

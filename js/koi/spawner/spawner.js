@@ -25,7 +25,7 @@ Spawner.prototype.update = function(timeStep, atlas, randomSource, random) {
     if ((this.time -= timeStep) < 0) {
         this.time += this.SPAWN_TIME_MIN + (this.SPAWN_TIME_MAX - this.SPAWN_TIME_MIN) * random.getFloat();
 
-        if (this.constellation.getFishCount() < this.constellation.getCapacity() - this.SPAWN_OVERHEAD) {
+        if (this.constellation.getFishCount() < Koi.prototype.FISH_CAPACITY - this.SPAWN_OVERHEAD) {
             const pattern = new Pattern(
                 new LayerBase(new Palette.Sample().randomize(random)),
                 [

@@ -74,7 +74,6 @@ Atlas.prototype.returnRegion = function(region) {
  * @param {RandomSource} randomSource A random source
  */
 Atlas.prototype.write = function(pattern, randomSource) {
-    // TODO: slot is sometimes undefined after resizing
     pattern.region = new AtlasRegion(this.getSlot(), this.slotSize);
 
     this.renderTarget.target();

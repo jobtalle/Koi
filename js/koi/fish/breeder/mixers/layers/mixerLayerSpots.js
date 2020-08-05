@@ -24,7 +24,7 @@ MixerLayerSpots.prototype.mix = function(random) {
     const interpolatePalette = this.SAMPLER_PALETTE.sample(random.getFloat());
 
     return new LayerSpots(
-        this.mixUint8(this.mother.scale, this.father.scale, this.SAMPLER_SCALE, random.getFloat()),
+        this.mixUint8(this.mother.scale, this.father.scale, this.SAMPLER_SCALE, interpolateSample),
         this.mother.paletteSample.interpolate(this.father.paletteSample, interpolatePalette),
         this.mother.anchor.interpolate(this.father.anchor, interpolateSample),
         this.mother.x.interpolate(this.father.x, interpolateSample).normalize());

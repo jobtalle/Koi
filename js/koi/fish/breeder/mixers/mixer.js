@@ -16,7 +16,7 @@ Mixer.prototype = Object.create(NumericManipulator.prototype);
  * @param {Number} x The interpolation factor in the range [0, 1]
  */
 Mixer.prototype.mixUint8 = function(a, b, sampler, x) {
-    return this.asUint8(a + (b - a) * sampler.sample(x));
+    return this.clampUint8(a + (b - a) * sampler.sample(x));
 };
 
 /**
@@ -28,7 +28,7 @@ Mixer.prototype.mixUint8 = function(a, b, sampler, x) {
  */
 Mixer.prototype.mixUint8Ordered = function(a, b, sampler, x) {
     if (a < b)
-        return this.asUint8(a + (b - a) * sampler.sample(x));
+        return this.clampUint8(a + (b - a) * sampler.sample(x));
 
-    return this.asUint8(b + (a - b) * sampler.sample(x));
+    return this.clampUint8(b + (a - b) * sampler.sample(x));
 };

@@ -11,6 +11,9 @@ const Breeder = function(mother, father) {
     this.mixer = new MixerFish(this.mother, this.father);
 };
 
+Breeder.prototype.BREED_OVERHEAD = 20;
+Breeder.prototype
+
 /**
  * Breed the two given fish and produce offspring
  * @param {Atlas} atlas The atlas to render newly spawned patterns on

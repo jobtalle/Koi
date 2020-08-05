@@ -43,6 +43,7 @@ Koi.prototype.FRAME_TIME_MAX = 1;
 Koi.prototype.UPDATE_RATE = 1 / 14;
 Koi.prototype.SCALE_FACTOR = .051;
 Koi.prototype.SCALE_MIN = 50;
+Koi.prototype.FISH_CAPACITY = 80;
 Koi.prototype.COLOR_BACKGROUND = Color.fromCSS("earth");
 
 /**
@@ -96,7 +97,7 @@ Koi.prototype.createRenderables = function() {
     this.atlas = new Atlas(
         this.systems.gl,
         this.systems.patterns,
-        this.constellation.getCapacity());
+        this.FISH_CAPACITY);
     this.background = new Background(
         this.systems.gl,
         this.systems.sand,

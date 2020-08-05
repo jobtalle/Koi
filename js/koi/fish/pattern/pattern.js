@@ -61,6 +61,13 @@ Pattern.prototype.serialize = function(buffer) {
 };
 
 /**
+ * Trim any layers from this pattern that will not be rendered because the palette track is not deep enough
+ */
+Pattern.prototype.trim = function() {
+
+};
+
+/**
  * Free all resources maintained by this pattern
  * @param {Atlas} atlas The texture atlas
  */

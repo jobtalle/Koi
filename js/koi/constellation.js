@@ -19,7 +19,6 @@ const Constellation = function(width, height) {
 Constellation.prototype.FACTOR_PADDING = .14;
 Constellation.prototype.FACTOR_SMALL = .65;
 Constellation.prototype.FACTOR_RIVER = .55;
-Constellation.prototype.FISH_PER_AREA = 1;
 Constellation.prototype.Y_SCALE = 1.1;
 
 /**
@@ -85,16 +84,6 @@ Constellation.prototype.resize = function(width, height, atlas) {
     this.height = height * this.Y_SCALE;
 
     this.fit(atlas);
-};
-
-/**
- * Get the total number of fish this constellation supports
- * @returns {Number} The total fish capacity
- */
-Constellation.prototype.getCapacity = function() {
-    return Math.ceil(this.FISH_PER_AREA * Math.PI * (
-        this.big.constraint.radius * this.big.constraint.radius +
-        this.small.constraint.radius * this.small.constraint.radius));
 };
 
 /**
@@ -325,9 +314,9 @@ Constellation.prototype.makeMeshDepth = function(gl) {
  * @param {Random} random A randomizer
  */
 Constellation.prototype.update = function(atlas, randomSource, water, random) {
-    this.small.update(atlas, randomSource, water, random);
-    this.big.update(atlas, randomSource, water, random);
-    this.river.update(atlas, randomSource, water, random);
+    this.small.update(atlas, randomSource, water, this, random);
+    this.big.update(atlas, randomSource, water, this, random);
+    this.river.update(atlas, randomSource, water, this, random);
 };
 
 /**

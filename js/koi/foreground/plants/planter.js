@@ -14,7 +14,7 @@ const Planter = function(slots, biome, random) {
 };
 
 Planter.prototype.BEACH_MAX = .1;
-Planter.prototype.CATTAIL_CHANCE = .1;
+Planter.prototype.CATTAIL_CHANCE = .2;
 Planter.prototype.CATTAIL_DIST_MIN = .2;
 Planter.prototype.CATTAIL_DIST_MAX = 1.1;
 

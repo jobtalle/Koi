@@ -16,5 +16,5 @@ Mutator.prototype = Object.create(NumericManipulator.prototype);
  * @returns {Number} The mutated integer
  */
 Mutator.prototype.mutateUint8 = function(n, sampler, x) {
-    return this.asUint8(n + sampler.sample(x));
+    return this.clampUint8(n + sampler.sample(x));
 };

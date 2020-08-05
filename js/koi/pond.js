@@ -132,9 +132,15 @@ Pond.prototype.pick = function(x, y) {
  * @param {Atlas} atlas The atlas to render newly spawned patterns on
  * @param {RandomSource} randomSource A random source
  * @param {Water} water A water plane to disturb
+ * @param {Constellation} constellation The constellation containing all ponds
  * @param {Random} random A randomizer
  */
-Pond.prototype.update = function(atlas, randomSource, water, random) {
+Pond.prototype.update = function(
+    atlas,
+    randomSource,
+    water,
+    constellation,
+    random) {
     for (let a = this.fishes.length; a-- > 0;) {
         const fish = this.fishes[a];
 
@@ -154,8 +160,12 @@ Pond.prototype.update = function(atlas, randomSource, water, random) {
                         new Breeder(fish.lastInteraction, fish);
                     const offspring = breeder.breed(atlas, randomSource, random);
 
-                    for (const fish of offspring)
-                        this.addFish(fish);
+                    for (const fish of offspring) {
+                        if (constellation.getFishCount() < Koi.prototype.FISH_CAPACITY)
+                            this.addFish(fish);
+                        else
+                            break;
+                    }
                 }
             }
             else
