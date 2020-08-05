@@ -53,16 +53,6 @@ Pond.prototype.deserialize = function(buffer, atlas, randomSource) {
 };
 
 /**
- * Update the atlas, write all fish textures again
- * @param {Atlas} atlas The atlas
- * @param {RandomSource} randomSource A random source
- */
-Pond.prototype.updateAtlas = function(atlas, randomSource) {
-    for (const fish of this.fishes)
-        atlas.write(fish.body.pattern, randomSource);
-};
-
-/**
  * Replace this ponds constraint
  * @param {Object} constraint A new constraint
  * @param {Atlas} atlas The texture atlas

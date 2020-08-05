@@ -1,12 +1,10 @@
 /**
  * The pattern renderer
  * @param {WebGLRenderingContext} gl A webGL context
- * @param {Palettes} palettes The palettes
  * @constructor
  */
-const Patterns = function(gl, palettes) {
+const Patterns = function(gl) {
     this.gl = gl;
-    this.palettes = palettes;
     this.buffer = gl.createBuffer();
     this.programBase = LayerBase.prototype.createShader(gl);
     this.vaoBase = this.createVAO(gl, this.programBase);

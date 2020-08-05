@@ -22,7 +22,6 @@ const Koi = function(
         systems.height / this.scale);
     this.mover = new Mover(this.constellation);
     this.shadowBuffer = null;
-    this.atlas = null;
     this.rocks = null;
     this.background = null;
     this.foreground = null;
@@ -61,7 +60,7 @@ Koi.prototype.serialize = function(buffer) {
  */
 Koi.prototype.deserialize = function(buffer) {
     try {
-        this.constellation.deserialize(buffer, this.atlas, this.randomSource);
+        this.constellation.deserialize(buffer, this.systems.atlas, this.randomSource);
     }
     catch (error) {
         this.free();
@@ -94,10 +93,6 @@ Koi.prototype.createRenderables = function() {
         this.systems.gl,
         this.constellation.width,
         this.constellation.height);
-    this.atlas = new Atlas(
-        this.systems.gl,
-        this.systems.patterns,
-        this.FISH_CAPACITY);
     this.background = new Background(
         this.systems.gl,
         this.systems.sand,
@@ -150,7 +145,6 @@ Koi.prototype.createRenderables = function() {
 Koi.prototype.freeRenderables = function() {
     this.randomSource.free();
     this.shadowBuffer.free();
-    this.atlas.free();
     this.background.free();
     this.foreground.free();
     this.underwater.free();
@@ -213,20 +207,18 @@ Koi.prototype.resize = function() {
     this.constellation.resize(
         this.systems.width / this.scale,
         this.systems.height / this.scale,
-        this.atlas);
+        this.systems.atlas);
 
     this.freeRenderables();
     this.createRenderables();
-
-    this.constellation.updateAtlas(this.atlas, this.randomSource);
 };
 
 /**
  * Update the scene
  */
 Koi.prototype.update = function() {
-    this.spawner.update(this.UPDATE_RATE, this.atlas, this.systems.patterns, this.randomSource, this.random);
-    this.constellation.update(this.atlas, this.systems.patterns, this.randomSource, this.water, this.random);
+    this.spawner.update(this.UPDATE_RATE, this.systems.atlas, this.systems.patterns, this.randomSource, this.random);
+    this.constellation.update(this.systems.atlas, this.systems.patterns, this.randomSource, this.water, this.random);
     this.weather.update(this.air, this.water, this.random);
     this.mover.update();
 
@@ -251,7 +243,7 @@ Koi.prototype.render = function(deltaTime) {
 
     // Render shadows
     this.shadowBuffer.target();
-    this.constellation.render(this.systems.bodies, this.atlas, timeFactor,true);
+    this.constellation.render(this.systems.bodies, this.systems.atlas, timeFactor,true);
 
     // Blur shadows
     this.systems.blur.applyMesh(this.shadowBuffer.renderTarget, this.shadowBuffer.intermediate);
@@ -271,7 +263,7 @@ Koi.prototype.render = function(deltaTime) {
     // Render pond contents
     this.constellation.render(
         this.systems.bodies,
-        this.atlas,
+        this.systems.atlas,
         timeFactor,
         false,
         false);
@@ -309,7 +301,7 @@ Koi.prototype.render = function(deltaTime) {
     // Render mover
     this.mover.render(
         this.systems.bodies,
-        this.atlas,
+        this.systems.atlas,
         this.constellation.width,
         this.constellation.height,
         timeFactor);

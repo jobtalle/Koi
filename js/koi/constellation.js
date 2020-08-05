@@ -63,17 +63,6 @@ Constellation.prototype.getWorldY = function(y, scale) {
 };
 
 /**
- * Update the atlas, write all fish textures again
- * @param {Atlas} atlas The atlas
- * @param {RandomSource} randomSource A random source
- */
-Constellation.prototype.updateAtlas = function(atlas, randomSource) {
-    this.big.updateAtlas(atlas, randomSource);
-    this.small.updateAtlas(atlas, randomSource);
-    this.river.updateAtlas(atlas, randomSource);
-};
-
-/**
  * Resize the constellation
  * @param {Number} width The scene width
  * @param {Number} height The scene height

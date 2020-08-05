@@ -22,7 +22,8 @@ const Systems = function(gl, random, width, height) {
     this.shadows = new Shadows(gl);
     this.blur = new Blur(gl, this.quad);
     this.wind = new Wind(gl, this.quad);
-    this.patterns = new Patterns(gl, this.palettes);
+    this.patterns = new Patterns(gl);
+    this.atlas = new Atlas(gl, this.patterns, Koi.prototype.FISH_CAPACITY);
 };
 
 /**
@@ -47,6 +48,7 @@ Systems.prototype.targetMain = function() {
  * Free all rendering systems
  */
 Systems.prototype.free = function() {
+    this.atlas.free();
     this.blit.free();
     this.patterns.free();
     this.sand.free();
