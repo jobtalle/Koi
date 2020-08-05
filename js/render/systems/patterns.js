@@ -76,9 +76,10 @@ Patterns.prototype.writeLayer = function(
  * @param {Number} pixelSize The pixel size
  */
 Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
-    let previousLayer = pattern.base;
-    let sample = this.palettes.base.sample(pattern.base.paletteSample);
-    let palette = this.palettes.base;
+    const paletteTrack = new PaletteTrack(this.palettes.base, pattern.base);
+    // let previousLayer = pattern.base;
+    // let sample = this.palettes.base.sample(pattern.base.paletteSample);
+    // let palette = this.palettes.base;
 
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, randomSource.texture);
@@ -101,7 +102,7 @@ Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
         1, 0
     ]));
 
-    this.writeLayer(pattern.base, this.programBase, this.vaoBase, sample.color);
+    this.writeLayer(pattern.base, this.programBase, this.vaoBase, paletteTrack.next(pattern.base));
 
     this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array([
         2 * (region.uBodyStart + pixelSize) - 1,
@@ -121,27 +122,18 @@ Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
 
-    for (let layerIndex = 0, layers = pattern.layers.length; layerIndex < layers; ++layerIndex) {
-        const layer = pattern.layers[layerIndex];
+    for (const layer of pattern.layers) {
+        const color = paletteTrack.next(layer);
 
-        if (layer.paletteSample !== null) {
-            if (layerIndex === 0 ||
-                !(previousLayer.flags & previousLayer.FLAG_ALLOW_OVERLAP) || !(layer.flags & layer.FLAG_OVERLAPS)) {
-                if ((palette = sample.palette) === null)
-                    break;
-
-                sample = palette.sample(layer.paletteSample);
-            }
-        }
+        if (!color)
+            break;
 
         switch (layer.id) {
             case LayerSpots.prototype.ID:
-                this.writeLayer(layer, this.programSpots, this.vaoSpots, sample.color);
+                this.writeLayer(layer, this.programSpots, this.vaoSpots, color);
 
                 break;
         }
-
-        previousLayer = layer;
     }
 
     this.gl.blendFunc(this.gl.ZERO, this.gl.SRC_COLOR)

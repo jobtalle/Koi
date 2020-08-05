@@ -63,6 +63,8 @@ MixerPattern.prototype.mix = function(atlas, randomSource, random) {
                 layers.push(mother.copy());
         }
 
+        // TODO: Pattern order swaps
+
         // TODO: This may allow recessive patterns to win, probably not desirable
         if (random.getFloat() < this.LAYER_SKIP_CHANCE)
             layerMother += 2;
