@@ -110,6 +110,7 @@ MeshBuffer.prototype.upload = function() {
         if (++this.verticesShrinkTime === this.SHRINK_TIME) {
             this.capacityVertices -= this.BLOCK_SIZE;
             this.vertices = new Float32Array(this.capacityVertices);
+            this.verticesShrinkTime = 0;
         }
     }
     else
@@ -119,6 +120,7 @@ MeshBuffer.prototype.upload = function() {
         if (++this.indicesShrinkTime === this.SHRINK_TIME) {
             this.capacityIndices -= this.BLOCK_SIZE;
             this.indices = new Uint16Array(this.capacityIndices);
+            this.indicesShrinkTime = 0;
         }
     }
     else
