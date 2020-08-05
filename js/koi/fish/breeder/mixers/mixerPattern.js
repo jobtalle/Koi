@@ -82,7 +82,7 @@ MixerPattern.prototype.mix = function(atlas, patterns, randomSource, random) {
         new MixerLayerBase(this.mother.base, this.father.base).mix(random),
         layers,
         new MixerLayerShapeBody(this.mother.shapeBody, this.father.shapeBody).mix(random),
-        new LayerShapeFin());
+        new MixerLayerShapeFin(this.mother.shapeFin, this.father.shapeFin).mix(random));
 
     pattern.trim(patterns.palettes.base);
 

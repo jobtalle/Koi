@@ -6,7 +6,7 @@
 const MutatorFish = function(fish) {
     this.fish = fish;
 
-    this.mutateBody = new MutatorFishBody(fish.body);
+    this.mutatorBody = new MutatorFishBody(fish.body);
 };
 
 MutatorFish.prototype = Object.create(Mutator.prototype);
@@ -17,10 +17,9 @@ MutatorFish.prototype.SAMPLER_OFFSPRING_COUNT = new SamplerPlateau(-15, 0, 15, 1
 /**
  * Mutate the fish
  * @param {Random} random A randomizer
- * @returns {Fish} The mutated fish
  */
 MutatorFish.prototype.mutate = function(random) {
-    this.mutateBody.mutate(random);
+    this.mutatorBody.mutate(random);
 
     this.fish.growthSpeed = this.mutateUint8(
         this.fish.growthSpeed,
@@ -34,6 +33,4 @@ MutatorFish.prototype.mutate = function(random) {
         this.fish.offspringCount,
         this.SAMPLER_OFFSPRING_COUNT,
         random.getFloat());
-
-    return this.fish;
 };
