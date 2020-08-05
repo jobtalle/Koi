@@ -1,13 +1,27 @@
 /**
  * An air plane to render wind on
  * @param {WebGLRenderingContext} gl A WebGL rendering context
+ * @param {InfluencePainter} influencePainter The influence painter
  * @param {Number} width The scene width
  * @param {Number} height The scene height
  * @param {Random} random A randomizer
  * @constructor
  */
-const Air = function(gl, width, height, random) {
-    ConvolutionalBuffer.call(this, gl, width, height, this.SCALE, new Color(.5, 0, 0, .5), gl.RGBA);
+const Air = function(
+    gl,
+    influencePainter,
+    width,
+    height,
+    random) {
+    ConvolutionalBuffer.call(
+        this,
+        gl,
+        influencePainter,
+        width,
+        height,
+        this.SCALE,
+        new Color(.5, 0, 0, .5),
+        gl.RGBA);
 
     this.gl = gl;
     this.springs = gl.createTexture();

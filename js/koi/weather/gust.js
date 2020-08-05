@@ -60,7 +60,7 @@ Gust.prototype.update = function(air) {
     const scale = air.influences.scale;
     const progress = this.moved / this.distance;
     const intensity = Math.sin(Math.PI * progress) * this.intensity;
-    const firstIndex = air.influences.meshData.getVertexCount() * .2;
+    const firstIndex = air.influences.meshBuffer.getVertexCount();
 
     for (let point = 0; point <= this.pointCount; ++point) {
         const offset = this.offsets[point];
@@ -68,7 +68,7 @@ Gust.prototype.update = function(air) {
         const x = this.from.x + this.dx * point / this.pointCount + this.moved;
         const y = this.from.y + this.dy * point / this.pointCount;
 
-        air.influences.meshData.vertices.push(
+        air.influences.meshBuffer.addVertices(
             (x - offset - this.RADIUS_TRAILING) * scale,
             y * scale,
             0,
@@ -86,7 +86,7 @@ Gust.prototype.update = function(air) {
             0);
 
         if (point !== this.pointCount)
-            air.influences.meshData.indices.push(
+            air.influences.meshBuffer.addIndices(
                 firstIndex + 3 * point,
                 firstIndex + 3 * point + 1,
                 firstIndex + 3 * point + 4,
@@ -100,8 +100,6 @@ Gust.prototype.update = function(air) {
                 firstIndex + 3 * point + 4,
                 firstIndex + 3 * point + 1);
     }
-
-    air.influences.hasInfluences = true;
 
     this.moved += this.speed;
 

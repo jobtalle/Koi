@@ -1,6 +1,7 @@
 /**
  * A buffer made for self updating, using alternating front and back buffers
  * @param {WebGLRenderingContext} gl A WebGL render context
+ * @param {InfluencePainter} influencePainter The influence painter
  * @param {Number} width The scene width
  * @param {Number} height The scene height
  * @param {Number} scale The scale of objects on this buffer
@@ -10,6 +11,7 @@
  */
 const ConvolutionalBuffer = function(
     gl,
+    influencePainter,
     width,
     height,
     scale,
@@ -18,7 +20,7 @@ const ConvolutionalBuffer = function(
     this.front = 0;
     this.width = Math.ceil(width * scale);
     this.height = Math.ceil(height * scale);
-    this.influences = new InfluencePainter.Influences(this.width, this.height, scale);
+    this.influences = influencePainter.makeInfluences(this.width, this.height, scale);
     this.targets = [
         new RenderTarget(gl, this.width, this.height, format, false, gl.NEAREST),
         new RenderTarget(gl, this.width, this.height, format, false, gl.NEAREST)];
@@ -61,4 +63,6 @@ ConvolutionalBuffer.prototype.getBack = function() {
 ConvolutionalBuffer.prototype.free = function() {
     for (const target of this.targets)
         target.free();
+
+    this.influences.free();
 };

@@ -116,10 +116,12 @@ Koi.prototype.createRenderables = function() {
         this.systems.gl.LINEAR);
     this.water = new Water(
         this.systems.gl,
+        this.systems.influencePainter,
         this.constellation.width,
         this.constellation.height);
     this.air = new Air(
         this.systems.gl,
+        this.systems.influencePainter,
         this.constellation.width,
         this.constellation.height,
         this.random);

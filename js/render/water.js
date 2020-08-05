@@ -1,12 +1,25 @@
 /**
  * A water plane to render waves on
  * @param {WebGLRenderingContext} gl A WebGL render context
+ * @param {InfluencePainter} influencePainter The influence painter
  * @param {Number} width The scene width
  * @param {Number} height The scene height
  * @constructor
  */
-const Water = function(gl, width, height) {
-    ConvolutionalBuffer.call(this, gl, width, height, this.SCALE, new Color(.5, .5, 0), gl.RGB);
+const Water = function(
+    gl,
+    influencePainter,
+    width,
+    height) {
+    ConvolutionalBuffer.call(
+        this,
+        gl,
+        influencePainter,
+        width,
+        height,
+        this.SCALE,
+        new Color(.5, .5, 0),
+        gl.RGB);
 };
 
 Water.prototype = Object.create(ConvolutionalBuffer.prototype);

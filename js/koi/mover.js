@@ -49,7 +49,7 @@ Mover.prototype.render = function(
     if (this.move) {
         this.move.render(bodies, time);
 
-        bodies.render(atlas, width, height, false);
+        bodies.render(atlas, width, height, false, true);
     }
 };
 

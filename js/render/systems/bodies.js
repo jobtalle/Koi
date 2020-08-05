@@ -97,11 +97,18 @@ void main() {
  * @param {Number} width The scene width
  * @param {Number} height The scene height
  * @param {Boolean} shadows A boolean indicating whether shadows or actual bodies should be rendered
+ * @param {Boolean} first A boolean indicating that this is the first time a batch is rendered, and upload is required
  */
-Bodies.prototype.render = function(atlas, width, height, shadows) {
+Bodies.prototype.render = function(
+    atlas,
+    width,
+    height,
+    shadows,
+    first) {
     this.gl.vao.bindVertexArrayOES(this.vao);
 
-    this.buffer.upload();
+    if (first)
+        this.buffer.upload();
 
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);

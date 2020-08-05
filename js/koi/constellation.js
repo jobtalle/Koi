@@ -334,5 +334,5 @@ Constellation.prototype.render = function(
         this.river.render(bodies, time);
     }
 
-    bodies.render(atlas, this.width, this.height, shadows);
+    bodies.render(atlas, this.width, this.height, shadows, shadows);
 };
