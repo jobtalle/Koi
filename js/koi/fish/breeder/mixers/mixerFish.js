@@ -19,13 +19,14 @@ MixerFish.prototype.SAMPLER_OFFSPRING_COUNT = new SamplerQuadratic(0, 1, 4);
 /**
  * Create a new fish that combines properties from both parents
  * @param {Atlas} atlas The atlas to render newly spawned patterns on
+ * @param {Patterns} patterns The pattern renderer
  * @param {RandomSource} randomSource A random source
  * @param {Random} random A randomizer
  * @returns {Fish} The mixed fish
  */
-MixerFish.prototype.mix = function(atlas, randomSource, random) {
+MixerFish.prototype.mix = function(atlas, patterns, randomSource, random) {
     return new Fish(
-        this.mixerBody.mix(atlas, randomSource, random),
+        this.mixerBody.mix(atlas, patterns, randomSource, random),
         this.mother.position.copy(),
         new Vector2().fromAngle(random.getFloat() * Math.PI * 2),
         this.mixUint8(

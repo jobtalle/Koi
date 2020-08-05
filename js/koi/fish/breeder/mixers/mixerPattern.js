@@ -29,11 +29,12 @@ MixerPattern.prototype.mixLayers = function(mother, father, random) {
 /**
  * Create a new pattern that combines properties from both parents
  * @param {Atlas} atlas The atlas to render newly spawned patterns on
+ * @param {Patterns} patterns The pattern renderer
  * @param {RandomSource} randomSource A random source
  * @param {Random} random A randomizer
  * @returns {Pattern} The mixed pattern
  */
-MixerPattern.prototype.mix = function(atlas, randomSource, random) {
+MixerPattern.prototype.mix = function(atlas, patterns, randomSource, random) {
     const layers = [];
     const layersMother = this.mother.layers.length;
     const layersFather = this.father.layers.length;
@@ -82,6 +83,8 @@ MixerPattern.prototype.mix = function(atlas, randomSource, random) {
         layers,
         new MixerLayerShapeBody(this.mother.shapeBody, this.father.shapeBody).mix(random),
         new LayerShapeFin());
+
+    pattern.trim(patterns.palettes.base);
 
     atlas.write(pattern, randomSource);
 

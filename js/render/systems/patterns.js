@@ -76,10 +76,7 @@ Patterns.prototype.writeLayer = function(
  * @param {Number} pixelSize The pixel size
  */
 Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
-    const paletteTrack = new PaletteTrack(this.palettes.base, pattern.base);
-    // let previousLayer = pattern.base;
-    // let sample = this.palettes.base.sample(pattern.base.paletteSample);
-    // let palette = this.palettes.base;
+    const paletteTrack = new PaletteTrack(this.palettes.base);
 
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, randomSource.texture);

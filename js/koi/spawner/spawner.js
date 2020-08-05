@@ -18,10 +18,16 @@ Spawner.prototype.SPAWN_OVERHEAD = 8;
  * Update the spawner
  * @param {Number} timeStep The amount of time passed since the last update
  * @param {Atlas} atlas The atlas to render newly spawned patterns on
+ * @param {Patterns} patterns The patterns
  * @param {RandomSource} randomSource A random source
  * @param {Random} random A randomizer
  */
-Spawner.prototype.update = function(timeStep, atlas, randomSource, random) {
+Spawner.prototype.update = function(
+    timeStep,
+    atlas,
+    patterns,
+    randomSource,
+    random) {
     if ((this.time -= timeStep) < 0) {
         this.time += this.SPAWN_TIME_MIN + (this.SPAWN_TIME_MAX - this.SPAWN_TIME_MIN) * random.getFloat();
 
@@ -44,6 +50,8 @@ Spawner.prototype.update = function(timeStep, atlas, randomSource, random) {
                 ],
                 new LayerShapeBody(.6, .7),
                 new LayerShapeFin());
+
+            pattern.trim(patterns.palettes.base);
 
             atlas.write(pattern, randomSource);
 

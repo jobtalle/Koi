@@ -309,14 +309,20 @@ Constellation.prototype.makeMeshDepth = function(gl) {
 /**
  * Update the constellation
  * @param {Atlas} atlas The pattern atlas
+ * @param {Patterns} patterns The pattern renderer
  * @param {RandomSource} randomSource A random source
  * @param {Water} water A water plane to disturb
  * @param {Random} random A randomizer
  */
-Constellation.prototype.update = function(atlas, randomSource, water, random) {
-    this.small.update(atlas, randomSource, water, this, random);
-    this.big.update(atlas, randomSource, water, this, random);
-    this.river.update(atlas, randomSource, water, this, random);
+Constellation.prototype.update = function(
+    atlas,
+    patterns,
+    randomSource,
+    water,
+    random) {
+    this.small.update(atlas, patterns, randomSource, water, this, random);
+    this.big.update(atlas, patterns, randomSource, water, this, random);
+    this.river.update(atlas, patterns, randomSource, water, this, random);
 };
 
 /**

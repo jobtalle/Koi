@@ -1,14 +1,12 @@
 /**
  * A sampling track through a palette tree
  * @param {Palette} palette The start palette
- * @param {Layer} layer The first layer that samples this track
  * @constructor
  */
-const PaletteTrack = function(palette, layer) {
+const PaletteTrack = function(palette) {
     this.palette = palette;
     this.lastLayer = null;
     this.sample = null;
-    this.sample = palette.sample(layer.paletteSample);
 };
 
 /**
