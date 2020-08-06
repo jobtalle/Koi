@@ -1,7 +1,7 @@
 /**
  * A flexible mesh buffer
  * @param {WebGLRenderingContext} gl A WebGL rendering context
- * @param {Number} stride The vertex inverseStride
+ * @param {Number} stride The vertex stride
  * @constructor
  */
 const MeshBuffer = function(gl, stride) {
@@ -13,15 +13,15 @@ const MeshBuffer = function(gl, stride) {
     this.bufferIndicesCapacity = 0;
     this.uploadedIndices = 0;
 
-    this.capacityVertices = this.BLOCK_SIZE;
-    this.capacityIndices = this.BLOCK_SIZE;
-    this.indexVertices = 0;
-    this.indexIndices = 0;
-    this.verticesShrinkTime = 0;
-    this.indicesShrinkTime = 0;
+    this.arrayVerticesCapacity = this.BLOCK_SIZE;
+    this.arrayIndicesCapacity = this.BLOCK_SIZE;
+    this.arrayVerticesIndex = 0;
+    this.arrayIndicesIndex = 0;
+    this.arrayVerticesShrinkTime = 0;
+    this.arrayIndicesShrinkTime = 0;
 
-    this.vertices = new Float32Array(this.capacityVertices);
-    this.indices = new Uint16Array(this.capacityIndices);
+    this.arrayVertices = new Float32Array(this.arrayVerticesCapacity);
+    this.arrayIndices = new Uint16Array(this.arrayIndicesCapacity);
 };
 
 MeshBuffer.prototype.BLOCK_SIZE = 512;
@@ -35,16 +35,16 @@ MeshBuffer.prototype.SHRINK_TIME = 16;
 MeshBuffer.prototype.addVertices = function(...vertices) {
     const count = vertices.length;
 
-    if (this.indexVertices + count > this.capacityVertices) {
-        const verticesPrevious = this.vertices;
+    if (this.arrayVerticesIndex + count > this.arrayVerticesCapacity) {
+        const verticesPrevious = this.arrayVertices;
 
-        this.capacityVertices += this.BLOCK_SIZE;
-        this.vertices = new Float32Array(this.capacityVertices);
-        this.vertices.set(verticesPrevious, 0);
+        this.arrayVerticesCapacity += this.BLOCK_SIZE;
+        this.arrayVertices = new Float32Array(this.arrayVerticesCapacity);
+        this.arrayVertices.set(verticesPrevious, 0);
     }
 
-    this.vertices.set(vertices, this.indexVertices);
-    this.indexVertices += count;
+    this.arrayVertices.set(vertices, this.arrayVerticesIndex);
+    this.arrayVerticesIndex += count;
 };
 
 /**
@@ -54,23 +54,23 @@ MeshBuffer.prototype.addVertices = function(...vertices) {
 MeshBuffer.prototype.addIndices = function(...indices) {
     const count = indices.length;
 
-    if (this.indexIndices + count > this.capacityIndices) {
-        const indicesPrevious = this.indices;
+    if (this.arrayIndicesIndex + count > this.arrayIndicesCapacity) {
+        const indicesPrevious = this.arrayIndices;
 
-        this.capacityIndices += this.BLOCK_SIZE;
-        this.indices = new Uint16Array(this.capacityIndices);
-        this.indices.set(indicesPrevious, 0);
+        this.arrayIndicesCapacity += this.BLOCK_SIZE;
+        this.arrayIndices = new Uint16Array(this.arrayIndicesCapacity);
+        this.arrayIndices.set(indicesPrevious, 0);
     }
 
-    this.indices.set(indices, this.indexIndices);
-    this.indexIndices += count;
+    this.arrayIndices.set(indices, this.arrayIndicesIndex);
+    this.arrayIndicesIndex += count;
 };
 
 /**
  * Get the number of vertices in this buffer
  */
 MeshBuffer.prototype.getVertexCount = function() {
-    return this.indexVertices * this.inverseStride;
+    return this.arrayVerticesIndex * this.inverseStride;
 };
 
 /**
@@ -85,48 +85,48 @@ MeshBuffer.prototype.bind = function() {
  * Upload all buffered vertices & indices, and clear the accumulated buffers
  */
 MeshBuffer.prototype.upload = function() {
-    this.uploadedIndices = this.indexIndices;
+    this.uploadedIndices = this.arrayIndicesIndex;
 
-    if (this.indexIndices === 0)
+    if (this.arrayIndicesIndex === 0)
         return;
 
     this.bind();
 
-    if (this.capacityVertices > this.bufferVerticesCapacity) {
-        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.vertices, this.gl.DYNAMIC_DRAW);
-        this.bufferVerticesCapacity = this.capacityVertices;
+    if (this.arrayVerticesCapacity > this.bufferVerticesCapacity) {
+        this.gl.bufferData(this.gl.ARRAY_BUFFER, this.arrayVertices, this.gl.DYNAMIC_DRAW);
+        this.bufferVerticesCapacity = this.arrayVerticesCapacity;
     }
     else
-        this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, this.vertices);
+        this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, this.arrayVertices);
 
-    if (this.capacityIndices > this.bufferIndicesCapacity) {
-        this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.indices, this.gl.DYNAMIC_DRAW);
-        this.bufferIndicesCapacity = this.capacityIndices;
+    if (this.arrayIndicesCapacity > this.bufferIndicesCapacity) {
+        this.gl.bufferData(this.gl.ELEMENT_ARRAY_BUFFER, this.arrayIndices, this.gl.DYNAMIC_DRAW);
+        this.bufferIndicesCapacity = this.arrayIndicesCapacity;
     }
     else
-        this.gl.bufferSubData(this.gl.ELEMENT_ARRAY_BUFFER, 0, this.indices);
+        this.gl.bufferSubData(this.gl.ELEMENT_ARRAY_BUFFER, 0, this.arrayIndices);
 
-    if (this.capacityVertices > this.indexVertices + this.SHRINK_THRESHOLD) {
-        if (++this.verticesShrinkTime === this.SHRINK_TIME) {
-            this.capacityVertices -= this.BLOCK_SIZE;
-            this.vertices = new Float32Array(this.capacityVertices);
-            this.verticesShrinkTime = 0;
+    if (this.arrayVerticesCapacity > this.arrayVerticesIndex + this.SHRINK_THRESHOLD) {
+        if (++this.arrayVerticesShrinkTime === this.SHRINK_TIME) {
+            this.arrayVerticesCapacity -= this.BLOCK_SIZE;
+            this.arrayVertices = new Float32Array(this.arrayVerticesCapacity);
+            this.arrayVerticesShrinkTime = 0;
         }
     }
     else
-        this.verticesShrinkTime = 0;
+        this.arrayVerticesShrinkTime = 0;
 
-    if (this.capacityIndices > this.indexIndices + this.SHRINK_THRESHOLD) {
-        if (++this.indicesShrinkTime === this.SHRINK_TIME) {
-            this.capacityIndices -= this.BLOCK_SIZE;
-            this.indices = new Uint16Array(this.capacityIndices);
-            this.indicesShrinkTime = 0;
+    if (this.arrayIndicesCapacity > this.arrayIndicesIndex + this.SHRINK_THRESHOLD) {
+        if (++this.arrayIndicesShrinkTime === this.SHRINK_TIME) {
+            this.arrayIndicesCapacity -= this.BLOCK_SIZE;
+            this.arrayIndices = new Uint16Array(this.arrayIndicesCapacity);
+            this.arrayIndicesShrinkTime = 0;
         }
     }
     else
-        this.indicesShrinkTime = 0;
+        this.arrayIndicesShrinkTime = 0;
 
-    this.indexVertices = this.indexIndices = 0;
+    this.arrayVerticesIndex = this.arrayIndicesIndex = 0;
 };
 
 /**
@@ -142,7 +142,7 @@ MeshBuffer.prototype.render = function() {
  * @returns {Boolean} A boolean indicating whether this mesh buffer has content
  */
 MeshBuffer.prototype.hasContent = function() {
-    return this.indexIndices !== 0;
+    return this.arrayIndicesIndex !== 0;
 };
 
 /**
