@@ -46,7 +46,7 @@ Color.prototype.multiply = function(n) {
  * @param name
  */
 Color.fromCSS = function(name) {
-    const value = getComputedStyle(document.body).getPropertyValue("--color-" + name).trim();
+    const value = getComputedStyle(document.body).getPropertyValue(name).trim();
 
     if (value.charAt(0) === "#") {
         const integer = parseInt(value.substr(1), 16);

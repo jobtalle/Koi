@@ -33,8 +33,8 @@ Rocks.Plan = function(x, y, radius, height) {
     this.height = height;
 };
 
-Rocks.prototype.COLOR_TOP = Color.fromCSS("rock-top");
-Rocks.prototype.COLOR_SIDE = Color.fromCSS("rock-side");
+Rocks.prototype.COLOR_TOP = Color.fromCSS("--color-rock-top");
+Rocks.prototype.COLOR_SIDE = Color.fromCSS("--color-rock-side");
 Rocks.prototype.STRIDE = 6;
 Rocks.prototype.PILLAR_RESOLUTION = .15;
 Rocks.prototype.PILLAR_RADIUS_MIN = .11;

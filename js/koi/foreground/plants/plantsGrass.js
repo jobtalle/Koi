@@ -1,4 +1,4 @@
-Plants.prototype.GRASS_COLOR = Color.fromCSS("grass");
+Plants.prototype.GRASS_COLOR = Color.fromCSS("--color-grass");
 Plants.prototype.GRASS_COLOR_DARKEN = .18;
 Plants.prototype.GRASS_FLEX_MIN = .2;
 Plants.prototype.GRASS_FLEX_MAX = .4;

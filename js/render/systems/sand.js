@@ -29,8 +29,8 @@ const Sand = function(gl) {
 
 Sand.prototype = Object.create(Meshed.prototype);
 
-Sand.prototype.COLOR_DEEP = Color.fromCSS("water-deep");
-Sand.prototype.COLOR_SHALLOW = Color.fromCSS("water-shallow");
+Sand.prototype.COLOR_DEEP = Color.fromCSS("--color-water-deep");
+Sand.prototype.COLOR_SHALLOW = Color.fromCSS("--color-water-shallow");
 
 Sand.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;

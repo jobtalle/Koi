@@ -31,7 +31,7 @@ const Foreground = function(
 Foreground.prototype.REFLECTION_SCALE = 25;
 Foreground.prototype.Y_SCALE = .74;
 Foreground.prototype.Y_OVERFLOW = .3;
-Foreground.prototype.SKY_COLOR = Color.fromCSS("sky");
+Foreground.prototype.SKY_COLOR = Color.fromCSS("--color-sky");
 
 /**
  * Make the reflections

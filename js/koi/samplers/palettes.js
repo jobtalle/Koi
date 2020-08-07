@@ -3,13 +3,13 @@
  * @constructor
  */
 const Palettes = function() {
-    const colorBaseWhite = Color.fromCSS("fish-base-white");
-    const colorBaseBlack = Color.fromCSS("fish-base-black");
+    const colorBaseWhite = Color.fromCSS("--color-fish-base-white");
+    const colorBaseBlack = Color.fromCSS("--color-fish-base-black");
 
-    const colorDetailRed = Color.fromCSS("fish-detail-red");
-    const colorDetailOrange = Color.fromCSS("fish-detail-orange");
-    const colorDetailGold = Color.fromCSS("fish-detail-gold");
-    const colorDetailWhite = Color.fromCSS("fish-detail-white");
+    const colorDetailRed = Color.fromCSS("--color-fish-detail-red");
+    const colorDetailOrange = Color.fromCSS("--color-fish-detail-orange");
+    const colorDetailGold = Color.fromCSS("--color-fish-detail-gold");
+    const colorDetailWhite = Color.fromCSS("--color-fish-detail-white");
 
     const paletteDetailOnRed = new Palette([
         new Palette.Color(new Palette.Sample(8, 8), colorDetailGold)]);
