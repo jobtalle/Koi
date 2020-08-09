@@ -42,8 +42,8 @@ FishBody.prototype.WAVE_INTENSITY_MIN = .05;
 FishBody.prototype.WAVE_INTENSITY_MULTIPLIER = 2;
 FishBody.prototype.WAVE_TURBULENCE = .4;
 FishBody.prototype.FIN_PHASE_SPEED = .4;
-FishBody.prototype.SAMPLER_LENGTH = new SamplerQuadratic(.6, 1.5, 3);
-FishBody.prototype.SAMPLER_RADIUS = new SamplerPlateau(.08, .13, .18, 2);
+FishBody.prototype.SAMPLER_LENGTH = new SamplerQuadratic(.62, 1.3, 3);
+FishBody.prototype.SAMPLER_RADIUS = new SamplerPlateau(.08, .13, .18, 4);
 
 /**
  * Deserialize a fish body

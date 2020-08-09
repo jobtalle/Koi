@@ -16,10 +16,8 @@ LayerShapeBody.prototype = Object.create(Layer.prototype);
 LayerShapeBody.prototype.SHADE_POWER = 1.8;
 LayerShapeBody.prototype.LIGHT_POWER = 0.5;
 LayerShapeBody.prototype.AMBIENT = 0.5;
-LayerShapeBody.prototype.CENTER_POWER_MIN = Math.fround(.1);
-LayerShapeBody.prototype.CENTER_POWER_MAX = Math.fround(2.5);
-LayerShapeBody.prototype.RADIUS_POWER_MIN = Math.fround(.2);
-LayerShapeBody.prototype.RADIUS_POWER_MAX = Math.fround(1);
+LayerShapeBody.prototype.SAMPLER_CENTER_POWER = new SamplerPlateau(.5, .6, .9, 1);
+LayerShapeBody.prototype.SAMPLER_RADIUS_POWER = new SamplerPlateau(.4, .7, .9, 1);
 
 LayerShapeBody.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
@@ -64,21 +62,7 @@ void main() {
  * @throws {RangeError} A range error if deserialized values are not valid
  */
 LayerShapeBody.deserialize = function(buffer) {
-    const centerPower = buffer.readFloat();
-
-    if (!(
-        centerPower >= LayerShapeBody.prototype.CENTER_POWER_MIN &&
-        centerPower <= LayerShapeBody.prototype.CENTER_POWER_MAX))
-        throw new RangeError();
-
-    const radiusPower = buffer.readFloat();
-
-    if (!(
-        radiusPower >= LayerShapeBody.prototype.RADIUS_POWER_MIN &&
-        radiusPower <= LayerShapeBody.prototype.RADIUS_POWER_MAX))
-        throw new RangeError();
-
-    return new LayerShapeBody(centerPower, radiusPower);
+    return new LayerShapeBody(buffer.readUint8(), buffer.readUint8());
 };
 
 /**
@@ -86,8 +70,8 @@ LayerShapeBody.deserialize = function(buffer) {
  * @param {BinBuffer} buffer The buffer to serialize to
  */
 LayerShapeBody.prototype.serialize = function(buffer) {
-    buffer.writeFloat(this.centerPower);
-    buffer.writeFloat(this.radiusPower);
+    buffer.writeUint8(this.centerPower);
+    buffer.writeUint8(this.radiusPower);
 };
 
 /**
@@ -96,7 +80,10 @@ LayerShapeBody.prototype.serialize = function(buffer) {
  * @returns {Number} The thickness in the range [0, 1]
  */
 LayerShapeBody.prototype.sample = function(x) {
-    return Math.pow(Math.cos(Math.PI * (Math.pow(x, this.centerPower) - .5)), this.radiusPower);
+    const centerPower = this.SAMPLER_CENTER_POWER.sample(this.centerPower / 0xFF);
+    const radiusPower = this.SAMPLER_RADIUS_POWER.sample(this.radiusPower / 0xFF);
+
+    return Math.pow(Math.cos(Math.PI * (Math.pow(x, centerPower) - .5)), radiusPower);
 };
 
 /**
@@ -105,10 +92,10 @@ LayerShapeBody.prototype.sample = function(x) {
  * @param {Shader} program A shader program created from this patterns' shaders
  */
 LayerShapeBody.prototype.configure = function(gl, program) {
-    gl.uniform1f(program["uCenterPower"], this.centerPower);
+    gl.uniform1f(program["uCenterPower"], this.SAMPLER_CENTER_POWER.sample(this.centerPower / 0xFF));
     gl.uniform1f(program["uShadePower"], this.SHADE_POWER);
     gl.uniform1f(program["uLightPower"], this.LIGHT_POWER);
-    gl.uniform1f(program["uRadiusPower"], this.radiusPower);
+    gl.uniform1f(program["uRadiusPower"], this.SAMPLER_RADIUS_POWER.sample(this.radiusPower / 0xFF));
     gl.uniform1f(program["uAmbient"], this.AMBIENT);
 };
 

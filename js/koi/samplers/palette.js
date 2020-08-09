@@ -70,6 +70,23 @@ Palette.Sample.prototype.interpolate = function(to, x) {
 };
 
 /**
+ * Tile the palette sample within their bounds
+ */
+Palette.Sample.prototype.tile = function() {
+    while (this.x < 0)
+        this.x += 16;
+
+    while (this.y < 0)
+        this.y += 16;
+
+    while (this.x > 15)
+        this.x -= 16;
+
+    while (this.y > 15)
+        this.y -= 16;
+};
+
+/**
  * A color on a palette
  * @param {Palette.Sample} sample A sample location for this color
  * @param {Color} color The color

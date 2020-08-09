@@ -35,6 +35,8 @@ MutatorPattern.prototype.mutate = function(random) {
     for (const layer of this.pattern.layers)
         this.mutateLayer(layer, random);
 
+    // TODO: spawn new layers here
+
     this.mutateBase.mutate(random);
     this.mutateShapeBody.mutate(random);
     this.mutateShapeFin.mutate(random);

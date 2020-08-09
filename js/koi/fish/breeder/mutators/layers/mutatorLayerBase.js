@@ -8,11 +8,12 @@ const MutatorLayerBase = function(layer) {
 };
 
 MutatorLayerBase.prototype = Object.create(Mutator.prototype);
+MutatorLayerBase.prototype.SAMPLER_DISTANCE = new SamplerQuadratic(0, 2, 5);
 
 /**
  * Mutate the layer
  * @param {Random} random A randomizer
  */
 MutatorLayerBase.prototype.mutate = function(random) {
-    // TODO: Mutate
+    this.mutatePalette(this.layer.paletteSample, this.SAMPLER_DISTANCE, random);
 };

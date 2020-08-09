@@ -127,6 +127,9 @@ Tail.prototype.renderBottom = function(
     bodies.buffer.addIndices(
         firstVertebra,
         firstVertebra + 3,
+        startIndex + 1,
+        firstVertebra,
+        firstVertebra + 3,
         startIndex);
 
     for (let vertebra = 0; vertebra < this.anchors; ++vertebra) {

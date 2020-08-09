@@ -48,7 +48,9 @@ Spawner.prototype.update = function(
                         new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()
                     )
                 ],
-                new LayerShapeBody(.6, .7),
+                new LayerShapeBody(
+                    Math.round(random.getFloat() * 0xFF),
+                    Math.round(random.getFloat() * 0xFF)),
                 new LayerShapeFin());
 
             pattern.trim(patterns.palettes.base);

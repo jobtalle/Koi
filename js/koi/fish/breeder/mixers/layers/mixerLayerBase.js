@@ -19,7 +19,9 @@ MixerLayerBase.prototype.SAMPLER_PALETTE = new SamplerSigmoid(0, 1, 20);
  */
 MixerLayerBase.prototype.mix = function(random) {
     return new LayerBase(
-        this.mother.paletteSample.interpolate(
+        this.mixPalette(
+            this.mother.paletteSample,
             this.father.paletteSample,
-            this.SAMPLER_PALETTE.sample(random.getFloat())));
+            this.SAMPLER_PALETTE,
+            random.getFloat()));
 };
