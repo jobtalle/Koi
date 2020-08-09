@@ -19,7 +19,10 @@ const FishBody = function(pattern, fins, tail, length, radius) {
     this.tailOffset = this.spine.length - 1;
     this.finGroups = this.assignFins(fins, this.spine.length);
     this.spinePrevious = new Array(this.spine.length);
-    this.springs = this.makeSprings(this.SPRING_START, this.SPRING_END, this.SPRING_POWER);
+    this.springs = this.makeSprings(
+        this.SAMPLER_SPRING_START.sample(this.radius / 0xFF),
+        this.SAMPLER_SPRING_END.sample(this.radius / 0xFF),
+        this.SPRING_POWER);
     this.phase = 0;
     this.finPhase = 0;
     this.spacing = this.RESOLUTION;
@@ -29,9 +32,6 @@ const FishBody = function(pattern, fins, tail, length, radius) {
 FishBody.prototype.FIN_PAIRS_MIN = 0;
 FishBody.prototype.FIN_PAIRS_MAX = 8;
 FishBody.prototype.RESOLUTION = .12;
-FishBody.prototype.SPRING_START = .9;
-FishBody.prototype.SPRING_END = .65;
-FishBody.prototype.SPRING_POWER = 1.7;
 FishBody.prototype.SWIM_AMPLITUDE = 11;
 FishBody.prototype.SWIM_SPEED = 6;
 FishBody.prototype.SPEED_SWING_THRESHOLD = .01;
@@ -44,6 +44,9 @@ FishBody.prototype.WAVE_TURBULENCE = .4;
 FishBody.prototype.FIN_PHASE_SPEED = .4;
 FishBody.prototype.SAMPLER_LENGTH = new SamplerQuadratic(.62, 1.3, 3);
 FishBody.prototype.SAMPLER_RADIUS = new SamplerPlateau(.08, .13, .18, 4);
+FishBody.prototype.SAMPLER_SPRING_START = new SamplerPlateau(.3, .85, .95, 1.5);
+FishBody.prototype.SAMPLER_SPRING_END = new SamplerPlateau(.3, .6, .7, 1.5);
+FishBody.prototype.SPRING_POWER = 1.7;
 
 /**
  * Deserialize a fish body
@@ -232,10 +235,11 @@ FishBody.prototype.initializeSpine = function(head, direction, size) {
  * @returns {Number[]} An array of strings
  */
 FishBody.prototype.makeSprings = function(start, end, power) {
+    const sampler = new SamplerQuadratic(start, end, power);
     const springs = new Array(this.spine.length - 1);
 
     for (let spring = 0; spring < this.spine.length - 1; ++spring)
-        springs[spring] = start + (end - start) * ((spring / (this.spine.length - 2)) ** power);
+        springs[spring] = start + (end - start) * sampler.sample(spring / (this.spine.length - 2));
 
     return springs;
 };
