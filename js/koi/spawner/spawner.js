@@ -37,11 +37,13 @@ Spawner.prototype.update = function(
                 [
                     new LayerSpots(
                         Math.round(random.getFloat() * 0xFF),
+                        Math.round(random.getFloat() * 0xFF),
                         new Palette.Sample().randomize(random),
                         new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),
                         new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()
                     ),
                     new LayerSpots(
+                        Math.round(random.getFloat() * 0xFF),
                         Math.round(random.getFloat() * 0xFF),
                         new Palette.Sample().randomize(random),
                         new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),

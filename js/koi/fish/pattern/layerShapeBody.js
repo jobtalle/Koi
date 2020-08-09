@@ -16,7 +16,7 @@ LayerShapeBody.prototype = Object.create(Layer.prototype);
 LayerShapeBody.prototype.SHADE_POWER = 1.8;
 LayerShapeBody.prototype.LIGHT_POWER = 0.5;
 LayerShapeBody.prototype.AMBIENT = 0.5;
-LayerShapeBody.prototype.SAMPLER_CENTER_POWER = new SamplerPlateau(.4, .6, 1, 1);
+LayerShapeBody.prototype.SAMPLER_CENTER_POWER = new SamplerPlateau(.5, .6, 1, 2);
 LayerShapeBody.prototype.SAMPLER_RADIUS_POWER = new SamplerPlateau(.6, .7, 1.2, 1);
 
 LayerShapeBody.prototype.SHADER_VERTEX = `#version 100

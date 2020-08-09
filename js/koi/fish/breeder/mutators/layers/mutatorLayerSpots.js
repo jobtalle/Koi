@@ -9,9 +9,10 @@ const MutatorLayerSpots = function(layer) {
 
 MutatorLayerSpots.prototype = Object.create(Mutator.prototype);
 MutatorLayerSpots.prototype.SAMPLER_PALETTE_DISTANCE = new SamplerQuadratic(0, 3, 8);
-MutatorLayerSpots.prototype.SAMPLER_ANCHOR_DISTANCE = new SamplerQuadratic(0, 1, 1.6);
-MutatorLayerSpots.prototype.SAMPLER_X_DISTANCE = new SamplerQuadratic(0, .5, 1.8);
+MutatorLayerSpots.prototype.SAMPLER_ANCHOR_DISTANCE = new SamplerQuadratic(0, .7, 3);
+MutatorLayerSpots.prototype.SAMPLER_X_DISTANCE = new SamplerQuadratic(0, .5, 4);
 MutatorLayerSpots.prototype.SAMPLER_SCALE = new SamplerPlateau(-7, 0, 7, 1);
+MutatorLayerSpots.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(-5, 0, 5, 1.5);
 
 /**
  * Mutate the layer
@@ -24,4 +25,5 @@ MutatorLayerSpots.prototype.mutate = function(random) {
     this.mutateNormalVector3(this.layer.x, this.SAMPLER_X_DISTANCE, random);
 
     this.layer.scale = this.mutateUint8(this.layer.scale, this.SAMPLER_SCALE, random.getFloat());
+    this.layer.threshold = this.mutateUint8(this.layer.threshold, this.SAMPLER_THRESHOLD, random.getFloat());
 };

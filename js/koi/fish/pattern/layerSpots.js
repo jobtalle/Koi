@@ -1,13 +1,15 @@
 /**
  * A coloured spots pattern
  * @param {Number} scale The noise scale in the range [0, 255]
+ * @param {Number} threshold The noise threshold in the range [0, 255]
  * @param {Palette.Sample} sample A palette sample
  * @param {Vector3} anchor The noise sample position
  * @param {Vector3} x The noise sample X direction
  * @constructor
  */
-const LayerSpots = function(scale, sample, anchor, x) {
+const LayerSpots = function(scale, threshold, sample, anchor, x) {
     this.scale = scale;
+    this.threshold = threshold;
     this.anchor = anchor;
     this.x = x;
 
@@ -18,6 +20,7 @@ LayerSpots.prototype = Object.create(Layer.prototype);
 
 LayerSpots.prototype.DOMINANCE = .25;
 LayerSpots.prototype.SAMPLER_SCALE = new SamplerPlateau(.5, 1.8, 6, 11);
+LayerSpots.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(.25, .5, .75, 2);
 LayerSpots.prototype.SPACE_LIMIT_MIN = Math.fround(-256);
 LayerSpots.prototype.SPACE_LIMIT_MAX = Math.fround(256);
 
@@ -41,6 +44,7 @@ void main() {
 LayerSpots.prototype.SHADER_FRAGMENT = `#version 100
 ` + CommonShaders.cubicNoise + `
 uniform mediump float scale;
+uniform mediump float threshold;
 uniform mediump vec2 size;
 uniform highp vec3 anchor;
 uniform highp mat3 rotate;
@@ -52,7 +56,7 @@ void main() {
   highp vec2 at = (iUv - vec2(0.5)) * size * scale;
   mediump float noise = cubicNoise(anchor + vec3(at, 0.0) * rotate);
 
-  if (noise < 0.5)
+  if (noise < threshold)
     discard;
     
   gl_FragColor = vec4(iColor, 1.0);
@@ -66,7 +70,8 @@ void main() {
  * @throws {RangeError} A range error if deserialized values are not valid
  */
 LayerSpots.deserialize = function(buffer) {
-    const scale = buffer.readByte();
+    const scale = buffer.readUint8();
+    const threshold = buffer.readUint8();
     const sample = Palette.Sample.deserialize(buffer);
     const anchor = new Vector3().deserialize(buffer);
 
@@ -78,7 +83,7 @@ LayerSpots.deserialize = function(buffer) {
     if (!x.isNormal())
         throw new RangeError();
 
-    return new LayerSpots(scale, sample, anchor, x);
+    return new LayerSpots(scale, threshold, sample, anchor, x);
 };
 
 /**
@@ -87,6 +92,7 @@ LayerSpots.deserialize = function(buffer) {
  */
 LayerSpots.prototype.serialize = function(buffer) {
     buffer.writeUint8(this.scale);
+    buffer.writeUint8(this.threshold);
 
     this.paletteSample.serialize(buffer);
     this.anchor.serialize(buffer);
@@ -100,6 +106,7 @@ LayerSpots.prototype.serialize = function(buffer) {
 LayerSpots.prototype.copy = function() {
     return new LayerSpots(
         this.scale,
+        this.threshold,
         this.paletteSample.copy(),
         this.anchor.copy(),
         this.x.copy());
@@ -117,6 +124,7 @@ LayerSpots.prototype.configure = function(gl, program, color) {
 
     gl.uniform3f(program["uColor"], color.r, color.g, color.b);
     gl.uniform1f(program["uScale"], this.SAMPLER_SCALE.sample(this.scale / 0xFF));
+    gl.uniform1f(program["uThreshold"], this.SAMPLER_THRESHOLD.sample(this.threshold / 0xFF));
     gl.uniform3f(program["uAnchor"], this.anchor.x, this.anchor.y, this.anchor.z);
     gl.uniformMatrix3fv(
         program["uRotate"],
@@ -138,6 +146,6 @@ LayerSpots.prototype.createShader = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["scale", "size", "anchor", "rotate", "color"],
+        ["scale", "threshold", "size", "anchor", "rotate", "color"],
         ["position", "uv"]);
 };
