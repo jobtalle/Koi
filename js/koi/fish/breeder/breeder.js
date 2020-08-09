@@ -26,9 +26,11 @@ Breeder.prototype.breed = function(atlas, patterns, randomSource, random) {
     const offspring = new Array(this.mother.getOffspringCount());
 
     for (let fish = 0, fishCount = offspring.length; fish < fishCount; ++fish) {
-        const newFish = this.mixer.mix(atlas, patterns, randomSource, random);
+        const newFish = this.mixer.mix(patterns, random);
 
         new MutatorFish(newFish).mutate(random);
+
+        atlas.write(newFish.body.pattern, randomSource);
 
         offspring[fish] = newFish;
     }

@@ -65,7 +65,7 @@ Mutator.prototype.mutateNormalVector3 = function(vector, distance, random) {
     const radius = distance.sample(random.getFloat());
     const x = vector.makeOrthogonal();
     const y = vector.cross(x);
-
+    // TODO: Implement proper 3d vector rotation instead
     vector.x += Math.cos(angle) * radius * x.x + Math.sin(angle) * radius * y.x;
     vector.y += Math.cos(angle) * radius * x.y + Math.sin(angle) * radius * y.y;
     vector.z += Math.cos(angle) * radius * x.z + Math.sin(angle) * radius * y.z;
