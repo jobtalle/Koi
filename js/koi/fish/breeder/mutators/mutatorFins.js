@@ -14,5 +14,5 @@ MutatorFins.prototype = Object.create(Mutator.prototype);
  * @param {Random} random A randomizer
  */
 MutatorFins.prototype.mutate = function(random) {
-
+    // TODO: Mutate
 };

@@ -45,10 +45,14 @@ MixerPattern.prototype.mix = function(atlas, patterns, randomSource, random) {
         const mother = layerMother >= layersMother ? null : this.mother.layers[layerMother];
         const father = layerFather >= layersFather ? null : this.father.layers[layerFather];
 
-        if (mother === null)
-            layers.push(father.copy());
-        else if (father === null)
-            layers.push(mother.copy());
+        if (mother === null) {
+            if (random.getFloat() < .5)
+                layers.push(father.copy());
+        }
+        else if (father === null) {
+            if (random.getFloat() < .5)
+                layers.push(mother.copy());
+        }
         else if (mother.id === father.id)
             layers.push(this.mixLayers(mother, father, random));
         else {
