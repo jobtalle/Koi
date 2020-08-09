@@ -53,3 +53,22 @@ Mutator.prototype.mutateVector3 = function(vector, distance, random) {
     vector.y += dy * d;
     vector.z += dz * d;
 };
+
+/**
+ * Mutate a 3D normal vector
+ * @param {Vector3} vector A 3D normal vector
+ * @param {Sampler} distance A distance sampler
+ * @param {Random} random A randomizer
+ */
+Mutator.prototype.mutateNormalVector3 = function(vector, distance, random) {
+    const angle = Math.PI * 2 * random.getFloat();
+    const radius = distance.sample(random.getFloat());
+    const x = vector.makeOrthogonal();
+    const y = vector.cross(x);
+
+    vector.x += Math.cos(angle) * radius * x.x + Math.sin(angle) * radius * y.x;
+    vector.y += Math.cos(angle) * radius * x.y + Math.sin(angle) * radius * y.y;
+    vector.z += Math.cos(angle) * radius * x.z + Math.sin(angle) * radius * y.z;
+
+    vector.normalize();
+};
