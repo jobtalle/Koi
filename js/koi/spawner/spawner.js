@@ -62,9 +62,9 @@ Spawner.prototype.update = function(
                         new Fin(.2, 1.4, 1),
                         new Fin(.5, .8, 1)
                     ],
-                    new Tail(.3),
-                    128,
-                    128),
+                    new Tail(Math.round(random.getFloat() * 0xFF)),
+                    Math.round(random.getFloat() * 0xFF),
+                    Math.round(random.getFloat() * 0xFF)),
                 this.constellation.spawnPoint,
                 this.constellation.spawnDirection,
                 Math.round(random.getFloat() * 0xFF),

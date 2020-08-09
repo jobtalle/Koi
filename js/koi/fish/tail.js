@@ -14,8 +14,7 @@ const Tail = function(length) {
 Tail.prototype.DEPTH = .15;
 Tail.prototype.SPRING = .55;
 Tail.prototype.SHIFT = .8;
-Tail.prototype.LENGTH_MIN = Math.fround(.1);
-Tail.prototype.LENGTH_MAX = Math.fround(.6);
+Tail.prototype.SAMPLER_LENGTH = new SamplerPlateau(.1, .33, .5, 1.5);
 
 /**
  * Deserialize a tail
@@ -24,12 +23,7 @@ Tail.prototype.LENGTH_MAX = Math.fround(.6);
  * @throws {RangeError} A range error if deserialized values are not valid
  */
 Tail.deserialize = function(buffer) {
-    const length = buffer.readFloat();
-
-    if (!(length >= Tail.prototype.LENGTH_MIN && length <= Tail.prototype.LENGTH_MAX))
-        throw new RangeError();
-
-    return new Tail(length);
+    return new Tail(buffer.readUint8());
 };
 
 /**
@@ -37,7 +31,7 @@ Tail.deserialize = function(buffer) {
  * @param {BinBuffer} buffer The buffer to serialize to
  */
 Tail.prototype.serialize = function(buffer) {
-    buffer.writeFloat(this.length);
+    buffer.writeUint8(this.length);
 };
 
 /**
@@ -46,7 +40,9 @@ Tail.prototype.serialize = function(buffer) {
  * @returns {Number} The index of the last unused vertebra
  */
 Tail.prototype.connect = function(spine) {
-    this.anchors = Math.min(spine.length - 1, Math.max(2, Math.round(spine.length * this.length)));
+    const length = this.SAMPLER_LENGTH.sample(this.length / 0xFF);
+
+    this.anchors = Math.min(spine.length - 1, Math.max(2, Math.round(spine.length * length)));
     this.spineOffset = spine.length - this.anchors;
     this.edge = new Array(this.anchors);
     this.edgePrevious = new Array(this.anchors);
