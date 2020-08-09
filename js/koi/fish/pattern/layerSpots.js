@@ -17,8 +17,6 @@ const LayerSpots = function(scale, sample, anchor, x) {
 LayerSpots.prototype = Object.create(Layer.prototype);
 
 LayerSpots.prototype.DOMINANCE = .25;
-LayerSpots.prototype.UP = new Vector3(0, 1, 0);
-LayerSpots.prototype.UP_ALT = new Vector3(.1, 1, 0);
 LayerSpots.prototype.SAMPLER_SCALE = new SamplerPlateau(.5, 1.8, 6, 11);
 LayerSpots.prototype.SPACE_LIMIT_MIN = Math.fround(-256);
 LayerSpots.prototype.SPACE_LIMIT_MAX = Math.fround(256);
@@ -108,34 +106,14 @@ LayerSpots.prototype.copy = function() {
 };
 
 /**
- * Get the z direction vector, which depends on the X direction vector
- * @returns {Vector3} The Z direction vector
- */
-LayerSpots.prototype.getZ = function() {
-    if (this.x.equals(this.UP))
-        return this.x.cross(this.UP_ALT).normalize();
-
-    return this.x.cross(this.UP).normalize();
-};
-
-/**
- * Get the Y direction vector, which depends on the Z direction vector
- * @param {Vector3} z The Z direction vector
- * @returns {Vector3} The Y direction vector
- */
-LayerSpots.prototype.getY = function(z) {
-    return this.x.cross(z);
-};
-
-/**
  * Configure this pattern to a shader
  * @param {WebGLRenderingContext} gl A webGL context
  * @param {Shader} program A shader program created from this patterns' shaders
  * @param {Color} color The palette color
  */
 LayerSpots.prototype.configure = function(gl, program, color) {
-    const z = this.getZ();
-    const y = this.getY(z);
+    const z = this.x.makeOrthogonal();
+    const y = this.x.cross(z);
 
     gl.uniform3f(program["uColor"], color.r, color.g, color.b);
     gl.uniform1f(program["uScale"], this.SAMPLER_SCALE.sample(this.scale / 0xFF));

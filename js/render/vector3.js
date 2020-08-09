@@ -11,6 +11,9 @@ const Vector3 = function(x = 0, y = 0, z = 0) {
     this.z = z;
 };
 
+Vector3.prototype.UP = new Vector3(0, 1, 0);
+Vector3.prototype.UP_ALT = new Vector3(.1, 1, 0);
+
 /**
  * Serialize this vector
  * @param {BinBuffer} buffer A buffer to serialize to
@@ -71,6 +74,17 @@ Vector3.prototype.isNormal = function() {
  */
 Vector3.prototype.withinLimits = function(min, max) {
     return this.x >= min && this.y >= min && this.z >= min && this.x <= max && this.y <= max && this.z <= max;
+};
+
+/**
+ * Make a vector that is orthogonal to this one
+ * @returns {Vector3} An orthogonal vector
+ */
+Vector3.prototype.makeOrthogonal = function() {
+    if (this.equals(this.UP))
+        return this.cross(this.UP_ALT).normalize();
+
+    return this.cross(this.UP).normalize();
 };
 
 /**
