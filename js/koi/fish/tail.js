@@ -11,7 +11,6 @@ const Tail = function(length) {
     this.distances = null;
 };
 
-Tail.prototype.DEPTH = .15;
 Tail.prototype.SPRING = .55;
 Tail.prototype.SHIFT = .8;
 Tail.prototype.SAMPLER_LENGTH = new SamplerPlateau(.1, .33, .5, 1.5);
@@ -37,9 +36,10 @@ Tail.prototype.serialize = function(buffer) {
 /**
  * Connect the tail to a spine
  * @param {Vector2[]} spine The spine
+ * @param {Number} radius The radius of the body
  * @returns {Number} The index of the last unused vertebra
  */
-Tail.prototype.connect = function(spine) {
+Tail.prototype.connect = function(spine, radius) {
     const length = this.SAMPLER_LENGTH.sample(this.length / 0xFF);
 
     this.anchors = Math.min(spine.length - 1, Math.max(2, Math.round(spine.length * length)));
@@ -52,7 +52,7 @@ Tail.prototype.connect = function(spine) {
         this.edge[vertebra] = spine[this.spineOffset + vertebra].copy();
         this.edgePrevious[vertebra] = this.edge[vertebra].copy();
 
-        this.distances[vertebra] = -this.DEPTH * Math.cos(Math.PI * .5 * (1 + (vertebra + 1) / this.anchors));
+        this.distances[vertebra] = -radius * Math.cos(Math.PI * .5 * (1 + (vertebra + 1) / this.anchors));
     }
 
     return this.spineOffset - 1;

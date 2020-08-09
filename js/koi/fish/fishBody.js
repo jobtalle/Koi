@@ -42,8 +42,8 @@ FishBody.prototype.WAVE_INTENSITY_MIN = .05;
 FishBody.prototype.WAVE_INTENSITY_MULTIPLIER = 2;
 FishBody.prototype.WAVE_TURBULENCE = .4;
 FishBody.prototype.FIN_PHASE_SPEED = .4;
-FishBody.prototype.SAMPLER_LENGTH = new SamplerQuadratic(.6, 1.5, 1.8);
-FishBody.prototype.SAMPLER_RADIUS = new SamplerPlateau(.08, .13, .18, 0);
+FishBody.prototype.SAMPLER_LENGTH = new SamplerQuadratic(.6, 1.5, 3);
+FishBody.prototype.SAMPLER_RADIUS = new SamplerPlateau(.08, .13, .18, 2);
 
 /**
  * Deserialize a fish body
@@ -221,7 +221,7 @@ FishBody.prototype.initializeSpine = function(head, direction, size) {
             fin.initializePosition(this.spine[vertebra]);
     }
 
-    this.tailOffset = this.tail.connect(this.spine);
+    this.tailOffset = this.tail.connect(this.spine, this.radiusSampled);
 };
 
 /**
