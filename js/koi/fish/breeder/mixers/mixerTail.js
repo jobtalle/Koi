@@ -11,6 +11,7 @@ const MixerTail = function(mother, father) {
 
 MixerTail.prototype = Object.create(Mixer.prototype);
 MixerTail.prototype.SAMPLER_LENGTH = new Sampler(0, 1);
+MixerTail.prototype.SAMPLER_SKEW = new Sampler(0, 1);
 
 /**
  * Create a new tail that combines properties from both parents
@@ -18,6 +19,9 @@ MixerTail.prototype.SAMPLER_LENGTH = new Sampler(0, 1);
  * @returns {Tail} The mixed tail
  */
 MixerTail.prototype.mix = function(random) {
+    const interpolate = random.getFloat();
+
     return new Tail(
-        this.mixUint8(this.mother.length, this.father.length, this.SAMPLER_LENGTH, random.getFloat()));
+        this.mixUint8(this.mother.length, this.father.length, this.SAMPLER_LENGTH, interpolate),
+        this.mixUint8(this.mother.skew, this.father.skew, this.SAMPLER_SKEW, interpolate));
 };

@@ -1,10 +1,13 @@
 /**
  * A fish tail
- * @param {Number} length The length of the tail spine connection in the range [0, 1]
+ * @param {Number} length The length of the tail spine connection in the range [0, 255]
+ * @param {Number} skew The backwards skew of the tail in the range [0, 255]
  * @constructor
  */
-const Tail = function(length) {
+const Tail = function(length, skew) {
     this.length = length;
+    this.skew = skew;
+    this.skewSampled = this.SAMPLER_SKEW.sample(skew / 0xFF);
     this.anchors = 0;
     this.edge = null;
     this.edgePrevious = null;
@@ -12,8 +15,8 @@ const Tail = function(length) {
 };
 
 Tail.prototype.SPRING = .55;
-Tail.prototype.SHIFT = .8;
 Tail.prototype.SAMPLER_LENGTH = new SamplerPlateau(.1, .33, .5, 1.5);
+Tail.prototype.SAMPLER_SKEW = new SamplerPlateau(.3, .6, 1.33, 1);
 
 /**
  * Deserialize a tail
@@ -22,7 +25,7 @@ Tail.prototype.SAMPLER_LENGTH = new SamplerPlateau(.1, .33, .5, 1.5);
  * @throws {RangeError} A range error if deserialized values are not valid
  */
 Tail.deserialize = function(buffer) {
-    return new Tail(buffer.readUint8());
+    return new Tail(buffer.readUint8(), buffer.readUint8());
 };
 
 /**
@@ -31,6 +34,7 @@ Tail.deserialize = function(buffer) {
  */
 Tail.prototype.serialize = function(buffer) {
     buffer.writeUint8(this.length);
+    buffer.writeUint8(this.skew);
 };
 
 /**
@@ -89,8 +93,8 @@ Tail.prototype.update = function(spine) {
         const sx = spine[this.spineOffset + vertebra].x - spine[this.spineOffset + vertebra - 1].x;
         const sy = spine[this.spineOffset + vertebra].y - spine[this.spineOffset + vertebra - 1].y;
 
-        const dx = spine[this.spineOffset + vertebra].x + sx * this.SHIFT - this.edge[vertebra].x;
-        const dy = spine[this.spineOffset + vertebra].y + sy * this.SHIFT - this.edge[vertebra].y;
+        const dx = spine[this.spineOffset + vertebra].x + sx * this.skewSampled - this.edge[vertebra].x;
+        const dy = spine[this.spineOffset + vertebra].y + sy * this.skewSampled - this.edge[vertebra].y;
 
         this.edge[vertebra].x += dx * this.SPRING;
         this.edge[vertebra].y += dy * this.SPRING;

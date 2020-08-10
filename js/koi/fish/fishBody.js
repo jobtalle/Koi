@@ -44,8 +44,8 @@ FishBody.prototype.WAVE_TURBULENCE = .4;
 FishBody.prototype.FIN_PHASE_SPEED = .4;
 FishBody.prototype.SAMPLER_LENGTH = new SamplerQuadratic(.62, 1.3, 3);
 FishBody.prototype.SAMPLER_RADIUS = new SamplerPlateau(.08, .13, .18, 4);
-FishBody.prototype.SAMPLER_SPRING_START = new SamplerPlateau(.3, .85, .95, 1.5);
-FishBody.prototype.SAMPLER_SPRING_END = new SamplerPlateau(.3, .6, .7, 1.5);
+FishBody.prototype.SAMPLER_SPRING_START = new SamplerPlateau(.15, .85, .95, 1.5);
+FishBody.prototype.SAMPLER_SPRING_END = new SamplerPlateau(.15, .6, .7, 1.5);
 FishBody.prototype.SPRING_POWER = 1.7;
 
 /**
