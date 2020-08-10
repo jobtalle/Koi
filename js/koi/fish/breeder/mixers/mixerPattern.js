@@ -11,6 +11,7 @@ const MixerPattern = function(mother, father) {
 
 MixerPattern.prototype = Object.create(Mixer.prototype);
 MixerPattern.prototype.LAYER_SKIP_CHANCE = .06;
+MixerPattern.prototype.LAYER_SKIP_CHANCE_FIRST = .03;
 
 /**
  * Mix two layers of the same type
@@ -36,8 +37,8 @@ MixerPattern.prototype.mix = function(patterns, random) {
     const layers = [];
     const layersMother = this.mother.layers.length;
     const layersFather = this.father.layers.length;
-    let layerMother = random.getFloat() < this.LAYER_SKIP_CHANCE ? 1 : 0;
-    let layerFather = random.getFloat() < this.LAYER_SKIP_CHANCE ? 1 : 0;
+    let layerMother = random.getFloat() < this.LAYER_SKIP_CHANCE_FIRST ? 1 : 0;
+    let layerFather = random.getFloat() < this.LAYER_SKIP_CHANCE_FIRST ? 1 : 0;
 
     while (layerMother < layersMother || layerFather < layersFather) {
         const mother = layerMother >= layersMother ? null : this.mother.layers[layerMother];
