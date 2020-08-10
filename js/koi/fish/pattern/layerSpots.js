@@ -2,14 +2,16 @@
  * A coloured spots pattern
  * @param {Number} scale The noise scale in the range [0, 255]
  * @param {Number} threshold The noise threshold in the range [0, 255]
+ * @param {Number} stretch The stretch factor in the range [0, 255]
  * @param {Palette.Sample} sample A palette sample
  * @param {Vector3} anchor The noise sample position
  * @param {Vector3} x The noise sample X direction
  * @constructor
  */
-const LayerSpots = function(scale, threshold, sample, anchor, x) {
+const LayerSpots = function(scale, threshold, stretch, sample, anchor, x) {
     this.scale = scale;
     this.threshold = threshold;
+    this.stretch = stretch;
     this.anchor = anchor;
     this.x = x;
 
@@ -21,6 +23,7 @@ LayerSpots.prototype = Object.create(Layer.prototype);
 LayerSpots.prototype.DOMINANCE = .25;
 LayerSpots.prototype.SAMPLER_SCALE = new SamplerPlateau(.5, 1.8, 6, 11);
 LayerSpots.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(.25, .5, .75, 2);
+LayerSpots.prototype.SAMPLER_STRETCH = new SamplerPlateau(.5, 1, 2, 2);
 LayerSpots.prototype.SPACE_LIMIT_MIN = Math.fround(-256);
 LayerSpots.prototype.SPACE_LIMIT_MAX = Math.fround(256);
 
@@ -72,6 +75,7 @@ void main() {
 LayerSpots.deserialize = function(buffer) {
     const scale = buffer.readUint8();
     const threshold = buffer.readUint8();
+    const stretch = buffer.readUint8();
     const sample = Palette.Sample.deserialize(buffer);
     const anchor = new Vector3().deserialize(buffer);
 
@@ -83,7 +87,7 @@ LayerSpots.deserialize = function(buffer) {
     if (!x.isNormal())
         throw new RangeError();
 
-    return new LayerSpots(scale, threshold, sample, anchor, x);
+    return new LayerSpots(scale, threshold, stretch, sample, anchor, x);
 };
 
 /**
@@ -93,6 +97,7 @@ LayerSpots.deserialize = function(buffer) {
 LayerSpots.prototype.serialize = function(buffer) {
     buffer.writeUint8(this.scale);
     buffer.writeUint8(this.threshold);
+    buffer.writeUint8(this.stretch);
 
     this.paletteSample.serialize(buffer);
     this.anchor.serialize(buffer);
@@ -107,6 +112,7 @@ LayerSpots.prototype.copy = function() {
     return new LayerSpots(
         this.scale,
         this.threshold,
+        this.stretch,
         this.paletteSample.copy(),
         this.anchor.copy(),
         this.x.copy());
@@ -121,6 +127,7 @@ LayerSpots.prototype.copy = function() {
 LayerSpots.prototype.configure = function(gl, program, color) {
     const z = this.x.makeOrthogonal();
     const y = this.x.cross(z);
+    const stretch = this.SAMPLER_STRETCH.sample(this.stretch / 0xFF);
 
     gl.uniform3f(program["uColor"], color.r, color.g, color.b);
     gl.uniform1f(program["uScale"], this.SAMPLER_SCALE.sample(this.scale / 0xFF));
@@ -130,7 +137,7 @@ LayerSpots.prototype.configure = function(gl, program, color) {
         program["uRotate"],
         false,
         [
-            this.x.x, this.x.y, this.x.z,
+            this.x.x * stretch, this.x.y * stretch, this.x.z * stretch,
             y.x, y.y, y.z,
             z.x, z.y, z.z
         ]);

@@ -13,6 +13,7 @@ MutatorLayerSpots.prototype.SAMPLER_ANCHOR_DISTANCE = new SamplerQuadratic(0, .7
 MutatorLayerSpots.prototype.SAMPLER_X_DISTANCE = new SamplerQuadratic(0, .5, 4);
 MutatorLayerSpots.prototype.SAMPLER_SCALE = new SamplerPlateau(-7, 0, 7, 1);
 MutatorLayerSpots.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(-5, 0, 5, 1.5);
+MutatorLayerSpots.prototype.SAMPLER_STRETCH = new SamplerPlateau(-8, 0, 8, 1);
 
 /**
  * Mutate the layer
@@ -26,4 +27,5 @@ MutatorLayerSpots.prototype.mutate = function(random) {
 
     this.layer.scale = this.mutateUint8(this.layer.scale, this.SAMPLER_SCALE, random.getFloat());
     this.layer.threshold = this.mutateUint8(this.layer.threshold, this.SAMPLER_THRESHOLD, random.getFloat());
+    this.layer.stretch = this.mutateUint8(this.layer.stretch, this.SAMPLER_STRETCH, random.getFloat());
 };
