@@ -11,7 +11,7 @@ const MixerPattern = function(mother, father) {
 
 MixerPattern.prototype = Object.create(Mixer.prototype);
 MixerPattern.prototype.LAYER_SKIP_CHANCE = .06;
-MixerPattern.prototype.LAYER_SKIP_CHANCE_FIRST = .03;
+MixerPattern.prototype.LAYER_SKIP_CHANCE_FIRST = .02;
 
 /**
  * Mix two layers of the same type

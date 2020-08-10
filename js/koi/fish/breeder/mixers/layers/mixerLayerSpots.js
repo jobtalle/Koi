@@ -12,7 +12,7 @@ const MixerLayerSpots = function(mother, father) {
 MixerLayerSpots.prototype = Object.create(Mixer.prototype);
 MixerLayerSpots.prototype.SAMPLER_SCALE = new SamplerSigmoid(0, 1, 15);
 MixerLayerSpots.prototype.SAMPLER_THRESHOLD = new SamplerSigmoid(0, 1, 2);
-MixerLayerSpots.prototype.SAMPLER_SAMPLE = new SamplerSigmoid(0, 1, 33);
+MixerLayerSpots.prototype.SAMPLER_SAMPLE = new SamplerSigmoid(0, 1, 12);
 MixerLayerSpots.prototype.SAMPLER_PALETTE = new SamplerSigmoid(0, 1, 15);
 
 /**
