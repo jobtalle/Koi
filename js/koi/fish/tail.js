@@ -131,9 +131,6 @@ Tail.prototype.renderBottom = function(
     bodies.buffer.addIndices(
         firstVertebra,
         firstVertebra + 3,
-        startIndex + 1,
-        firstVertebra,
-        firstVertebra + 3,
         startIndex);
 
     for (let vertebra = 0; vertebra < this.anchors; ++vertebra) {
@@ -180,6 +177,11 @@ Tail.prototype.renderTop = function(
     bodies,
     startIndex,
     firstVertebra) {
+    bodies.buffer.addIndices(
+        firstVertebra,
+        firstVertebra + 3,
+        startIndex + 1);
+
     for (let vertebra = 0; vertebra < this.anchors - 1; ++vertebra) {
         if (vertebra === this.anchors - 2)
             bodies.buffer.addIndices(
