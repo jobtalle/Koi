@@ -24,6 +24,7 @@ const Systems = function(gl, random, width, height) {
     this.wind = new Wind(gl, this.quad);
     this.patterns = new Patterns(gl);
     this.atlas = new Atlas(gl, this.patterns, Koi.prototype.FISH_CAPACITY);
+    this.distanceField = new DistanceField(gl, this.quad);
 };
 
 /**
@@ -62,4 +63,5 @@ Systems.prototype.free = function() {
     this.shadows.free();
     this.blur.free();
     this.wind.free();
+    this.distanceField.free();
 };

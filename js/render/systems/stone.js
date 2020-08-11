@@ -16,8 +16,15 @@ const Stone = function(gl) {
         this.SHADER_FRAGMENT,
         [],
         ["color", "position"]);
+    this.programBase = new Shader(
+        gl,
+        this.SHADER_VERTEX_BASE,
+        this.SHADER_FRAGMENT_BASE,
+        [],
+        ["position"]);
     this.vao = gl.vao.createVertexArrayOES();
     this.vaoReflect = gl.vao.createVertexArrayOES();
+    this.vaoBase = gl.vao.createVertexArrayOES();
 
     Meshed.call(this, gl, [
         new Meshed.VAOConfiguration(
@@ -41,6 +48,14 @@ const Stone = function(gl) {
                 gl.vertexAttribPointer(this.programReflect["aPosition"],
                     3, gl.FLOAT, false, 24, 12);
             }
+        ),
+        new Meshed.VAOConfiguration(
+            this.vaoBase,
+            () => {
+                gl.enableVertexAttribArray(this.programBase["aPosition"]);
+                gl.vertexAttribPointer(this.programBase["aPosition"],
+                    3, gl.FLOAT, false, 24, 12);
+            }
         )
     ]);
 };
@@ -48,8 +63,6 @@ const Stone = function(gl) {
 Stone.prototype = Object.create(Meshed.prototype);
 
 Stone.prototype.SHADER_VERTEX = `#version 100
-uniform float zDirection;
-
 attribute vec3 color;
 attribute vec3 position;
 
@@ -66,8 +79,6 @@ void main() {
 `;
 
 Stone.prototype.SHADER_VERTEX_REFLECT = `#version 100
-uniform float zDirection;
-
 attribute vec3 color;
 attribute vec3 position;
 
@@ -83,11 +94,28 @@ void main() {
 }
 `;
 
+Stone.prototype.SHADER_VERTEX_BASE = `#version 100
+attribute vec3 position;
+
+void main() {
+  gl_Position = vec4(
+    vec2(position.x, position.y),
+    0.0,
+    1.0);
+}
+`;
+
 Stone.prototype.SHADER_FRAGMENT = `#version 100
 varying lowp vec3 iColor;
 
 void main() {
   gl_FragColor = vec4(iColor, 1.0);
+}
+`;
+
+Stone.prototype.SHADER_FRAGMENT_BASE = `#version 100
+void main() {
+  gl_FragColor = vec4(vec3(0.0), 1.0);
 }
 `;
 
@@ -114,10 +142,13 @@ Stone.prototype.renderReflections = function() {
 };
 
 /**
- * Render the base of the rocks
+ * Render the base of the rocks as black polygons
  */
 Stone.prototype.renderBase = function() {
-    // TODO: Render base
+    this.programBase.use();
+    this.gl.vao.bindVertexArrayOES(this.vaoBase);
+
+    this.renderMesh();
 };
 
 /**
@@ -126,7 +157,9 @@ Stone.prototype.renderBase = function() {
 Stone.prototype.free = function() {
     this.program.free();
     this.programReflect.free();
+    this.programBase.free();
     this.gl.vao.deleteVertexArrayOES(this.vao);
     this.gl.vao.deleteVertexArrayOES(this.vaoReflect);
+    this.gl.vao.deleteVertexArrayOES(this.vaoBase);
 };
 

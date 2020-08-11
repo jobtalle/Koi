@@ -31,10 +31,12 @@ const Koi = function(
     this.constellationMeshWater = null;
     this.constellationMeshDepth = null;
     this.randomSource = null;
+    this.shore = null;
     this.reflections = null;
     this.weather = new Weather(this.constellation, weatherState);
     this.spawner = new Spawner(this.constellation, spawnerState);
     this.time = this.UPDATE_RATE;
+    this.phase = 0;
 
     this.createRenderables();
 };
@@ -45,6 +47,7 @@ Koi.prototype.SCALE_FACTOR = .051;
 Koi.prototype.SCALE_MIN = 50;
 Koi.prototype.FISH_CAPACITY = 80;
 Koi.prototype.COLOR_BACKGROUND = Color.fromCSS("--color-earth");
+Koi.prototype.PHASE_SPEED = .05;
 
 /**
  * Serialize the koi
@@ -132,7 +135,15 @@ Koi.prototype.createRenderables = function() {
     this.systems.stone.setMesh(this.foreground.rocks.mesh);
     this.systems.vegetation.setMesh(this.foreground.plants.mesh);
 
-    // Create reflections after mesh initialization
+    // Create systems that depend on mesh initialization
+    this.shore = new Shore(
+        this.systems.gl,
+        this.constellation.width,
+        this.constellation.height,
+        this.systems.stone,
+        this.systems.ponds,
+        this.systems.distanceField);
+
     this.reflections = new Reflections(
         this.systems.gl,
         this.constellation.width,
@@ -153,6 +164,7 @@ Koi.prototype.freeRenderables = function() {
     this.underwater.free();
     this.water.free();
     this.air.free();
+    this.shore.free();
     this.reflections.free();
 
     this.constellationMeshWater.free();
@@ -228,6 +240,9 @@ Koi.prototype.update = function() {
 
     this.systems.waves.propagate(this.water, this.systems.influencePainter);
     this.systems.wind.propagate(this.air, this.systems.influencePainter);
+
+    if ((this.phase += this.PHASE_SPEED) > 1)
+        --this.phase;
 };
 
 /**
@@ -291,10 +306,12 @@ Koi.prototype.render = function(deltaTime) {
     this.systems.ponds.render(
         this.underwater.texture,
         this.reflections.texture,
+        this.shore.texture,
         this.water,
         this.systems.width,
         this.systems.height,
         this.scale,
+        this.phase + timeFactor * this.PHASE_SPEED,
         timeFactor);
 
     // Disable Z buffer
@@ -308,7 +325,7 @@ Koi.prototype.render = function(deltaTime) {
         this.constellation.height,
         timeFactor);
 
-    // this.systems.quad.render(this.reflections.texture);
+    // this.systems.quad.render(this.shore.texture);
 };
 
 /**
