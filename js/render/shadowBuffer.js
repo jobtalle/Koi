@@ -6,12 +6,13 @@
  * @constructor
  */
 const ShadowBuffer = function(gl, width, height) {
-    this.gl = gl;
-    this.width = Math.round(width * this.SCALE);
-    this.height = Math.round(height * this.SCALE);
+    const widthPixels = Math.ceil(width * this.SCALE);
+    const heightPixels = Math.ceil(height * this.SCALE);
 
-    this.renderTarget = new RenderTarget(gl, this.width, this.height, gl.RGBA, false);
-    this.intermediate = new RenderTarget(gl, this.width, this.height, gl.RGBA, false);
+    this.gl = gl;
+
+    this.renderTarget = new RenderTarget(gl, widthPixels, heightPixels, gl.RGBA, false);
+    this.intermediate = new RenderTarget(gl, widthPixels, heightPixels, gl.RGBA, false);
 };
 
 ShadowBuffer.prototype.SCALE = 26;
@@ -24,6 +25,14 @@ ShadowBuffer.prototype.target = function() {
 
     this.gl.clearColor(0, 0, 0, 0);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+};
+
+/**
+ * Blur the shadows after rendering to this buffer
+ * @param {Blur} blur The blur system
+ */
+ShadowBuffer.prototype.blur = function(blur) {
+    blur.applyMesh(this.renderTarget, this.intermediate);
 };
 
 /**

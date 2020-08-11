@@ -248,9 +248,7 @@ Koi.prototype.render = function(deltaTime) {
     // Render shadows
     this.shadowBuffer.target();
     this.constellation.render(this.systems.bodies, this.systems.atlas, timeFactor,true);
-
-    // Blur shadows
-    this.systems.blur.applyMesh(this.shadowBuffer.renderTarget, this.shadowBuffer.intermediate);
+    this.shadowBuffer.blur(this.systems.blur);
 
     // Target underwater buffer
     this.underwater.target();
