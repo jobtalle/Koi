@@ -8,7 +8,7 @@ const MutatorLayerBase = function(layer) {
 };
 
 MutatorLayerBase.prototype = Object.create(Mutator.prototype);
-MutatorLayerBase.prototype.SAMPLER_DISTANCE = new SamplerQuadratic(0, 2, 5);
+MutatorLayerBase.prototype.SAMPLER_DISTANCE = new SamplerQuadratic(0, 1.5, 5);
 
 /**
  * Mutate the layer

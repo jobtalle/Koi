@@ -114,6 +114,13 @@ Stone.prototype.renderReflections = function() {
 };
 
 /**
+ * Render the base of the rocks
+ */
+Stone.prototype.renderBase = function() {
+    // TODO: Render base
+};
+
+/**
  * Free all resources maintained by the stone renderer
  */
 Stone.prototype.free = function() {

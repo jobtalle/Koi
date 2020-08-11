@@ -102,6 +102,19 @@ RenderTarget.prototype.createDepth = function(width, height) {
 };
 
 /**
+ * Receive the texture, freeing and invalidating all other sources in this render target
+ * @returns {WebGLTexture} The render target texture of this render target
+ */
+RenderTarget.prototype.extractTexture = function() {
+    this.gl.deleteFramebuffer(this.framebuffer);
+
+    if (this.depth !== null)
+        this.gl.deleteRenderbuffer(this.depth);
+
+    return this.texture;
+};
+
+/**
  * Free all resources maintained by this bufferQuad
  */
 RenderTarget.prototype.free = function() {

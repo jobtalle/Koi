@@ -8,7 +8,7 @@ const MutatorLayerSpots = function(layer) {
 };
 
 MutatorLayerSpots.prototype = Object.create(Mutator.prototype);
-MutatorLayerSpots.prototype.SAMPLER_PALETTE_DISTANCE = new SamplerQuadratic(0, 3, 8);
+MutatorLayerSpots.prototype.SAMPLER_PALETTE_DISTANCE = new SamplerQuadratic(0, 2, 8);
 MutatorLayerSpots.prototype.SAMPLER_ANCHOR_DISTANCE = new SamplerQuadratic(0, .7, 3);
 MutatorLayerSpots.prototype.SAMPLER_X_DISTANCE = new SamplerQuadratic(0, .5, 4);
 MutatorLayerSpots.prototype.SAMPLER_SCALE = new SamplerPlateau(-7, 0, 7, 1);

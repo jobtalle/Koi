@@ -31,6 +31,7 @@ const Koi = function(
     this.constellationMeshWater = null;
     this.constellationMeshDepth = null;
     this.randomSource = null;
+    this.reflections = null;
     this.weather = new Weather(this.constellation, weatherState);
     this.spawner = new Spawner(this.constellation, spawnerState);
     this.time = this.UPDATE_RATE;
@@ -103,8 +104,6 @@ Koi.prototype.createRenderables = function() {
         this.scale);
     this.foreground = new Foreground(
         this.systems.gl,
-        this.systems.stone,
-        this.systems.vegetation,
         this.constellation,
         environmentRandomizer);
     this.underwater = new RenderTarget(
@@ -133,12 +132,14 @@ Koi.prototype.createRenderables = function() {
     this.systems.stone.setMesh(this.foreground.rocks.mesh);
     this.systems.vegetation.setMesh(this.foreground.plants.mesh);
 
-    // Buffer foreground reflections
-    this.foreground.makeReflections(
+    // Create reflections after mesh initialization
+    this.reflections = new Reflections(
+        this.systems.gl,
+        this.constellation.width,
+        this.constellation.height,
         this.systems.stone,
         this.systems.vegetation,
-        this.systems.blur,
-        this.systems.quad);
+        this.systems.blur);
 };
 
 /**
@@ -152,6 +153,7 @@ Koi.prototype.freeRenderables = function() {
     this.underwater.free();
     this.water.free();
     this.air.free();
+    this.reflections.free();
 
     this.constellationMeshWater.free();
     this.constellationMeshDepth.free();
@@ -290,7 +292,7 @@ Koi.prototype.render = function(deltaTime) {
     // Render shaded water
     this.systems.ponds.render(
         this.underwater.texture,
-        this.foreground.reflections.texture,
+        this.reflections.texture,
         this.water,
         this.systems.width,
         this.systems.height,
@@ -308,7 +310,7 @@ Koi.prototype.render = function(deltaTime) {
         this.constellation.height,
         timeFactor);
 
-    // this.systems.quad.render(this.systems.palettes.textureLayer1.texture);
+    // this.systems.quad.render(this.reflections.texture);
 };
 
 /**
