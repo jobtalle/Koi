@@ -53,7 +53,7 @@ Shore.prototype.makeTexture = function(
     ponds.renderShape();
     stone.renderBase();
 
-    const distance = distanceField.make(renderTarget.texture, widthPixels, heightPixels, 8);
+    const distance = distanceField.make(renderTarget.texture, widthPixels, heightPixels);
 
     renderTarget.free();
 

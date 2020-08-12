@@ -8,7 +8,7 @@ const Ponds = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["background", "reflections", "water", "shore", "depth", "height", "size", "waterSize", "phase", "time"],
+        ["background", "reflections", "water", "shore", "random", "depth", "height", "size", "waterSize", "phase", "time"],
         ["position"]);
     this.programShape = new Shader(
         gl,
@@ -69,6 +69,7 @@ uniform sampler2D background;
 uniform sampler2D reflections;
 uniform sampler2D water;
 uniform sampler2D shore;
+uniform sampler2D random;
 uniform mediump vec2 size;
 uniform mediump float depth;
 uniform mediump float height;
@@ -91,16 +92,10 @@ void main() {
   mediump vec3 normal = cross(
     normalize(vec3(2.0, dyx, 0.0)),
     normalize(vec3(0.0, dyz, 2.0)));
-  mediump float shiny = dot(normalize(vec3(1.0, 0.0, 1.0)), normal);
+  mediump float shiny = dot(normalize(vec3(1.0, 0.0, 1.0)), normal) * 0.6;
   
   if (shiny < 0.0)
-    shiny *= 0.2;
-  else {
-    if (shiny > 0.5)
-      shiny *= 1.3;
-  }
-  
-  shiny *= 0.4;
+    shiny *= 0.3;
   
   mediump vec4 filter = vec4(0.93, 0.98, 1.0, 1.0) * vec4(0.92, 0.97, 1.0, 1.0);
   
@@ -111,10 +106,11 @@ void main() {
   gl_FragColor = filter * mix(pixel, reflected, 0.1 + shiny);
   
   mediump float shoreThreshold = 0.15;
-  mediump float waveThreshold = (shoreDistance / shoreThreshold) * 0.5 - normal.z * 5.0;
+  mediump float waveThreshold = (shoreDistance / shoreThreshold) * 0.5;
+  mediump float phaseShift = texture2D(random, gl_FragCoord.xy * 0.0001).r * 7.0;
   
-  if (cos(phase * 6.283185 - shoreDistance * 20.0) * 0.6 + 0.7 > waveThreshold)
-    gl_FragColor += vec4(0.1);
+  if (cos(phase * 6.283185 - shoreDistance * 25.0 + phaseShift) * 0.5 + 0.7 + max(0.0, shiny) * 12.0 > waveThreshold)
+    gl_FragColor += vec4(0.15);
 }
 `;
 
@@ -129,6 +125,7 @@ void main() {
  * @param {WebGLTexture} background A background texture
  * @param {WebGLTexture} reflections A texture containing the reflections
  * @param {WebGLTexture} shore A texture containing shore distance
+ * @param {WebGLTexture} random A random source texture
  * @param {Water} water A water plane to shade the background with
  * @param {Number} width The background width in pixels
  * @param {Number} height The background height in pixels
@@ -140,6 +137,7 @@ Ponds.prototype.render = function(
     background,
     reflections,
     shore,
+    random,
     water,
     width,
     height,
@@ -153,6 +151,7 @@ Ponds.prototype.render = function(
     this.gl.uniform1i(this.program["uReflections"], 1);
     this.gl.uniform1i(this.program["uWater"], 2);
     this.gl.uniform1i(this.program["uShore"], 3);
+    this.gl.uniform1i(this.program["uRandom"], 4);
     this.gl.uniform1f(this.program["uDepth"], this.DEPTH * scale);
     this.gl.uniform1f(this.program["uHeight"], this.HEIGHT * scale);
     this.gl.uniform2f(this.program["uSize"], width, height);
@@ -168,6 +167,8 @@ Ponds.prototype.render = function(
     this.gl.bindTexture(this.gl.TEXTURE_2D, water.getFront().texture);
     this.gl.activeTexture(this.gl.TEXTURE3);
     this.gl.bindTexture(this.gl.TEXTURE_2D, shore);
+    this.gl.activeTexture(this.gl.TEXTURE4);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, random);
 
     this.renderMesh();
 };

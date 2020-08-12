@@ -17,6 +17,7 @@ const Reflections = function(
     blur) {
     this.gl = gl;
     this.texture = this.makeTextureReflections(width, height, stone, vegetation, blur);
+    // TODO: Allow for combined texture containing sky color, reflections and shore distance
 };
 
 Reflections.prototype.SCALE = 25;
@@ -65,6 +66,7 @@ Reflections.prototype.makeTextureReflections = function(
 
     blur.applyQuad(renderTarget, intermediate);
 
+    this.gl.bindTexture(this.gl.TEXTURE_2D, renderTarget.texture);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
 

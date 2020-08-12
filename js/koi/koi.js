@@ -47,7 +47,7 @@ Koi.prototype.SCALE_FACTOR = .051;
 Koi.prototype.SCALE_MIN = 50;
 Koi.prototype.FISH_CAPACITY = 80;
 Koi.prototype.COLOR_BACKGROUND = Color.fromCSS("--color-earth");
-Koi.prototype.PHASE_SPEED = .05;
+Koi.prototype.PHASE_SPEED = .03;
 
 /**
  * Serialize the koi
@@ -302,17 +302,27 @@ Koi.prototype.render = function(deltaTime) {
         this.air,
         timeFactor);
 
+    this.systems.gl.bindTexture(this.systems.gl.TEXTURE_2D, this.randomSource.texture);
+    this.systems.gl.texParameteri(this.systems.gl.TEXTURE_2D, this.systems.gl.TEXTURE_MIN_FILTER, this.systems.gl.LINEAR);
+    this.systems.gl.texParameteri(this.systems.gl.TEXTURE_2D, this.systems.gl.TEXTURE_MAG_FILTER, this.systems.gl.LINEAR);
+
     // Render shaded water
     this.systems.ponds.render(
         this.underwater.texture,
         this.reflections.texture,
         this.shore.texture,
+        this.randomSource.texture,
         this.water,
         this.systems.width,
         this.systems.height,
         this.scale,
         this.phase + timeFactor * this.PHASE_SPEED,
         timeFactor);
+
+    // TODO: Remove this filter switching here
+    this.systems.gl.bindTexture(this.systems.gl.TEXTURE_2D, this.randomSource.texture);
+    this.systems.gl.texParameteri(this.systems.gl.TEXTURE_2D, this.systems.gl.TEXTURE_MIN_FILTER, this.systems.gl.NEAREST);
+    this.systems.gl.texParameteri(this.systems.gl.TEXTURE_2D, this.systems.gl.TEXTURE_MAG_FILTER, this.systems.gl.NEAREST);
 
     // Disable Z buffer
     this.systems.gl.disable(this.systems.gl.DEPTH_TEST);

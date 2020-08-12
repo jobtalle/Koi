@@ -33,7 +33,7 @@ DistanceField.prototype.SHADER_FRAGMENT = `#version 100
 uniform sampler2D source;
 uniform mediump vec2 size;
 
-#define DIST 32
+#define DIST 23
 
 mediump float get(int dx, int dy) {
   return texture2D(source, (gl_FragCoord.xy + vec2(float(dx), float(dy))) / size).r;
