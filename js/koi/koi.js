@@ -46,7 +46,7 @@ Koi.prototype.SCALE_FACTOR = .051;
 Koi.prototype.SCALE_MIN = 50;
 Koi.prototype.FISH_CAPACITY = 80;
 Koi.prototype.COLOR_BACKGROUND = Color.fromCSS("--color-earth");
-Koi.prototype.PHASE_SPEED = .03;
+Koi.prototype.PHASE_SPEED = .02;
 
 /**
  * Serialize the koi

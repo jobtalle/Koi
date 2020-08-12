@@ -53,9 +53,9 @@ const Ponds = function(gl) {
 
 Ponds.prototype = Object.create(Meshed.prototype);
 
-Ponds.prototype.DEPTH = .15;
-Ponds.prototype.HEIGHT = .3;
-Ponds.prototype.WAVE_PHASE = 2.5;
+Ponds.prototype.DEPTH = .17;
+Ponds.prototype.HEIGHT = .55;
+Ponds.prototype.WAVE_PHASE = 1.65;
 Ponds.prototype.COLOR_FILTER = Color.fromCSS("--color-water-filter");
 Ponds.prototype.COLOR_HIGHLIGHT = Color.fromCSS("--color-water-highlight");
 
@@ -92,40 +92,38 @@ uniform mediump float height;
 uniform mediump vec2 waterSize;
 uniform mediump float phase;
 uniform mediump float time;
-
 varying mediump vec2 iUv;
 
-mediump float get(mediump vec2 delta) {
+lowp float get(mediump vec2 delta) {
   mediump vec2 uv = iUv + delta / waterSize;
   lowp vec2 sample = texture2D(water, uv).gr;
   
-  return mix(sample.x, sample.y, time) * 6.0 - 3.0;
+  return (mix(sample.x, sample.y, time) - 0.5) * 4.0;
 }
 
 void main() {
-  mediump float dyx = get(vec2(1.0, 0.0)) - get(vec2(-1.0, 0.0));
-  mediump float dyz = get(vec2(0.0, 1.0)) - get(vec2(0.0, -1.0));
+  mediump float dyx = get(vec2(1.3, 0.0)) - get(vec2(-1.3, 0.0));
+  mediump float dyz = get(vec2(0.0, 1.3)) - get(vec2(0.0, -1.3));
   mediump vec3 normal = cross(
-    normalize(vec3(2.0, dyx, 0.0)),
-    normalize(vec3(0.0, dyz, 2.0)));
-  mediump float shiny = dot(normalize(vec3(1.0, 0.0, 1.0)), normal) * 0.6;
-  
-  if (shiny < 0.0)
-    shiny *= 0.3;
+    normalize(vec3(2.5, dyx, 0.0)),
+    normalize(vec3(0.0, dyz, 2.5)));
   
   lowp vec3 pixel = texture2D(background, iUv - depth * normal.xz / size).rgb;
   lowp vec4 reflected = texture2D(reflections, iUv + height * normal.xz / size);
   lowp float shoreDistance = reflected.a;
   
-  gl_FragColor = vec4(mix(colorFilter * pixel, reflected.rgb, 0.1 + shiny), 1.0);
+  mediump float phaseShift = 4.3 * (0.5 + 0.5 * sin((iUv.x * wavePhase.x) * 6.283185) * sin(iUv.y * wavePhase.y * 6.283185)) + normal.y * 16.0;
+  mediump float wave = max(cos(phase * 6.283185 - shoreDistance * 7.0 + phaseShift) * 0.35 + 0.6, 0.3 + (normal.x + normal.z) * 3.9);
+  mediump float overhead = wave - shoreDistance;
+  mediump float transition = 0.3;
+  mediump float maxBlend = 0.25;
+  mediump float reflectivity = 0.14;
+  mediump float shininess = 0.44;
   
-  mediump float shoreThreshold = 0.15;
-  mediump float waveThreshold = (shoreDistance / shoreThreshold) * 0.5;
-  // mediump float phaseShift = texture2D(random, iUv * wavePhase).r * 7.0;
-  mediump float phaseShift = 7.0 * (0.5 + 0.5 * sin(iUv.x * wavePhase.x * 6.283185) * sin(iUv.y * wavePhase.y * 6.283185));
-  
-  if (cos(phase * 6.283185 - shoreDistance * 25.0 + phaseShift) * 0.5 + 0.7 + max(0.0, shiny) * 12.0 > waveThreshold)
-    gl_FragColor = vec4(mix(gl_FragColor.rgb, colorHighlight, 0.7), 1.0);
+  gl_FragColor.rgb = mix(
+    mix(colorFilter * pixel, reflected.rgb, reflectivity + max(0.0, (normal.x + normal.z) * shininess)),
+    colorHighlight,
+    max(0.0, min(maxBlend, overhead / transition)));
 }
 `;
 

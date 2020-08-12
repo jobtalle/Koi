@@ -9,7 +9,7 @@ const RandomSource = function(gl, random) {
     this.texture = this.createTexture(random);
 };
 
-RandomSource.prototype.SIZE = 256;
+RandomSource.prototype.SIZE = 128;
 
 /**
  * Create the random texture

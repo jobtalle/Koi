@@ -53,7 +53,7 @@ MixerPattern.prototype.mix = function(patterns, random) {
                 layers.push(mother.copy());
         }
         else if (mother.id === father.id)
-            layers.push(this.mixLayers(mother, father, random));
+            layers.push(this.mixLayers(mother, father, random)); // TODO: Bias towards the same as previous iteration
         else {
             if (mother.isRecessive() === father.isRecessive()) {
                 if (mother.sampleDominance(random) > father.sampleDominance(random))

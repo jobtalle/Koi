@@ -25,7 +25,7 @@ const Waves = function(gl) {
 };
 
 Waves.prototype = Object.create(Meshed.prototype);
-Waves.prototype.DAMPING = .996;
+Waves.prototype.DAMPING = .997;
 
 Waves.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
