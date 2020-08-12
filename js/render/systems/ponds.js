@@ -137,7 +137,7 @@ void main() {
  * Render ponds
  * @param {WebGLTexture} background A background texture
  * @param {WebGLTexture} reflections A texture containing the reflections
- * @param {WebGLTexture} random A random source texture
+ * @param {RandomSource} randomSource A random source
  * @param {Water} water A water plane to shade the background with
  * @param {Number} width The background width in pixels
  * @param {Number} height The background height in pixels
@@ -148,7 +148,7 @@ void main() {
 Ponds.prototype.render = function(
     background,
     reflections,
-    random,
+    randomSource,
     water,
     width,
     height,
@@ -177,9 +177,15 @@ Ponds.prototype.render = function(
     this.gl.activeTexture(this.gl.TEXTURE2);
     this.gl.bindTexture(this.gl.TEXTURE_2D, water.getFront().texture);
     this.gl.activeTexture(this.gl.TEXTURE3);
-    this.gl.bindTexture(this.gl.TEXTURE_2D, random);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, randomSource.texture);
+
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
 
     this.renderMesh();
+
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
 };
 
 /**
