@@ -35,11 +35,11 @@ uniform mediump vec2 size;
 uniform mediump float range;
 
 mediump float get(int dx, int dy) {
-  return texture2D(source, (gl_FragCoord.xy + vec2(float(dx), float(dy))) / size).r;
+  return texture2D(source, (gl_FragCoord.xy + vec2(float(dx), float(dy))) / size).a;
 }
 
 void main() {
-  mediump float nearestNeighbor = min(
+  mediump float nearest = min(
     min(
       min(
         get(-1, -1),
@@ -55,7 +55,7 @@ void main() {
         get(0, 1),
         get(-1, 0))) + range);
   
-  gl_FragColor = vec4(vec3(min(texture2D(source, gl_FragCoord.xy / size).r, nearestNeighbor)), 1.0);
+  gl_FragColor = vec4(min(texture2D(source, gl_FragCoord.xy / size).r, nearest));
 }
 `;
 
@@ -94,11 +94,11 @@ DistanceField.prototype.make = function(texture, width, height, range) {
         front = 1 - front;
     }
 
+    buffers[front].free();
+
     this.gl.bindTexture(this.gl.TEXTURE_2D, buffers[1 - front].texture);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
-
-    buffers[front].free();
 
     return buffers[1 - front].extractTexture();
 };

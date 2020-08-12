@@ -20,7 +20,7 @@ const Stone = function(gl) {
         gl,
         this.SHADER_VERTEX_BASE,
         this.SHADER_FRAGMENT_BASE,
-        [],
+        ["color"],
         ["position"]);
     this.vao = gl.vao.createVertexArrayOES();
     this.vaoReflect = gl.vao.createVertexArrayOES();
@@ -114,8 +114,10 @@ void main() {
 `;
 
 Stone.prototype.SHADER_FRAGMENT_BASE = `#version 100
+uniform lowp vec4 color;
+
 void main() {
-  gl_FragColor = vec4(vec3(0.0), 1.0);
+  gl_FragColor = color;
 }
 `;
 
@@ -143,10 +145,13 @@ Stone.prototype.renderReflections = function() {
 
 /**
  * Render the base of the rocks as black polygons
+ * @param {Color} color The polygon color
  */
-Stone.prototype.renderBase = function() {
+Stone.prototype.renderBase = function(color) {
     this.programBase.use();
     this.gl.vao.bindVertexArrayOES(this.vaoBase);
+
+    this.gl.uniform4f(this.programBase["uColor"], color.r, color.g, color.b, color.a);
 
     this.renderMesh();
 };

@@ -3,21 +3,24 @@
  * @param {WebGLRenderingContext} gl A WebGL context
  * @param {Number} width The scene width
  * @param {Number} height The scene height
+ * @param {Shore} shore A shore object whose values will be stored in the alpha channel
  * @param {Stone} stone The stone renderer
  * @param {Vegetation} vegetation The vegetation renderer
  * @param {Blur} blur The blur system
+ * @param {Quad} quad The quad renderer
  * @constructor
  */
 const Reflections = function(
     gl,
     width,
     height,
+    shore,
     stone,
     vegetation,
-    blur) {
+    blur,
+    quad) {
     this.gl = gl;
-    this.texture = this.makeTextureReflections(width, height, stone, vegetation, blur);
-    // TODO: Allow for combined texture containing sky color, reflections and shore distance
+    this.texture = this.makeTextureReflections(width, height, shore, stone, vegetation, blur, quad);
 };
 
 Reflections.prototype.SCALE = 25;
@@ -27,17 +30,21 @@ Reflections.prototype.COLOR_SKY = Color.fromCSS("--color-sky");
  * Make the reflections texture
  * @param {Number} width The scene width
  * @param {Number} height The scene height
+ * @param {Shore} shore A shore object
  * @param {Stone} stone The stone renderer
  * @param {Vegetation} vegetation The vegetation renderer
  * @param {Blur} blur The blur system
+ * @param {Quad} quad The quad renderer
  * @returns {WebGLTexture} The reflections texture
  */
 Reflections.prototype.makeTextureReflections = function(
     width,
     height,
+    shore,
     stone,
     vegetation,
-    blur) {
+    blur,
+    quad) {
     const widthPixels = Math.ceil(width * this.SCALE);
     const heightPixels = Math.ceil(height * this.SCALE);
     const renderTarget = new RenderTarget(
@@ -65,6 +72,13 @@ Reflections.prototype.makeTextureReflections = function(
     this.gl.disable(this.gl.DEPTH_TEST);
 
     blur.applyQuad(renderTarget, intermediate);
+
+    this.gl.enable(this.gl.BLEND);
+    this.gl.blendFunc(this.gl.ZERO, this.gl.SRC_COLOR);
+
+    quad.render(shore.texture);
+
+    this.gl.disable(this.gl.BLEND);
 
     this.gl.bindTexture(this.gl.TEXTURE_2D, renderTarget.texture);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);

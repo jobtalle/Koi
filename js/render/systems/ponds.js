@@ -12,7 +12,6 @@ const Ponds = function(gl) {
             "background",
             "reflections",
             "water",
-            "shore",
             "random",
             "colorFilter",
             "depth",
@@ -26,7 +25,7 @@ const Ponds = function(gl) {
         gl,
         this.SHADER_VERTEX_SHAPE,
         this.SHADER_FRAGMENT_SHAPE,
-        [],
+        ["color"],
         ["position"]);
     this.vao = gl.vao.createVertexArrayOES();
     this.vaoShape = gl.vao.createVertexArrayOES();
@@ -112,10 +111,10 @@ void main() {
     shiny *= 0.3;
   
   lowp vec3 pixel = texture2D(background, iUv - depth * normal.xz / size).rgb;
-  lowp vec3 reflected = texture2D(reflections, iUv + height * normal.xz / size).rgb;
-  lowp float shoreDistance = texture2D(shore, iUv).r;
+  lowp vec4 reflected = texture2D(reflections, iUv + height * normal.xz / size);
+  lowp float shoreDistance = reflected.a;
   
-  gl_FragColor = vec4(mix(colorFilter * pixel, reflected, 0.1 + shiny), 1.0);
+  gl_FragColor = vec4(mix(colorFilter * pixel, reflected.rgb, 0.1 + shiny), 1.0);
   
   mediump float shoreThreshold = 0.15;
   mediump float waveThreshold = (shoreDistance / shoreThreshold) * 0.5;
@@ -127,8 +126,10 @@ void main() {
 `;
 
 Ponds.prototype.SHADER_FRAGMENT_SHAPE = `#version 100
+uniform lowp vec4 color;
+
 void main() {
-  gl_FragColor = vec4(1.0);
+  gl_FragColor = color;
 }
 `;
 
@@ -136,7 +137,6 @@ void main() {
  * Render ponds
  * @param {WebGLTexture} background A background texture
  * @param {WebGLTexture} reflections A texture containing the reflections
- * @param {WebGLTexture} shore A texture containing shore distance
  * @param {WebGLTexture} random A random source texture
  * @param {Water} water A water plane to shade the background with
  * @param {Number} width The background width in pixels
@@ -148,7 +148,6 @@ void main() {
 Ponds.prototype.render = function(
     background,
     reflections,
-    shore,
     random,
     water,
     width,
@@ -162,8 +161,7 @@ Ponds.prototype.render = function(
     this.gl.uniform1i(this.program["uBackground"], 0);
     this.gl.uniform1i(this.program["uReflections"], 1);
     this.gl.uniform1i(this.program["uWater"], 2);
-    this.gl.uniform1i(this.program["uShore"], 3);
-    this.gl.uniform1i(this.program["uRandom"], 4);
+    this.gl.uniform1i(this.program["uRandom"], 3);
     this.gl.uniform3f(this.program["uColorFilter"], this.COLOR_FILTER.r, this.COLOR_FILTER.g, this.COLOR_FILTER.b);
     this.gl.uniform1f(this.program["uDepth"], this.DEPTH * scale);
     this.gl.uniform1f(this.program["uHeight"], this.HEIGHT * scale);
@@ -179,19 +177,20 @@ Ponds.prototype.render = function(
     this.gl.activeTexture(this.gl.TEXTURE2);
     this.gl.bindTexture(this.gl.TEXTURE_2D, water.getFront().texture);
     this.gl.activeTexture(this.gl.TEXTURE3);
-    this.gl.bindTexture(this.gl.TEXTURE_2D, shore);
-    this.gl.activeTexture(this.gl.TEXTURE4);
     this.gl.bindTexture(this.gl.TEXTURE_2D, random);
 
     this.renderMesh();
 };
 
 /**
- * Render the shape of the ponds as white polygons
+ * Render the shape of the ponds as polygons
+ * @param {Color} color The polygon color
  */
-Ponds.prototype.renderShape = function() {
+Ponds.prototype.renderShape = function(color) {
     this.programShape.use();
     this.gl.vao.bindVertexArrayOES(this.vaoShape);
+
+    this.gl.uniform4f(this.programShape["uColor"], color.r, color.g, color.b, color.a);
 
     this.renderMesh();
 };

@@ -31,7 +31,6 @@ const Koi = function(
     this.constellationMeshWater = null;
     this.constellationMeshDepth = null;
     this.randomSource = null;
-    this.shore = null;
     this.reflections = null;
     this.weather = new Weather(this.constellation, weatherState);
     this.spawner = new Spawner(this.constellation, spawnerState);
@@ -136,7 +135,7 @@ Koi.prototype.createRenderables = function() {
     this.systems.vegetation.setMesh(this.foreground.plants.mesh);
 
     // Create systems that depend on mesh initialization
-    this.shore = new Shore(
+    const shore = new Shore(
         this.systems.gl,
         this.constellation.width,
         this.constellation.height,
@@ -148,9 +147,13 @@ Koi.prototype.createRenderables = function() {
         this.systems.gl,
         this.constellation.width,
         this.constellation.height,
+        shore,
         this.systems.stone,
         this.systems.vegetation,
-        this.systems.blur);
+        this.systems.blur,
+        this.systems.quad);
+
+    shore.free();
 };
 
 /**
@@ -164,7 +167,6 @@ Koi.prototype.freeRenderables = function() {
     this.underwater.free();
     this.water.free();
     this.air.free();
-    this.shore.free();
     this.reflections.free();
 
     this.constellationMeshWater.free();
@@ -310,7 +312,6 @@ Koi.prototype.render = function(deltaTime) {
     this.systems.ponds.render(
         this.underwater.texture,
         this.reflections.texture,
-        this.shore.texture,
         this.randomSource.texture,
         this.water,
         this.systems.width,

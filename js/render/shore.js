@@ -19,8 +19,10 @@ const Shore = function(
     this.texture = this.makeTexture(width, height, stone, ponds, distanceField);
 };
 
-Shore.prototype.SCALE = 32;
+Shore.prototype.SCALE = Reflections.prototype.SCALE;
 Shore.prototype.WIDTH = .9;
+Shore.prototype.COLOR_SHAPE_PONDS = new Color(1, 1, 1, 1);
+Shore.prototype.COLOR_SHAPE_ROCKS = new Color(0, 0, 0, 0);
 
 /**
  * Make the shore distance texture
@@ -51,8 +53,8 @@ Shore.prototype.makeTexture = function(
     this.gl.clearColor(0, 0, 0, 0);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
 
-    ponds.renderShape();
-    stone.renderBase();
+    ponds.renderShape(this.COLOR_SHAPE_PONDS);
+    stone.renderBase(this.COLOR_SHAPE_ROCKS);
 
     const distance = distanceField.make(
         renderTarget.texture,
