@@ -12,12 +12,13 @@ const Ponds = function(gl) {
             "background",
             "reflections",
             "water",
-            "random",
             "colorFilter",
+            "colorHighlight",
             "depth",
             "height",
             "size",
             "waterSize",
+            "wavePhase",
             "phase",
             "time"],
         ["position"]);
@@ -53,8 +54,10 @@ const Ponds = function(gl) {
 Ponds.prototype = Object.create(Meshed.prototype);
 
 Ponds.prototype.DEPTH = .15;
-Ponds.prototype.HEIGHT = .5;
+Ponds.prototype.HEIGHT = .3;
+Ponds.prototype.WAVE_PHASE = 2.5;
 Ponds.prototype.COLOR_FILTER = Color.fromCSS("--color-water-filter");
+Ponds.prototype.COLOR_HIGHLIGHT = Color.fromCSS("--color-water-highlight");
 
 Ponds.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
@@ -80,10 +83,10 @@ Ponds.prototype.SHADER_FRAGMENT = `#version 100
 uniform sampler2D background;
 uniform sampler2D reflections;
 uniform sampler2D water;
-uniform sampler2D shore;
-uniform sampler2D random;
 uniform lowp vec3 colorFilter;
+uniform lowp vec3 colorHighlight;
 uniform mediump vec2 size;
+uniform mediump vec2 wavePhase;
 uniform mediump float depth;
 uniform mediump float height;
 uniform mediump vec2 waterSize;
@@ -118,10 +121,11 @@ void main() {
   
   mediump float shoreThreshold = 0.15;
   mediump float waveThreshold = (shoreDistance / shoreThreshold) * 0.5;
-  mediump float phaseShift = texture2D(random, gl_FragCoord.xy * 0.0001).r * 7.0;
+  // mediump float phaseShift = texture2D(random, iUv * wavePhase).r * 7.0;
+  mediump float phaseShift = 7.0 * (0.5 + 0.5 * sin(iUv.x * wavePhase.x * 6.283185) * sin(iUv.y * wavePhase.y * 6.283185));
   
   if (cos(phase * 6.283185 - shoreDistance * 25.0 + phaseShift) * 0.5 + 0.7 + max(0.0, shiny) * 12.0 > waveThreshold)
-    gl_FragColor += vec4(0.15);
+    gl_FragColor = vec4(mix(gl_FragColor.rgb, colorHighlight, 0.7), 1.0);
 }
 `;
 
@@ -137,7 +141,6 @@ void main() {
  * Render ponds
  * @param {WebGLTexture} background A background texture
  * @param {WebGLTexture} reflections A texture containing the reflections
- * @param {RandomSource} randomSource A random source
  * @param {Water} water A water plane to shade the background with
  * @param {Number} width The background width in pixels
  * @param {Number} height The background height in pixels
@@ -148,7 +151,6 @@ void main() {
 Ponds.prototype.render = function(
     background,
     reflections,
-    randomSource,
     water,
     width,
     height,
@@ -161,11 +163,20 @@ Ponds.prototype.render = function(
     this.gl.uniform1i(this.program["uBackground"], 0);
     this.gl.uniform1i(this.program["uReflections"], 1);
     this.gl.uniform1i(this.program["uWater"], 2);
-    this.gl.uniform1i(this.program["uRandom"], 3);
-    this.gl.uniform3f(this.program["uColorFilter"], this.COLOR_FILTER.r, this.COLOR_FILTER.g, this.COLOR_FILTER.b);
+    this.gl.uniform3f(this.program["uColorFilter"],
+        this.COLOR_FILTER.r,
+        this.COLOR_FILTER.g,
+        this.COLOR_FILTER.b);
+    this.gl.uniform3f(this.program["uColorHighlight"],
+        this.COLOR_HIGHLIGHT.r,
+        this.COLOR_HIGHLIGHT.g,
+        this.COLOR_HIGHLIGHT.b);
     this.gl.uniform1f(this.program["uDepth"], this.DEPTH * scale);
     this.gl.uniform1f(this.program["uHeight"], this.HEIGHT * scale);
     this.gl.uniform2f(this.program["uSize"], width, height);
+    this.gl.uniform2f(this.program["uWavePhase"],
+        width / scale / this.WAVE_PHASE,
+        height / scale / this.WAVE_PHASE);
     this.gl.uniform2f(this.program["uWaterSize"], water.width, water.height);
     this.gl.uniform1f(this.program["uPhase"], phase);
     this.gl.uniform1f(this.program["uTime"], time);
@@ -176,16 +187,8 @@ Ponds.prototype.render = function(
     this.gl.bindTexture(this.gl.TEXTURE_2D, reflections);
     this.gl.activeTexture(this.gl.TEXTURE2);
     this.gl.bindTexture(this.gl.TEXTURE_2D, water.getFront().texture);
-    this.gl.activeTexture(this.gl.TEXTURE3);
-    this.gl.bindTexture(this.gl.TEXTURE_2D, randomSource.texture);
-
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
 
     this.renderMesh();
-
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
-    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
 };
 
 /**

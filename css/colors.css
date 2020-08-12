@@ -1,8 +1,9 @@
 :root {
     /* Environment colors */
     --color-water-deep: #1e2831;
-    --color-water-shallow: #67a795;
+    --color-water-shallow: #6cb4a9;
     --color-water-filter: #def6ea;
+    --color-water-highlight: #76aaa2;
     --color-earth: #D5C28E;
     --color-rock-top: #645154;
     --color-rock-side: #402F31;

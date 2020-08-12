@@ -308,7 +308,6 @@ Koi.prototype.render = function(deltaTime) {
     this.systems.ponds.render(
         this.underwater.texture,
         this.reflections.texture,
-        this.randomSource,
         this.water,
         this.systems.width,
         this.systems.height,
