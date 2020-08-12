@@ -15,7 +15,7 @@ const Rocks = function(
     yScale,
     biome,
     random) {
-    this.mesh = this.createMesh(gl, constellation, slots, yScale, biome, random);
+    this.mesh = this.createMesh(gl, constellation, slots, yScale, biome, random); // TODO: Omit back faces
 };
 
 /**

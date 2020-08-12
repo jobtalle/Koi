@@ -18,7 +18,7 @@ const Foreground = function(
 };
 
 Foreground.prototype.Y_SCALE = .74;
-Foreground.prototype.Y_OVERFLOW = .2;
+Foreground.prototype.Y_OVERFLOW = .3;
 
 /**
  * Render foreground graphics

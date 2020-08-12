@@ -8,7 +8,19 @@ const Ponds = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["background", "reflections", "water", "shore", "random", "depth", "height", "size", "waterSize", "phase", "time"],
+        [
+            "background",
+            "reflections",
+            "water",
+            "shore",
+            "random",
+            "colorFilter",
+            "depth",
+            "height",
+            "size",
+            "waterSize",
+            "phase",
+            "time"],
         ["position"]);
     this.programShape = new Shader(
         gl,
@@ -41,8 +53,9 @@ const Ponds = function(gl) {
 
 Ponds.prototype = Object.create(Meshed.prototype);
 
-Ponds.prototype.DEPTH = .1;
+Ponds.prototype.DEPTH = .15;
 Ponds.prototype.HEIGHT = .5;
+Ponds.prototype.COLOR_FILTER = Color.fromCSS("--color-water-filter");
 
 Ponds.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
@@ -70,6 +83,7 @@ uniform sampler2D reflections;
 uniform sampler2D water;
 uniform sampler2D shore;
 uniform sampler2D random;
+uniform lowp vec3 colorFilter;
 uniform mediump vec2 size;
 uniform mediump float depth;
 uniform mediump float height;
@@ -97,13 +111,11 @@ void main() {
   if (shiny < 0.0)
     shiny *= 0.3;
   
-  mediump vec4 filter = vec4(0.93, 0.98, 1.0, 1.0) * vec4(0.92, 0.97, 1.0, 1.0);
-  
-  lowp vec4 pixel = texture2D(background, iUv - depth * normal.xz / size);
-  lowp vec4 reflected = texture2D(reflections, iUv + height * normal.xz / size);
+  lowp vec3 pixel = texture2D(background, iUv - depth * normal.xz / size).rgb;
+  lowp vec3 reflected = texture2D(reflections, iUv + height * normal.xz / size).rgb;
   lowp float shoreDistance = texture2D(shore, iUv).r;
   
-  gl_FragColor = filter * mix(pixel, reflected, 0.1 + shiny);
+  gl_FragColor = vec4(mix(colorFilter * pixel, reflected, 0.1 + shiny), 1.0);
   
   mediump float shoreThreshold = 0.15;
   mediump float waveThreshold = (shoreDistance / shoreThreshold) * 0.5;
@@ -152,6 +164,7 @@ Ponds.prototype.render = function(
     this.gl.uniform1i(this.program["uWater"], 2);
     this.gl.uniform1i(this.program["uShore"], 3);
     this.gl.uniform1i(this.program["uRandom"], 4);
+    this.gl.uniform3f(this.program["uColorFilter"], this.COLOR_FILTER.r, this.COLOR_FILTER.g, this.COLOR_FILTER.b);
     this.gl.uniform1f(this.program["uDepth"], this.DEPTH * scale);
     this.gl.uniform1f(this.program["uHeight"], this.HEIGHT * scale);
     this.gl.uniform2f(this.program["uSize"], width, height);

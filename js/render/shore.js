@@ -20,6 +20,7 @@ const Shore = function(
 };
 
 Shore.prototype.SCALE = 32;
+Shore.prototype.WIDTH = .9;
 
 /**
  * Make the shore distance texture
@@ -53,7 +54,11 @@ Shore.prototype.makeTexture = function(
     ponds.renderShape();
     stone.renderBase();
 
-    const distance = distanceField.make(renderTarget.texture, widthPixels, heightPixels);
+    const distance = distanceField.make(
+        renderTarget.texture,
+        widthPixels,
+        heightPixels,
+        Math.round(this.SCALE * this.WIDTH));
 
     renderTarget.free();
 

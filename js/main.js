@@ -1,6 +1,6 @@
 const glParameters = {
     alpha: false,
-    antialias: true,
+    antialias: false,
     preserveDrawingBuffer: true
 };
 const canvas = document.getElementById("renderer");
