@@ -23,7 +23,7 @@ const Water = function(
 };
 
 Water.prototype = Object.create(ConvolutionalBuffer.prototype);
-Water.prototype.SCALE = 18;
+Water.prototype.SCALE = 17;
 
 /**
  * Add a flare of wave height to the water plane

@@ -20,7 +20,7 @@ const Shore = function(
 };
 
 Shore.prototype.SCALE = Reflections.prototype.SCALE;
-Shore.prototype.WIDTH = .26;
+Shore.prototype.WIDTH = .24;
 Shore.prototype.COLOR_SHAPE_PONDS = new Color(1, 1, 1, 1);
 Shore.prototype.COLOR_SHAPE_ROCKS = new Color(0, 0, 0, 0);
 

@@ -53,9 +53,9 @@ const Ponds = function(gl) {
 
 Ponds.prototype = Object.create(Meshed.prototype);
 
-Ponds.prototype.DEPTH = .17;
-Ponds.prototype.HEIGHT = .55;
-Ponds.prototype.WAVE_PHASE = 1.65;
+Ponds.prototype.DEPTH = .2;
+Ponds.prototype.HEIGHT = .3;
+Ponds.prototype.WAVE_PHASE = 2.4;
 Ponds.prototype.COLOR_FILTER = Color.fromCSS("--color-water-filter");
 Ponds.prototype.COLOR_HIGHLIGHT = Color.fromCSS("--color-water-highlight");
 
@@ -83,6 +83,7 @@ Ponds.prototype.SHADER_FRAGMENT = `#version 100
 uniform sampler2D background;
 uniform sampler2D reflections;
 uniform sampler2D water;
+uniform sampler2D random;
 uniform lowp vec3 colorFilter;
 uniform lowp vec3 colorHighlight;
 uniform mediump vec2 size;
@@ -94,36 +95,46 @@ uniform mediump float phase;
 uniform mediump float time;
 varying mediump vec2 iUv;
 
+#define GLARE_BLEND 0.3
+#define GLARE_TRANSITION 0.02
+#define REFLECTIVITY 0.15
+#define SHININESS 0.42
+#define SHORE_WAVE_FREQUENCY 6.0
+#define SHORE_WAVE_SHIFT 6.0
+#define SHORE_WAVE_AMPLITUDE 0.3
+#define SHORE_WAVE_BASE 0.65
+#define WAVE_AMPLITUDE 2.0
+#define WAVE_BASE 0.3
+
 lowp float get(mediump vec2 delta) {
-  mediump vec2 uv = iUv + delta / waterSize;
+  lowp vec2 uv = iUv + delta / waterSize;
   lowp vec2 sample = texture2D(water, uv).gr;
   
-  return (mix(sample.x, sample.y, time) - 0.5) * 4.0;
+  return (mix(sample.x, sample.y, time) - 0.5) * 3.7;
 }
 
 void main() {
-  mediump float dyx = get(vec2(1.3, 0.0)) - get(vec2(-1.3, 0.0));
-  mediump float dyz = get(vec2(0.0, 1.3)) - get(vec2(0.0, -1.3));
-  mediump vec3 normal = cross(
-    normalize(vec3(2.5, dyx, 0.0)),
-    normalize(vec3(0.0, dyz, 2.5)));
+  lowp float dyx = get(vec2(1.0, 0.0)) - get(vec2(-1.0, 0.0));
+  lowp float dyz = get(vec2(0.0, 1.0)) - get(vec2(0.0, -1.0));
+  lowp vec3 normal = cross(
+    normalize(vec3(2.0, dyx, 0.0)),
+    normalize(vec3(0.0, dyz, 2.0)));
   
   lowp vec3 pixel = texture2D(background, iUv - depth * normal.xz / size).rgb;
   lowp vec4 reflected = texture2D(reflections, iUv + height * normal.xz / size);
   lowp float shoreDistance = reflected.a;
   
-  mediump float phaseShift = 4.3 * (0.5 + 0.5 * sin((iUv.x * wavePhase.x) * 6.283185) * sin(iUv.y * wavePhase.y * 6.283185)) + normal.y * 16.0;
-  mediump float wave = max(cos(phase * 6.283185 - shoreDistance * 7.0 + phaseShift) * 0.35 + 0.6, 0.3 + (normal.x + normal.z) * 3.9);
-  mediump float overhead = wave - shoreDistance;
-  mediump float transition = 0.3;
-  mediump float maxBlend = 0.25;
-  mediump float reflectivity = 0.14;
-  mediump float shininess = 0.44;
+  lowp float shift = sin(iUv.x * wavePhase.x * 6.283185) * sin(iUv.y * wavePhase.y * 6.283185) *
+    sin(6.283185 * phase + iUv.x * wavePhase.x * 3.141592 - iUv.y * wavePhase.y * 1.256637);
+  lowp float wave = max(
+    cos(shift * SHORE_WAVE_SHIFT + phase * 25.132741 - shoreDistance * SHORE_WAVE_FREQUENCY) * SHORE_WAVE_AMPLITUDE + SHORE_WAVE_BASE,
+    (normal.x + normal.z) * WAVE_AMPLITUDE + WAVE_BASE);
+  lowp float overhead = wave - shoreDistance;
   
-  gl_FragColor.rgb = mix(
-    mix(colorFilter * pixel, reflected.rgb, reflectivity + max(0.0, (normal.x + normal.z) * shininess)),
+  gl_FragColor = vec4(vec3(mix(
+    mix(colorFilter * pixel, reflected.rgb, REFLECTIVITY + max(0.0, (normal.x + normal.z) * SHININESS)),
     colorHighlight,
-    max(0.0, min(maxBlend, overhead / transition)));
+    max(0.0, min(GLARE_BLEND, overhead / GLARE_TRANSITION)))), 1.0);
 }
 `;
 
