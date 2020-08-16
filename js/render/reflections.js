@@ -23,7 +23,7 @@ const Reflections = function(
     this.texture = this.makeTextureReflections(width, height, shore, stone, vegetation, blur, quad);
 };
 
-Reflections.prototype.SCALE = 25;
+Reflections.prototype.SCALE = 17;
 Reflections.prototype.COLOR_SKY = Color.fromCSS("--color-sky");
 
 /**

@@ -31,6 +31,20 @@ const Ponds = function(gl) {
     this.vao = gl.vao.createVertexArrayOES();
     this.vaoShape = gl.vao.createVertexArrayOES();
 
+    this.program.use();
+
+    gl.uniform1i(this.program["uBackground"], 0);
+    gl.uniform1i(this.program["uReflections"], 1);
+    gl.uniform1i(this.program["uWater"], 2);
+    gl.uniform3f(this.program["uColorFilter"],
+        this.COLOR_FILTER.r,
+        this.COLOR_FILTER.g,
+        this.COLOR_FILTER.b);
+    gl.uniform3f(this.program["uColorHighlight"],
+        this.COLOR_HIGHLIGHT.r,
+        this.COLOR_HIGHLIGHT.g,
+        this.COLOR_HIGHLIGHT.b);
+
     Meshed.call(this, gl, [
         new Meshed.VAOConfiguration(
             this.vao,
@@ -54,7 +68,7 @@ const Ponds = function(gl) {
 Ponds.prototype = Object.create(Meshed.prototype);
 
 Ponds.prototype.DEPTH = .2;
-Ponds.prototype.HEIGHT = .3;
+Ponds.prototype.HEIGHT = .34;
 Ponds.prototype.WAVE_PHASE = 2.4;
 Ponds.prototype.COLOR_FILTER = Color.fromCSS("--color-water-filter");
 Ponds.prototype.COLOR_HIGHLIGHT = Color.fromCSS("--color-water-highlight");
@@ -86,14 +100,14 @@ uniform sampler2D water;
 uniform sampler2D random;
 uniform lowp vec3 colorFilter;
 uniform lowp vec3 colorHighlight;
-uniform mediump vec2 size;
-uniform mediump vec2 wavePhase;
-uniform mediump float depth;
-uniform mediump float height;
-uniform mediump vec2 waterSize;
-uniform mediump float phase;
-uniform mediump float time;
-varying mediump vec2 iUv;
+uniform lowp vec2 size;
+uniform lowp vec2 wavePhase;
+uniform lowp float depth;
+uniform lowp float height;
+uniform lowp vec2 waterSize;
+uniform lowp float phase;
+uniform lowp float time;
+varying lowp vec2 iUv;
 
 #define GLARE_BLEND 0.3
 #define GLARE_TRANSITION 0.02
@@ -101,8 +115,8 @@ varying mediump vec2 iUv;
 #define SHININESS 0.42
 #define SHORE_WAVE_FREQUENCY 6.0
 #define SHORE_WAVE_SHIFT 6.0
-#define SHORE_WAVE_AMPLITUDE 0.3
-#define SHORE_WAVE_BASE 0.65
+#define SHORE_WAVE_AMPLITUDE 0.38
+#define SHORE_WAVE_BASE 0.58
 #define WAVE_AMPLITUDE 2.0
 #define WAVE_BASE 0.3
 
@@ -169,23 +183,12 @@ Ponds.prototype.render = function(
     this.program.use();
     this.gl.vao.bindVertexArrayOES(this.vao);
 
-    this.gl.uniform1i(this.program["uBackground"], 0);
-    this.gl.uniform1i(this.program["uReflections"], 1);
-    this.gl.uniform1i(this.program["uWater"], 2);
-    this.gl.uniform3f(this.program["uColorFilter"],
-        this.COLOR_FILTER.r,
-        this.COLOR_FILTER.g,
-        this.COLOR_FILTER.b);
-    this.gl.uniform3f(this.program["uColorHighlight"],
-        this.COLOR_HIGHLIGHT.r,
-        this.COLOR_HIGHLIGHT.g,
-        this.COLOR_HIGHLIGHT.b);
     this.gl.uniform1f(this.program["uDepth"], this.DEPTH * scale);
     this.gl.uniform1f(this.program["uHeight"], this.HEIGHT * scale);
     this.gl.uniform2f(this.program["uSize"], width, height);
     this.gl.uniform2f(this.program["uWavePhase"],
-        width / scale / this.WAVE_PHASE,
-        height / scale / this.WAVE_PHASE);
+        width / (scale * this.WAVE_PHASE),
+        height / (scale * this.WAVE_PHASE));
     this.gl.uniform2f(this.program["uWaterSize"], water.width, water.height);
     this.gl.uniform1f(this.program["uPhase"], phase);
     this.gl.uniform1f(this.program["uTime"], time);

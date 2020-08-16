@@ -14,6 +14,12 @@ const Wind = function(gl, quad) {
         ["position"]);
     this.vao = gl.vao.createVertexArrayOES();
 
+    this.program.use();
+
+    gl.uniform1i(this.program["uSprings"], 0);
+    gl.uniform1i(this.program["uSource"], 1);
+    gl.uniform1f(this.program["uDamping"], this.DAMPING);
+
     gl.vao.bindVertexArrayOES(this.vao);
     gl.bindBuffer(gl.ARRAY_BUFFER, quad.buffer);
 
@@ -70,10 +76,6 @@ Wind.prototype.propagate = function(air, influencePainter) {
 
     air.flip();
     air.getFront().target();
-
-    this.gl.uniform1i(this.program["uSprings"], 0);
-    this.gl.uniform1i(this.program["uSource"], 1);
-    this.gl.uniform1f(this.program["uDamping"], this.DAMPING);
 
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, air.springs);

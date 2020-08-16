@@ -12,6 +12,11 @@ const Sand = function(gl) {
         ["position", "depth"]);
     this.vao = gl.vao.createVertexArrayOES();
 
+    this.program.use();
+
+    gl.uniform3f(this.program["uColorDeep"], this.COLOR_DEEP.r, this.COLOR_DEEP.g, this.COLOR_DEEP.b);
+    gl.uniform3f(this.program["uColorShallow"], this.COLOR_SHALLOW.r, this.COLOR_SHALLOW.g, this.COLOR_SHALLOW.b);
+
     Meshed.call(this, gl, [
         new Meshed.VAOConfiguration(
             this.vao,
@@ -76,8 +81,6 @@ Sand.prototype.write = function(randomSource, scale) {
     this.gl.bindTexture(this.gl.TEXTURE_2D, randomSource.texture);
 
     this.gl.uniform1f(this.program["uScale"], scale);
-    this.gl.uniform3f(this.program["uColorDeep"], this.COLOR_DEEP.r, this.COLOR_DEEP.g, this.COLOR_DEEP.b);
-    this.gl.uniform3f(this.program["uColorShallow"], this.COLOR_SHALLOW.r, this.COLOR_SHALLOW.g, this.COLOR_SHALLOW.b);
 
     this.renderMesh();
 };

@@ -12,6 +12,10 @@ const Shadows = function(gl) {
         ["position", "depth"]);
     this.vao = gl.vao.createVertexArrayOES();
 
+    this.program.use();
+
+    gl.uniform1f(this.program["uShadowDepth"], this.SHADOW_DEPTH);
+
     Meshed.call(this, gl, [
         new Meshed.VAOConfiguration(
             this.vao,
@@ -77,7 +81,6 @@ Shadows.prototype.render = function(buffer, height, scale) {
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
 
     this.gl.uniform1f(this.program["uMeter"], scale / height);
-    this.gl.uniform1f(this.program["uShadowDepth"], this.SHADOW_DEPTH);
 
     this.gl.vao.bindVertexArrayOES(this.vao);
 

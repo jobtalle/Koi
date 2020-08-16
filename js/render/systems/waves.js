@@ -12,6 +12,10 @@ const Waves = function(gl) {
         ["position"]);
     this.vao = gl.vao.createVertexArrayOES();
 
+    this.program.use();
+
+    gl.uniform1f(this.program["uDamping"], this.DAMPING);
+
     Meshed.call(this, gl, [
         new Meshed.VAOConfiguration(
             this.vao,
@@ -80,7 +84,6 @@ Waves.prototype.propagate = function(water, influencePainter) {
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
 
     this.gl.uniform2f(this.program["uSize"], water.width, water.height);
-    this.gl.uniform1f(this.program["uDamping"], this.DAMPING);
 
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, water.getBack().texture);
