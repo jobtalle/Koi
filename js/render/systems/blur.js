@@ -9,14 +9,14 @@ const Blur = function(gl, quad) {
         gl,
         this.SHADER_VERTEX_MESH,
         this.SHADER_FRAGMENT,
-        ["targetSize", "direction"],
-        ["position"]);
+        ["position"],
+        ["targetSize", "direction"]);
     this.programQuad = new Shader(
         gl,
         this.SHADER_VERTEX_QUAD,
         this.SHADER_FRAGMENT,
-        ["targetSize", "direction"],
-        ["position"]);
+        ["position"],
+        ["targetSize", "direction"]);
     this.vaoMesh = gl.vao.createVertexArrayOES();
     this.vaoQuad = gl.vao.createVertexArrayOES();
 

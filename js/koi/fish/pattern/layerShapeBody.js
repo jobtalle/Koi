@@ -93,10 +93,7 @@ LayerShapeBody.prototype.sample = function(x) {
  */
 LayerShapeBody.prototype.configure = function(gl, program) {
     gl.uniform1f(program["uCenterPower"], this.SAMPLER_CENTER_POWER.sample(this.centerPower / 0xFF));
-    gl.uniform1f(program["uShadePower"], this.SHADE_POWER);
-    gl.uniform1f(program["uLightPower"], this.LIGHT_POWER);
     gl.uniform1f(program["uRadiusPower"], this.SAMPLER_RADIUS_POWER.sample(this.radiusPower / 0xFF));
-    gl.uniform1f(program["uAmbient"], this.AMBIENT);
 };
 
 /**
@@ -109,6 +106,11 @@ LayerShapeBody.prototype.createShader = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["centerPower", "shadePower", "lightPower", "radiusPower", "ambient"],
-        ["position", "uv"]);
+        ["position", "uv"],
+        ["centerPower", "radiusPower"],
+        [
+            new Shader.Constant("shadePower", "f", [this.SHADE_POWER]),
+            new Shader.Constant("lightPower", "f", [this.LIGHT_POWER]),
+            new Shader.Constant("ambient", "f", [this.AMBIENT])
+        ]);
 };

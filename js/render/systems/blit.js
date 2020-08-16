@@ -8,8 +8,8 @@ const Blit = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        [],
-        ["position"]);
+        ["position"],
+        []);
 };
 
 /**

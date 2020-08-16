@@ -8,13 +8,12 @@ const Waves = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["size", "damping"],
-        ["position"]);
+        ["position"],
+        ["size"],
+        [
+            new Shader.Constant("damping", "f", [this.DAMPING])
+        ]);
     this.vao = gl.vao.createVertexArrayOES();
-
-    this.program.use();
-
-    gl.uniform1f(this.program["uDamping"], this.DAMPING);
 
     Meshed.call(this, gl, [
         new Meshed.VAOConfiguration(

@@ -66,6 +66,6 @@ LayerBase.prototype.createShader = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["color"],
-        ["position"]);
+        ["position"],
+        ["color"]);
 };

@@ -10,8 +10,8 @@ const DistanceField = function(gl, quad) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["size", "range"],
-        ["position"]);
+        ["position"],
+        ["size", "range"]);
     this.vao = gl.vao.createVertexArrayOES();
 
     gl.vao.bindVertexArrayOES(this.vao);

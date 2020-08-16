@@ -8,13 +8,12 @@ const Shadows = function(gl) {
         gl,
         this.VERTEX_SHADER,
         this.FRAGMENT_SHADER,
-        ["meter", "shadowDepth"],
-        ["position", "depth"]);
+        ["position", "depth"],
+        ["meter"],
+        [
+            new Shader.Constant("shadowDepth", "f", [this.SHADOW_DEPTH])
+        ]);
     this.vao = gl.vao.createVertexArrayOES();
-
-    this.program.use();
-
-    gl.uniform1f(this.program["uShadowDepth"], this.SHADOW_DEPTH);
 
     Meshed.call(this, gl, [
         new Meshed.VAOConfiguration(

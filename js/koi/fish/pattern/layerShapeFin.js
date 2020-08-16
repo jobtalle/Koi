@@ -70,6 +70,6 @@ LayerShapeFin.prototype.createShader = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        [],
-        ["position", "uv"]);
+        ["position", "uv"],
+        []);
 };

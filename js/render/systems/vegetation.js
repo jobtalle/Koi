@@ -8,14 +8,14 @@ const Vegetation = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["time"],
-        ["color", "position", "flex", "windPosition"]);
+        ["color", "position", "flex", "windPosition"],
+        ["time"]);
     this.programReflect = new Shader(
         gl,
         this.SHADER_VERTEX_REFLECT,
         this.SHADER_FRAGMENT,
-        [],
-        ["color", "position"]);
+        ["color", "position"],
+        []);
     this.vao = gl.vao.createVertexArrayOES();
     this.vaoReflect = gl.vao.createVertexArrayOES();
 

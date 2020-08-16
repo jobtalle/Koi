@@ -10,14 +10,14 @@ const Bodies = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["scale"],
-        ["position", "uv"]);
+        ["position", "uv"],
+        ["scale"]);
     this.programShadows = new Shader(
         gl,
         this.SHADER_SHADOWS_VERTEX,
         this.SHADER_SHADOWS_FRAGMENT,
-        ["scale"],
-        ["position", "uv"]);
+        ["position", "uv"],
+        ["scale"]);
     this.vao = gl.vao.createVertexArrayOES();
     this.vaoShadows = gl.vao.createVertexArrayOES();
 

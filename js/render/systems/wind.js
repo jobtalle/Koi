@@ -10,15 +10,14 @@ const Wind = function(gl, quad) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["damping", "source", "springs"],
-        ["position"]);
+        ["position"],
+        [],
+        [
+            new Shader.Constant("springs", "i", [0]),
+            new Shader.Constant("source", "i", [1]),
+            new Shader.Constant("damping", "f", [this.DAMPING])
+        ]);
     this.vao = gl.vao.createVertexArrayOES();
-
-    this.program.use();
-
-    gl.uniform1i(this.program["uSprings"], 0);
-    gl.uniform1i(this.program["uSource"], 1);
-    gl.uniform1f(this.program["uDamping"], this.DAMPING);
 
     gl.vao.bindVertexArrayOES(this.vao);
     gl.bindBuffer(gl.ARRAY_BUFFER, quad.buffer);

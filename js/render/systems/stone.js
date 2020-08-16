@@ -8,20 +8,20 @@ const Stone = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        [],
-        ["color", "position"]);
+        ["color", "position"],
+        []);
     this.programReflect = new Shader(
         gl,
         this.SHADER_VERTEX_REFLECT,
         this.SHADER_FRAGMENT,
-        [],
-        ["color", "position"]);
+        ["color", "position"],
+        []);
     this.programBase = new Shader(
         gl,
         this.SHADER_VERTEX_BASE,
         this.SHADER_FRAGMENT_BASE,
-        ["color"],
-        ["position"]);
+        ["position"],
+        ["color"]);
     this.vao = gl.vao.createVertexArrayOES();
     this.vaoReflect = gl.vao.createVertexArrayOES();
     this.vaoBase = gl.vao.createVertexArrayOES();

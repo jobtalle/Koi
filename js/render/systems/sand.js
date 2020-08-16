@@ -8,14 +8,19 @@ const Sand = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["scale", "colorDeep", "colorShallow"],
-        ["position", "depth"]);
+        ["position", "depth"],
+        ["scale"],
+        [
+            new Shader.Constant("colorDeep", "f", [
+                this.COLOR_DEEP.r,
+                this.COLOR_DEEP.g,
+                this.COLOR_DEEP.b]),
+            new Shader.Constant("colorShallow", "f", [
+                this.COLOR_SHALLOW.r,
+                this.COLOR_SHALLOW.g,
+                this.COLOR_SHALLOW.b])
+        ]);
     this.vao = gl.vao.createVertexArrayOES();
-
-    this.program.use();
-
-    gl.uniform3f(this.program["uColorDeep"], this.COLOR_DEEP.r, this.COLOR_DEEP.g, this.COLOR_DEEP.b);
-    gl.uniform3f(this.program["uColorShallow"], this.COLOR_SHALLOW.r, this.COLOR_SHALLOW.g, this.COLOR_SHALLOW.b);
 
     Meshed.call(this, gl, [
         new Meshed.VAOConfiguration(

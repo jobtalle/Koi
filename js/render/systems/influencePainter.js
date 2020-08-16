@@ -9,8 +9,8 @@ const InfluencePainter = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["size"],
-        ["vertex", "color"]);
+        ["vertex", "color"],
+        ["size"]);
 };
 
 /**

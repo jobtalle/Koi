@@ -8,42 +8,29 @@ const Ponds = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
+        ["position"],
+        ["depth", "height", "size", "waterSize", "wavePhase", "phase", "time"],
         [
-            "background",
-            "reflections",
-            "water",
-            "colorFilter",
-            "colorHighlight",
-            "depth",
-            "height",
-            "size",
-            "waterSize",
-            "wavePhase",
-            "phase",
-            "time"],
-        ["position"]);
+            new Shader.Constant("background", "i", [0]),
+            new Shader.Constant("reflections", "i", [1]),
+            new Shader.Constant("water", "i", [2]),
+            new Shader.Constant("colorFilter", "f", [
+                this.COLOR_FILTER.r,
+                this.COLOR_FILTER.g,
+                this.COLOR_FILTER.b]),
+            new Shader.Constant("colorHighlight", "f", [
+                this.COLOR_HIGHLIGHT.r,
+                this.COLOR_HIGHLIGHT.g,
+                this.COLOR_HIGHLIGHT.b])
+        ]);
     this.programShape = new Shader(
         gl,
         this.SHADER_VERTEX_SHAPE,
         this.SHADER_FRAGMENT_SHAPE,
-        ["color"],
-        ["position"]);
+        ["position"],
+        ["color"]);
     this.vao = gl.vao.createVertexArrayOES();
     this.vaoShape = gl.vao.createVertexArrayOES();
-
-    this.program.use();
-
-    gl.uniform1i(this.program["uBackground"], 0);
-    gl.uniform1i(this.program["uReflections"], 1);
-    gl.uniform1i(this.program["uWater"], 2);
-    gl.uniform3f(this.program["uColorFilter"],
-        this.COLOR_FILTER.r,
-        this.COLOR_FILTER.g,
-        this.COLOR_FILTER.b);
-    gl.uniform3f(this.program["uColorHighlight"],
-        this.COLOR_HIGHLIGHT.r,
-        this.COLOR_HIGHLIGHT.g,
-        this.COLOR_HIGHLIGHT.b);
 
     Meshed.call(this, gl, [
         new Meshed.VAOConfiguration(

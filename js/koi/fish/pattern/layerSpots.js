@@ -153,6 +153,6 @@ LayerSpots.prototype.createShader = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["scale", "threshold", "size", "anchor", "rotate", "color"],
-        ["position", "uv"]);
+        ["position", "uv"],
+        ["scale", "threshold", "size", "anchor", "rotate", "color"]);
 };
