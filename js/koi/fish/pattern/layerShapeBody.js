@@ -1,12 +1,14 @@
 /**
  * A fish body shape which will be superimposed over a pattern
- * @param {Number} centerPower A power value that shifts the center of the fish thickness
- * @param {Number} radiusPower A power value to apply to the body radius
+ * @param {Number} centerPower A power value that shifts the center of the fish thickness in the range [0, 255]
+ * @param {Number} radiusPower A power value to apply to the body radius in the range [0, 255]
+ * @param {Number} eyePosition The eye position in the range [0, 255]
  * @constructor
  */
-const LayerShapeBody = function(centerPower, radiusPower) {
+const LayerShapeBody = function(centerPower, radiusPower, eyePosition) {
     this.centerPower = centerPower;
     this.radiusPower = radiusPower;
+    this.eyePosition = eyePosition;
 
     Layer.call(this);
 };
@@ -18,6 +20,7 @@ LayerShapeBody.prototype.LIGHT_POWER = 0.5;
 LayerShapeBody.prototype.AMBIENT = 0.5;
 LayerShapeBody.prototype.SAMPLER_CENTER_POWER = new SamplerPlateau(.5, .6, 1, 2);
 LayerShapeBody.prototype.SAMPLER_RADIUS_POWER = new SamplerPlateau(.6, .7, 1.2, 1);
+LayerShapeBody.prototype.SAMPLER_EYE_POSITION = new Sampler(.07, .115);
 
 LayerShapeBody.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
@@ -34,23 +37,44 @@ void main() {
 
 LayerShapeBody.prototype.SHADER_FRAGMENT = `#version 100
 uniform mediump float centerPower;
+uniform mediump float radiusPower;
+uniform mediump float eyePosition;
 uniform mediump float shadePower;
 uniform mediump float lightPower;
-uniform mediump float radiusPower;
 uniform mediump float ambient;
+uniform mediump vec2 size;
 
 varying mediump vec2 iUv;
 
+#define EYE_SHADE_IRIS 0.85
+#define EYE_SHADE_PUPIL 0.2
+#define EYE_RADIUS_IRIS 0.14
+#define EYE_RADIUS_PUPIL 0.1
+
+mediump float getRadius(mediump float x) {
+  return pow(cos(3.141592 * (pow(x, centerPower) - 0.5)), radiusPower);
+}
+
 void main() {
-  mediump float radius = 2.0 * abs(iUv.y - 0.5);
-  mediump float edge = pow(cos(3.141592 * (pow(iUv.x, centerPower) - 0.5)), radiusPower);
+  lowp float radius = 2.0 * abs(iUv.y - 0.5);
+  lowp float edge = getRadius(iUv.x);
   
   if (radius > edge)
     gl_FragColor = vec4(0.0);
   else {
-    mediump float shade = pow(max(0.0, 1.0 - pow(radius / edge, shadePower)), lightPower);
+    lowp float shade = pow(max(0.0, 1.0 - pow(radius / edge, shadePower)), lightPower);
+    lowp float eyeY = 0.5 * getRadius(eyePosition);
+    lowp float eyeDist = min(
+      length((vec2(eyePosition, 0.5 + eyeY) - iUv) * size),
+      length((vec2(eyePosition, 0.5 - eyeY) - iUv) * size));
     
-    gl_FragColor = vec4(vec3(shade) * (1.0 - ambient) + ambient, 1.0);
+    if (eyeDist < EYE_RADIUS_IRIS)
+      if (eyeDist < EYE_RADIUS_PUPIL)
+        gl_FragColor = vec4(vec3(EYE_SHADE_PUPIL), 1.0);
+      else
+        gl_FragColor = vec4(vec3(EYE_SHADE_IRIS), 1.0);
+    else
+      gl_FragColor = vec4(vec3(shade) * (1.0 - ambient) + ambient, 1.0);
   }
 }
 `;
@@ -62,7 +86,7 @@ void main() {
  * @throws {RangeError} A range error if deserialized values are not valid
  */
 LayerShapeBody.deserialize = function(buffer) {
-    return new LayerShapeBody(buffer.readUint8(), buffer.readUint8());
+    return new LayerShapeBody(buffer.readUint8(), buffer.readUint8(), buffer.readUint8());
 };
 
 /**
@@ -72,6 +96,7 @@ LayerShapeBody.deserialize = function(buffer) {
 LayerShapeBody.prototype.serialize = function(buffer) {
     buffer.writeUint8(this.centerPower);
     buffer.writeUint8(this.radiusPower);
+    buffer.writeUint8(this.eyePosition);
 };
 
 /**
@@ -94,6 +119,7 @@ LayerShapeBody.prototype.sample = function(x) {
 LayerShapeBody.prototype.configure = function(gl, program) {
     gl.uniform1f(program["uCenterPower"], this.SAMPLER_CENTER_POWER.sample(this.centerPower / 0xFF));
     gl.uniform1f(program["uRadiusPower"], this.SAMPLER_RADIUS_POWER.sample(this.radiusPower / 0xFF));
+    gl.uniform1f(program["uEyePosition"], this.SAMPLER_EYE_POSITION.sample(this.eyePosition / 0xFF));
 };
 
 /**
@@ -107,7 +133,7 @@ LayerShapeBody.prototype.createShader = function(gl) {
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
         ["position", "uv"],
-        ["centerPower", "radiusPower"],
+        ["centerPower", "radiusPower", "eyePosition", "size"],
         [
             new Shader.Constant("shadePower", "f", [this.SHADE_POWER]),
             new Shader.Constant("lightPower", "f", [this.LIGHT_POWER]),

@@ -12,6 +12,7 @@ const MixerLayerShapeBody = function(mother, father) {
 MixerLayerShapeBody.prototype = Object.create(Mixer.prototype);
 MixerLayerShapeBody.prototype.SAMPLER_CENTER_POWER = new SamplerSigmoid(0, 1, 20);
 MixerLayerShapeBody.prototype.SAMPLER_RADIUS_POWER = MixerLayerShapeBody.prototype.SAMPLER_CENTER_POWER;
+MixerLayerShapeBody.prototype.SAMPLER_EYE_POSITION = MixerLayerShapeBody.prototype.SAMPLER_CENTER_POWER;
 
 /**
  * Create a new layer that mixes the properties from both parents
@@ -23,5 +24,6 @@ MixerLayerShapeBody.prototype.mix = function(random) {
 
     return new LayerShapeBody(
         this.mixUint8(this.mother.centerPower, this.father.centerPower, this.SAMPLER_CENTER_POWER, interpolate),
-        this.mixUint8(this.mother.radiusPower, this.father.radiusPower, this.SAMPLER_RADIUS_POWER, interpolate));
+        this.mixUint8(this.mother.radiusPower, this.father.radiusPower, this.SAMPLER_RADIUS_POWER, interpolate),
+        this.mixUint8(this.mother.eyePosition, this.father.eyePosition, this.SAMPLER_EYE_POSITION, interpolate));
 };

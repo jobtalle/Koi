@@ -54,6 +54,7 @@ Spawner.prototype.update = function(
                 ],
                 new LayerShapeBody(
                     Math.round(random.getFloat() * 0xFF),
+                    Math.round(random.getFloat() * 0xFF),
                     Math.round(random.getFloat() * 0xFF)),
                 new LayerShapeFin());
 

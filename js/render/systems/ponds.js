@@ -97,7 +97,7 @@ uniform lowp float time;
 varying lowp vec2 iUv;
 
 #define GLARE_BLEND 0.3
-#define GLARE_TRANSITION 0.02
+#define GLARE_TRANSITION 0.1
 #define REFLECTIVITY 0.15
 #define SHININESS 0.42
 #define SHORE_WAVE_FREQUENCY 6.0
