@@ -47,6 +47,8 @@ Koi.prototype.SCALE_MIN = 50;
 Koi.prototype.FISH_CAPACITY = 80;
 Koi.prototype.COLOR_BACKGROUND = Color.fromCSS("--color-earth");
 Koi.prototype.PHASE_SPEED = .005; // TODO: This may change depending on weather conditions
+Koi.prototype.TOUCH_WATER_RADIUS = .1;
+Koi.prototype.TOUCH_WATER_INTENSITY = .5;
 
 /**
  * Serialize the koi
@@ -174,6 +176,15 @@ Koi.prototype.freeRenderables = function() {
 };
 
 /**
+ * Touch the water at a given point
+ * @param {Number} x The X coordinate in meters
+ * @param {Number} y The Y coordinate in meters
+ */
+Koi.prototype.touchWater = function(x, y) {
+    this.water.addFlare(x, y, this.TOUCH_WATER_RADIUS, this.TOUCH_WATER_INTENSITY);
+};
+
+/**
  * Start a touch event
  * @param {Number} x The X position in pixels
  * @param {Number} y The Y position in pixels
@@ -185,8 +196,12 @@ Koi.prototype.touchStart = function(x, y) {
 
     if (fish)
         this.mover.pickUp(fish,wx, wy, this.water, this.random);
-    else
+    else {
+        if (this.constellation.contains(wx, wy))
+            this.touchWater(wx, wy);
+
         this.mover.startTouch(wx, wy);
+    }
 };
 
 /**
