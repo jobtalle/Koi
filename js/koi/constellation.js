@@ -178,7 +178,7 @@ Constellation.prototype.fit = function(atlas = null) {
     else {
         this.big = new Pond(constraintBig);
         this.small = new Pond(constraintSmall);
-        this.river = new Pond(constraintRiver);
+        this.river = new Pond(constraintRiver, false);
     }
 };
 

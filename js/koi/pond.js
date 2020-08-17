@@ -1,10 +1,12 @@
 /**
  * A pond from which fish cannot escape
  * @param {Object} constraint The constraint defining this pond
+ * @param {Boolean} [canBreed] A boolean indicating whether fish may breed in this pond
  * @constructor
  */
-const Pond = function(constraint) {
+const Pond = function(constraint, canBreed = true) {
     this.constraint = constraint;
+    this.canBreed = canBreed;
     this.fishes = [];
 };
 
@@ -142,7 +144,7 @@ Pond.prototype.update = function(
         if (fish.update(this.constraint, water, random))
             this.removeFish(a, atlas);
         else {
-            if (fish.interactions === 1) {
+            if (this.canBreed && fish.interactions === 1) {
                 if (fish.canMate() && fish.lastInteraction.canMate()) {
                     fish.mate(random);
                     fish.lastInteraction.mate(random);
