@@ -81,7 +81,7 @@ Fish.prototype.SIZE_MATING = .1; // TODO: Reduced for debugging
 Fish.prototype.MATE_PROXIMITY_TIME = 120;
 Fish.prototype.SAMPLER_GROWTH_MULTIPLIER = new SamplerQuadratic(50, 100, 4);
 Fish.prototype.SAMPLER_MATING_FREQUENCY = new SamplerQuadratic(300 * .1, 4500 * .1, .3); // TODO: Reduced for debugging
-Fish.prototype.SAMPLER_OFFSPRING_COUNT = new SamplerPlateau(1, 5, 16, 2.5);
+Fish.prototype.SAMPLER_OFFSPRING_COUNT = new SamplerPlateau(1, 5, 12, 2.5);
 
 /**
  * Deserialize a fish

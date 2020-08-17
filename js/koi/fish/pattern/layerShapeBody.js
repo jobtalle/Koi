@@ -46,9 +46,7 @@ uniform mediump vec2 size;
 
 varying mediump vec2 iUv;
 
-#define EYE_SHADE_IRIS 0.85
 #define EYE_SHADE_PUPIL 0.2
-#define EYE_RADIUS_IRIS 0.14
 #define EYE_RADIUS_PUPIL 0.1
 
 mediump float getRadius(mediump float x) {
@@ -68,11 +66,8 @@ void main() {
       length((vec2(eyePosition, 0.5 + eyeY) - iUv) * size),
       length((vec2(eyePosition, 0.5 - eyeY) - iUv) * size));
     
-    if (eyeDist < EYE_RADIUS_IRIS)
-      if (eyeDist < EYE_RADIUS_PUPIL)
-        gl_FragColor = vec4(vec3(EYE_SHADE_PUPIL), 1.0);
-      else
-        gl_FragColor = vec4(vec3(EYE_SHADE_IRIS), 1.0);
+    if (eyeDist < EYE_RADIUS_PUPIL)
+      gl_FragColor = vec4(vec3(EYE_SHADE_PUPIL), 1.0);
     else
       gl_FragColor = vec4(vec3(shade) * (1.0 - ambient) + ambient, 1.0);
   }
