@@ -15,7 +15,11 @@ const Drops = function(gl) {
         [
             new Shader.Constant("direction", "f", [
                 this.DIRECTION.x,
-                this.DIRECTION.y])
+                this.DIRECTION.y]),
+            new Shader.Constant("color", "f", [
+                this.COLOR.r,
+                this.COLOR.g,
+                this.COLOR.b])
         ]);
 };
 
@@ -38,14 +42,17 @@ void main() {
 `;
 
 Drops.prototype.SHADER_FRAGMENT = `#version 100
+uniform lowp vec3 color;
+
 varying lowp float iAlpha;
 
 void main() {
-  gl_FragColor = vec4(vec3(1.0), iAlpha);
+  gl_FragColor = vec4(color, iAlpha);
 }
 `;
 
 Drops.prototype.DIRECTION = new Vector2(1, 5).normalize();
+Drops.prototype.COLOR = Color.fromCSS("--color-rain");
 
 /**
  * Set the rain mesh

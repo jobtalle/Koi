@@ -86,8 +86,10 @@ uniform sampler2D atlas;
 
 varying mediump vec2 iUv;
 
+#define TRANSPARENCY 0.6
+
 void main() {
-  gl_FragColor = vec4(vec3(0.0), texture2D(atlas, iUv).a * 0.4);
+  gl_FragColor = vec4(vec3(0.0), texture2D(atlas, iUv).a * TRANSPARENCY);
 }
 `;
 
@@ -111,7 +113,7 @@ Bodies.prototype.render = function(
         this.buffer.upload();
 
     this.gl.enable(this.gl.BLEND);
-    this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
+    this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
 
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, atlas.renderTarget.texture);

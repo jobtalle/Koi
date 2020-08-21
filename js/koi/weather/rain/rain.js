@@ -32,9 +32,12 @@ Rain.prototype.makePositions = function(constellation, random) {
     const positions = [];
 
     for (let y = 0; y < yCells; ++y) for (let x = 0; x < xCells; ++x)
-        positions.push(new Vector2(
-            this.CELL * (x + random.getFloat() * this.CELL_RANDOM),
-            this.CELL * (y + random.getFloat() * this.CELL_RANDOM)));
+        positions.splice(
+            Math.floor(random.getFloat() * (positions.length + 1)),
+            0,
+            new Vector2(
+                this.CELL * (x + random.getFloat() * this.CELL_RANDOM),
+                this.CELL * (y + random.getFloat() * this.CELL_RANDOM)));
 
     return positions;
 };
