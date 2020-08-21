@@ -15,12 +15,25 @@ const Rain = function(gl, constellation, random) {
 };
 
 Rain.prototype.DROP_LENGTH = 1;
-Rain.prototype.DROP_DISTANCE_SAMPLER = new SamplerPlateau(8, 10, 12, 0);
+Rain.prototype.DROP_DISTANCE = 10;
+Rain.prototype.DROP_DISTANCE_RADIUS = 2;
+Rain.prototype.DROP_DISTANCE_SAMPLER = new SamplerPlateau(
+    Rain.prototype.DROP_DISTANCE - Rain.prototype.DROP_DISTANCE_RADIUS,
+    Rain.prototype.DROP_DISTANCE,
+    Rain.prototype.DROP_DISTANCE + Rain.prototype.DROP_DISTANCE_RADIUS,
+    0);
 Rain.prototype.DROP_ALPHA = .7;
-Rain.prototype.DROP_ANGLE_SAMPLER = new SamplerPlateau(Math.PI * .4, Math.PI * .425, Math.PI * .45, 8);
+Rain.prototype.DROP_ANGLE = Math.PI * 0.45;
+Rain.prototype.DROP_ANGLE_RADIUS = Math.PI * 0.03;
+Rain.prototype.DROP_ANGLE_SAMPLER = new SamplerPlateau(
+    Rain.prototype.DROP_ANGLE - Rain.prototype.DROP_ANGLE_RADIUS,
+    Rain.prototype.DROP_ANGLE,
+    Rain.prototype.DROP_ANGLE + Rain.prototype.DROP_ANGLE_RADIUS,
+    8);
 Rain.prototype.CELL = .3;
 Rain.prototype.CELL_RANDOM = .8;
-Rain.prototype.CELL_OVERSHOOT = Rain.prototype.DROP_LENGTH;
+Rain.prototype.CELL_OVERSHOOT_X = -Math.cos(Rain.prototype.DROP_ANGLE) * Rain.prototype.DROP_DISTANCE;
+Rain.prototype.CELL_OVERSHOOT_Y = Rain.prototype.DROP_LENGTH;
 Rain.prototype.WINDOW_SPEED = .01;
 
 /**
@@ -30,8 +43,9 @@ Rain.prototype.WINDOW_SPEED = .01;
  * @returns {Vector2[]} The positions
  */
 Rain.prototype.makePositions = function(constellation, random) {
-    const xCells = Math.ceil(constellation.width / this.CELL);
-    const yCells = Math.ceil((constellation.height + this.CELL_OVERSHOOT) / this.CELL);
+    const xCells = Math.ceil((constellation.width + Math.abs(this.CELL_OVERSHOOT_X)) / this.CELL);
+    const yCells = Math.ceil((constellation.height + this.CELL_OVERSHOOT_Y) / this.CELL);
+    const xStart = Math.min(0, this.CELL_OVERSHOOT_X);
     const positions = [];
 
     for (let y = 0; y < yCells; ++y) for (let x = 0; x < xCells; ++x)
@@ -39,7 +53,7 @@ Rain.prototype.makePositions = function(constellation, random) {
             Math.floor(random.getFloat() * (positions.length + 1)),
             0,
             new Vector2(
-                this.CELL * (x + random.getFloat() * this.CELL_RANDOM),
+                this.CELL * (x + random.getFloat() * this.CELL_RANDOM) + xStart,
                 this.CELL * (y + random.getFloat() * this.CELL_RANDOM)));
 
     return positions;
