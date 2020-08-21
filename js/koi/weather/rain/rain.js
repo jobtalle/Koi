@@ -11,17 +11,17 @@ const Rain = function(gl, constellation, random) {
     this.dropCount = this.positions.length;
     this.mesh = this.makeMesh(this.positions, constellation.width, constellation.height, random);
     this.window = 0;
-    this.windowWidth = .5;
+    this.windowWidth = .03;
+    this.lastDrop = Math.floor(this.dropCount * (1 - this.windowWidth * this.DROP_FALL_PORTION));
+
+    for (let drop = 0; drop < this.dropCount; ++drop)
+        if (!constellation.contains(this.positions[drop].x, this.positions[drop].y))
+            this.positions[drop] = null;
 };
 
-Rain.prototype.DROP_LENGTH = 1;
+Rain.prototype.DROP_LENGTH = .8;
 Rain.prototype.DROP_DISTANCE = 10;
-Rain.prototype.DROP_DISTANCE_RADIUS = 2;
-Rain.prototype.DROP_DISTANCE_SAMPLER = new SamplerPlateau(
-    Rain.prototype.DROP_DISTANCE - Rain.prototype.DROP_DISTANCE_RADIUS,
-    Rain.prototype.DROP_DISTANCE,
-    Rain.prototype.DROP_DISTANCE + Rain.prototype.DROP_DISTANCE_RADIUS,
-    0);
+Rain.prototype.DROP_FALL_PORTION = 1 - Rain.prototype.DROP_LENGTH / Rain.prototype.DROP_DISTANCE;
 Rain.prototype.DROP_ALPHA = .7;
 Rain.prototype.DROP_ANGLE = Math.PI * 0.45;
 Rain.prototype.DROP_ANGLE_RADIUS = Math.PI * 0.03;
@@ -30,11 +30,13 @@ Rain.prototype.DROP_ANGLE_SAMPLER = new SamplerPlateau(
     Rain.prototype.DROP_ANGLE,
     Rain.prototype.DROP_ANGLE + Rain.prototype.DROP_ANGLE_RADIUS,
     8);
+Rain.prototype.DROP_EFFECT_RADIUS = 0.1;
+Rain.prototype.DROP_EFFECT_DISPLACEMENT = 0.3;
 Rain.prototype.CELL = .3;
 Rain.prototype.CELL_RANDOM = .8;
 Rain.prototype.CELL_OVERSHOOT_X = -Math.cos(Rain.prototype.DROP_ANGLE) * Rain.prototype.DROP_DISTANCE;
 Rain.prototype.CELL_OVERSHOOT_Y = Rain.prototype.DROP_LENGTH;
-Rain.prototype.WINDOW_SPEED = .01;
+Rain.prototype.WINDOW_SPEED = .0012;
 
 /**
  * Make the raindrop landing positions
@@ -81,7 +83,6 @@ Rain.prototype.makeMesh = function(positions, width, height, random) {
 
     for (let position = 0, positionCount = positions.length; position < positionCount; ++position) {
         const threshold = position / (positionCount + 1);
-        const distance = this.DROP_DISTANCE_SAMPLER.sample(random.getFloat());
         const angle = this.DROP_ANGLE_SAMPLER.sample(random.getFloat());
         const dx = Math.cos(angle);
         const dz = Math.sin(angle);
@@ -90,15 +91,15 @@ Rain.prototype.makeMesh = function(positions, width, height, random) {
             positions[position].x - dx * this.DROP_LENGTH,
             positions[position].y,
             -dz * this.DROP_LENGTH,
-            positions[position].x + dx * (distance - this.DROP_LENGTH),
-            dz * (distance - this.DROP_LENGTH),
+            positions[position].x + dx * (this.DROP_DISTANCE - this.DROP_LENGTH),
+            dz * (this.DROP_DISTANCE - this.DROP_LENGTH),
             this.DROP_ALPHA,
             threshold,
             positions[position].x,
             positions[position].y,
             0,
-            positions[position].x + dx * distance,
-            dz * distance,
+            positions[position].x + dx * this.DROP_DISTANCE,
+            dz * this.DROP_DISTANCE,
             0,
             threshold);
     }
@@ -121,7 +122,26 @@ Rain.prototype.update = function(water) {
     if ((this.window += this.WINDOW_SPEED) > 1)
         this.window -= 1;
 
-    // TODO: Create drops of drops falling off
+    let tail = this.window - this.windowWidth * this.DROP_FALL_PORTION;
+
+    if (tail < 0)
+        ++tail;
+
+    const last = Math.floor(this.dropCount * tail) % this.dropCount;
+
+    for (let drop = (this.lastDrop + 1) % this.dropCount; drop !== last;) {
+        if (this.positions[drop])
+            water.addFlare(
+                this.positions[drop].x,
+                this.positions[drop].y,
+                this.DROP_EFFECT_RADIUS,
+                this.DROP_EFFECT_DISPLACEMENT);
+
+        if (++drop === this.dropCount)
+            drop = 0;
+    }
+
+    this.lastDrop = last - 1;
 };
 
 /**
@@ -130,7 +150,10 @@ Rain.prototype.update = function(water) {
  * @param {Number} time The interpolation factor
  */
 Rain.prototype.render = function(drops, time) {
-    drops.render(this.dropCount, this.window + time * this.WINDOW_SPEED, .2);
+    drops.render(
+        this.dropCount,
+        this.window + time * this.WINDOW_SPEED,
+        this.windowWidth);
 };
 
 /**

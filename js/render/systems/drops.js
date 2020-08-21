@@ -34,7 +34,7 @@ varying float iAlpha;
 void main() {
   mediump float age = mod(window - threshold, 1.0) / windowWidth;
   
-  iAlpha = alpha * sqrt(age);
+  iAlpha = alpha * age;
   
   gl_Position = vec4(
     mix(vec2(origin.x, position.y - origin.y), vec2(position.x, position.y - position.z), age),
@@ -107,7 +107,7 @@ Drops.prototype.render = function(count, window, windowWidth) {
         this.gl.drawArrays(
             this.gl.LINES,
             Math.floor(count * (window - windowWidth + 1)) << 1,
-            Math.ceil(count * (1 - (window - windowWidth + 1))) << 1); // TODO: Check this
+            Math.ceil(count * (window + windowWidth)) << 1);
     }
 
     this.gl.depthMask(true);

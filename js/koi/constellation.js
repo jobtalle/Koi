@@ -199,7 +199,9 @@ Constellation.prototype.pick = function(x, y) {
  * @returns {Boolean} A boolean indicating whether the given coordinates are inside water
  */
 Constellation.prototype.contains = function(x, y) {
-    return this.big.constraint.contains(x, y) || this.small.constraint.contains(x, y) || this.river.constraint.contains(x, y);
+    return this.big.constraint.contains(x, y) ||
+        this.small.constraint.contains(x, y) ||
+        this.river.constraint.contains(x, y);
 };
 
 /**
