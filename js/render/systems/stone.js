@@ -72,7 +72,8 @@ void main() {
   iColor = color;
 
   gl_Position = vec4(
-    vec2(position.x, position.y - position.z),
+    position.x,
+    position.y - position.z,
     0.5 * position.y + 0.5,
     1.0);
 }

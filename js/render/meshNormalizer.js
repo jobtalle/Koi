@@ -2,7 +2,7 @@
  * A mesh normalizer which normalizes vertex coordinates to clip space
  * @param {Number} width The scene width
  * @param {Number} height The scene height
- * @param {Number} stride The vertex inverseStride
+ * @param {Number} stride The vertex stride
  * @param {Number[]} xClip Element offsets to transform to x clip space
  * @param {Number[]} yClip Element offsets to transform to y clip space
  * @param {Number[]} [xScale] Element offsets to transform to x clip scale

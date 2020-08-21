@@ -3,7 +3,6 @@
  * @param {Systems} systems The render systems
  * @param {Number} environmentSeed The seed for all stable systems
  * @param {Random} random A randomizer
- * @param {WeatherState} weatherState The state of the weather object
  * @param {SpawnerState} spawnerState The state of the spawner object
  * @constructor
  */
@@ -11,7 +10,6 @@ const Koi = function(
     systems,
     environmentSeed,
     random,
-    weatherState = new WeatherState(),
     spawnerState = new SpawnerState()) {
     this.systems = systems;
     this.random = random;
@@ -32,7 +30,7 @@ const Koi = function(
     this.constellationMeshDepth = null;
     this.randomSource = null;
     this.reflections = null;
-    this.weather = new Weather(this.constellation, weatherState);
+    this.weather = null;
     this.spawner = new Spawner(this.constellation, spawnerState);
     this.time = this.UPDATE_RATE;
     this.phase = 0;
@@ -82,6 +80,7 @@ Koi.prototype.deserialize = function(buffer) {
 Koi.prototype.createRenderables = function() {
     const environmentRandomizer = new Random(this.environmentSeed);
 
+    // Create the random source
     this.randomSource = new RandomSource(this.systems.gl, environmentRandomizer);
 
     // Create constellation meshes
@@ -94,6 +93,15 @@ Koi.prototype.createRenderables = function() {
     this.systems.blur.setMesh(this.constellationMeshWater);
     this.systems.waves.setMesh(this.constellationMeshWater);
     this.systems.ponds.setMesh(this.constellationMeshWater);
+
+    // Create systems that depend on the environment randomizer
+    this.weather = new Weather(
+        this.systems.gl,
+        this.constellation,
+        environmentRandomizer);
+
+    // Assign weather meshes
+    this.systems.drops.setMesh(this.weather.rain.mesh);
 
     // Create scene objects
     this.shadowBuffer = new ShadowBuffer(
@@ -172,6 +180,7 @@ Koi.prototype.freeRenderables = function() {
     this.water.free();
     this.air.free();
     this.reflections.free();
+    this.weather.free();
 
     this.constellationMeshWater.free();
     this.constellationMeshDepth.free();
@@ -330,6 +339,11 @@ Koi.prototype.render = function(deltaTime) {
         this.systems.height,
         this.scale,
         this.phase + timeFactor * this.PHASE_SPEED,
+        timeFactor);
+
+    // Render weather effects
+    this.weather.render(
+        this.systems.drops,
         timeFactor);
 
     // Disable Z buffer
