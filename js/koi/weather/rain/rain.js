@@ -9,16 +9,20 @@ const Rain = function(gl, constellation, random) {
     this.gl = gl;
     this.positions = this.makePositions(constellation, random);
     this.dropCount = this.positions.length;
-    this.mesh = this.makeMesh(this.positions, constellation.width, constellation.height);
+    this.mesh = this.makeMesh(this.positions, constellation.width, constellation.height, random);
+    this.window = 0;
+    this.windowWidth = .5;
 };
 
 Rain.prototype.WINDOW_SIZE_MIN = .1;
 Rain.prototype.WINDOW_SIZE_MAX = .7;
 Rain.prototype.DROP_LENGTH = 1;
+Rain.prototype.DROP_DISTANCE_SAMPLER = new SamplerPlateau(8, 10, 12, 0);
 Rain.prototype.DROP_ALPHA = .7;
 Rain.prototype.CELL = .3;
 Rain.prototype.CELL_RANDOM = .8;
 Rain.prototype.CELL_OVERSHOOT = Rain.prototype.DROP_LENGTH;
+Rain.prototype.WINDOW_SPEED = .003;
 
 /**
  * Make the raindrop landing positions
@@ -47,33 +51,41 @@ Rain.prototype.makePositions = function(constellation, random) {
  * @param {Vector2[]} positions The droplet positions
  * @param {Number} width The constellation width
  * @param {Number} height The constellation height
+ * @param {Random} random A randomizer
  * @returns {WebGLBuffer} the mesh vertices
  */
-Rain.prototype.makeMesh = function(positions, width, height) {
+Rain.prototype.makeMesh = function(positions, width, height, random) {
     const vertices = [];
     const buffer = this.gl.createBuffer();
     const normalizer = new MeshNormalizer(
         width,
         height,
-        4,
+        6,
         [0],
         [1],
         [],
-        [2]);
+        [2, 5]);
 
-    for (const position of positions)
+    for (let position = 0, positionCount = positions.length; position < positionCount; ++position) {
+        const threshold = position / (positionCount + 1);
+        const distance = this.DROP_DISTANCE_SAMPLER.sample(random.getFloat());
+
         vertices.push(
-            position.x,
-            position.y,
-            0,
-            this.DROP_ALPHA,
-            position.x,
-            position.y,
+            positions[position].x,
+            positions[position].y,
             this.DROP_LENGTH,
-            0);
+            this.DROP_ALPHA,
+            threshold,
+            distance,
+            positions[position].x,
+            positions[position].y,
+            0,
+            0,
+            threshold,
+            distance);
+    }
 
     normalizer.apply(vertices);
-    // console.log(vertices);
 
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
     this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertices), this.gl.STATIC_DRAW);
@@ -86,7 +98,12 @@ Rain.prototype.makeMesh = function(positions, width, height) {
  * @param {Water} water The water
  */
 Rain.prototype.update = function(water) {
+    // TODO: Be idle when it's not raining
 
+    if ((this.window += this.WINDOW_SPEED) > 1)
+        this.window -= 1;
+
+    // TODO: Create drops of drops falling off
 };
 
 /**
@@ -95,7 +112,7 @@ Rain.prototype.update = function(water) {
  * @param {Number} time The interpolation factor
  */
 Rain.prototype.render = function(drops, time) {
-    drops.render(this.dropCount);
+    drops.render(this.dropCount, this.window + time * this.WINDOW_SPEED, .2);
 };
 
 /**

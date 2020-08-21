@@ -68,7 +68,7 @@ varying vec2 iUv;
 void main() {
   iUv = 0.5 * position + 0.5;
 
-  gl_Position = vec4(position, 0.999999, 1.0);
+  gl_Position = vec4(position, iUv.y, 1.0);
 }
 `;
 
