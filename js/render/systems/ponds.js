@@ -106,12 +106,13 @@ varying lowp vec2 iUv;
 #define SHORE_WAVE_BASE 0.58
 #define WAVE_AMPLITUDE 2.0
 #define WAVE_BASE 0.3
+#define WATER_HEIGHT 3.7
 
 lowp float get(mediump vec2 delta) {
   lowp vec2 uv = iUv + delta / waterSize;
   lowp vec2 sample = texture2D(water, uv).gr;
   
-  return (mix(sample.x, sample.y, time) - 0.5) * 3.7;
+  return (mix(sample.x, sample.y, time) - 0.5) * WATER_HEIGHT;
 }
 
 void main() {

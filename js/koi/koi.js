@@ -56,6 +56,7 @@ Koi.prototype.TOUCH_WATER_INTENSITY = .5;
  */
 Koi.prototype.serialize = function(buffer) {
     this.constellation.serialize(buffer);
+    this.weather.getState().serialize(buffer);
 };
 
 /**
@@ -66,6 +67,7 @@ Koi.prototype.serialize = function(buffer) {
 Koi.prototype.deserialize = function(buffer) {
     try {
         this.constellation.deserialize(buffer, this.systems.atlas, this.randomSource);
+        this.weather.setState(WeatherState.deserialize(buffer));
     }
     catch (error) {
         this.free();
