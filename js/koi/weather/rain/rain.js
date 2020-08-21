@@ -14,15 +14,14 @@ const Rain = function(gl, constellation, random) {
     this.windowWidth = .5;
 };
 
-Rain.prototype.WINDOW_SIZE_MIN = .1;
-Rain.prototype.WINDOW_SIZE_MAX = .7;
 Rain.prototype.DROP_LENGTH = 1;
 Rain.prototype.DROP_DISTANCE_SAMPLER = new SamplerPlateau(8, 10, 12, 0);
 Rain.prototype.DROP_ALPHA = .7;
+Rain.prototype.DROP_ANGLE_SAMPLER = new SamplerPlateau(Math.PI * .4, Math.PI * .425, Math.PI * .45, 8);
 Rain.prototype.CELL = .3;
 Rain.prototype.CELL_RANDOM = .8;
 Rain.prototype.CELL_OVERSHOOT = Rain.prototype.DROP_LENGTH;
-Rain.prototype.WINDOW_SPEED = .003;
+Rain.prototype.WINDOW_SPEED = .01;
 
 /**
  * Make the raindrop landing positions
@@ -60,29 +59,34 @@ Rain.prototype.makeMesh = function(positions, width, height, random) {
     const normalizer = new MeshNormalizer(
         width,
         height,
-        6,
-        [0],
+        7,
+        [0, 3],
         [1],
         [],
-        [2, 5]);
+        [2, 4]);
 
     for (let position = 0, positionCount = positions.length; position < positionCount; ++position) {
         const threshold = position / (positionCount + 1);
         const distance = this.DROP_DISTANCE_SAMPLER.sample(random.getFloat());
+        const angle = this.DROP_ANGLE_SAMPLER.sample(random.getFloat());
+        const dx = Math.cos(angle);
+        const dz = Math.sin(angle);
 
         vertices.push(
-            positions[position].x,
+            positions[position].x - dx * this.DROP_LENGTH,
             positions[position].y,
-            this.DROP_LENGTH,
+            -dz * this.DROP_LENGTH,
+            positions[position].x + dx * (distance - this.DROP_LENGTH),
+            dz * (distance - this.DROP_LENGTH),
             this.DROP_ALPHA,
             threshold,
-            distance,
             positions[position].x,
             positions[position].y,
             0,
+            positions[position].x + dx * distance,
+            dz * distance,
             0,
-            threshold,
-            distance);
+            threshold);
     }
 
     normalizer.apply(vertices);

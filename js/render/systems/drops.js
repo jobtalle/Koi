@@ -10,12 +10,9 @@ const Drops = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["position", "alpha", "threshold", "distance"],
+        ["position", "origin", "alpha", "threshold"],
         ["window", "windowWidth"],
         [
-            new Shader.Constant("direction", "f", [
-                this.DIRECTION.x,
-                this.DIRECTION.y]),
             new Shader.Constant("color", "f", [
                 this.COLOR.r,
                 this.COLOR.g,
@@ -24,25 +21,23 @@ const Drops = function(gl) {
 };
 
 Drops.prototype.SHADER_VERTEX = `#version 100
-uniform vec2 direction;
 uniform float window;
 uniform float windowWidth;
 
 attribute vec3 position;
+attribute vec2 origin;
 attribute float alpha;
 attribute float threshold;
-attribute float distance;
 
 varying float iAlpha;
 
 void main() {
-  mediump float age = (window - threshold) / windowWidth;
-  mediump float raise = 1.0 - age;
+  mediump float age = mod(window - threshold, 1.0) / windowWidth;
   
   iAlpha = alpha * sqrt(age);
   
   gl_Position = vec4(
-    position.xy + direction * (position.z - raise * distance),
+    mix(vec2(origin.x, position.y - origin.y), vec2(position.x, position.y - position.z), age),
     0.5 * position.y + 0.5,
     1.0);
 }
@@ -58,7 +53,6 @@ void main() {
 }
 `;
 
-Drops.prototype.DIRECTION = new Vector2(1, 5).normalize();
 Drops.prototype.COLOR = Color.fromCSS("--color-rain");
 
 /**
@@ -72,25 +66,25 @@ Drops.prototype.setMesh = function(mesh) {
 
     this.gl.enableVertexAttribArray(this.program["aPosition"]);
     this.gl.vertexAttribPointer(this.program["aPosition"],
-        3, this.gl.FLOAT, false, 24, 0);
+        3, this.gl.FLOAT, false, 28, 0);
+    this.gl.enableVertexAttribArray(this.program["aOrigin"]);
+    this.gl.vertexAttribPointer(this.program["aOrigin"],
+        2, this.gl.FLOAT, false, 28, 12);
     this.gl.enableVertexAttribArray(this.program["aAlpha"]);
     this.gl.vertexAttribPointer(this.program["aAlpha"],
-        1, this.gl.FLOAT, false, 24, 12);
+        1, this.gl.FLOAT, false, 28, 20);
     this.gl.enableVertexAttribArray(this.program["aThreshold"]);
     this.gl.vertexAttribPointer(this.program["aThreshold"],
-        1, this.gl.FLOAT, false, 24, 16);
-    this.gl.enableVertexAttribArray(this.program["aDistance"]);
-    this.gl.vertexAttribPointer(this.program["aDistance"],
-        1, this.gl.FLOAT, false, 24, 20);
+        1, this.gl.FLOAT, false, 28, 24);
 };
 
 /**
  * Render the raindrops
+ * @param {Number} count The number of drops in the current mesh
+ * @param {Number} window The sliding window front in the range [0, 1]
+ * @param {Number} windowWidth The sliding window width in the range [0, 1]
  */
 Drops.prototype.render = function(count, window, windowWidth) {
-    const start = window < windowWidth ? window - windowWidth + 1 : window - windowWidth;
-    const end = window;
-
     this.program.use();
 
     this.gl.uniform1f(this.program["uWindow"], window);
@@ -100,15 +94,21 @@ Drops.prototype.render = function(count, window, windowWidth) {
 
     this.gl.depthMask(false);
 
-    // if (end < start)
-    //     console.log("split");
-    // else
-    //     this.gl.drawArrays(
-    //         this.gl.LINES,
-    //         Math.floor(count * start) << 1,
-    //         Math.ceil(count * end) << 1);
-
-    this.gl.drawArrays(this.gl.LINES, 0, Math.ceil(count * end) << 1);
+    if (window > windowWidth)
+        this.gl.drawArrays(
+            this.gl.LINES,
+            Math.floor(count * (window - windowWidth)) << 1,
+            Math.ceil(count * windowWidth) << 1);
+    else {
+        this.gl.drawArrays(
+            this.gl.LINES,
+            0,
+            Math.ceil(count * window) << 1);
+        this.gl.drawArrays(
+            this.gl.LINES,
+            Math.floor(count * (window - windowWidth + 1)) << 1,
+            Math.ceil(count * (1 - (window - windowWidth + 1))) << 1); // TODO: Check this
+    }
 
     this.gl.depthMask(true);
 };
