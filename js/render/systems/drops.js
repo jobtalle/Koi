@@ -78,7 +78,9 @@ Drops.prototype.render = function(count) {
     this.program.use();
     this.gl.vao.bindVertexArrayOES(this.vao);
 
+    this.gl.depthMask(false);
     this.gl.drawArrays(this.gl.LINES, 0, count << 1);
+    this.gl.depthMask(true);
 };
 
 /**

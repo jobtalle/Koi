@@ -342,9 +342,9 @@ Koi.prototype.render = function(deltaTime) {
         timeFactor);
 
     // Render weather effects
-    // this.weather.render(
-    //     this.systems.drops,
-    //     timeFactor);
+    this.weather.render(
+        this.systems.drops,
+        timeFactor);
 
     // Disable Z buffer
     this.systems.gl.disable(this.systems.gl.DEPTH_TEST);
