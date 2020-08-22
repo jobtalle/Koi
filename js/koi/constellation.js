@@ -193,6 +193,20 @@ Constellation.prototype.pick = function(x, y) {
 };
 
 /**
+ * Chase fish away from a given point
+ * @param {Number} x The X position
+ * @param {Number} y The Y position
+ */
+Constellation.prototype.chase = function(x, y) {
+    if (this.big.constraint.contains(x, y))
+        this.big.chase(x, y);
+    else if (this.small.constraint.contains(x, y))
+        this.small.chase(x, y);
+    else if (this.river.constraint.contains(x, y))
+        this.river.chase(x, y);
+};
+
+/**
  * Check if the constellation water contains a given point
  * @param {Number} x The X coordinate
  * @param {Number} y The Y coordinate

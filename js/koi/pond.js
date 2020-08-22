@@ -10,6 +10,9 @@ const Pond = function(constraint, canBreed = true) {
     this.fishes = [];
 };
 
+Pond.prototype.CHASE_RADIUS = 1;
+Pond.prototype.CHASE_FORCE = 0.17;
+
 /**
  * Serialize this pond
  * @param {BinBuffer} buffer A buffer to serialize to
@@ -60,6 +63,23 @@ Pond.prototype.deserialize = function(buffer, atlas, randomSource) {
  */
 Pond.prototype.getFishCount = function() {
     return this.fishes.length;
+};
+
+/**
+ * Chase fish away from a given point
+ * @param {Number} x The X position
+ * @param {Number} y The Y position
+ */
+Pond.prototype.chase = function(x, y) {
+    const origin = new Vector2(x, y);
+
+    for (const fish of this.fishes) {
+        const dx = fish.position.x - x;
+        const dy = fish.position.y - y;
+
+        if (dx * dx + dy * dy < this.CHASE_RADIUS * this.CHASE_RADIUS)
+            fish.chase(origin, this.CHASE_FORCE * Math.sqrt(dx * dx + dy * dy) / this.CHASE_RADIUS);
+    }
 };
 
 /**

@@ -79,7 +79,7 @@ Mover.prototype.touchMove = function(x, y, air) {
 
 /**
  * Create a fish body shaped splash
- * @param {Body} body A fish body
+ * @param {FishBody} body A fish body
  * @param {Water} water A water plane to splash on
  * @param {Random} random A randomizer
  */
@@ -123,7 +123,7 @@ Mover.prototype.pickUp = function(fish, x, y, waterPlane, random) {
     this.offset.x = fish.position.x - this.cursor.x;
     this.offset.y = fish.position.y - this.cursor.y;
     this.touch = true;
-    console.log(fish);
+    console.log(fish); // TODO: For debugging only
     this.createBodySplash(fish.body, waterPlane, random);
 };
 

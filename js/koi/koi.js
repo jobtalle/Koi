@@ -208,8 +208,10 @@ Koi.prototype.touchStart = function(x, y) {
     if (fish)
         this.mover.pickUp(fish,wx, wy, this.water, this.random);
     else {
-        if (this.constellation.contains(wx, wy))
+        if (this.constellation.contains(wx, wy)) {
             this.touchWater(wx, wy);
+            this.constellation.chase(wx, wy);
+        }
 
         this.mover.startTouch(wx, wy);
     }

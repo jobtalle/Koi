@@ -58,7 +58,7 @@ Fish.prototype.NIBBLE_DISPLACEMENT = 0.25;
 Fish.prototype.NIBBLE_TURN_FORCE = .07;
 Fish.prototype.SPEED_BASE = .4;
 Fish.prototype.SPEED_MIN = Math.fround(.015);
-Fish.prototype.SPEED_MAX = Math.fround(.5);
+Fish.prototype.SPEED_MAX = Math.fround(.078);
 Fish.prototype.SPEED_NIBBLE = .0155;
 Fish.prototype.SPEED_SLOW = .025;
 Fish.prototype.SPEED_DROP = .06;
@@ -195,6 +195,17 @@ Fish.prototype.turn = function(random) {
 
     this.turnDirection.fromAngle(angle);
     this.turnForce = this.TURN_FORCE;
+};
+
+/**
+ * Chase the fish away from a certain point
+ * @param {Vector2} origin The point to chase this fish away from
+ * @param {Number} force The force of the chase in the range [0, 1]
+ */
+Fish.prototype.chase = function(origin, force) {
+    this.boost = Math.floor(this.BOOST_MAX * force);
+    this.turnForce = this.TURN_FORCE;
+    this.turnDirection.set(this.position).subtract(origin).normalize();
 };
 
 /**
