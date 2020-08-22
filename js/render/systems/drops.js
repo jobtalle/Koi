@@ -107,7 +107,7 @@ Drops.prototype.render = function(count, window, windowWidth) {
         this.gl.drawArrays(
             this.gl.LINES,
             Math.floor(count * (window - windowWidth + 1)) << 1,
-            Math.ceil(count * (window + windowWidth)) << 1);
+            Math.ceil(count * (1 - (window - windowWidth + 1))) << 1);
     }
 
     this.gl.depthMask(true);
