@@ -80,7 +80,7 @@ Constellation.prototype.resize = function(width, height, atlas) {
  * @returns {Number}
  */
 Constellation.prototype.getFishCount = function() {
-    return this.big.fishes.length + this.small.fishes.length + this.river.fishes.length;
+    return this.big.getFishCount() + this.small.getFishCount() + this.river.getFishCount();
 };
 
 /**

@@ -55,6 +55,14 @@ Pond.prototype.deserialize = function(buffer, atlas, randomSource) {
 };
 
 /**
+ * Get the number of fishes in this pond
+ * @returns {Number} The number of fishes in this pond
+ */
+Pond.prototype.getFishCount = function() {
+    return this.fishes.length;
+};
+
+/**
  * Replace this ponds constraint
  * @param {Object} constraint A new constraint
  * @param {Atlas} atlas The texture atlas

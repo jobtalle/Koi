@@ -11,7 +11,7 @@ const Rain = function(gl, constellation, random) {
     this.dropCount = this.positions.length;
     this.mesh = this.makeMesh(this.positions, constellation.width, constellation.height, random);
     this.window = 0;
-    this.windowWidth = .03;
+    this.windowWidth = .1;
     this.lastDrop = Math.floor(this.dropCount * (1 - this.windowWidth * this.DROP_FALL_PORTION));
 
     for (let drop = 0; drop < this.dropCount; ++drop)
@@ -31,12 +31,12 @@ Rain.prototype.DROP_ANGLE_SAMPLER = new SamplerPlateau(
     Rain.prototype.DROP_ANGLE + Rain.prototype.DROP_ANGLE_RADIUS,
     8);
 Rain.prototype.DROP_EFFECT_RADIUS = 0.1;
-Rain.prototype.DROP_EFFECT_DISPLACEMENT = 0.3;
+Rain.prototype.DROP_EFFECT_DISPLACEMENT = 0.15;
 Rain.prototype.CELL = .3;
 Rain.prototype.CELL_RANDOM = .8;
 Rain.prototype.CELL_OVERSHOOT_X = -Math.cos(Rain.prototype.DROP_ANGLE) * Rain.prototype.DROP_DISTANCE;
 Rain.prototype.CELL_OVERSHOOT_Y = Rain.prototype.DROP_LENGTH;
-Rain.prototype.WINDOW_SPEED = .0012;
+Rain.prototype.WINDOW_SPEED = .005;
 
 /**
  * Make the raindrop landing positions

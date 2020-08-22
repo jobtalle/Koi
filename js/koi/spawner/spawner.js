@@ -13,6 +13,7 @@ const Spawner = function(constellation, state) {
 Spawner.prototype.SPAWN_TIME_MIN = 2;
 Spawner.prototype.SPAWN_TIME_MAX = 8;
 Spawner.prototype.SPAWN_OVERHEAD = 8;
+Spawner.prototype.SPAWN_LIMIT = 16;
 
 /**
  * Update the spawner
@@ -31,7 +32,8 @@ Spawner.prototype.update = function(
     if ((this.time -= timeStep) < 0) {
         this.time += this.SPAWN_TIME_MIN + (this.SPAWN_TIME_MAX - this.SPAWN_TIME_MIN) * random.getFloat();
 
-        if (this.constellation.getFishCount() < Koi.prototype.FISH_CAPACITY - this.SPAWN_OVERHEAD) {
+        if (this.constellation.getFishCount() < Koi.prototype.FISH_CAPACITY - this.SPAWN_OVERHEAD &&
+            this.constellation.river.getFishCount() < this.SPAWN_LIMIT) {
             const pattern = new Pattern(
                 new LayerBase(new Palette.Sample().randomize(random)),
                 [
