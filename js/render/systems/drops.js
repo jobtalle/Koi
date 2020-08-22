@@ -34,7 +34,7 @@ varying float iAlpha;
 void main() {
   mediump float age = mod(window - threshold, 1.0) / windowWidth;
   
-  iAlpha = alpha * age * age;
+  iAlpha = alpha * age;
   
   gl_Position = vec4(
     mix(vec2(origin.x, position.y - origin.y), vec2(position.x, position.y - position.z), age),

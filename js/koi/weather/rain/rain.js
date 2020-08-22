@@ -19,7 +19,7 @@ const Rain = function(gl, constellation, random) {
             this.positions[drop] = null;
 };
 
-Rain.prototype.DROP_LENGTH = .8;
+Rain.prototype.DROP_LENGTH = .6;
 Rain.prototype.DROP_DISTANCE = 10;
 Rain.prototype.DROP_FALL_PORTION = 1 - Rain.prototype.DROP_LENGTH / Rain.prototype.DROP_DISTANCE;
 Rain.prototype.DROP_ALPHA = .7;
@@ -31,7 +31,7 @@ Rain.prototype.DROP_ANGLE_SAMPLER = new SamplerPlateau(
     Rain.prototype.DROP_ANGLE + Rain.prototype.DROP_ANGLE_RADIUS,
     8);
 Rain.prototype.DROP_EFFECT_RADIUS = 0.1;
-Rain.prototype.DROP_EFFECT_DISPLACEMENT = 0.15;
+Rain.prototype.DROP_EFFECT_DISPLACEMENT = 0.175;
 Rain.prototype.CELL = .3;
 Rain.prototype.CELL_RANDOM = .8;
 Rain.prototype.CELL_OVERSHOOT_X = -Math.cos(Rain.prototype.DROP_ANGLE) * Rain.prototype.DROP_DISTANCE;
@@ -150,9 +150,14 @@ Rain.prototype.update = function(water) {
  * @param {Number} time The interpolation factor
  */
 Rain.prototype.render = function(drops, time) {
+    let window = this.window + time * this.WINDOW_SPEED;
+
+    if (window > 1)
+        --window;
+
     drops.render(
         this.dropCount,
-        this.window + time * this.WINDOW_SPEED,
+        window,
         this.windowWidth);
 };
 
