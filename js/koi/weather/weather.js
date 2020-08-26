@@ -10,7 +10,10 @@ const Weather = function(gl, constellation, random) {
     this.gusts = new Gusts(constellation);
     this.rain = new Rain(gl, constellation, random);
     this.state = new WeatherState();
+    this.stateTime = 0;
 };
+
+Weather.prototype.STATE_TIME = 60;
 
 /**
  * Set the weather state
@@ -35,6 +38,14 @@ Weather.prototype.getState = function() {
  * @param {Random} random A randomizer
  */
 Weather.prototype.update = function(air, water, random) {
+    if (++this.stateTime === this.STATE_TIME) {
+        this.stateTime = 0;
+
+        if (this.state.transition(random)) {
+
+        }
+    }
+
     this.gusts.update(air, random);
     this.rain.update(water);
 };

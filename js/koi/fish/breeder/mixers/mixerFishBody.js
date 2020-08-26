@@ -14,7 +14,7 @@ const MixerFishBody = function(mother, father) {
 };
 
 MixerFishBody.prototype = Object.create(Mixer.prototype);
-MixerFishBody.prototype.SAMPLER_LENGTH = new SamplerPlateau(0, .4, 1, .5);
+MixerFishBody.prototype.SAMPLER_LENGTH = new SamplerQuadratic(0, 1, 1.5);
 MixerFishBody.prototype.SAMPLER_RADIUS = MixerFishBody.prototype.SAMPLER_LENGTH;
 
 /**
@@ -24,6 +24,8 @@ MixerFishBody.prototype.SAMPLER_RADIUS = MixerFishBody.prototype.SAMPLER_LENGTH;
  * @returns {FishBody} The mixed body
  */
 MixerFishBody.prototype.mix = function(patterns, random) {
+    const interpolation = random.getFloat();
+
     return new FishBody(
         this.mixerPattern.mix(patterns, random),
         this.mixerFins.mix(random),
@@ -32,10 +34,10 @@ MixerFishBody.prototype.mix = function(patterns, random) {
             this.mother.length,
             this.father.length,
             this.SAMPLER_LENGTH,
-            random.getFloat()),
+            interpolation),
         this.mixUint8Ordered(
             this.mother.radius,
             this.father.radius,
             this.SAMPLER_RADIUS,
-            random.getFloat()));
+            interpolation));
 };

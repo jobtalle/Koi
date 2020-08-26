@@ -13,7 +13,7 @@ MixerLayerSpots.prototype = Object.create(Mixer.prototype);
 MixerLayerSpots.prototype.SAMPLER_SCALE = new SamplerSigmoid(0, 1, 15);
 MixerLayerSpots.prototype.SAMPLER_THRESHOLD = new SamplerSigmoid(0, 1, 2);
 MixerLayerSpots.prototype.SAMPLER_STRETCH = new SamplerSigmoid(0, 1, 3);
-MixerLayerSpots.prototype.SAMPLER_SAMPLE = new SamplerSigmoid(0, 1, 5);
+MixerLayerSpots.prototype.SAMPLER_SAMPLE = new SamplerSigmoid(0, 1, 6.5);
 MixerLayerSpots.prototype.SAMPLER_PALETTE = new SamplerSigmoid(0, 1, 15);
 
 /**

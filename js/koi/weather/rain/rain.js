@@ -24,12 +24,12 @@ Rain.prototype.DROP_DISTANCE = 10;
 Rain.prototype.DROP_FALL_PORTION = 1 - Rain.prototype.DROP_LENGTH / Rain.prototype.DROP_DISTANCE;
 Rain.prototype.DROP_ALPHA = .7;
 Rain.prototype.DROP_ANGLE = Math.PI * 0.45;
-Rain.prototype.DROP_ANGLE_RADIUS = Math.PI * 0.03;
+Rain.prototype.DROP_ANGLE_RADIUS = Math.PI * 0.015;
 Rain.prototype.DROP_ANGLE_SAMPLER = new SamplerPlateau(
     Rain.prototype.DROP_ANGLE - Rain.prototype.DROP_ANGLE_RADIUS,
     Rain.prototype.DROP_ANGLE,
     Rain.prototype.DROP_ANGLE + Rain.prototype.DROP_ANGLE_RADIUS,
-    8);
+    3);
 Rain.prototype.DROP_EFFECT_RADIUS = 0.1;
 Rain.prototype.DROP_EFFECT_DISPLACEMENT = 0.175;
 Rain.prototype.CELL = .3;
@@ -110,6 +110,20 @@ Rain.prototype.makeMesh = function(positions, width, height, random) {
     this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertices), this.gl.STATIC_DRAW);
 
     return buffer;
+};
+
+/**
+ * Start the rain
+ */
+Rain.prototype.fadeIn = function() {
+
+};
+
+/**
+ * Stop the rain
+ */
+Rain.prototype.fadeOut = function() {
+
 };
 
 /**
