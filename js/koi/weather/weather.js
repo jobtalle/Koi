@@ -10,10 +10,9 @@ const Weather = function(gl, constellation, random) {
     this.gusts = new Gusts(constellation);
     this.rain = new Rain(gl, constellation, random);
     this.state = new WeatherState();
-    this.stateTime = this.STATE_TIME - 1; // TODO: Move this to weather state
-};
 
-Weather.prototype.STATE_TIME = 70;
+    this.applyState(this.state);
+};
 
 /**
  * Set the weather state
@@ -21,6 +20,8 @@ Weather.prototype.STATE_TIME = 70;
  */
 Weather.prototype.setState = function(state) {
     this.state = state;
+
+    this.applyState(state);
 };
 
 /**
@@ -36,7 +37,6 @@ Weather.prototype.getState = function() {
  */
 Weather.prototype.setSunny = function() {
     this.rain.fadeOut();
-    console.log("Start sun");
 };
 
 /**
@@ -44,7 +44,23 @@ Weather.prototype.setSunny = function() {
  */
 Weather.prototype.setRain = function() {
     this.rain.fadeIn(.05, .15);
-    console.log("Start rain");
+};
+
+/**
+ * Apply weather state effects
+ * @param {WeatherState} state The state
+ */
+Weather.prototype.applyState = function(state) {
+    switch (state.state) {
+        case this.state.ID_SUNNY:
+            this.setSunny();
+
+            break;
+        case this.state.ID_RAIN:
+            this.setRain();
+
+            break;
+    }
 };
 
 /**
@@ -54,22 +70,8 @@ Weather.prototype.setRain = function() {
  * @param {Random} random A randomizer
  */
 Weather.prototype.update = function(air, water, random) {
-    if (++this.stateTime === this.STATE_TIME) {
-        this.stateTime = 0;
-
-        if (this.state.transition(random)) {
-            switch (this.state.state) {
-                case this.state.ID_SUNNY:
-                    this.setSunny();
-
-                    break;
-                case this.state.ID_RAIN:
-                    this.setRain();
-
-                    break;
-            }
-        }
-    }
+    if (this.state.update(random))
+        this.applyState(this.state);
 
     this.gusts.update(air, random);
     this.rain.update(water);

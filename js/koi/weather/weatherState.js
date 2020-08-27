@@ -1,12 +1,15 @@
 /**
  * The state of a weather object
  * @param {Number} [state] The state ID
+ * @param {Number} [time] The current state time
  * @constructor
  */
-const WeatherState = function(state = this.ID_SUNNY) {
-    this.state = this.ID_SUNNY; // TODO: Don't ignore parameter
+const WeatherState = function(state = this.ID_SUNNY, time = 0) {
+    this.state = state;
+    this.time = time;
 };
 
+WeatherState.prototype.STATE_TIME = 70;
 WeatherState.prototype.ID_SUNNY = 0;
 WeatherState.prototype.ID_RAIN = 1;
 WeatherState.prototype.TRANSITION_MATRIX = [
@@ -17,11 +20,16 @@ WeatherState.prototype.TRANSITION_MATRIX = [
  * Deserialize the weather state
  * @param {BinBuffer} buffer A buffer to deserialize from
  * @returns {WeatherState} The deserialized weather state
+ * @throws {RangeError} A range error when deserialized values are out of range
  */
 WeatherState.deserialize = function(buffer) {
     const state = buffer.readUint8();
+    const time = buffer.readUint8();
 
     if (state > WeatherState.prototype.ID_RAIN)
+        throw new RangeError();
+
+    if (time > this.STATE_TIME)
         throw new RangeError();
 
     return new WeatherState(state);
@@ -33,6 +41,7 @@ WeatherState.deserialize = function(buffer) {
  */
 WeatherState.prototype.serialize = function(buffer) {
     buffer.writeUint8(this.state);
+    buffer.writeUint8(this.time);
 };
 
 /**
@@ -56,4 +65,19 @@ WeatherState.prototype.transition = function(random) {
     }
 
     return statePrevious !== this.state;
+};
+
+/**
+ * Update the weather state
+ * @param {Random} random A randomizer
+ * @returns {Boolean} True if the state has changed
+ */
+WeatherState.prototype.update = function(random) {
+    if (++this.time === this.STATE_TIME) {
+        this.time = 0;
+
+        return this.transition(random);
+    }
+
+    return false;
 };
