@@ -10,10 +10,10 @@ const Weather = function(gl, constellation, random) {
     this.gusts = new Gusts(constellation);
     this.rain = new Rain(gl, constellation, random);
     this.state = new WeatherState();
-    this.stateTime = 0;
+    this.stateTime = this.STATE_TIME - 1; // TODO: Move this to weather state
 };
 
-Weather.prototype.STATE_TIME = 60;
+Weather.prototype.STATE_TIME = 70;
 
 /**
  * Set the weather state
@@ -32,6 +32,22 @@ Weather.prototype.getState = function() {
 };
 
 /**
+ * Activate the sunny state
+ */
+Weather.prototype.setSunny = function() {
+    this.rain.fadeOut();
+    console.log("Start sun");
+};
+
+/**
+ * Activate the rain state
+ */
+Weather.prototype.setRain = function() {
+    this.rain.fadeIn(.05, .15);
+    console.log("Start rain");
+};
+
+/**
  * Update the weather
  * @param {Air} air The air
  * @param {Water} water The water
@@ -42,7 +58,16 @@ Weather.prototype.update = function(air, water, random) {
         this.stateTime = 0;
 
         if (this.state.transition(random)) {
+            switch (this.state.state) {
+                case this.state.ID_SUNNY:
+                    this.setSunny();
 
+                    break;
+                case this.state.ID_RAIN:
+                    this.setRain();
+
+                    break;
+            }
         }
     }
 

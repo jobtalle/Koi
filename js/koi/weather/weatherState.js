@@ -4,14 +4,14 @@
  * @constructor
  */
 const WeatherState = function(state = this.ID_SUNNY) {
-    this.state = state;
+    this.state = this.ID_SUNNY; // TODO: Don't ignore parameter
 };
 
 WeatherState.prototype.ID_SUNNY = 0;
 WeatherState.prototype.ID_RAIN = 1;
 WeatherState.prototype.TRANSITION_MATRIX = [
-    [.5, .5],
-    [.5, .5]];
+    [0, 1],
+    [1, 0]];
 
 /**
  * Deserialize the weather state

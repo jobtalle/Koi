@@ -11,7 +11,7 @@ const Drops = function(gl) {
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
         ["position", "origin", "alpha", "threshold"],
-        ["window", "windowWidth"],
+        ["window", "windowWidth", "transparency"],
         [
             new Shader.Constant("color", "f", [
                 this.COLOR.r,
@@ -23,6 +23,7 @@ const Drops = function(gl) {
 Drops.prototype.SHADER_VERTEX = `#version 100
 uniform float window;
 uniform float windowWidth;
+uniform float transparency;
 
 attribute vec3 position;
 attribute vec2 origin;
@@ -34,7 +35,7 @@ varying float iAlpha;
 void main() {
   mediump float age = mod(window - threshold, 1.0) / windowWidth;
   
-  iAlpha = alpha * age;
+  iAlpha = transparency * alpha * age;
   
   gl_Position = vec4(
     mix(vec2(origin.x, position.y - origin.y), vec2(position.x, position.y - position.z), age),
@@ -83,12 +84,14 @@ Drops.prototype.setMesh = function(mesh) {
  * @param {Number} count The number of drops in the current mesh
  * @param {Number} window The sliding window front in the range [0, 1]
  * @param {Number} windowWidth The sliding window width in the range [0, 1]
+ * @param {Number} transparency The transparency factor in the range [0, 1]
  */
-Drops.prototype.render = function(count, window, windowWidth) {
+Drops.prototype.render = function(count, window, windowWidth, transparency) {
     this.program.use();
 
     this.gl.uniform1f(this.program["uWindow"], window);
     this.gl.uniform1f(this.program["uWindowWidth"], windowWidth);
+    this.gl.uniform1f(this.program["uTransparency"], transparency);
 
     this.gl.vao.bindVertexArrayOES(this.vao);
 

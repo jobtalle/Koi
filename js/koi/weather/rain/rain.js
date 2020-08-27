@@ -10,9 +10,12 @@ const Rain = function(gl, constellation, random) {
     this.positions = this.makePositions(constellation, random);
     this.dropCount = this.positions.length;
     this.mesh = this.makeMesh(this.positions, constellation.width, constellation.height, random);
-    this.window = 0;
-    this.windowWidth = .1;
-    this.lastDrop = Math.floor(this.dropCount * (1 - this.windowWidth * this.DROP_FALL_PORTION));
+    this.window = this.windowPrevious = 0;
+    this.amount = this.amountPrevious = 0;
+    this.transition = this.transitionPrevious = 0;
+    this.transitionTarget = this.transition;
+    this.speed = 0;
+    this.lastDrop = 0;
 
     for (let drop = 0; drop < this.dropCount; ++drop)
         if (!constellation.contains(this.positions[drop].x, this.positions[drop].y))
@@ -36,7 +39,7 @@ Rain.prototype.CELL = .3;
 Rain.prototype.CELL_RANDOM = .8;
 Rain.prototype.CELL_OVERSHOOT_X = -Math.cos(Rain.prototype.DROP_ANGLE) * Rain.prototype.DROP_DISTANCE;
 Rain.prototype.CELL_OVERSHOOT_Y = Rain.prototype.DROP_LENGTH;
-Rain.prototype.WINDOW_SPEED = .005;
+Rain.prototype.TRANSITION_SPEED = .015;
 
 /**
  * Make the raindrop landing positions
@@ -114,16 +117,35 @@ Rain.prototype.makeMesh = function(positions, width, height, random) {
 
 /**
  * Start the rain
+ * @param {Number} speed The speed of a droplet in fraction per frame
+ * @param {Number} amount The portion of visible particles in the range [0, 1]
  */
-Rain.prototype.fadeIn = function() {
-
+Rain.prototype.fadeIn = function(speed, amount) {
+    this.speed = speed;
+    this.amount = amount;
+    this.transitionTarget = 1;
+    this.lastDrop = Math.round(this.dropCount * (this.window - amount));
 };
 
 /**
  * Stop the rain
  */
 Rain.prototype.fadeOut = function() {
+    this.transitionTarget = 0;
+};
 
+/**
+ * Move the transition value
+ */
+Rain.prototype.moveTransition = function() {
+    this.transitionPrevious = this.transition;
+
+    if (this.transition < this.transitionTarget) {
+        if ((this.transition += this.TRANSITION_SPEED) > this.transitionTarget)
+            this.transition = this.transitionTarget;
+    }
+    else if ((this.transition -= this.TRANSITION_SPEED) < this.transitionTarget)
+        this.transition = this.transitionTarget;
 };
 
 /**
@@ -131,12 +153,18 @@ Rain.prototype.fadeOut = function() {
  * @param {Water} water The water
  */
 Rain.prototype.update = function(water) {
-    // TODO: Be idle when it's not raining
+    if (this.transition !== this.transitionTarget)
+        this.moveTransition();
+    else if (this.transitionTarget === 0)
+        return;
 
-    if ((this.window += this.WINDOW_SPEED) > 1)
-        this.window -= 1;
+    this.windowPrevious = this.window;
+    this.amountPrevious = this.amount;
 
-    let tail = this.window - this.windowWidth * this.DROP_FALL_PORTION;
+    if ((this.window += this.speed * this.amount) > 1)
+        --this.window;
+
+    let tail = this.window - this.amount * this.DROP_FALL_PORTION;
 
     if (tail < 0)
         ++tail;
@@ -149,7 +177,7 @@ Rain.prototype.update = function(water) {
                 this.positions[drop].x,
                 this.positions[drop].y,
                 this.DROP_EFFECT_RADIUS,
-                this.DROP_EFFECT_DISPLACEMENT);
+                this.DROP_EFFECT_DISPLACEMENT * this.transition);
 
         if (++drop === this.dropCount)
             drop = 0;
@@ -164,7 +192,20 @@ Rain.prototype.update = function(water) {
  * @param {Number} time The interpolation factor
  */
 Rain.prototype.render = function(drops, time) {
-    let window = this.window + time * this.WINDOW_SPEED;
+    if (this.transition === 0)
+        return;
+
+    const transition = this.transitionPrevious + (this.transition - this.transitionPrevious) * time;
+    let windowDelta = this.window - this.windowPrevious;
+
+    if (Math.abs(windowDelta) > 1 - Math.abs(windowDelta))
+        windowDelta -= Math.sign(windowDelta);
+
+    let amount = this.amountPrevious + (this.amount - this.amountPrevious) * time;
+    let window = this.windowPrevious + windowDelta * time;
+
+    if (amount > 1)
+        --amount;
 
     if (window > 1)
         --window;
@@ -172,7 +213,8 @@ Rain.prototype.render = function(drops, time) {
     drops.render(
         this.dropCount,
         window,
-        this.windowWidth);
+        amount,
+        transition);
 };
 
 /**
