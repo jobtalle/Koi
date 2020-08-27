@@ -29,10 +29,10 @@ WeatherState.deserialize = function(buffer) {
     if (state > WeatherState.prototype.ID_RAIN)
         throw new RangeError();
 
-    if (time > this.STATE_TIME)
+    if (time > WeatherState.prototype.STATE_TIME)
         throw new RangeError();
 
-    return new WeatherState(state);
+    return new WeatherState(state, time);
 };
 
 /**
