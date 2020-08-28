@@ -21,11 +21,12 @@ MutatorLayerSpots.prototype.SAMPLER_STRETCH = new SamplerPlateau(-8, 0, 8, 1);
  */
 MutatorLayerSpots.prototype.mutate = function(random) {
     this.mutatePalette(this.layer.paletteSample, this.SAMPLER_PALETTE_DISTANCE, random);
-    this.mutateVector3(this.layer.anchor, this.SAMPLER_ANCHOR_DISTANCE, random);
-    this.clampVector3(this.layer.anchor, this.layer.SPACE_LIMIT_MIN, this.layer.SPACE_LIMIT_MAX);
-    this.mutateNormalVector3(this.layer.x, this.SAMPLER_X_DISTANCE, random);
+    this.mutateVector3(this.layer.plane.anchor, this.SAMPLER_ANCHOR_DISTANCE, random);
+    this.mutateNormalVector3(this.layer.plane.x, this.SAMPLER_X_DISTANCE, random);
+
+    this.layer.plane.clampAnchor();
+    this.layer.plane.stretch = this.mutateUint8(this.layer.plane.stretch, this.SAMPLER_STRETCH, random.getFloat());
 
     this.layer.scale = this.mutateUint8(this.layer.scale, this.SAMPLER_SCALE, random.getFloat());
     this.layer.threshold = this.mutateUint8(this.layer.threshold, this.SAMPLER_THRESHOLD, random.getFloat());
-    this.layer.stretch = this.mutateUint8(this.layer.stretch, this.SAMPLER_STRETCH, random.getFloat());
 };
