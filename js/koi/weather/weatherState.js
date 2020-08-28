@@ -9,7 +9,7 @@ const WeatherState = function(state = this.ID_SUNNY, time = 0) {
     this.time = time;
 };
 
-WeatherState.prototype.STATE_TIME = 70;
+WeatherState.prototype.STATE_TIME = 700;
 WeatherState.prototype.ID_SUNNY = 0;
 WeatherState.prototype.ID_RAIN = 1;
 WeatherState.prototype.TRANSITION_MATRIX = [
@@ -23,8 +23,9 @@ WeatherState.prototype.TRANSITION_MATRIX = [
  * @throws {RangeError} A range error when deserialized values are out of range
  */
 WeatherState.deserialize = function(buffer) {
-    const state = buffer.readUint8();
-    const time = buffer.readUint8();
+    const combined = buffer.readUint16();
+    const state = (combined & 0xF000) >> 12;
+    const time = combined & 0x0FFF;
 
     if (state > WeatherState.prototype.ID_RAIN)
         throw new RangeError();
@@ -40,8 +41,7 @@ WeatherState.deserialize = function(buffer) {
  * @param {BinBuffer} buffer A buffer to serialize to
  */
 WeatherState.prototype.serialize = function(buffer) {
-    buffer.writeUint8(this.state);
-    buffer.writeUint8(this.time);
+    buffer.writeUint16((this.state << 12) | this.time);
 };
 
 /**
