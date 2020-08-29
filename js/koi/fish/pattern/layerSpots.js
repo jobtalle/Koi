@@ -3,12 +3,14 @@
  * @param {Plane} plane A sampling plane
  * @param {Palette.Sample} sample A palette sample
  * @param {Number} scale The noise scale in the range [0, 255]
+ * @param {Number} stretch The X axis stretch in the range [0, 255]
  * @param {Number} threshold The noise threshold in the range [0, 255]
  * @constructor
  */
-const LayerSpots = function(plane, sample, scale, threshold) {
+const LayerSpots = function(plane, sample, scale, stretch, threshold) {
     this.plane = plane;
     this.scale = scale;
+    this.stretch = stretch;
     this.threshold = threshold;
 
     Layer.call(this, this.ID, sample, true, false, false, this.DOMINANCE);
@@ -39,8 +41,9 @@ void main() {
 `;
 
 LayerSpots.prototype.SHADER_FRAGMENT = `#version 100
-` + CommonShaders.cubicNoise + `
+` + CommonShaders.cubicNoise3 + `
 uniform mediump float scale;
+uniform mediump float stretch;
 uniform mediump float threshold;
 uniform mediump vec2 size;
 uniform highp vec3 anchor;
@@ -50,7 +53,7 @@ varying mediump vec2 iUv;
 varying lowp vec3 iColor;
 
 void main() {
-  highp vec2 at = (iUv - vec2(0.5)) * size * scale;
+  highp vec2 at = vec2(iUv.x * stretch - 0.5, iUv.y - 0.5) * size * scale;
   mediump float noise = cubicNoise(anchor + vec3(at, 0.0) * rotate);
 
   if (noise < threshold)
@@ -70,9 +73,10 @@ LayerSpots.deserialize = function(buffer) {
     const plane = Plane.deserialize(buffer);
     const sample = Palette.Sample.deserialize(buffer);
     const scale = buffer.readUint8();
+    const stretch = buffer.readUint8();
     const threshold = buffer.readUint8();
 
-    return new LayerSpots(plane, sample, scale, threshold);
+    return new LayerSpots(plane, sample, scale, stretch, threshold);
 };
 
 /**
@@ -84,6 +88,7 @@ LayerSpots.prototype.serialize = function(buffer) {
     this.paletteSample.serialize(buffer);
 
     buffer.writeUint8(this.scale);
+    buffer.writeUint8(this.stretch);
     buffer.writeUint8(this.threshold);
 };
 
@@ -96,6 +101,7 @@ LayerSpots.prototype.copy = function() {
         this.plane.copy(),
         this.paletteSample.copy(),
         this.scale,
+        this.stretch,
         this.threshold);
 };
 
@@ -108,9 +114,10 @@ LayerSpots.prototype.copy = function() {
 LayerSpots.prototype.configure = function(gl, program, color) {
     gl.uniform3f(program["uColor"], color.r, color.g, color.b);
     gl.uniform1f(program["uScale"], this.SAMPLER_SCALE.sample(this.scale / 0xFF));
+    gl.uniform1f(program["uStretch"], this.SAMPLER_STRETCH.sample(this.stretch / 0xFF));
     gl.uniform1f(program["uThreshold"], this.SAMPLER_THRESHOLD.sample(this.threshold / 0xFF));
     gl.uniform3f(program["uAnchor"], this.plane.anchor.x, this.plane.anchor.y, this.plane.anchor.z);
-    gl.uniformMatrix3fv(program["uRotate"], false, this.plane.makeMatrix(this.SAMPLER_STRETCH));
+    gl.uniformMatrix3fv(program["uRotate"], false, this.plane.makeMatrix());
 };
 
 /**
@@ -124,5 +131,5 @@ LayerSpots.prototype.createShader = function(gl) {
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
         ["position", "uv"],
-        ["scale", "threshold", "size", "anchor", "rotate", "color"]);
+        ["scale", "stretch", "threshold", "size", "anchor", "rotate", "color"]);
 };

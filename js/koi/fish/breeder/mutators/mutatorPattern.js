@@ -24,6 +24,10 @@ MutatorPattern.prototype.mutateLayer = function(layer, random) {
             new MutatorLayerSpots(layer).mutate(random);
 
             break;
+        case LayerRidge.prototype.ID:
+            new MutatorLayerRidge(layer).mutate(random);
+
+            break;
     }
 };
 

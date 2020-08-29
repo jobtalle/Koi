@@ -10,6 +10,8 @@ const Patterns = function(gl) {
     this.vaoBase = this.createVAO(gl, this.programBase);
     this.programSpots = LayerSpots.prototype.createShader(gl);
     this.vaoSpots = this.createVAO(gl, this.programSpots);
+    this.programRidge = LayerRidge.prototype.createShader(gl);
+    this.vaoRidge = this.createVAO(gl, this.programRidge);
     this.programShapeBody = LayerShapeBody.prototype.createShader(gl);
     this.vaoShapeBody = this.createVAO(gl, this.programShapeBody);
     this.programShapeFin = LayerShapeFin.prototype.createShader(gl);
@@ -128,6 +130,10 @@ Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
                 this.writeLayer(layer, this.programSpots, this.vaoSpots, color);
 
                 break;
+            case LayerRidge.prototype.ID:
+                this.writeLayer(layer, this.programRidge, this.vaoRidge, color);
+
+                break;
         }
     }
 
@@ -163,6 +169,8 @@ Patterns.prototype.free = function() {
     this.gl.vao.deleteVertexArrayOES(this.vaoBase);
     this.programSpots.free();
     this.gl.vao.deleteVertexArrayOES(this.vaoSpots);
+    this.programRidge.free();
+    this.gl.vao.deleteVertexArrayOES(this.vaoRidge);
     this.programShapeBody.free();
     this.gl.vao.deleteVertexArrayOES(this.vaoShapeBody);
     this.programShapeFin.free();

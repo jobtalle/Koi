@@ -26,7 +26,7 @@ Rain.prototype.DROP_LENGTH = .6;
 Rain.prototype.DROP_DISTANCE = 10;
 Rain.prototype.DROP_FALL_PORTION = 1 - Rain.prototype.DROP_LENGTH / Rain.prototype.DROP_DISTANCE;
 Rain.prototype.DROP_ALPHA = .7;
-Rain.prototype.DROP_ANGLE = Math.PI * 0.45;
+Rain.prototype.DROP_ANGLE = Math.PI * 0.55;
 Rain.prototype.DROP_ANGLE_RADIUS = Math.PI * 0.015;
 Rain.prototype.DROP_ANGLE_SAMPLER = new SamplerPlateau(
     Rain.prototype.DROP_ANGLE - Rain.prototype.DROP_ANGLE_RADIUS,

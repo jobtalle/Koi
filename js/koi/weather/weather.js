@@ -43,7 +43,7 @@ Weather.prototype.setSunny = function() {
  * Activate the rain state
  */
 Weather.prototype.setRain = function() {
-    this.rain.fadeIn(.05, .15);
+    this.rain.fadeIn(.07, .06);
 };
 
 /**

@@ -55,7 +55,7 @@ const Ponds = function(gl) {
 Ponds.prototype = Object.create(Meshed.prototype);
 
 Ponds.prototype.DEPTH = .2;
-Ponds.prototype.HEIGHT = .3;
+Ponds.prototype.HEIGHT = .24;
 Ponds.prototype.WAVE_PHASE = 2.4;
 Ponds.prototype.COLOR_FILTER = Color.fromCSS("--color-water-filter");
 Ponds.prototype.COLOR_HIGHLIGHT = Color.fromCSS("--color-water-highlight");

@@ -57,7 +57,7 @@ void main() {
 
 // TODO: Use 2D cubic noise
 Sand.prototype.SHADER_FRAGMENT = `#version 100
-` + CommonShaders.cubicNoise + `
+` + CommonShaders.cubicNoise3 + `
 uniform mediump float scale;
 uniform lowp vec3 colorDeep;
 uniform lowp vec3 colorShallow;

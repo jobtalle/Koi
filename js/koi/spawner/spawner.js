@@ -39,19 +39,19 @@ Spawner.prototype.update = function(
                 [
                     new LayerSpots(
                         new Plane(
-                            Math.round(random.getFloat() * 0xFF),
                             new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),
                             new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()),
                         new Palette.Sample().randomize(random),
                         Math.round(random.getFloat() * 0xFF),
+                        Math.round(random.getFloat() * 0xFF),
                         Math.round(random.getFloat() * 0xFF)
                     ),
-                    new LayerSpots(
+                    new LayerRidge(
                         new Plane(
-                            Math.round(random.getFloat() * 0xFF),
                             new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),
                             new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()),
                         new Palette.Sample().randomize(random),
+                        Math.round(random.getFloat() * 0xFF),
                         Math.round(random.getFloat() * 0xFF),
                         Math.round(random.getFloat() * 0xFF)
                     )

@@ -113,7 +113,7 @@ Pond.prototype.replaceConstraint = function(constraint, atlas) {
  * @param {Fish} fish A fish
  */
 Pond.prototype.addFish = function(fish) {
-    this.fishes.push(fish);
+    this.fishes.splice(0, 0, fish);
 };
 
 /**
