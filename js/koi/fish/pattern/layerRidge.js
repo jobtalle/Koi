@@ -19,9 +19,9 @@ const LayerRidge = function(plane, sample, scale, power, threshold) {
 LayerRidge.prototype = Object.create(Layer.prototype);
 
 LayerRidge.prototype.DOMINANCE = .65;
-LayerRidge.prototype.SAMPLER_SCALE = new SamplerPlateau(3, 5, 6, 3);
-LayerRidge.prototype.SAMPLER_POWER = new SamplerPlateau(0.73, 1.15, 2.5, 5);
-LayerRidge.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(.25, .5, .75, 2); // TODO: Change
+LayerRidge.prototype.SAMPLER_SCALE = new SamplerPlateau(1.8, 4, 5.5, 3);
+LayerRidge.prototype.SAMPLER_POWER = new SamplerPlateau(0.73, 1.15, 3.5, 5);
+LayerRidge.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(.3, .5, .7, 1);
 
 LayerRidge.prototype.SHADER_VERTEX = `#version 100
 uniform lowp vec3 color;

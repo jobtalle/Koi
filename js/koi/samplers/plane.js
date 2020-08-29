@@ -9,6 +9,7 @@ const Plane = function(anchor, x) {
     this.x = x;
 };
 
+Plane.prototype = Object.create(NumericManipulator.prototype);
 Plane.prototype.SPACE_LIMIT_MIN = Math.fround(-256);
 Plane.prototype.SPACE_LIMIT_MAX = Math.fround(256);
 
