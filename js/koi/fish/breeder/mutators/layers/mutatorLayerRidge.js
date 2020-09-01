@@ -8,9 +8,9 @@ const MutatorLayerRidge = function(layer) {
 };
 
 MutatorLayerRidge.prototype = Object.create(Mutator.prototype);
-MutatorLayerRidge.prototype.SAMPLER_PALETTE_DISTANCE = new SamplerQuadratic(0, 1.1, 7);
-MutatorLayerRidge.prototype.SAMPLER_ANCHOR_DISTANCE = new SamplerQuadratic(0, 3, 4);
-MutatorLayerRidge.prototype.SAMPLER_X_DISTANCE = new SamplerQuadratic(0, .6, 4);
+MutatorLayerRidge.prototype.SAMPLER_PALETTE_DISTANCE = new SamplerPower(0, 1.1, 7);
+MutatorLayerRidge.prototype.SAMPLER_ANCHOR_DISTANCE = new SamplerPower(0, 3, 4);
+MutatorLayerRidge.prototype.SAMPLER_X_DISTANCE = new SamplerPower(0, .6, 4);
 MutatorLayerRidge.prototype.SAMPLER_SCALE = new SamplerPlateau(-9, 0, 9, 1.5);
 MutatorLayerRidge.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(-6.5, 0, 6.5, 2);
 

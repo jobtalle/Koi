@@ -8,9 +8,9 @@ const MutatorLayerStripes = function(layer) {
 };
 
 MutatorLayerStripes.prototype = Object.create(Mutator.prototype);
-MutatorLayerStripes.prototype.SAMPLER_PALETTE_DISTANCE = new SamplerQuadratic(0, 1.5, 8);
-MutatorLayerStripes.prototype.SAMPLER_ANCHOR_DISTANCE = new SamplerQuadratic(0, 4, 5);
-MutatorLayerStripes.prototype.SAMPLER_X_DISTANCE = new SamplerQuadratic(0, .6, 4);
+MutatorLayerStripes.prototype.SAMPLER_PALETTE_DISTANCE = new SamplerPower(0, 1.5, 8);
+MutatorLayerStripes.prototype.SAMPLER_ANCHOR_DISTANCE = new SamplerPower(0, 4, 5);
+MutatorLayerStripes.prototype.SAMPLER_X_DISTANCE = new SamplerPower(0, .6, 4);
 MutatorLayerStripes.prototype.SAMPLER_SCALE = new SamplerPlateau(-8, 0, 8, 1);
 MutatorLayerStripes.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(-6, 0, 6, 1.4);
 MutatorLayerStripes.prototype.SAMPLER_SLANT = new SamplerPlateau(-4, 0, 4, 2);

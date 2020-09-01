@@ -14,7 +14,7 @@ const MixerFishBody = function(mother, father) {
 };
 
 MixerFishBody.prototype = Object.create(Mixer.prototype);
-MixerFishBody.prototype.SAMPLER_LENGTH = new SamplerQuadratic(0, 1, 1.5);
+MixerFishBody.prototype.SAMPLER_LENGTH = new SamplerPower(0, 1, 1.5);
 MixerFishBody.prototype.SAMPLER_RADIUS = MixerFishBody.prototype.SAMPLER_LENGTH;
 
 /**

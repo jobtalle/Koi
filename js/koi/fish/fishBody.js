@@ -42,7 +42,7 @@ FishBody.prototype.WAVE_INTENSITY_MIN = .05;
 FishBody.prototype.WAVE_INTENSITY_MULTIPLIER = 2;
 FishBody.prototype.WAVE_TURBULENCE = .4;
 FishBody.prototype.FIN_PHASE_SPEED = .4;
-FishBody.prototype.SAMPLER_LENGTH = new SamplerQuadratic(.62, 1.3, 3);
+FishBody.prototype.SAMPLER_LENGTH = new SamplerPower(.62, 1.3, 3);
 FishBody.prototype.SAMPLER_RADIUS = new SamplerPlateau(.1, .13, .18, 4);
 FishBody.prototype.SAMPLER_SPRING_START = new SamplerPlateau(.15, .85, .95, 1.5);
 FishBody.prototype.SAMPLER_SPRING_END = new SamplerPlateau(.05, .6, .7, 1.5);
@@ -235,7 +235,7 @@ FishBody.prototype.initializeSpine = function(head, direction, size) {
  * @returns {Number[]} An array of strings
  */
 FishBody.prototype.makeSprings = function(start, end, power) {
-    const sampler = new SamplerQuadratic(start, end, power);
+    const sampler = new SamplerPower(start, end, power);
     const springs = new Array(this.spine.length - 1);
 
     for (let spring = 0; spring < this.spine.length - 1; ++spring)
