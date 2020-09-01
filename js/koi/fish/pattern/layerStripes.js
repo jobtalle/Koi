@@ -7,6 +7,7 @@
  * @param {Number} roughness The stripe distortion frequency in the range [0, 255]
  * @param {Number} threshold The stripe threshold in the range [0, 255]
  * @param {Number} slant The pattern slant in the range [0, 255]
+ * @param {Number} suppression The stripe suppression near the edges in the range [0, 255]
  * @constructor
  */
 const LayerStripes = function(
@@ -16,7 +17,8 @@ const LayerStripes = function(
     distortion,
     roughness,
     threshold,
-    slant) {
+    slant,
+    suppression) {
     this.plane = plane;
     this.sample = sample;
     this.scale = scale;
@@ -24,18 +26,20 @@ const LayerStripes = function(
     this.roughness = roughness;
     this.threshold = threshold;
     this.slant = slant;
+    this.suppression = suppression;
 
-    Layer.call(this, this.ID, sample, true, true, false, this.DOMINANCE);
+    Layer.call(this, this.ID, sample, true, false, false, this.DOMINANCE);
 };
 
 LayerStripes.prototype = Object.create(Layer.prototype);
 
 LayerStripes.prototype.DOMINANCE = .9;
 LayerStripes.prototype.SAMPLER_SCALE = new SamplerPlateau(2.8, 4.3, 8.5, 5);
-LayerStripes.prototype.SAMPLER_DISTORTION = new SamplerPlateau(3, 4.2, 9, 4);
-LayerStripes.prototype.SAMPLER_ROUGHNESS = new Sampler(1, 4);
+LayerStripes.prototype.SAMPLER_DISTORTION = new SamplerPlateau(3, 7, 12, 4);
+LayerStripes.prototype.SAMPLER_ROUGHNESS = new Sampler(2, 4.3);
 LayerStripes.prototype.SAMPLER_THRESHOLD = new SamplerSigmoid(.4, .6, 1);
-LayerStripes.prototype.SAMPLER_SLANT = new SamplerQuadratic(0, 2.1, 7);
+LayerStripes.prototype.SAMPLER_SLANT = new SamplerQuadratic(0, 1.6, 10);
+LayerStripes.prototype.SAMPLER_SUPPRESSION = new SamplerQuadratic(0.3, 2, 2);
 
 LayerStripes.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
@@ -58,6 +62,7 @@ uniform mediump float distortion;
 uniform mediump float roughness;
 uniform mediump float threshold;
 uniform mediump float slant;
+uniform mediump float suppression;
 uniform mediump vec2 size;
 uniform highp vec3 anchor;
 uniform highp mat3 rotate;
@@ -70,7 +75,7 @@ void main() {
   mediump float dy = 2.0 * abs(iUv.y - 0.5);
   mediump float x = 2.0 * scale * iUv.x + dx * distortion / scale - dy * dy * slant;
   
-  if (min(mod(x, 2.0), 2.0 - mod(x, 2.0)) > threshold)
+  if (min(mod(x, 2.0), 2.0 - mod(x, 2.0)) > threshold - dy * dy * suppression)
     discard;
 
   gl_FragColor = vec4(color, 1.0);
@@ -91,6 +96,7 @@ LayerStripes.deserialize = function(buffer) {
         buffer.readUint8(),
         buffer.readUint8(),
         buffer.readUint8(),
+        buffer.readUint8(),
         buffer.readUint8());
 };
 
@@ -107,6 +113,7 @@ LayerStripes.prototype.serialize = function(buffer) {
     buffer.writeUint8(this.roughness);
     buffer.writeUint8(this.threshold);
     buffer.writeUint8(this.slant);
+    buffer.writeUint8(this.suppression);
 };
 
 /**
@@ -121,7 +128,8 @@ LayerStripes.prototype.copy = function() {
         this.distortion,
         this.roughness,
         this.threshold,
-        this.slant);
+        this.slant,
+        this.suppression);
 };
 
 /**
@@ -137,6 +145,7 @@ LayerStripes.prototype.configure = function(gl, program, color) {
     gl.uniform1f(program["uRoughness"], this.SAMPLER_ROUGHNESS.sample(this.roughness / 0xFF));
     gl.uniform1f(program["uThreshold"], this.SAMPLER_THRESHOLD.sample(this.threshold / 0xFF));
     gl.uniform1f(program["uSlant"], this.SAMPLER_SLANT.sample(this.slant / 0xFF));
+    gl.uniform1f(program["uSuppression"], this.SAMPLER_SUPPRESSION.sample(this.suppression / 0xFF));
     gl.uniform3f(program["uAnchor"], this.plane.anchor.x, this.plane.anchor.y, this.plane.anchor.z);
     gl.uniformMatrix3fv(program["uRotate"], false, this.plane.makeMatrix());
 };
@@ -152,5 +161,5 @@ LayerStripes.prototype.createShader = function(gl) {
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
         ["position", "uv"],
-        ["scale", "distortion", "roughness", "threshold", "slant", "color", "anchor", "rotate", "size"]);
+        ["scale", "distortion", "roughness", "threshold", "slant", "suppression", "color", "anchor", "rotate", "size"]);
 };
