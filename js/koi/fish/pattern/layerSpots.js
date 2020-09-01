@@ -24,17 +24,13 @@ LayerSpots.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(.25, .5, .75, 2);
 LayerSpots.prototype.SAMPLER_STRETCH = new SamplerPlateau(.37, 1, 2.5, 1);
 
 LayerSpots.prototype.SHADER_VERTEX = `#version 100
-uniform lowp vec3 color;
-
 attribute vec2 position;
 attribute vec2 uv;
 
-varying mediump vec2 iUv;
-varying lowp vec3 iColor;
+varying vec2 iUv;
 
 void main() {
   iUv = uv;
-  iColor = color;
 
   gl_Position = vec4(position, 0.0, 1.0);
 }
@@ -42,6 +38,7 @@ void main() {
 
 LayerSpots.prototype.SHADER_FRAGMENT = `#version 100
 ` + CommonShaders.cubicNoise3 + `
+uniform lowp vec3 color;
 uniform mediump float scale;
 uniform mediump float stretch;
 uniform mediump float threshold;
@@ -50,7 +47,6 @@ uniform highp vec3 anchor;
 uniform highp mat3 rotate;
 
 varying mediump vec2 iUv;
-varying lowp vec3 iColor;
 
 void main() {
   highp vec2 at = vec2(iUv.x * stretch - 0.5, iUv.y - 0.5) * size * scale;
@@ -59,7 +55,7 @@ void main() {
   if (noise < threshold)
     discard;
     
-  gl_FragColor = vec4(iColor, 1.0);
+  gl_FragColor = vec4(color, 1.0);
 }
 `;
 
@@ -70,13 +66,12 @@ void main() {
  * @throws {RangeError} A range error if deserialized values are not valid
  */
 LayerSpots.deserialize = function(buffer) {
-    const plane = Plane.deserialize(buffer);
-    const sample = Palette.Sample.deserialize(buffer);
-    const scale = buffer.readUint8();
-    const stretch = buffer.readUint8();
-    const threshold = buffer.readUint8();
-
-    return new LayerSpots(plane, sample, scale, stretch, threshold);
+    return new LayerSpots(
+        Plane.deserialize(buffer),
+        Palette.Sample.deserialize(buffer),
+        buffer.readUint8(),
+        buffer.readUint8(),
+        buffer.readUint8());
 };
 
 /**

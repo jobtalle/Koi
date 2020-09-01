@@ -10,23 +10,17 @@ const LayerBase = function(sample) {
 LayerBase.prototype = Object.create(Layer.prototype);
 
 LayerBase.prototype.SHADER_VERTEX = `#version 100
-uniform lowp vec3 color;
-
 attribute vec2 position;
 
-varying lowp vec3 iColor;
-
 void main() {
-  iColor = color;
-  
   gl_Position = vec4(position, 0.0, 1.0);
 }
 `;
 LayerBase.prototype.SHADER_FRAGMENT = `#version 100
-varying lowp vec3 iColor;
+uniform lowp vec3 color;
 
 void main() {
-  gl_FragColor = vec4(iColor, 1.0);
+  gl_FragColor = vec4(color, 1.0);
 }
 `;
 

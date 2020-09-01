@@ -22,12 +22,13 @@ MixerLayerRidge.prototype.SAMPLER_THRESHOLD = new SamplerSigmoid(0, 1, 2);
  * @returns {LayerRidge} The mixed layer
  */
 MixerLayerRidge.prototype.mix = function(random) {
-    const interpolateSample = this.SAMPLER_SAMPLE.sample(random.getFloat());
-    const interpolatePalette = this.SAMPLER_PALETTE.sample(random.getFloat());
+    const interpolateSample = random.getFloat();
 
     return new LayerRidge(
         this.mother.plane.interpolate(this.father.plane, interpolateSample),
-        this.mother.paletteSample.interpolate(this.father.paletteSample, interpolatePalette),
+        this.mother.paletteSample.interpolate(
+            this.father.paletteSample,
+            this.SAMPLER_PALETTE.sample(random.getFloat())),
         this.mixUint8(this.mother.scale, this.father.scale, this.SAMPLER_SCALE, interpolateSample),
         this.mixUint8(this.mother.power, this.father.power, this.SAMPLER_POWER, interpolateSample),
         this.mixUint8(this.mother.threshold, this.father.threshold, this.SAMPLER_THRESHOLD, interpolateSample));

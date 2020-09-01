@@ -13,7 +13,7 @@ const LayerRidge = function(plane, sample, scale, power, threshold) {
     this.power = power;
     this.threshold = threshold;
 
-    Layer.call(this, this.ID, sample, true, false, false, this.DOMINANCE);
+    Layer.call(this, this.ID, sample, true, false, true, this.DOMINANCE);
 };
 
 LayerRidge.prototype = Object.create(Layer.prototype);
@@ -24,17 +24,13 @@ LayerRidge.prototype.SAMPLER_POWER = new SamplerPlateau(0.73, 1.15, 3.5, 5);
 LayerRidge.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(.3, .5, .7, 1);
 
 LayerRidge.prototype.SHADER_VERTEX = `#version 100
-uniform lowp vec3 color;
-
 attribute vec2 position;
 attribute vec2 uv;
 
 varying mediump vec2 iUv;
-varying lowp vec3 iColor;
 
 void main() {
   iUv = uv;
-  iColor = color;
   
   gl_Position = vec4(position, 0.0, 1.0);
 }
@@ -42,6 +38,7 @@ void main() {
 
 LayerRidge.prototype.SHADER_FRAGMENT = `#version 100
 ` + CommonShaders.cubicNoise3 + `
+uniform lowp vec3 color;
 uniform mediump float scale;
 uniform mediump float power;
 uniform mediump float threshold;
@@ -50,7 +47,6 @@ uniform highp vec3 origin;
 uniform highp mat3 rotate;
 
 varying mediump vec2 iUv;
-varying lowp vec3 iColor;
 
 void main() {
   mediump float phaseThreshold = pow(1.0 - 2.0 * abs(iUv.y - 0.5), power);
@@ -60,7 +56,7 @@ void main() {
   if (noise > phaseThreshold)
     discard;
   
-  gl_FragColor = vec4(iColor, 1.0);
+  gl_FragColor = vec4(color, 1.0);
 }
 `;
 

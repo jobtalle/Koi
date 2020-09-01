@@ -34,6 +34,10 @@ Pattern.deserialize = function(buffer) {
                 layers.push(LayerRidge.deserialize(buffer));
 
                 break;
+            case LayerStripes.prototype.ID:
+                layers.push(LayerStripes.deserialize(buffer));
+
+                break;
             default:
                 throw new RangeError();
         }
