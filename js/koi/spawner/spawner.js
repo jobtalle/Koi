@@ -56,6 +56,8 @@ Spawner.prototype.update = function(
                         Math.round(random.getFloat() * 0xFF),
                         Math.round(random.getFloat() * 0xFF),
                         Math.round(random.getFloat() * 0xFF),
+                        Math.round(random.getFloat() * 0xFF),
+                        Math.round(random.getFloat() * 0xFF),
                         Math.round(random.getFloat() * 0xFF)
                     ),
                     new LayerRidge(
