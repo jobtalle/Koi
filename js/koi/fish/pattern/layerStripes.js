@@ -79,12 +79,14 @@ uniform highp mat3 rotate;
 
 varying mediump vec2 iUv;
 
+#define ATTENUATION 2.0
+
 void main() {
   highp vec2 at = (iUv - 0.5) * size * roughness;
   mediump float dx = cubicNoise(anchor + vec3(at, 0.0) * rotate);
   mediump float dy = 2.0 * abs(iUv.y - 0.5);
   mediump float x = 2.0 * scale * iUv.x + dx * distortion / scale - dy * dy * slant;
-  mediump float strength = pow(max(0.0, 1.0 - 2.0 * abs(iUv.x - focus)), power);
+  mediump float strength = pow(max(0.0, 1.0 - ATTENUATION * abs(iUv.x - focus)), power);
   
   if (min(mod(x, 2.0), 2.0 - mod(x, 2.0)) + dy * dy * suppression > threshold * strength)
     discard;

@@ -11,6 +11,7 @@ const MixerLayerStripes = function(mother, father) {
 
 MixerLayerStripes.prototype = Object.create(Mixer.prototype);
 MixerLayerStripes.prototype.SAMPLER_PALETTE = new SamplerSigmoid(0, 1, 15);
+MixerLayerStripes.prototype.SAMPLER_PLANE = new SamplerSigmoid(0, 1, 8);
 MixerLayerStripes.prototype.SAMPLER_SCALE = new SamplerSigmoid(0, 1, 6);
 MixerLayerStripes.prototype.SAMPLER_DISTORTION = new SamplerSigmoid(0, 1, 5);
 MixerLayerStripes.prototype.SAMPLER_ROUGHNESS = new SamplerSigmoid(0, 1, 3);
@@ -29,7 +30,7 @@ MixerLayerStripes.prototype.mix = function(random) {
     const interpolateSample = random.getFloat();
 
     return new LayerStripes(
-        this.mother.plane.interpolate(this.father.plane, interpolateSample),
+        this.mother.plane.interpolate(this.father.plane, this.SAMPLER_PLANE.sample(interpolateSample)),
         this.mother.paletteSample.interpolate(
             this.father.paletteSample,
             this.SAMPLER_PALETTE.sample(random.getFloat())),

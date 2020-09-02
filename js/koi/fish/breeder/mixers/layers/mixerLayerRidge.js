@@ -12,6 +12,7 @@ const MixerLayerRidge = function(mother, father) {
 MixerLayerRidge.prototype = Object.create(Mixer.prototype);
 MixerLayerRidge.prototype.SAMPLER_SAMPLE = MixerLayerSpots.prototype.SAMPLER_SAMPLE;
 MixerLayerRidge.prototype.SAMPLER_PALETTE = MixerLayerSpots.prototype.SAMPLER_PALETTE;
+MixerLayerRidge.prototype.SAMPLER_PLANE = new SamplerSigmoid(0, 1, 8);
 MixerLayerRidge.prototype.SAMPLER_SCALE = new SamplerSigmoid(0, 1, 15);
 MixerLayerRidge.prototype.SAMPLER_POWER = new SamplerSigmoid(0, 1, 2);
 MixerLayerRidge.prototype.SAMPLER_THRESHOLD = new SamplerSigmoid(0, 1, 2);
@@ -25,7 +26,7 @@ MixerLayerRidge.prototype.mix = function(random) {
     const interpolateSample = random.getFloat();
 
     return new LayerRidge(
-        this.mother.plane.interpolate(this.father.plane, interpolateSample),
+        this.mother.plane.interpolate(this.father.plane, this.SAMPLER_PLANE.sample(interpolateSample)),
         this.mother.paletteSample.interpolate(
             this.father.paletteSample,
             this.SAMPLER_PALETTE.sample(random.getFloat())),

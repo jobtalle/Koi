@@ -37,8 +37,8 @@ LayerSpots.prototype.SAMPLER_SCALE = new SamplerPlateau(.5, 1.8, 6, 11);
 LayerSpots.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(.25, .5, .75, 2);
 LayerSpots.prototype.SAMPLER_STRETCH = new SamplerPlateau(.37, 1, 2.5, 1);
 LayerSpots.prototype.SAMPLER_X_FOCUS = new SamplerPlateau(0, 0.4, 1, 1);
-LayerSpots.prototype.SAMPLER_Y_FOCUS = new SamplerPlateau(0, 0.5, 1, 12);
-LayerSpots.prototype.SAMPLER_POWER = new SamplerPower(0, 1, 10);
+LayerSpots.prototype.SAMPLER_Y_FOCUS = new SamplerPlateau(0, 0.5, 1, 15);
+LayerSpots.prototype.SAMPLER_POWER = new SamplerPower(0, 1, 2);
 
 LayerSpots.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
@@ -67,10 +67,12 @@ uniform highp mat3 rotate;
 
 varying mediump vec2 iUv;
 
+#define ATTENUATION 1.5
+
 void main() {
   highp vec2 at = vec2(iUv.x * stretch - 0.5, iUv.y - 0.5) * size * scale;
   mediump float noise = cubicNoise(anchor + vec3(at, 0.0) * rotate);
-  mediump float strength = pow(max(0.0, 1.0 - 2.0 * length(iUv - focus)), power);
+  mediump float strength = pow(max(0.0, 1.0 - ATTENUATION * length(iUv - focus)), power);
 
   if (noise > threshold * strength)
     discard;

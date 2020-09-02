@@ -16,7 +16,7 @@ MutatorLayerSpots.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(-5, 0, 5, 1.5
 MutatorLayerSpots.prototype.SAMPLER_STRETCH = new SamplerPlateau(-8, 0, 8, 1);
 MutatorLayerSpots.prototype.SAMPLER_X_FOCUS = new SamplerPlateau(-5, 0, 5, 3);
 MutatorLayerSpots.prototype.SAMPLER_Y_FOCUS = new SamplerPlateau(-6, 0, 6, 3);
-MutatorLayerSpots.prototype.SAMPLER_POWER = new SamplerPlateau(-5, 0, 5, 2.3);
+MutatorLayerSpots.prototype.SAMPLER_POWER = new SamplerPlateau(-9, 0, 9, 2.3);
 
 /**
  * Mutate the layer

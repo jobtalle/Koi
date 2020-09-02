@@ -10,6 +10,7 @@ const MixerLayerSpots = function(mother, father) {
 };
 
 MixerLayerSpots.prototype = Object.create(Mixer.prototype);
+MixerLayerSpots.prototype.SAMPLER_PLANE = new SamplerSigmoid(0, 1, 16);
 MixerLayerSpots.prototype.SAMPLER_SCALE = new SamplerSigmoid(0, 1, 15);
 MixerLayerSpots.prototype.SAMPLER_STRETCH = new SamplerSigmoid(0, 1, 5);
 MixerLayerSpots.prototype.SAMPLER_THRESHOLD = new SamplerSigmoid(0, 1, 2);
@@ -26,7 +27,7 @@ MixerLayerSpots.prototype.mix = function(random) {
     const interpolateSample = random.getFloat();
 
     return new LayerSpots(
-        this.mother.plane.interpolate(this.father.plane, interpolateSample),
+        this.mother.plane.interpolate(this.father.plane, this.SAMPLER_PLANE.sample(interpolateSample)),
         this.mother.paletteSample.interpolate(
             this.father.paletteSample,
             this.SAMPLER_PALETTE.sample(random.getFloat())),
