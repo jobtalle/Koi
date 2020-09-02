@@ -32,7 +32,8 @@ const Fish = function(
     this.nibbleTime = this.NIBBLE_TIME_MIN;
     this.age = age;
     this.samplerSize = new SamplerInverse(
-        this.SIZE_MIN, 1,
+        this.SIZE_MIN,
+        1,
         this.SAMPLER_GROWTH_MULTIPLIER.sample(growthSpeed / 0xFF));
     this.size = this.samplerSize.sample(this.age / 0xFFFF);
     this.mateTimeout = this.SAMPLER_MATING_FREQUENCY.sample(matingFrequency / 0xFF);
@@ -77,7 +78,7 @@ Fish.prototype.TURN_CARRY = .95;
 Fish.prototype.TURN_FOLLOW_CHANCE = .025;
 Fish.prototype.TURN_AMPLITUDE = Math.PI * .4;
 Fish.prototype.SIZE_MIN = .1;
-Fish.prototype.SIZE_MATING = .1; // TODO: Reduced for debugging
+Fish.prototype.SIZE_MATING = .2; // TODO: Reduced for debugging
 Fish.prototype.MATE_PROXIMITY_TIME = 120;
 Fish.prototype.SAMPLER_GROWTH_MULTIPLIER = new SamplerPower(50, 100, 4);
 Fish.prototype.SAMPLER_MATING_FREQUENCY = new SamplerPower(300 * .1, 4500 * .1, .3); // TODO: Reduced for debugging
@@ -175,6 +176,14 @@ Fish.prototype.serialize = function(buffer) {
 Fish.prototype.moveTo = function(position) {
     this.position.set(position);
     this.body.moveTo(position);
+};
+
+/**
+ * Get the position to spawn offspring at
+ * @returns {Vector2} A position
+ */
+Fish.prototype.getOffspringPosition = function() {
+    return this.body.getOffspringPosition();
 };
 
 /**

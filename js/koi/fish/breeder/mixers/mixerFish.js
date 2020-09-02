@@ -25,7 +25,7 @@ MixerFish.prototype.SAMPLER_OFFSPRING_COUNT = new SamplerPower(0, 1, 4);
 MixerFish.prototype.mix = function(patterns, random) {
     return new Fish(
         this.mixerBody.mix(patterns, random),
-        this.mother.position.copy(),
+        this.mother.getOffspringPosition().copy(),
         new Vector2().fromAngle(random.getFloat() * Math.PI * 2),
         this.mixUint8(
             this.mother.growthSpeed,

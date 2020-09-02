@@ -47,6 +47,7 @@ FishBody.prototype.SAMPLER_RADIUS = new SamplerPlateau(.1, .13, .18, 4);
 FishBody.prototype.SAMPLER_SPRING_START = new SamplerPlateau(.15, .85, .95, 1.5);
 FishBody.prototype.SAMPLER_SPRING_END = new SamplerPlateau(.05, .6, .7, 1.5);
 FishBody.prototype.SPRING_POWER = 1.7;
+FishBody.prototype.OFFSPRING_VERTEBRA = .3;
 
 /**
  * Deserialize a fish body
@@ -97,6 +98,14 @@ FishBody.prototype.serialize = function(buffer) {
 
     buffer.writeUint8(this.length);
     buffer.writeUint8(this.radius);
+};
+
+/**
+ * Get the position to spawn offspring at
+ * @returns {Vector2} A position
+ */
+FishBody.prototype.getOffspringPosition = function() {
+    return this.spine[Math.round((this.spine.length - 1) * this.OFFSPRING_VERTEBRA)];
 };
 
 /**
