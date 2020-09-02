@@ -13,14 +13,7 @@ const BinBuffer = function(string = null) {
  * @returns {String} The string
  */
 BinBuffer.prototype.toString = function() {
-    // return btoa(String.fromCharCode(...new Compress(this.bytes).compress()));
-
-    const compressed = new Compress(this.bytes).compress();
-
-    console.log("Compression ratio: " + (compressed.length / this.bytes.length));
-    console.log("Compressed size: " + (compressed.length * .001) + "Kb");
-
-    return btoa(String.fromCharCode(...compressed));
+    return btoa(String.fromCharCode(...this.bytes));
 };
 
 /**
@@ -29,7 +22,8 @@ BinBuffer.prototype.toString = function() {
  * @returns {Number[]} The bytes stored in this string
  */
 BinBuffer.prototype.fromString = function(string) {
-    return new Compress(atob(string).split("").map(c => c.charCodeAt(0))).decompress();
+
+    return atob(string).split("").map(c => c.charCodeAt(0));
 };
 
 /**
