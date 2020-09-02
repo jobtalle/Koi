@@ -14,6 +14,9 @@ MutatorLayerSpots.prototype.SAMPLER_X_DISTANCE = new SamplerPower(0, .4, 4);
 MutatorLayerSpots.prototype.SAMPLER_SCALE = new SamplerPlateau(-7, 0, 7, 1);
 MutatorLayerSpots.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(-5, 0, 5, 1.5);
 MutatorLayerSpots.prototype.SAMPLER_STRETCH = new SamplerPlateau(-8, 0, 8, 1);
+MutatorLayerSpots.prototype.SAMPLER_X_FOCUS = new SamplerPlateau(-5, 0, 5, 3);
+MutatorLayerSpots.prototype.SAMPLER_Y_FOCUS = new SamplerPlateau(-6, 0, 6, 3);
+MutatorLayerSpots.prototype.SAMPLER_POWER = new SamplerPlateau(-5, 0, 5, 2.3);
 
 /**
  * Mutate the layer
@@ -29,4 +32,7 @@ MutatorLayerSpots.prototype.mutate = function(random) {
     this.layer.stretch = this.mutateUint8(this.layer.stretch, this.SAMPLER_STRETCH, random.getFloat());
     this.layer.scale = this.mutateUint8(this.layer.scale, this.SAMPLER_SCALE, random.getFloat());
     this.layer.threshold = this.mutateUint8(this.layer.threshold, this.SAMPLER_THRESHOLD, random.getFloat());
+    this.layer.xFocus = this.mutateUint8(this.layer.xFocus, this.SAMPLER_X_FOCUS, random.getFloat());
+    this.layer.yFocus = this.mutateUint8(this.layer.yFocus, this.SAMPLER_Y_FOCUS, random.getFloat());
+    this.layer.power = this.mutateUint8(this.layer.power, this.SAMPLER_POWER, random.getFloat());
 };
