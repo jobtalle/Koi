@@ -5,13 +5,24 @@
  * @param {Number} scale The noise scale in the range [0, 255]
  * @param {Number} power The ridge power in the range [0, 255]
  * @param {Number} threshold The noise threshold in the range [0, 255]
+ * @param {Number} focus The pattern focus along the spine of the fish in the range [0, 255]
+ * @param {Number} power The power of the pattern near the focal point in the range [0, 255]
  * @constructor
  */
-const LayerRidge = function(plane, sample, scale, power, threshold) {
+const LayerRidge = function(
+    plane,
+    sample,
+    scale,
+    power,
+    threshold,
+    focus,
+    focusPower) {
     this.plane = plane;
     this.scale = scale;
     this.power = power;
     this.threshold = threshold;
+    this.focus = focus;
+    this.focusPower = focusPower;
 
     Layer.call(this, this.ID, sample, true, false, true, this.DOMINANCE);
 };
@@ -22,6 +33,8 @@ LayerRidge.prototype.DOMINANCE = .65;
 LayerRidge.prototype.SAMPLER_SCALE = new SamplerPlateau(1.8, 4, 5.5, 3);
 LayerRidge.prototype.SAMPLER_POWER = new SamplerPlateau(0.73, 1.15, 3.5, 5);
 LayerRidge.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(.3, .5, .7, 1);
+LayerRidge.prototype.SAMPLER_FOCUS = new SamplerPlateau(0, 0.3, 1, 3);
+LayerRidge.prototype.SAMPLER_FOCUS_POWER = new SamplerPower(.4, .6, 10);
 
 LayerRidge.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
@@ -42,18 +55,23 @@ uniform lowp vec3 color;
 uniform mediump float scale;
 uniform mediump float power;
 uniform mediump float threshold;
+uniform mediump float focus;
+uniform mediump float focusPower;
 uniform mediump vec2 size;
 uniform highp vec3 origin;
 uniform highp mat3 rotate;
 
 varying mediump vec2 iUv;
 
+#define ATTENUATION 2.0
+
 void main() {
   mediump float phaseThreshold = pow(1.0 - 2.0 * abs(iUv.y - 0.5), power);
   highp vec2 at = (iUv - vec2(0.5)) * size * scale;
   mediump float noise = cubicNoise(origin + vec3(at, 0.0) * rotate);
+  mediump float strength = pow(max(0.0, 1.0 - ATTENUATION * abs(iUv.x - focus)), focusPower);
   
-  if (noise > phaseThreshold)
+  if (noise > phaseThreshold * strength)
     discard;
   
   gl_FragColor = vec4(color, 1.0);
@@ -67,13 +85,14 @@ void main() {
  * @throws {RangeError} A range error if deserialized values are not valid
  */
 LayerRidge.deserialize = function(buffer) {
-    const plane = Plane.deserialize(buffer);
-    const sample = Palette.Sample.deserialize(buffer);
-    const scale = buffer.readUint8();
-    const power = buffer.readUint8();
-    const threshold = buffer.readUint8();
-
-    return new LayerRidge(plane, sample, scale, power, threshold);
+    return new LayerRidge(
+        Plane.deserialize(buffer),
+        Palette.Sample.deserialize(buffer),
+        buffer.readUint8(),
+        buffer.readUint8(),
+        buffer.readUint8(),
+        buffer.readUint8(),
+        buffer.readUint8());
 };
 
 /**
@@ -87,6 +106,8 @@ LayerRidge.prototype.serialize = function(buffer) {
     buffer.writeUint8(this.scale);
     buffer.writeUint8(this.power);
     buffer.writeUint8(this.threshold);
+    buffer.writeUint8(this.focus);
+    buffer.writeUint8(this.focusPower);
 };
 
 /**
@@ -99,7 +120,9 @@ LayerRidge.prototype.copy = function() {
         this.paletteSample.copy(),
         this.scale,
         this.power,
-        this.threshold);
+        this.threshold,
+        this.focus,
+        this.focusPower);
 };
 
 /**
@@ -113,6 +136,8 @@ LayerRidge.prototype.configure = function(gl, program, color) {
     gl.uniform1f(program["uPower"], this.SAMPLER_POWER.sample(this.power / 0xFF));
     gl.uniform1f(program["uScale"], this.SAMPLER_SCALE.sample(this.scale / 0xFF));
     gl.uniform1f(program["uThreshold"], this.SAMPLER_THRESHOLD.sample(this.threshold / 0xFF));
+    gl.uniform1f(program["uFocus"], this.SAMPLER_FOCUS.sample(this.focus / 0xFF));
+    gl.uniform1f(program["uFocusPower"], this.SAMPLER_FOCUS_POWER.sample(this.focusPower / 0xFF));
     gl.uniform3f(program["uOrigin"], this.plane.anchor.x, this.plane.anchor.y, this.plane.anchor.z);
     gl.uniformMatrix3fv(program["uRotate"], false, this.plane.makeMatrix());
 };
@@ -128,5 +153,15 @@ LayerRidge.prototype.createShader = function(gl) {
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
         ["position", "uv"],
-        ["scale", "power", "threshold", "size", "origin", "rotate", "color"]);
+        [
+            "scale",
+            "power",
+            "threshold",
+            "focus",
+            "focusPower",
+            "size",
+            "origin",
+            "rotate",
+            "color"
+        ]);
 };

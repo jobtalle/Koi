@@ -8,7 +8,7 @@
  * @param {Number} threshold The stripe threshold in the range [0, 255]
  * @param {Number} slant The pattern slant in the range [0, 255]
  * @param {Number} suppression The stripe suppression near the edges in the range [0, 255]
- * @param {Number} focus The stripes pattern focus along the spine of the fish in the range [0, 255]
+ * @param {Number} focus The pattern focus along the spine of the fish in the range [0, 255]
  * @param {Number} power The power of the pattern near the focal point in the range [0, 255]
  * @constructor
  */
