@@ -78,6 +78,14 @@ Mover.prototype.touchMove = function(x, y, air) {
 };
 
 /**
+ * Check whether this mover has a fish
+ * @returns {Boolean} True if a fish is being carried
+ */
+Mover.prototype.hasFish = function() {
+    return this.move !== null;
+};
+
+/**
  * Create a fish body shaped splash
  * @param {FishBody} body A fish body
  * @param {Water} water A water plane to splash on

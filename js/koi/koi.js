@@ -203,10 +203,10 @@ Koi.prototype.touchWater = function(x, y) {
 Koi.prototype.touchStart = function(x, y) {
     const wx = this.constellation.getWorldX(x, this.scale);
     const wy = this.constellation.getWorldY(y, this.scale);
-    const fish = this.constellation.pick(wx, wy);
+    const fish = this.mover.hasFish() ? null : this.constellation.pick(wx, wy);
 
     if (fish)
-        this.mover.pickUp(fish,wx, wy, this.water, this.random);
+        this.mover.pickUp(fish, wx, wy, this.water, this.random);
     else {
         if (this.constellation.contains(wx, wy)) {
             this.touchWater(wx, wy);
