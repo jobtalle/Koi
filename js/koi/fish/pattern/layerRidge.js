@@ -31,7 +31,7 @@ LayerRidge.prototype = Object.create(Layer.prototype);
 
 LayerRidge.prototype.DOMINANCE = .65;
 LayerRidge.prototype.SAMPLER_SCALE = new SamplerPlateau(1.8, 4, 5.5, 3);
-LayerRidge.prototype.SAMPLER_POWER = new SamplerPlateau(0.73, 1.15, 3.5, 5);
+LayerRidge.prototype.SAMPLER_POWER = new SamplerPlateau(0.73, 2.15, 3.5, 5);
 LayerRidge.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(.3, .5, .7, 1);
 LayerRidge.prototype.SAMPLER_FOCUS = new SamplerPlateau(0, 0.3, 1, 3);
 LayerRidge.prototype.SAMPLER_FOCUS_POWER = new SamplerPower(.4, .6, 10);
@@ -63,10 +63,11 @@ uniform highp mat3 rotate;
 
 varying mediump vec2 iUv;
 
+#define RIDGE_ATTENUATION 1.4
 #define ATTENUATION 2.0
 
 void main() {
-  mediump float phaseThreshold = pow(1.0 - 2.0 * abs(iUv.y - 0.5), power);
+  mediump float phaseThreshold = pow(1.0 - RIDGE_ATTENUATION * abs(iUv.y - 0.5), power);
   highp vec2 at = (iUv - vec2(0.5)) * size * scale;
   mediump float noise = cubicNoise(origin + vec3(at, 0.0) * rotate);
   mediump float strength = pow(max(0.0, 1.0 - ATTENUATION * abs(iUv.x - focus)), focusPower);
