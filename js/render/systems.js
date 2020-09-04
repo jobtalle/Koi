@@ -26,6 +26,7 @@ const Systems = function(gl, random, width, height) {
     this.atlas = new Atlas(gl, this.patterns, Koi.prototype.FISH_CAPACITY);
     this.distanceField = new DistanceField(gl, this.quad);
     this.drops = new Drops(gl);
+    this.post = new Post(gl, this.quad);
 };
 
 /**
@@ -66,4 +67,5 @@ Systems.prototype.free = function() {
     this.wind.free();
     this.distanceField.free();
     this.drops.free();
+    this.post.free();
 };

@@ -6,7 +6,7 @@
  * @param {Number} power The ridge power in the range [0, 255]
  * @param {Number} threshold The noise threshold in the range [0, 255]
  * @param {Number} focus The pattern focus along the spine of the fish in the range [0, 255]
- * @param {Number} power The power of the pattern near the focal point in the range [0, 255]
+ * @param {Number} focusPower The power of the pattern near the focal point in the range [0, 255]
  * @constructor
  */
 const LayerRidge = function(
@@ -33,7 +33,7 @@ LayerRidge.prototype.DOMINANCE = .65;
 LayerRidge.prototype.SAMPLER_SCALE = new SamplerPlateau(1.8, 4, 5.5, 3);
 LayerRidge.prototype.SAMPLER_POWER = new SamplerPlateau(0.73, 2.15, 3.5, 5);
 LayerRidge.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(.3, .5, .7, 1);
-LayerRidge.prototype.SAMPLER_FOCUS = new SamplerPlateau(0, 0.3, 1, 3);
+LayerRidge.prototype.SAMPLER_FOCUS = new SamplerPlateau(0, 0.5, 1, 3);
 LayerRidge.prototype.SAMPLER_FOCUS_POWER = new SamplerPower(.4, .6, 10);
 
 LayerRidge.prototype.SHADER_VERTEX = `#version 100

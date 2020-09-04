@@ -19,6 +19,7 @@ const Koi = function(
         systems.width / this.scale,
         systems.height / this.scale);
     this.mover = new Mover(this.constellation);
+    this.buffer = null;
     this.shadowBuffer = null;
     this.rocks = null;
     this.background = null;
@@ -104,6 +105,13 @@ Koi.prototype.createRenderables = function() {
     this.systems.drops.setMesh(this.weather.rain.mesh);
 
     // Create scene objects
+    this.buffer = new RenderTarget(
+        this.systems.gl,
+        this.systems.width,
+        this.systems.height,
+        this.systems.gl.RGB,
+        true,
+        this.systems.gl.LINEAR);
     this.shadowBuffer = new ShadowBuffer(
         this.systems.gl,
         this.constellation.width,
@@ -172,6 +180,7 @@ Koi.prototype.createRenderables = function() {
  * Free all renderable objects
  */
 Koi.prototype.freeRenderables = function() {
+    this.buffer.free();
     this.randomSource.free();
     this.shadowBuffer.free();
     this.background.free();
@@ -315,8 +324,8 @@ Koi.prototype.render = function(deltaTime) {
         false,
         false);
 
-    // Target window
-    this.systems.targetMain();
+    // Target main buffer
+    this.buffer.target();
 
     // Clear background
     this.systems.gl.clearColor(this.COLOR_BACKGROUND.r, this.COLOR_BACKGROUND.g, this.COLOR_BACKGROUND.b, 1);
@@ -358,6 +367,12 @@ Koi.prototype.render = function(deltaTime) {
         this.constellation.width,
         this.constellation.height,
         timeFactor);
+
+    // Target main
+    this.systems.targetMain();
+
+    // Render post processing
+    this.systems.post.render(this.buffer.texture, this.systems.width, this.systems.height);
 };
 
 /**
