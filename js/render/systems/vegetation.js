@@ -9,15 +9,16 @@ const Vegetation = function(gl) {
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
         ["color", "position", "flex", "windPosition"],
-        ["time"]);
+        ["time", "filter"]);
     this.programReflect = new Shader(
         gl,
         this.SHADER_VERTEX_REFLECT,
-        this.SHADER_FRAGMENT,
+        this.SHADER_FRAGMENT_REFLECT,
         ["color", "position"],
         []);
     this.vao = gl.vao.createVertexArrayOES();
     this.vaoReflect = gl.vao.createVertexArrayOES();
+    this.filter = Color.WHITE;
 
     Meshed.call(this, gl, [
         new Meshed.VAOConfiguration(
@@ -94,12 +95,30 @@ void main() {
 `;
 
 Vegetation.prototype.SHADER_FRAGMENT = `#version 100
+uniform lowp vec3 filter;
+
+varying lowp vec3 iColor;
+
+void main() {
+    gl_FragColor = vec4(iColor * filter, 1.0);
+}
+`;
+
+Vegetation.prototype.SHADER_FRAGMENT_REFLECT = `#version 100
 varying lowp vec3 iColor;
 
 void main() {
     gl_FragColor = vec4(iColor, 1.0);
 }
 `;
+
+/**
+ * Set the filtering color
+ * @param {Color} filter The filtering color
+ */
+Vegetation.prototype.setFilter = function(filter) {
+    this.filter = filter;
+};
 
 /**
  * Render a mesh as vegetation
@@ -114,6 +133,12 @@ Vegetation.prototype.render = function(air, time) {
     this.gl.bindTexture(this.gl.TEXTURE_2D, air.getFront().texture);
 
     this.gl.uniform1f(this.program["uTime"], time);
+
+    if (this.filter !== null) {
+        this.gl.uniform3f(this.program["uFilter"], this.filter.r, this.filter.g, this.filter.b);
+
+        this.filter = null;
+    }
 
     this.renderMesh();
 };

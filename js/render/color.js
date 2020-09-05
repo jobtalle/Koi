@@ -13,10 +13,6 @@ const Color = function(r, g, b, a = 1) {
     this.a = a;
 };
 
-Color.RED = new Color(1, 0, 0);
-Color.GREEN = new Color(0, 1, 0);
-Color.BLUE = new Color(0, 0, 1);
-Color.BLACK = new Color(0, 0, 0);
 Color.WHITE = new Color(1, 1, 1);
 
 /**

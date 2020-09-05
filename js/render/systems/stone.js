@@ -9,11 +9,11 @@ const Stone = function(gl) {
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
         ["color", "position"],
-        []);
+        ["filter"]);
     this.programReflect = new Shader(
         gl,
         this.SHADER_VERTEX_REFLECT,
-        this.SHADER_FRAGMENT,
+        this.SHADER_FRAGMENT_REFLECT,
         ["color", "position"],
         []);
     this.programBase = new Shader(
@@ -25,6 +25,7 @@ const Stone = function(gl) {
     this.vao = gl.vao.createVertexArrayOES();
     this.vaoReflect = gl.vao.createVertexArrayOES();
     this.vaoBase = gl.vao.createVertexArrayOES();
+    this.filter = Color.WHITE;
 
     Meshed.call(this, gl, [
         new Meshed.VAOConfiguration(
@@ -58,6 +59,8 @@ const Stone = function(gl) {
             }
         )
     ]);
+
+    this.setFilter(Color.WHITE);
 };
 
 Stone.prototype = Object.create(Meshed.prototype);
@@ -107,6 +110,16 @@ void main() {
 `;
 
 Stone.prototype.SHADER_FRAGMENT = `#version 100
+uniform lowp vec3 filter;
+
+varying lowp vec3 iColor;
+
+void main() {
+  gl_FragColor = vec4(iColor * filter, 1.0);
+}
+`;
+
+Stone.prototype.SHADER_FRAGMENT_REFLECT = `#version 100
 varying lowp vec3 iColor;
 
 void main() {
@@ -123,11 +136,29 @@ void main() {
 `;
 
 /**
+ * Set the filtering color
+ * @param {Color} filter The filtering color
+ */
+Stone.prototype.setFilter = function(filter) {
+    this.filter = filter;
+};
+
+/**
  * Render the stone
  */
 Stone.prototype.render = function() {
     this.program.use();
     this.gl.vao.bindVertexArrayOES(this.vao);
+
+    if (this.filter !== null) {
+        this.gl.uniform3f(
+            this.program["uFilter"],
+            this.filter.r,
+            this.filter.g,
+            this.filter.b);
+
+        this.filter = null;
+    }
 
     this.gl.enable(this.gl.CULL_FACE);
     this.renderMesh();

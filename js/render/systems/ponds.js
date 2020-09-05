@@ -9,7 +9,7 @@ const Ponds = function(gl) {
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
         ["position"],
-        ["depth", "height", "size", "waterSize", "wavePhase", "phase", "time"],
+        ["depth", "height", "size", "waterSize", "wavePhase", "phase", "time", "filter"],
         [
             new Shader.Constant("background", "i", [0]),
             new Shader.Constant("reflections", "i", [1]),
@@ -31,6 +31,7 @@ const Ponds = function(gl) {
         ["color"]);
     this.vao = gl.vao.createVertexArrayOES();
     this.vaoShape = gl.vao.createVertexArrayOES();
+    this.filter = Color.WHITE;
 
     Meshed.call(this, gl, [
         new Meshed.VAOConfiguration(
@@ -94,6 +95,8 @@ uniform lowp float height;
 uniform lowp vec2 waterSize;
 uniform lowp float phase;
 uniform lowp float time;
+uniform lowp vec3 filter;
+
 varying lowp vec2 iUv;
 
 #define GLARE_BLEND 0.3
@@ -136,7 +139,7 @@ void main() {
   gl_FragColor = vec4(vec3(mix(
     mix(colorFilter * pixel, reflected.rgb, REFLECTIVITY + max(0.0, (normal.x + normal.z) * SHININESS)),
     colorHighlight,
-    max(0.0, min(GLARE_BLEND, overhead / GLARE_TRANSITION)))), 1.0);
+    max(0.0, min(GLARE_BLEND, overhead / GLARE_TRANSITION)))) * filter, 1.0);
 }
 `;
 
@@ -147,6 +150,14 @@ void main() {
   gl_FragColor = color;
 }
 `;
+
+/**
+ * Set the filtering color
+ * @param {Color} filter The filtering color
+ */
+Ponds.prototype.setFilter = function(filter) {
+    this.filter = filter;
+};
 
 /**
  * Render ponds
@@ -180,6 +191,12 @@ Ponds.prototype.render = function(
     this.gl.uniform2f(this.program["uWaterSize"], water.width, water.height);
     this.gl.uniform1f(this.program["uPhase"], phase);
     this.gl.uniform1f(this.program["uTime"], time);
+
+    if (this.filter !== null) {
+        this.gl.uniform3f(this.program["uFilter"], this.filter.r, this.filter.g, this.filter.b);
+
+        this.filter = null;
+    }
 
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, background);
