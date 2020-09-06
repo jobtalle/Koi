@@ -12,8 +12,6 @@ const Rain = function(gl, constellation, random) {
     this.mesh = this.makeMesh(this.positions, constellation.width, constellation.height, random);
     this.window = this.windowPrevious = 0;
     this.amount = this.amountPrevious = 0;
-    this.transition = this.transitionPrevious = 0;
-    this.transitionTarget = this.transition;
     this.speed = 0;
     this.lastDrop = 0;
 
@@ -39,7 +37,6 @@ Rain.prototype.CELL = .3;
 Rain.prototype.CELL_RANDOM = .8;
 Rain.prototype.CELL_OVERSHOOT_X = -Math.cos(Rain.prototype.DROP_ANGLE) * Rain.prototype.DROP_DISTANCE;
 Rain.prototype.CELL_OVERSHOOT_Y = Rain.prototype.DROP_LENGTH;
-Rain.prototype.TRANSITION_SPEED = .015;
 
 /**
  * Make the raindrop landing positions
@@ -120,44 +117,18 @@ Rain.prototype.makeMesh = function(positions, width, height, random) {
  * @param {Number} speed The speed of a droplet in fraction per frame
  * @param {Number} amount The portion of visible particles in the range [0, 1]
  */
-Rain.prototype.fadeIn = function(speed, amount) {
+Rain.prototype.start = function(speed, amount) {
     this.speed = speed;
     this.amount = amount;
-    this.transitionTarget = 1;
     this.lastDrop = Math.round(this.dropCount * (this.window - amount));
-};
-
-/**
- * Stop the rain
- */
-Rain.prototype.fadeOut = function() {
-    this.transitionTarget = 0;
-};
-
-/**
- * Move the transition value
- */
-Rain.prototype.moveTransition = function() {
-    this.transitionPrevious = this.transition;
-
-    if (this.transition < this.transitionTarget) {
-        if ((this.transition += this.TRANSITION_SPEED) > this.transitionTarget)
-            this.transition = this.transitionTarget;
-    }
-    else if ((this.transition -= this.TRANSITION_SPEED) < this.transitionTarget)
-        this.transition = this.transitionTarget;
 };
 
 /**
  * Update the rain animation
  * @param {Water} water The water
+ * @param {Number} transition The transition progress
  */
-Rain.prototype.update = function(water) {
-    if (this.transition !== this.transitionTarget)
-        this.moveTransition();
-    else if (this.transitionTarget === 0)
-        return;
-
+Rain.prototype.update = function(water, transition) {
     this.windowPrevious = this.window;
     this.amountPrevious = this.amount;
 
@@ -177,7 +148,7 @@ Rain.prototype.update = function(water) {
                 this.positions[drop].x,
                 this.positions[drop].y,
                 this.DROP_EFFECT_RADIUS,
-                this.DROP_EFFECT_DISPLACEMENT * this.transition);
+                this.DROP_EFFECT_DISPLACEMENT * transition);
 
         if (++drop === this.dropCount)
             drop = 0;
@@ -189,13 +160,11 @@ Rain.prototype.update = function(water) {
 /**
  * Render the raindrops
  * @param {Drops} drops The drops renderer
+ * @param {Number} transition The transition progress
  * @param {Number} time The interpolation factor
+ * @returns {Number} The rain intensity in the range [0, 1]
  */
-Rain.prototype.render = function(drops, time) {
-    if (this.transition === 0)
-        return;
-
-    const transition = this.transitionPrevious + (this.transition - this.transitionPrevious) * time;
+Rain.prototype.render = function(drops, transition, time) {
     let windowDelta = this.window - this.windowPrevious;
 
     if (Math.abs(windowDelta) > 1 - Math.abs(windowDelta))
@@ -215,6 +184,8 @@ Rain.prototype.render = function(drops, time) {
         window,
         amount,
         transition);
+
+    return transition;
 };
 
 /**

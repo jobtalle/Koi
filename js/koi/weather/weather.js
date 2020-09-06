@@ -10,9 +10,14 @@ const Weather = function(gl, constellation, random) {
     this.gusts = new Gusts(constellation);
     this.rain = new Rain(gl, constellation, random);
     this.state = new WeatherState();
+    this.transition = this.transitionPrevious = 1;
 
     this.applyState(this.state);
 };
+
+Weather.prototype.TRANSITION_SPEED = .015;
+Weather.prototype.COLOR_FILTER_SUNNY = Color.fromCSS("--color-ambient-sunny");
+Weather.prototype.COLOR_FILTER_DRIZZLE = Color.fromCSS("--color-ambient-drizzle");
 
 /**
  * Set the weather state
@@ -36,14 +41,14 @@ Weather.prototype.getState = function() {
  * Activate the sunny state
  */
 Weather.prototype.setSunny = function() {
-    this.rain.fadeOut();
+
 };
 
 /**
  * Activate the rain state
  */
 Weather.prototype.setRain = function() {
-    this.rain.fadeIn(.07, .06);
+    this.rain.start(.07, .06);
 };
 
 /**
@@ -51,6 +56,8 @@ Weather.prototype.setRain = function() {
  * @param {WeatherState} state The state
  */
 Weather.prototype.applyState = function(state) {
+    this.transition = this.transitionPrevious = 0;
+
     switch (state.state) {
         case this.state.ID_SUNNY:
             this.setSunny();
@@ -73,8 +80,25 @@ Weather.prototype.update = function(air, water, random) {
     if (this.state.update(random))
         this.applyState(this.state);
 
+    this.transitionPrevious = this.transition;
+
+    if (this.transition < 1)
+        if ((this.transition += this.TRANSITION_SPEED) > 1)
+            this.transition = 1;
+
+    switch (this.state.state) {
+        case this.state.ID_SUNNY:
+            if (this.transition !== 1)
+                this.rain.update(water, 1 - this.transition);
+
+            break;
+        case this.state.ID_RAIN:
+            this.rain.update(water, this.transition);
+
+            break;
+    }
+
     this.gusts.update(air, random);
-    this.rain.update(water);
 };
 
 /**
@@ -83,10 +107,22 @@ Weather.prototype.update = function(air, water, random) {
  * @param {Number} time The interpolation factor
  */
 Weather.prototype.render = function(drops, time) {
+    const transition = this.transitionPrevious + (this.transition - this.transitionPrevious) * time;
+
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
 
-    this.rain.render(drops, time);
+    switch (this.state.state) {
+        case this.state.ID_SUNNY:
+            if (transition !== 1)
+                this.rain.render(drops, 1 - transition, time);
+
+            break;
+        case this.state.ID_RAIN:
+            this.rain.render(drops, transition, time);
+
+            break;
+    }
 
     this.gl.disable(this.gl.BLEND);
 };

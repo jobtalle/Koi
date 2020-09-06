@@ -9,7 +9,7 @@ const WeatherState = function(state = this.ID_SUNNY, time = 0) {
     this.time = time;
 };
 
-WeatherState.prototype.STATE_TIME = 700;
+WeatherState.prototype.STATE_TIME = 200;
 WeatherState.prototype.ID_SUNNY = 0;
 WeatherState.prototype.ID_RAIN = 1;
 WeatherState.prototype.TRANSITION_MATRIX = [

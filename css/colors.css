@@ -10,6 +10,10 @@
     --color-sky: #bdd6e2;
     --color-rain: #d8dbda;
 
+    /* Ambient color multipliers */
+    --color-ambient-sunny: #ffffff;
+    --color-ambient-drizzle: #b1b1b1;
+
     /* Plant colors */
     --color-grass: #8ba054;
     --color-cattail-leaf: #657635;
