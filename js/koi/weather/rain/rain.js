@@ -121,6 +121,9 @@ Rain.prototype.start = function(speed, amount) {
     this.speed = speed;
     this.amount = amount;
     this.lastDrop = Math.round(this.dropCount * (this.window - amount));
+
+    if (this.lastDrop < 0)
+        this.lastDrop += this.dropCount;
 };
 
 /**

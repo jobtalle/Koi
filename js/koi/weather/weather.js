@@ -27,6 +27,8 @@ Weather.prototype.setState = function(state) {
     this.state = state;
 
     this.applyState(state);
+
+    this.transition = this.transitionPrevious = Math.min(1, state.time / (1 / this.TRANSITION_SPEED));
 };
 
 /**
@@ -88,7 +90,7 @@ Weather.prototype.update = function(air, water, random) {
 
     switch (this.state.state) {
         case this.state.ID_SUNNY:
-            if (this.transition !== 1)
+            if (this.state.lastState === this.state.ID_RAIN && this.transition !== 1)
                 this.rain.update(water, 1 - this.transition);
 
             break;
@@ -114,7 +116,7 @@ Weather.prototype.render = function(drops, time) {
 
     switch (this.state.state) {
         case this.state.ID_SUNNY:
-            if (transition !== 1)
+            if (this.state.lastState === this.state.ID_RAIN && transition !== 1)
                 this.rain.render(drops, 1 - transition, time);
 
             break;

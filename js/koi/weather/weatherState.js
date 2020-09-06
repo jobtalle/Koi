@@ -1,10 +1,12 @@
 /**
  * The state of a weather object
+ * @param {Number} [lastState] The previous state ID
  * @param {Number} [state] The state ID
  * @param {Number} [time] The current state time
  * @constructor
  */
-const WeatherState = function(state = this.ID_SUNNY, time = 0) {
+const WeatherState = function(lastState = this.ID_SUNNY, state = this.ID_SUNNY, time = 0) {
+    this.lastState = lastState;
     this.state = state;
     this.time = time;
 };
@@ -23,17 +25,17 @@ WeatherState.prototype.TRANSITION_MATRIX = [
  * @throws {RangeError} A range error when deserialized values are out of range
  */
 WeatherState.deserialize = function(buffer) {
-    const combined = buffer.readUint16();
-    const state = (combined & 0xF000) >> 12;
-    const time = combined & 0x0FFF;
+    const lastState = buffer.readUint8();
+    const state = buffer.readUint8();
+    const time = buffer.readUint16();
 
-    if (state > WeatherState.prototype.ID_RAIN)
+    if (Math.max(lastState, state) > WeatherState.prototype.ID_RAIN)
         throw new RangeError();
 
     if (time > WeatherState.prototype.STATE_TIME)
         throw new RangeError();
 
-    return new WeatherState(state, time);
+    return new WeatherState(lastState, state, time);
 };
 
 /**
@@ -41,7 +43,9 @@ WeatherState.deserialize = function(buffer) {
  * @param {BinBuffer} buffer A buffer to serialize to
  */
 WeatherState.prototype.serialize = function(buffer) {
-    buffer.writeUint16((this.state << 12) | this.time);
+    buffer.writeUint8(this.lastState);
+    buffer.writeUint8(this.state);
+    buffer.writeUint16(this.time);
 };
 
 /**
@@ -64,7 +68,13 @@ WeatherState.prototype.transition = function(random) {
         }
     }
 
-    return statePrevious !== this.state;
+    if (statePrevious !== this.state) {
+        this.lastState = statePrevious;
+
+        return true;
+    }
+
+    return false;
 };
 
 /**
