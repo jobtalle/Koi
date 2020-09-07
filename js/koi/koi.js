@@ -31,6 +31,7 @@ const Koi = function(
     this.randomSource = null;
     this.reflections = null;
     this.weather = null;
+    this.weatherFilterChanged = false;
     this.spawner = new Spawner(this.constellation, spawnerState);
     this.time = this.UPDATE_RATE;
     this.phase = 0;
@@ -290,6 +291,14 @@ Koi.prototype.render = function(deltaTime) {
 
     const timeFactor = this.time / this.UPDATE_RATE;
 
+    // Apply filter color
+    if (this.weatherFilterChanged) {
+        this.systems.stone.setFilter(this.weather.filter);
+        this.systems.vegetation.setFilter(this.weather.filter);
+        this.systems.ponds.setFilter(this.weather.filter);
+        console.log(this.weather.filter);
+    }
+
     // Render shadows
     this.shadowBuffer.target();
     this.constellation.render(this.systems.bodies, this.systems.atlas, timeFactor,true);
@@ -319,7 +328,11 @@ Koi.prototype.render = function(deltaTime) {
     this.systems.targetMain();
 
     // Clear background
-    this.systems.gl.clearColor(this.COLOR_BACKGROUND.r, this.COLOR_BACKGROUND.g, this.COLOR_BACKGROUND.b, 1);
+    this.systems.gl.clearColor(
+        this.COLOR_BACKGROUND.r * this.weather.filter.r,
+        this.COLOR_BACKGROUND.g * this.weather.filter.g,
+        this.COLOR_BACKGROUND.b * this.weather.filter.b,
+        1);
     this.systems.gl.clear(this.systems.gl.COLOR_BUFFER_BIT | this.systems.gl.DEPTH_BUFFER_BIT);
 
     // Enable Z buffer
@@ -344,7 +357,7 @@ Koi.prototype.render = function(deltaTime) {
         timeFactor);
 
     // Render weather effects
-    this.weather.render(
+    this.weatherFilterChanged = this.weather.render(
         this.systems.drops,
         timeFactor);
 

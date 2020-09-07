@@ -10,7 +10,9 @@ const Weather = function(gl, constellation, random) {
     this.gusts = new Gusts(constellation);
     this.rain = new Rain(gl, constellation, random);
     this.state = new WeatherState();
-    this.transition = this.transitionPrevious = 1;
+    this.transition = this.transitionPrevious = this.transitionRendered = 1;
+    this.filter = new Color(1, 1, 1);
+    this.filterPrevious = this.filterCurrent = this.COLOR_FILTER_SUNNY;
 
     this.applyState(this.state.state);
 };
@@ -41,16 +43,27 @@ Weather.prototype.getState = function() {
 };
 
 /**
+ * Set the filter color for the current weather
+ * @param {Color} filter The filter color
+ */
+Weather.prototype.setFilter = function(filter) {
+    this.filterPrevious = this.filterCurrent;
+    this.filterCurrent = filter;
+};
+
+/**
  * Activate the sunny state
  */
 Weather.prototype.setSunny = function() {
-
+    this.setFilter(this.COLOR_FILTER_SUNNY);
 };
 
 /**
  * Activate the rain state
  */
 Weather.prototype.setRain = function() {
+    this.setFilter(this.COLOR_FILTER_DRIZZLE);
+
     this.rain.start(.07, .06);
 };
 
@@ -108,6 +121,7 @@ Weather.prototype.update = function(air, water, random) {
  * Render weather effects
  * @param {Drops} drops The drops renderer
  * @param {Number} time The interpolation factor
+ * @returns {Boolean} True if the filter color has changed
  */
 Weather.prototype.render = function(drops, time) {
     const transition = this.transitionPrevious + (this.transition - this.transitionPrevious) * time;
@@ -128,6 +142,20 @@ Weather.prototype.render = function(drops, time) {
     }
 
     this.gl.disable(this.gl.BLEND);
+
+    if (transition !== this.transitionRendered) {
+        this.filter.r = this.filterPrevious.r + (this.filterCurrent.r - this.filterPrevious.r) * transition;
+        this.filter.g = this.filterPrevious.g + (this.filterCurrent.g - this.filterPrevious.g) * transition;
+        this.filter.b = this.filterPrevious.b + (this.filterCurrent.b - this.filterPrevious.b) * transition;
+
+        this.transitionRendered = transition;
+
+        return true;
+    }
+
+    this.transitionRendered = transition;
+
+    return false;
 };
 
 /**
