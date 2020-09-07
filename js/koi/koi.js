@@ -256,8 +256,13 @@ Koi.prototype.resize = function() {
         this.systems.height / this.scale,
         this.systems.atlas);
 
+    const weatherState = this.weather.state;
+
     this.freeRenderables();
     this.createRenderables();
+
+    this.weather.setState(weatherState);
+    this.weatherFilterChanged = true;
 };
 
 /**
@@ -296,7 +301,6 @@ Koi.prototype.render = function(deltaTime) {
         this.systems.stone.setFilter(this.weather.filter);
         this.systems.vegetation.setFilter(this.weather.filter);
         this.systems.ponds.setFilter(this.weather.filter);
-        console.log(this.weather.filter);
     }
 
     // Render shadows

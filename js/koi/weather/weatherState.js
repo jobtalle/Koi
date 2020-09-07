@@ -11,7 +11,7 @@ const WeatherState = function(lastState = this.ID_SUNNY, state = this.ID_SUNNY, 
     this.time = time;
 };
 
-WeatherState.prototype.STATE_TIME = 80;
+WeatherState.prototype.STATE_TIME = 90;
 WeatherState.prototype.ID_SUNNY = 0;
 WeatherState.prototype.ID_RAIN = 1;
 WeatherState.prototype.TRANSITION_MATRIX = [

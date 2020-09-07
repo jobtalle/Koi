@@ -32,6 +32,9 @@ Weather.prototype.setState = function(state) {
     this.applyState(state.state);
 
     this.transition = this.transitionPrevious = Math.min(1, state.time / (1 / this.TRANSITION_SPEED));
+    this.filter.r = this.filterPrevious.r + (this.filterCurrent.r - this.filterPrevious.r) * this.transition;
+    this.filter.g = this.filterPrevious.g + (this.filterCurrent.g - this.filterPrevious.g) * this.transition;
+    this.filter.b = this.filterPrevious.b + (this.filterCurrent.b - this.filterPrevious.b) * this.transition;
 };
 
 /**
