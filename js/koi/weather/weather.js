@@ -12,7 +12,7 @@ const Weather = function(gl, constellation, random) {
     this.state = new WeatherState();
     this.transition = this.transitionPrevious = 1;
 
-    this.applyState(this.state);
+    this.applyState(this.state.state);
 };
 
 Weather.prototype.TRANSITION_SPEED = .015;
@@ -26,7 +26,8 @@ Weather.prototype.COLOR_FILTER_DRIZZLE = Color.fromCSS("--color-ambient-drizzle"
 Weather.prototype.setState = function(state) {
     this.state = state;
 
-    this.applyState(state);
+    this.applyState(state.lastState);
+    this.applyState(state.state);
 
     this.transition = this.transitionPrevious = Math.min(1, state.time / (1 / this.TRANSITION_SPEED));
 };
@@ -55,12 +56,12 @@ Weather.prototype.setRain = function() {
 
 /**
  * Apply weather state effects
- * @param {WeatherState} state The state
+ * @param {Number} state The state ID
  */
 Weather.prototype.applyState = function(state) {
     this.transition = this.transitionPrevious = 0;
 
-    switch (state.state) {
+    switch (state) {
         case this.state.ID_SUNNY:
             this.setSunny();
 
@@ -80,7 +81,7 @@ Weather.prototype.applyState = function(state) {
  */
 Weather.prototype.update = function(air, water, random) {
     if (this.state.update(random))
-        this.applyState(this.state);
+        this.applyState(this.state.state);
 
     this.transitionPrevious = this.transition;
 
