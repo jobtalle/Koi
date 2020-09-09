@@ -19,7 +19,10 @@ const Weather = function(gl, constellation, random) {
 
 Weather.prototype.TRANSITION_SPEED = .015;
 Weather.prototype.COLOR_FILTER_SUNNY = Color.fromCSS("--color-ambient-sunny");
+Weather.prototype.COLOR_FILTER_OVERCAST = Color.fromCSS("--color-ambient-overcast");
 Weather.prototype.COLOR_FILTER_DRIZZLE = Color.fromCSS("--color-ambient-drizzle");
+Weather.prototype.COLOR_FILTER_RAIN = Color.fromCSS("--color-ambient-rain");
+Weather.prototype.COLOR_FILTER_THUNDERSTORM = Color.fromCSS("--color-ambient-thunderstorm");
 
 /**
  * Set the weather state
@@ -62,12 +65,37 @@ Weather.prototype.setSunny = function() {
 };
 
 /**
- * Activate the rain state
+ * Activate the overcast state
  */
-Weather.prototype.setRain = function() {
+Weather.prototype.setOvercast = function() {
+    this.setFilter(this.COLOR_FILTER_OVERCAST);
+};
+
+/**
+ * Activate the drizzle state
+ */
+Weather.prototype.setDrizzle = function() {
     this.setFilter(this.COLOR_FILTER_DRIZZLE);
 
     this.rain.start(.07, .06);
+};
+
+/**
+ * Activate the rain state
+ */
+Weather.prototype.setRain = function() {
+    this.setFilter(this.COLOR_FILTER_RAIN);
+
+    this.rain.start(.08, .09);
+};
+
+/**
+ * Activate the thunderstorm state
+ */
+Weather.prototype.setThunderstorm = function() {
+    this.setFilter(this.COLOR_FILTER_THUNDERSTORM);
+
+    this.rain.start(.1, .15);
 };
 
 /**
@@ -82,8 +110,20 @@ Weather.prototype.applyState = function(state) {
             this.setSunny();
 
             break;
+        case this.state.ID_OVERCAST:
+            this.setOvercast();
+
+            break;
+        case this.state.ID_DRIZZLE:
+            this.setDrizzle();
+
+            break;
         case this.state.ID_RAIN:
             this.setRain();
+
+            break;
+        case this.state.ID_THUNDERSTORM:
+            this.setThunderstorm();
 
             break;
     }
@@ -107,11 +147,16 @@ Weather.prototype.update = function(air, water, random) {
 
     switch (this.state.state) {
         case this.state.ID_SUNNY:
-            if (this.state.lastState === this.state.ID_RAIN && this.transition !== 1)
+        case this.state.ID_OVERCAST:
+            if (this.state.lastState !== this.state.ID_SUNNY &&
+                this.state.lastState !== this.state.ID_OVERCAST &&
+                this.transition !== 1)
                 this.rain.update(water, 1 - this.transition);
 
             break;
+        case this.state.ID_DRIZZLE:
         case this.state.ID_RAIN:
+        case this.state.ID_THUNDERSTORM:
             this.rain.update(water, this.transition);
 
             break;
@@ -131,14 +176,19 @@ Weather.prototype.render = function(drops, time) {
 
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
-
+    console.log(this.state.state);
     switch (this.state.state) {
         case this.state.ID_SUNNY:
-            if (this.state.lastState === this.state.ID_RAIN && transition !== 1)
+        case this.state.ID_OVERCAST:
+            if (this.state.lastState !== this.state.ID_SUNNY &&
+                this.state.lastState !== this.state.ID_OVERCAST &&
+                transition !== 1)
                 this.rain.render(drops, 1 - transition, time);
 
             break;
+        case this.state.ID_DRIZZLE:
         case this.state.ID_RAIN:
+        case this.state.ID_THUNDERSTORM:
             this.rain.render(drops, transition, time);
 
             break;

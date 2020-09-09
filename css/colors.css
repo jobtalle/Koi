@@ -8,11 +8,14 @@
     --color-rock-top: #645154;
     --color-rock-side: #402F31;
     --color-sky: #bdd6e2;
-    --color-rain: #d8dbda;
+    --color-rain: #ccd0cf;
 
     /* Ambient color multipliers */
     --color-ambient-sunny: #ffffff;
-    --color-ambient-drizzle: #b1b1b1;
+    --color-ambient-overcast: #fafafa;
+    --color-ambient-drizzle: #cdcdcd;
+    --color-ambient-rain: #b5b5b5;
+    --color-ambient-thunderstorm: #aeaeae;
 
     /* Plant colors */
     --color-grass: #8ba054;

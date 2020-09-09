@@ -13,10 +13,46 @@ const WeatherState = function(lastState = this.ID_SUNNY, state = this.ID_SUNNY, 
 
 WeatherState.prototype.STATE_TIME = 90;
 WeatherState.prototype.ID_SUNNY = 0;
-WeatherState.prototype.ID_RAIN = 1;
+WeatherState.prototype.ID_OVERCAST = 1;
+WeatherState.prototype.ID_DRIZZLE = 2;
+WeatherState.prototype.ID_RAIN = 3;
+WeatherState.prototype.ID_THUNDERSTORM = 4;
 WeatherState.prototype.TRANSITION_MATRIX = [
-    [0, 1],
-    [1, 0]];
+    [         // Transitions from sunny weather
+        0.3,  // Sunny
+        0.4,  // Overcast
+        0.3,  // Drizzle
+        0,    // Rain
+        0     // Thunderstorm
+    ],
+    [         // Transitions from overcast weather
+        0.2,  // Sunny
+        0.3,  // Overcast
+        0.2,  // Drizzle
+        0.2,  // Rain
+        0.1   // Thunderstorm
+    ],
+    [         // Transitions from drizzle weather
+        0.5,  // Sunny
+        0.5,  // Overcast
+        0,    // Drizzle
+        0,    // Rain
+        0     // Thunderstorm
+    ],
+    [         // Transitions from rain weather
+        0.4,  // Sunny
+        0.6,  // Overcast
+        0,    // Drizzle
+        0,    // Rain
+        0     // Thunderstorm
+    ],
+    [         // Transitions from thunderstorm weather
+        0.2,  // Sunny
+        0.8,  // Overcast
+        0,    // Drizzle
+        0,    // Rain
+        0     // Thunderstorm
+    ]];
 
 /**
  * Deserialize the weather state
@@ -29,7 +65,7 @@ WeatherState.deserialize = function(buffer) {
     const state = buffer.readUint8();
     const time = buffer.readUint16();
 
-    if (Math.max(lastState, state) > WeatherState.prototype.ID_RAIN)
+    if (Math.max(lastState, state) > WeatherState.prototype.ID_THUNDERSTORM)
         throw new RangeError();
 
     if (time > WeatherState.prototype.STATE_TIME)
