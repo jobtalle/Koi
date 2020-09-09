@@ -13,11 +13,17 @@ const Weather = function(gl, constellation, random) {
     this.transition = this.transitionPrevious = this.transitionRendered = 1;
     this.filter = new Color(1, 1, 1);
     this.filterPrevious = this.filterCurrent = this.COLOR_FILTER_SUNNY;
+    this.lightning = this.lightningPrevious = 0;
 
     this.applyState(this.state.state);
 };
 
 Weather.prototype.TRANSITION_SPEED = .015;
+Weather.prototype.LIGHTNING_CHANCE = .02;
+Weather.prototype.LIGHTNING_DECAY = .3;
+Weather.prototype.LIGHTNING_STEPS = Math.ceil(1 / Weather.prototype.LIGHTNING_DECAY);
+Weather.prototype.COLOR_FILTER_LIGHTNING = new Color(5, 5, 7);
+Weather.prototype.SAMPLER_LIGHTING = new SamplerPower(0, 1, 4);
 Weather.prototype.COLOR_FILTER_SUNNY = Color.fromCSS("--color-ambient-sunny");
 Weather.prototype.COLOR_FILTER_OVERCAST = Color.fromCSS("--color-ambient-overcast");
 Weather.prototype.COLOR_FILTER_DRIZZLE = Color.fromCSS("--color-ambient-drizzle");
@@ -177,15 +183,37 @@ Weather.prototype.update = function(air, water, random) {
                 this.rain.update(water, 1 - this.transition);
 
             break;
+        case this.state.ID_THUNDERSTORM:
+            this.lightningPrevious = this.lightning;
+
+            if (this.lightning !== 0) {
+                if ((this.lightning -= this.LIGHTNING_DECAY) < 0) {
+                    this.lightning = 0;
+
+                    this.interpolateFilter(1);
+                }
+            }
+            else if (random.getFloat() < this.LIGHTNING_CHANCE && this.state.timeToTransition() > this.LIGHTNING_STEPS)
+                this.lightning = 1;
+
         case this.state.ID_DRIZZLE:
         case this.state.ID_RAIN:
-        case this.state.ID_THUNDERSTORM:
             this.rain.update(water, this.transition);
 
             break;
     }
 
     this.gusts.update(air, random);
+};
+
+/**
+ * Interpolate the color filter
+ * @param {Number} transition The state transition in the range [0, 1]
+ */
+Weather.prototype.interpolateFilter = function(transition) {
+    this.filter.r = this.filterPrevious.r + (this.filterCurrent.r - this.filterPrevious.r) * transition;
+    this.filter.g = this.filterPrevious.g + (this.filterCurrent.g - this.filterPrevious.g) * transition;
+    this.filter.b = this.filterPrevious.b + (this.filterCurrent.b - this.filterPrevious.b) * transition;
 };
 
 /**
@@ -219,10 +247,21 @@ Weather.prototype.render = function(drops, time) {
 
     this.gl.disable(this.gl.BLEND);
 
+    if (this.lightning !== 0 && this.state.state === this.state.ID_THUNDERSTORM) {
+        const lighting = this.lightningPrevious + (this.lightning - this.lightningPrevious) * time;
+        const power = this.SAMPLER_LIGHTING.sample(lighting);
+
+        this.interpolateFilter(transition);
+
+        this.filter.r += this.COLOR_FILTER_LIGHTNING.r * power;
+        this.filter.g += this.COLOR_FILTER_LIGHTNING.g * power;
+        this.filter.b += this.COLOR_FILTER_LIGHTNING.b * power;
+
+        return true;
+    }
+
     if (transition !== this.transitionRendered) {
-        this.filter.r = this.filterPrevious.r + (this.filterCurrent.r - this.filterPrevious.r) * transition;
-        this.filter.g = this.filterPrevious.g + (this.filterCurrent.g - this.filterPrevious.g) * transition;
-        this.filter.b = this.filterPrevious.b + (this.filterCurrent.b - this.filterPrevious.b) * transition;
+        this.interpolateFilter(transition);
 
         this.transitionRendered = transition;
 

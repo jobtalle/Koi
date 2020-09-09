@@ -18,19 +18,12 @@ WeatherState.prototype.ID_DRIZZLE = 2;
 WeatherState.prototype.ID_RAIN = 3;
 WeatherState.prototype.ID_THUNDERSTORM = 4;
 WeatherState.prototype.TRANSITION_MATRIX = [
-    // [         // Transitions from sunny weather
-    //     0.5,  // Sunny
-    //     0.3,  // Overcast
-    //     0.2,  // Drizzle
-    //     0,    // Rain
-    //     0     // Thunderstorm
-    // ],
-    [
-        0,
-        0,
-        0,
-        0,
-        1
+    [         // Transitions from sunny weather
+        0.5,  // Sunny
+        0.3,  // Overcast
+        0.2,  // Drizzle
+        0,    // Rain
+        0     // Thunderstorm
     ],
     [         // Transitions from overcast weather
         0.3,  // Sunny
@@ -59,7 +52,8 @@ WeatherState.prototype.TRANSITION_MATRIX = [
         0,    // Drizzle
         0,    // Rain
         0.1   // Thunderstorm
-    ]];
+    ]
+];
 
 /**
  * Deserialize the weather state
@@ -89,6 +83,14 @@ WeatherState.prototype.serialize = function(buffer) {
     buffer.writeUint8(this.lastState);
     buffer.writeUint8(this.state);
     buffer.writeUint16(this.time);
+};
+
+/**
+ * Get the time until the next transition
+ * @returns {Number} The time until the next transition in updates
+ */
+WeatherState.prototype.timeToTransition = function() {
+    return this.STATE_TIME - this.time;
 };
 
 /**
