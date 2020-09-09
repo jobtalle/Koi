@@ -11,10 +11,10 @@ const Gusts = function(constellation) {
     this.gusts = [];
 };
 
-Gusts.prototype.WIND_TIME_MIN = 5;
-Gusts.prototype.WIND_TIME_MAX = 20;
-Gusts.prototype.GUST_HEIGHT_MIN = .7;
-Gusts.prototype.GUST_HEIGHT_MAX = 1.3;
+Gusts.prototype.WIND_TIME_MIN = 10;
+Gusts.prototype.WIND_TIME_MAX = 15;
+Gusts.prototype.GUST_HEIGHT_MIN = .9;
+Gusts.prototype.GUST_HEIGHT_MAX = 1.6;
 Gusts.prototype.GUST_SLANT_MIN = -.3;
 Gusts.prototype.GUST_SLANT_MAX = .3;
 Gusts.prototype.GUST_DISTANCE_MIN = .6;
