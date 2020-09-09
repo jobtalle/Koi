@@ -67,6 +67,7 @@ Koi.prototype.deserialize = function(buffer) {
     try {
         this.constellation.deserialize(buffer, this.systems.atlas, this.randomSource);
         this.weather.setState(WeatherState.deserialize(buffer));
+        this.weatherFilterChanged = true;
     }
     catch (error) {
         this.free();

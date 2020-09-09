@@ -37,18 +37,18 @@ Spawner.prototype.update = function(
             const pattern = new Pattern(
                 new LayerBase(new Palette.Sample().randomize(random)),
                 [
-                    // new LayerSpots(
-                    //     new Plane(
-                    //         new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),
-                    //         new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()),
-                    //     new Palette.Sample().randomize(random),
-                    //     Math.round(random.getFloat() * 0xFF),
-                    //     Math.round(random.getFloat() * 0xFF),
-                    //     Math.round(random.getFloat() * 0xFF),
-                    //     Math.round(random.getFloat() * 0xFF),
-                    //     Math.round(random.getFloat() * 0xFF),
-                    //     Math.round(random.getFloat() * 0xFF)
-                    // ),
+                    new LayerSpots(
+                        new Plane(
+                            new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),
+                            new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()),
+                        new Palette.Sample().randomize(random),
+                        Math.round(random.getFloat() * 0xFF),
+                        Math.round(random.getFloat() * 0xFF),
+                        Math.round(random.getFloat() * 0xFF),
+                        Math.round(random.getFloat() * 0xFF),
+                        Math.round(random.getFloat() * 0xFF),
+                        Math.round(random.getFloat() * 0xFF)
+                    ),
                     // new LayerStripes(
                     //     new Plane(
                     //         new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),
@@ -63,17 +63,17 @@ Spawner.prototype.update = function(
                     //     Math.round(random.getFloat() * 0xFF),
                     //     Math.round(random.getFloat() * 0xFF)
                     // ),
-                    new LayerRidge(
-                        new Plane(
-                            new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),
-                            new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()),
-                        new Palette.Sample().randomize(random),
-                        Math.round(random.getFloat() * 0xFF),
-                        Math.round(random.getFloat() * 0xFF),
-                        Math.round(random.getFloat() * 0xFF),
-                        Math.round(random.getFloat() * 0xFF),
-                        Math.round(random.getFloat() * 0xFF)
-                    ),
+                    // new LayerRidge(
+                    //     new Plane(
+                    //         new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),
+                    //         new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()),
+                    //     new Palette.Sample().randomize(random),
+                    //     Math.round(random.getFloat() * 0xFF),
+                    //     Math.round(random.getFloat() * 0xFF),
+                    //     Math.round(random.getFloat() * 0xFF),
+                    //     Math.round(random.getFloat() * 0xFF),
+                    //     Math.round(random.getFloat() * 0xFF)
+                    // ),
                     // new LayerSpots(
                     //     new Plane(
                     //         new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),
