@@ -1,5 +1,5 @@
 /**
- * An air plane to render wind on
+ * An air plane to render frequency on
  * @param {WebGLRenderingContext} gl A WebGL rendering context
  * @param {InfluencePainter} influencePainter The influence painter
  * @param {Number} width The scene width
@@ -65,7 +65,7 @@ Air.prototype.addDisplacement = function(x, y, radius, amount) {
 };
 
 /**
- * Create spring values for the wind shader
+ * Create spring values for the frequency shader
  * @param {Number} count The number of spring values
  * @param {Random} random A randomizer
  * @returns {Number[]} The spring values

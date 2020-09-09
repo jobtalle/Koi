@@ -23,6 +23,22 @@ Weather.prototype.COLOR_FILTER_OVERCAST = Color.fromCSS("--color-ambient-overcas
 Weather.prototype.COLOR_FILTER_DRIZZLE = Color.fromCSS("--color-ambient-drizzle");
 Weather.prototype.COLOR_FILTER_RAIN = Color.fromCSS("--color-ambient-rain");
 Weather.prototype.COLOR_FILTER_THUNDERSTORM = Color.fromCSS("--color-ambient-thunderstorm");
+Weather.prototype.WIND_FREQUENCY_SUNNY = .2;
+Weather.prototype.WIND_FREQUENCY_OVERCAST = .6;
+Weather.prototype.WIND_FREQUENCY_DRIZZLE = .5;
+Weather.prototype.WIND_FREQUENCY_RAIN = .7;
+Weather.prototype.WIND_FREQUENCY_THUNDERSTORM = 1;
+Weather.prototype.WIND_INTENSITY_SUNNY = .05;
+Weather.prototype.WIND_INTENSITY_OVERCAST = .1;
+Weather.prototype.WIND_INTENSITY_DRIZZLE = .1;
+Weather.prototype.WIND_INTENSITY_RAIN = .15;
+Weather.prototype.WIND_INTENSITY_THUNDERSTORM = .2;
+Weather.prototype.RAIN_SPEED_DRIZZLE = .07;
+Weather.prototype.RAIN_SPEED_RAIN = .08;
+Weather.prototype.RAIN_SPEED_THUNDERSTORM = .1;
+Weather.prototype.RAIN_AMOUNT_DRIZZLE = .06;
+Weather.prototype.RAIN_AMOUNT_RAIN = .09;
+Weather.prototype.RAIN_AMOUNT_THUNDERSTORM = .15;
 
 /**
  * Set the weather state
@@ -62,6 +78,8 @@ Weather.prototype.setFilter = function(filter) {
  */
 Weather.prototype.setSunny = function() {
     this.setFilter(this.COLOR_FILTER_SUNNY);
+
+    this.gusts.setWind(this.WIND_FREQUENCY_SUNNY, this.WIND_INTENSITY_SUNNY);
 };
 
 /**
@@ -69,6 +87,8 @@ Weather.prototype.setSunny = function() {
  */
 Weather.prototype.setOvercast = function() {
     this.setFilter(this.COLOR_FILTER_OVERCAST);
+
+    this.gusts.setWind(this.WIND_FREQUENCY_OVERCAST, this.WIND_INTENSITY_OVERCAST);
 };
 
 /**
@@ -77,7 +97,8 @@ Weather.prototype.setOvercast = function() {
 Weather.prototype.setDrizzle = function() {
     this.setFilter(this.COLOR_FILTER_DRIZZLE);
 
-    this.rain.start(.07, .06);
+    this.rain.start(this.RAIN_SPEED_DRIZZLE, this.RAIN_AMOUNT_DRIZZLE);
+    this.gusts.setWind(this.WIND_FREQUENCY_DRIZZLE, this.WIND_INTENSITY_DRIZZLE);
 };
 
 /**
@@ -86,7 +107,8 @@ Weather.prototype.setDrizzle = function() {
 Weather.prototype.setRain = function() {
     this.setFilter(this.COLOR_FILTER_RAIN);
 
-    this.rain.start(.08, .09);
+    this.rain.start(this.RAIN_SPEED_RAIN, this.RAIN_AMOUNT_RAIN);
+    this.gusts.setWind(this.WIND_FREQUENCY_RAIN, this.WIND_INTENSITY_RAIN);
 };
 
 /**
@@ -95,7 +117,8 @@ Weather.prototype.setRain = function() {
 Weather.prototype.setThunderstorm = function() {
     this.setFilter(this.COLOR_FILTER_THUNDERSTORM);
 
-    this.rain.start(.1, .15);
+    this.rain.start(this.RAIN_SPEED_THUNDERSTORM, this.RAIN_AMOUNT_THUNDERSTORM);
+    this.gusts.setWind(this.WIND_FREQUENCY_THUNDERSTORM, this.WIND_INTENSITY_THUNDERSTORM);
 };
 
 /**

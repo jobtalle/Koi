@@ -1,5 +1,5 @@
 /**
- * The wind system
+ * The frequency system
  * @param {WebGLRenderingContext} gl A WebGL context
  * @param {Quad} quad A quad renderer
  * @constructor
@@ -67,7 +67,7 @@ void main() {
 /**
  * Propagate air influences over an air plane
  * @param {Air} air The air
- * @param {InfluencePainter} influencePainter The wind painter
+ * @param {InfluencePainter} influencePainter The frequency painter
  */
 Wind.prototype.propagate = function(air, influencePainter) {
     this.program.use();
@@ -92,7 +92,7 @@ Wind.prototype.propagate = function(air, influencePainter) {
 };
 
 /**
- * Free the wind system
+ * Free the frequency system
  */
 Wind.prototype.free = function() {
     this.program.free();

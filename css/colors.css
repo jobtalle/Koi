@@ -11,11 +11,11 @@
     --color-rain: #ccd0cf;
 
     /* Ambient color multipliers */
-    --color-ambient-sunny: #ffffff;
+    --color-ambient-sunny: #fffefa;
     --color-ambient-overcast: #fafafa;
-    --color-ambient-drizzle: #cdcdcd;
-    --color-ambient-rain: #b5b5b5;
-    --color-ambient-thunderstorm: #aeaeae;
+    --color-ambient-drizzle: #efefef;
+    --color-ambient-rain: #cacaca;
+    --color-ambient-thunderstorm: #adbfc3;
 
     /* Plant colors */
     --color-grass: #8ba054;

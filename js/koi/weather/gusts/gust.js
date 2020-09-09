@@ -1,5 +1,5 @@
 /**
- * A gust of wind
+ * A gust of frequency
  * @param {Vector2} from The wave front start position
  * @param {Vector2} to The wave front end position
  * @param {Number} distance The distance to move
@@ -52,9 +52,9 @@ Gust.prototype.makeOffsets = function(pointCount, random) {
 };
 
 /**
- * Update the wind gust
+ * Update the frequency gust
  * @param {Air} air The air
- * @returns {Boolean} A boolean indicating whether this wind gust should be removed
+ * @returns {Boolean} A boolean indicating whether this frequency gust should be removed
  */
 Gust.prototype.update = function(air) {
     const scale = air.influences.scale;

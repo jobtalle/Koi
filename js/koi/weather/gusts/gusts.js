@@ -1,10 +1,11 @@
 /**
- * The wind gusts system
+ * The frequency gusts system
  * @param {Constellation} constellation The constellation
  * @constructor
  */
 const Gusts = function(constellation) {
-    this.wind = .5;
+    this.frequency = 0;
+    this.intensity = 0;
     this.windTime = this.WIND_TIME_MIN;
     this.constellation = constellation;
     this.gusts = [];
@@ -44,8 +45,18 @@ Gusts.prototype.createGust = function(air, random) {
                 origin.y + height),
             distance,
             this.GUST_SPEED_MIN + (this.GUST_SPEED_MAX - this.GUST_SPEED_MIN) * random.getFloat(),
-            .1,
+            this.intensity,
             random));
+};
+
+/**
+ * Set the frequency intensity
+ * @param {Number} frequency The wind frequency in the range [0, 1]
+ * @param {Number} intensity The wind intensity in the range [0, 1]
+ */
+Gusts.prototype.setWind = function(frequency, intensity) {
+    this.frequency = frequency;
+    this.intensity = intensity;
 };
 
 /**
@@ -55,7 +66,7 @@ Gusts.prototype.createGust = function(air, random) {
  */
 Gusts.prototype.update = function(air, random) {
     if ((this.windTime -= 1) < 0) {
-        if (this.wind < random.getFloat())
+        if (random.getFloat() < this.frequency)
             this.createGust(air, random);
 
         this.windTime = this.WIND_TIME_MIN + (this.WIND_TIME_MAX - this.WIND_TIME_MIN) * random.getFloat();

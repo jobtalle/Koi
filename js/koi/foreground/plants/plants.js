@@ -108,7 +108,7 @@ Plants.prototype.getFirstIndex = function(vertices) {
 };
 
 /**
- * Make a wind map UV with some offset
+ * Make a frequency map UV with some offset
  * @param {Number} x The X origin
  * @param {Number} y The Y origin
  * @param {Random} random A randomizer
