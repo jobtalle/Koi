@@ -11,7 +11,7 @@ const WeatherState = function(lastState = this.ID_SUNNY, state = this.ID_SUNNY, 
     this.time = time;
 };
 
-WeatherState.prototype.STATE_TIME = 150;
+WeatherState.prototype.STATE_TIME = 500;
 WeatherState.prototype.ID_SUNNY = 0;
 WeatherState.prototype.ID_OVERCAST = 1;
 WeatherState.prototype.ID_DRIZZLE = 2;
@@ -19,39 +19,39 @@ WeatherState.prototype.ID_RAIN = 3;
 WeatherState.prototype.ID_THUNDERSTORM = 4;
 WeatherState.prototype.TRANSITION_MATRIX = [
     [         // Transitions from sunny weather
-        0.5,  // Sunny
+        0.6,  // Sunny
         0.3,  // Overcast
-        0.2,  // Drizzle
+        0.1,  // Drizzle
         0,    // Rain
         0     // Thunderstorm
     ],
     [         // Transitions from overcast weather
         0.3,  // Sunny
-        0.3,  // Overcast
+        0.25,  // Overcast
         0.2,  // Drizzle
-        0.1,  // Rain
+        0.15,  // Rain
         0.1   // Thunderstorm
     ],
     [         // Transitions from drizzle weather
         0.4,  // Sunny
-        0.3,  // Overcast
-        0.3,  // Drizzle
+        0.4,  // Overcast
+        0.2,  // Drizzle
         0,    // Rain
         0     // Thunderstorm
     ],
     [         // Transitions from rain weather
-        0.4,  // Sunny
+        0.3,  // Sunny
         0.4,  // Overcast
         0,    // Drizzle
-        0.2,  // Rain
+        0.3,  // Rain
         0     // Thunderstorm
     ],
     [         // Transitions from thunderstorm weather
-        0.7,  // Sunny
+        0.5,  // Sunny
         0.2,  // Overcast
         0,    // Drizzle
         0,    // Rain
-        0.1   // Thunderstorm
+        0.3   // Thunderstorm
     ]
 ];
 

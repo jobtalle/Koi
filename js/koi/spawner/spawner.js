@@ -1,10 +1,10 @@
 /**
  * The fish spawner
  * @param {Constellation} constellation A constellation to spawn fish in
- * @param {SpawnerState} state The state of this spawner
+ * @param {SpawnerState} [state] The state of this spawner
  * @constructor
  */
-const Spawner = function(constellation, state) {
+const Spawner = function(constellation, state = new SpawnerState()) {
     this.constellation = constellation;
     this.state = state;
     this.time = 0;
@@ -14,6 +14,22 @@ Spawner.prototype.SPAWN_TIME_MIN = 2;
 Spawner.prototype.SPAWN_TIME_MAX = 8;
 Spawner.prototype.SPAWN_OVERHEAD = 8;
 Spawner.prototype.SPAWN_LIMIT = 16;
+
+/**
+ * Set the spawner state
+ * @param {SpawnerState} state The spawner state
+ */
+Spawner.prototype.setState = function(state) {
+    this.state = state;
+};
+
+/**
+ * Get the spawner state
+ * @returns {SpawnerState} The spawner state
+ */
+Spawner.prototype.getState = function() {
+    return this.state;
+};
 
 /**
  * Update the spawner

@@ -32,7 +32,7 @@ const Koi = function(
     this.reflections = null;
     this.weather = null;
     this.weatherFilterChanged = false;
-    this.spawner = new Spawner(this.constellation, spawnerState);
+    this.spawner = new Spawner(this.constellation);
     this.time = this.UPDATE_RATE;
     this.phase = 0;
 
@@ -55,6 +55,7 @@ Koi.prototype.TOUCH_WATER_INTENSITY = .5;
  */
 Koi.prototype.serialize = function(buffer) {
     this.constellation.serialize(buffer);
+    this.spawner.getState().serialize(buffer);
     this.weather.getState().serialize(buffer);
 };
 
@@ -66,6 +67,7 @@ Koi.prototype.serialize = function(buffer) {
 Koi.prototype.deserialize = function(buffer) {
     try {
         this.constellation.deserialize(buffer, this.systems.atlas, this.randomSource);
+        this.spawner.setState(SpawnerState.deserialize(buffer));
         this.weather.setState(WeatherState.deserialize(buffer));
         this.weatherFilterChanged = true;
     }

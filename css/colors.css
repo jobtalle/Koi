@@ -12,16 +12,16 @@
 
     /* Ambient color multipliers */
     --color-ambient-sunny: #fffdee;
-    --color-ambient-overcast: #fafafa;
+    --color-ambient-overcast: #f6f6f6;
     --color-ambient-drizzle: #e9ecec;
     --color-ambient-rain: #deeef6;
     --color-ambient-thunderstorm: #9ea6bf;
 
     /* Plant colors */
-    --color-grass: #8ba054;
+    --color-grass: #97ae58;
     --color-cattail-leaf: #657635;
     --color-cattail-stalk: #a09e7a;
-    --color-cattail-capsule: #d4d296;
+    --color-cattail-capsule: #eceaac;
 
     /* Fish colors */
     --color-fish-base-white: #E1E0C4;
