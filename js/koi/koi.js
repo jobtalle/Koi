@@ -3,14 +3,12 @@
  * @param {Systems} systems The render systems
  * @param {Number} environmentSeed The seed for all stable systems
  * @param {Random} random A randomizer
- * @param {SpawnerState} spawnerState The state of the spawner object
  * @constructor
  */
 const Koi = function(
     systems,
     environmentSeed,
-    random,
-    spawnerState = new SpawnerState()) {
+    random) {
     this.systems = systems;
     this.random = random;
     this.environmentSeed = environmentSeed;

@@ -10,8 +10,6 @@ const Spawner = function(constellation, state = new SpawnerState()) {
     this.time = 0;
 };
 
-Spawner.prototype.SPAWN_TIME_MIN = 2;
-Spawner.prototype.SPAWN_TIME_MAX = 8;
 Spawner.prototype.SPAWN_OVERHEAD = 8;
 Spawner.prototype.SPAWN_LIMIT = 16;
 
@@ -45,92 +43,13 @@ Spawner.prototype.update = function(
     patterns,
     randomSource,
     random) {
-    if ((this.time -= timeStep) < 0) {
-        this.time += this.SPAWN_TIME_MIN + (this.SPAWN_TIME_MAX - this.SPAWN_TIME_MIN) * random.getFloat();
-
-        if (this.constellation.getFishCount() < Koi.prototype.FISH_CAPACITY - this.SPAWN_OVERHEAD &&
-            this.constellation.river.getFishCount() < this.SPAWN_LIMIT) {
-            const pattern = new Pattern(
-                new LayerBase(new Palette.Sample().randomize(random)),
-                [
-                    new LayerSpots(
-                        new Plane(
-                            new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),
-                            new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()),
-                        new Palette.Sample().randomize(random),
-                        Math.round(random.getFloat() * 0xFF),
-                        Math.round(random.getFloat() * 0xFF),
-                        Math.round(random.getFloat() * 0xFF),
-                        Math.round(random.getFloat() * 0xFF),
-                        Math.round(random.getFloat() * 0xFF),
-                        Math.round(random.getFloat() * 0xFF)
-                    ),
-                    // new LayerStripes(
-                    //     new Plane(
-                    //         new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),
-                    //         new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()),
-                    //     new Palette.Sample().randomize(random),
-                    //     Math.round(random.getFloat() * 0xFF),
-                    //     Math.round(random.getFloat() * 0xFF),
-                    //     Math.round(random.getFloat() * 0xFF),
-                    //     Math.round(random.getFloat() * 0xFF),
-                    //     Math.round(random.getFloat() * 0xFF),
-                    //     Math.round(random.getFloat() * 0xFF),
-                    //     Math.round(random.getFloat() * 0xFF),
-                    //     Math.round(random.getFloat() * 0xFF)
-                    // ),
-                    // new LayerRidge(
-                    //     new Plane(
-                    //         new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),
-                    //         new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()),
-                    //     new Palette.Sample().randomize(random),
-                    //     Math.round(random.getFloat() * 0xFF),
-                    //     Math.round(random.getFloat() * 0xFF),
-                    //     Math.round(random.getFloat() * 0xFF),
-                    //     Math.round(random.getFloat() * 0xFF),
-                    //     Math.round(random.getFloat() * 0xFF)
-                    // ),
-                    // new LayerSpots(
-                    //     new Plane(
-                    //         new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),
-                    //         new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()),
-                    //     new Palette.Sample().randomize(random),
-                    //     Math.round(random.getFloat() * 0xFF),
-                    //     Math.round(random.getFloat() * 0xFF),
-                    //     Math.round(random.getFloat() * 0xFF),
-                    //     Math.round(random.getFloat() * 0xFF),
-                    //     Math.round(random.getFloat() * 0xFF),
-                    //     Math.round(random.getFloat() * 0xFF)
-                    // ),
-                ],
-                new LayerShapeBody(
-                    Math.round(random.getFloat() * 0xFF),
-                    Math.round(random.getFloat() * 0xFF),
-                    Math.round(random.getFloat() * 0xFF)),
-                new LayerShapeFin());
-
-            pattern.trim(patterns.palettes.base);
-
-            atlas.write(pattern, randomSource);
-
-            this.constellation.river.addFish(new Fish(
-                new FishBody(
-                    pattern,
-                    [
-                        new Fin(.2, 1.4, 1),
-                        new Fin(.5, .8, 1)
-                    ],
-                    new Tail(
-                        Math.round(random.getFloat() * 0xFF),
-                        Math.round(random.getFloat() * 0xFF)),
-                    Math.round(random.getFloat() * 0xFF),
-                    Math.round(random.getFloat() * 0xFF)),
-                this.constellation.spawnPoint,
-                this.constellation.spawnDirection,
-                Math.round(random.getFloat() * 0xFF),
-                Math.round(random.getFloat() * 0xFF),
-                Math.round(random.getFloat() * 0xFF),
-                30000));
-        }
-    }
+    this.state.update(
+        this.constellation,
+        this.constellation.river,
+        atlas,
+        patterns,
+        randomSource,
+        this.SPAWN_LIMIT,
+        this.SPAWN_OVERHEAD,
+        random);
 };

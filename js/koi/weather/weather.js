@@ -227,7 +227,7 @@ Weather.prototype.render = function(drops, time) {
 
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
-    console.log(this.state.state);
+
     switch (this.state.state) {
         case this.state.ID_SUNNY:
         case this.state.ID_OVERCAST:
