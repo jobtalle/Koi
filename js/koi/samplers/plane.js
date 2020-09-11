@@ -14,6 +14,22 @@ Plane.prototype.SPACE_LIMIT_MIN = Math.fround(-256);
 Plane.prototype.SPACE_LIMIT_MAX = Math.fround(256);
 
 /**
+ * Create a random plane
+ * @param {Random} random A randomizer
+ * @returns {Plane} A random plane
+ */
+Plane.createRandom = function(random) {
+    const range = Plane.prototype.SPACE_LIMIT_MAX - Plane.prototype.SPACE_LIMIT_MIN;
+
+    return new Plane(
+        new Vector3(
+            Plane.prototype.SPACE_LIMIT_MIN + range * random.getFloat(),
+            Plane.prototype.SPACE_LIMIT_MIN + range * random.getFloat(),
+            Plane.prototype.SPACE_LIMIT_MIN + range * random.getFloat()),
+        new Vector3().randomUnit(random));
+};
+
+/**
  * Deserialize a plane
  * @param {BinBuffer} buffer A buffer to deserialize from
  * @returns {Plane} The deserialized plane

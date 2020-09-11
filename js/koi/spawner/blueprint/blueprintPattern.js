@@ -1,9 +1,20 @@
 /**
  * A blueprint for a random pattern
+ * @param {BlueprintLayerBase} blueprintLayerBase A base layer blueprint
+ * @param {BlueprintLayerShapeBody} blueprintLayerShapeBody A body shape layer blueprint
+ * @param {BlueprintLayerShapeFin} blueprintLayerShapeFin A fin shape layer blueprint
+ * @param {Object[]} layerBlueprints An array of layer blueprints
  * @constructor
  */
-const BlueprintPattern = function() {
-
+const BlueprintPattern = function(
+    blueprintLayerBase,
+    blueprintLayerShapeBody,
+    blueprintLayerShapeFin,
+    layerBlueprints) {
+    this.blueprintLayerBase = blueprintLayerBase;
+    this.blueprintLayerShapeBody = blueprintLayerShapeBody;
+    this.blueprintLayerShapeFin = blueprintLayerShapeFin;
+    this.layerBlueprints = layerBlueprints;
 };
 
 /**
@@ -19,65 +30,16 @@ BlueprintPattern.prototype.spawn = function(
     patterns,
     randomSource,
     random) {
-    // TODO: implement
+    const layers = [];
+
+    for (const blueprint of this.layerBlueprints)
+        layers.push(blueprint.spawn(random));
+
     const pattern = new Pattern(
-        new LayerBase(new Palette.Sample().randomize(random)),
-        [
-            new LayerSpots(
-                new Plane(
-                    new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),
-                    new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()),
-                new Palette.Sample().randomize(random),
-                Math.round(random.getFloat() * 0xFF),
-                Math.round(random.getFloat() * 0xFF),
-                Math.round(random.getFloat() * 0xFF),
-                Math.round(random.getFloat() * 0xFF),
-                Math.round(random.getFloat() * 0xFF),
-                Math.round(random.getFloat() * 0xFF)
-            ),
-            // new LayerStripes(
-            //     new Plane(
-            //         new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),
-            //         new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()),
-            //     new Palette.Sample().randomize(random),
-            //     Math.round(random.getFloat() * 0xFF),
-            //     Math.round(random.getFloat() * 0xFF),
-            //     Math.round(random.getFloat() * 0xFF),
-            //     Math.round(random.getFloat() * 0xFF),
-            //     Math.round(random.getFloat() * 0xFF),
-            //     Math.round(random.getFloat() * 0xFF),
-            //     Math.round(random.getFloat() * 0xFF),
-            //     Math.round(random.getFloat() * 0xFF)
-            // ),
-            // new LayerRidge(
-            //     new Plane(
-            //         new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),
-            //         new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()),
-            //     new Palette.Sample().randomize(random),
-            //     Math.round(random.getFloat() * 0xFF),
-            //     Math.round(random.getFloat() * 0xFF),
-            //     Math.round(random.getFloat() * 0xFF),
-            //     Math.round(random.getFloat() * 0xFF),
-            //     Math.round(random.getFloat() * 0xFF)
-            // ),
-            // new LayerSpots(
-            //     new Plane(
-            //         new Vector3(random.getFloat() * 64, random.getFloat() * 64, random.getFloat() * 64),
-            //         new Vector3(random.getFloat() - .5, random.getFloat() - .5, random.getFloat() - .5).normalize()),
-            //     new Palette.Sample().randomize(random),
-            //     Math.round(random.getFloat() * 0xFF),
-            //     Math.round(random.getFloat() * 0xFF),
-            //     Math.round(random.getFloat() * 0xFF),
-            //     Math.round(random.getFloat() * 0xFF),
-            //     Math.round(random.getFloat() * 0xFF),
-            //     Math.round(random.getFloat() * 0xFF)
-            // ),
-        ],
-        new LayerShapeBody(
-            Math.round(random.getFloat() * 0xFF),
-            Math.round(random.getFloat() * 0xFF),
-            Math.round(random.getFloat() * 0xFF)),
-        new LayerShapeFin());
+        this.blueprintLayerBase.spawn(random),
+        layers,
+        this.blueprintLayerShapeBody.spawn(random),
+        this.blueprintLayerShapeFin.spawn(random));
 
     pattern.trim(patterns.palettes.base);
     atlas.write(pattern, randomSource);

@@ -42,16 +42,7 @@ Mutator.prototype.mutatePalette = function(sample, distance, random) {
  * @param {Random} random A randomizer
  */
 Mutator.prototype.mutateVector3 = function(vector, distance, random) {
-    const lambda = Math.acos(2 * random.getFloat() - 1) - .5 * Math.PI;
-    const phi = 2 * Math.PI * random.getFloat();
-    const dx = Math.cos(lambda) * Math.cos(phi);
-    const dy = Math.cos(lambda) * Math.sin(phi);
-    const dz = Math.sin(lambda);
-    const d = distance.sample(random.getFloat());
-
-    vector.x += dx * d;
-    vector.y += dy * d;
-    vector.z += dz * d;
+    vector.add(new Vector3().randomUnit(random).multiply(distance.sample(random.getFloat())));
 };
 
 /**

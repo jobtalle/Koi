@@ -10,8 +10,8 @@ const Palette = function(colors) {
 
 /**
  * A palette sample
- * @param {Number} [x] The X coordinate of this sample
- * @param {Number} [y] The Y coordinate of this sample
+ * @param {Number} [x] The X coordinate of this sample in the range [0, 15]
+ * @param {Number} [y] The Y coordinate of this sample in the range [0, 15]
  * @constructor
  */
 Palette.Sample = function(x = 0, y = 0) {

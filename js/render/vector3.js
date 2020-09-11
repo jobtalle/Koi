@@ -176,3 +176,19 @@ Vector3.prototype.cross  = function(other) {
         this.z * other.x - other.z * this.x,
         this.x * other.y - other.x * this.y);
 };
+
+/**
+ * Set this vector to a random unit vector
+ * @param {Random} random A randomizer
+ * @returns {Vector3} The modified vector
+ */
+Vector3.prototype.randomUnit = function(random) {
+    const lambda = Math.acos(2 * random.getFloat() - 1) - .5 * Math.PI;
+    const phi = 2 * Math.PI * random.getFloat();
+
+    this.x = Math.cos(lambda) * Math.cos(phi);
+    this.y = Math.cos(lambda) * Math.sin(phi);
+    this.z = Math.sin(lambda);
+
+    return this;
+};

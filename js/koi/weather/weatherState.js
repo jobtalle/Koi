@@ -27,9 +27,9 @@ WeatherState.prototype.TRANSITION_MATRIX = [
     ],
     [         // Transitions from overcast weather
         0.3,  // Sunny
-        0.25,  // Overcast
+        0.25, // Overcast
         0.2,  // Drizzle
-        0.15,  // Rain
+        0.15, // Rain
         0.1   // Thunderstorm
     ],
     [         // Transitions from drizzle weather

@@ -21,13 +21,34 @@ SpawnerState.prototype.BLUEPRINTS = [
         new Sampler(4, 6),
         new Sampler(25000, 30000),
         new BlueprintBody(
-            new SamplerPlateau(50, 150, 120, 5),
+            new SamplerPlateau(70, 90, 120, 5),
             new Sampler(100, 120),
             new BlueprintFins(),
             new BlueprintTail(
                 new Sampler(120, 150),
                 new Sampler(100, 120)),
-            new BlueprintPattern()))
+            new BlueprintPattern(
+                new BlueprintLayerBase(
+                    new BlueprintPaletteSample(
+                        new Sampler(3, 5),
+                        new Sampler(5, 7))),
+                new BlueprintLayerShapeBody(
+                    new Sampler(220, 240),
+                    new Sampler(120, 140),
+                    new Sampler(150, 160)),
+                new BlueprintLayerShapeFin(),
+                [
+                    new BlueprintLayerSpots(
+                        new BlueprintPaletteSample(
+                            new Sampler(9, 11),
+                            new Sampler(1, 3)),
+                        new Sampler(180, 200),
+                        new Sampler(120, 136),
+                        new Sampler(170, 190),
+                        new Sampler(120, 136),
+                        new Sampler(120, 136),
+                        new Sampler(30, 50))
+                ])))
 ];
 
 /**
@@ -111,10 +132,11 @@ SpawnerState.prototype.update = function(
             console.log("Spawn");
         }
         else if (river.getFishCount() < limit && random.getFloat() < .2) {
-            console.log("Primed");
             // TODO: Choose blueprint
             this.spawning = this.BLUEPRINTS[0];
             this.school = this.spawning.getSchoolSize(random);
+
+            console.log("Primed " + this.school);
         }
     }
 };
