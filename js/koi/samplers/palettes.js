@@ -15,14 +15,14 @@ const Palettes = function() {
         new Palette.Color(new Palette.Sample(8, 8), colorDetailGold)]);
 
     const paletteDetailOnWhite = new Palette([
-        new Palette.Color(new Palette.Sample(5, 5), colorDetailRed),
+        new Palette.Color(new Palette.Sample(3, 5), colorDetailRed),
         new Palette.Color(new Palette.Sample(7, 7), colorDetailGold),
         new Palette.Color(new Palette.Sample(10, 10), colorDetailOrange, paletteDetailOnRed)]);
 
     const paletteDetailOnBlack = new Palette([
-        new Palette.Color(new Palette.Sample(0, 0), colorDetailWhite)]);
+        new Palette.Color(new Palette.Sample(5, 5), colorDetailWhite)]);
 
     this.base = new Palette([
-        new Palette.Color(new Palette.Sample(4, 12), colorBaseWhite, paletteDetailOnWhite),
-        new Palette.Color(new Palette.Sample(8, 12), colorBaseBlack, paletteDetailOnBlack)]);
+        new Palette.Color(new Palette.Sample(4, 11), colorBaseWhite, paletteDetailOnWhite),
+        new Palette.Color(new Palette.Sample(8, 13), colorBaseBlack, paletteDetailOnBlack)]);
 };

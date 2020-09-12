@@ -11,11 +11,11 @@ const SpawnerState = function(time = 0, school = 0, spawning = null) {
     this.spawning = spawning;
 };
 
-SpawnerState.prototype.CHECK_FREQUENCY = 40;
+SpawnerState.prototype.CHECK_FREQUENCY = 30;
 SpawnerState.prototype.BLUEPRINTS = [
-    // Small common fish
+    // Small gold spotted koi
     new Blueprint(
-        new SamplerPlateau(2, 6, 5, 1),
+        new SamplerPlateau(2, 5, 6, 1),
         new Sampler(170, 200),
         new Sampler(180, 200),
         new Sampler(4, 6),
@@ -31,7 +31,7 @@ SpawnerState.prototype.BLUEPRINTS = [
                 new BlueprintLayerBase(
                     new BlueprintPaletteSample(
                         new Sampler(3, 5),
-                        new Sampler(5, 7))),
+                        new Sampler(10, 11))),
                 new BlueprintLayerShapeBody(
                     new Sampler(220, 240),
                     new Sampler(120, 140),
@@ -40,14 +40,52 @@ SpawnerState.prototype.BLUEPRINTS = [
                 [
                     new BlueprintLayerSpots(
                         new BlueprintPaletteSample(
-                            new Sampler(9, 11),
-                            new Sampler(1, 3)),
-                        new Sampler(180, 200),
+                            new Sampler(6, 8),
+                            new Sampler(6, 8)),
+                        new Sampler(50, 100),
                         new Sampler(120, 136),
-                        new Sampler(170, 190),
+                        new Sampler(80, 100),
                         new Sampler(120, 136),
                         new Sampler(120, 136),
                         new Sampler(30, 50))
+                ]))),
+    // Black and white striped
+    new Blueprint(
+        new SamplerPlateau(1, 6, 8, 1),
+        new Sampler(130, 170),
+        new Sampler(150, 160),
+        new Sampler(2, 4),
+        new Sampler(20000, 25000),
+        new BlueprintBody(
+            new SamplerPlateau(80, 110, 150, 1),
+            new Sampler(80, 100),
+            new BlueprintFins(),
+            new BlueprintTail(
+                new Sampler(100, 140),
+                new Sampler(180, 220)),
+            new BlueprintPattern(
+                new BlueprintLayerBase(
+                    new BlueprintPaletteSample(
+                        new Sampler(7, 9),
+                        new Sampler(12, 14))),
+                new BlueprintLayerShapeBody(
+                    new Sampler(50, 100),
+                    new Sampler(170, 200),
+                    new Sampler(160, 170)),
+                new BlueprintLayerShapeFin(),
+                [
+                    new BlueprintLayerStripes(
+                        new BlueprintPaletteSample(
+                            new Sampler(4, 6),
+                            new Sampler(4, 6)),
+                        new Sampler(200, 250),
+                        new Sampler(70, 100),
+                        new Sampler(100, 130),
+                        new Sampler(120, 136),
+                        new Sampler(130, 160),
+                        new Sampler(80, 100),
+                        new Sampler(120, 136),
+                        new Sampler(30, 60))
                 ])))
 ];
 
@@ -131,9 +169,9 @@ SpawnerState.prototype.update = function(
             --this.school;
             console.log("Spawn");
         }
-        else if (river.getFishCount() < limit && random.getFloat() < .2) {
+        else if (river.getFishCount() < limit && random.getFloat() < .1) {
             // TODO: Choose blueprint
-            this.spawning = this.BLUEPRINTS[0];
+            this.spawning = this.BLUEPRINTS[Math.floor(random.getFloat() * this.BLUEPRINTS.length)];
             this.school = this.spawning.getSchoolSize(random);
 
             console.log("Primed " + this.school);
