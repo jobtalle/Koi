@@ -23,7 +23,7 @@ Plants.prototype.CATTAIL_LEAVES_FLEX_MAX = .22;
 Plants.prototype.CATTAIL_CAPSULE_START = .65;
 Plants.prototype.CATTAIL_CAPSULE_END = .95;
 Plants.prototype.CATTAIL_CAPSULE_RADIUS = .04;
-Plants.prototype.CATTAIL_CAPSULE_SHADE = .75;
+Plants.prototype.CATTAIL_CAPSULE_SHADE = .65;
 
 /**
  * Model cattail

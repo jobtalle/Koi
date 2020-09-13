@@ -125,8 +125,8 @@ Tail.prototype.renderBottom = function(
     size,
     pattern,
     time) {
-    const u = pattern.region.uFinStart + (pattern.region.uFinEnd - pattern.region.uFinStart) * .5;
-    const v = pattern.region.vStart + (pattern.region.vEnd - pattern.region.vStart) * .5;
+    const u = pattern.region.uFinStart;
+    const v = pattern.region.vEnd;
 
     bodies.buffer.addIndices(
         firstVertebra,

@@ -15,7 +15,7 @@ SpawnerState.prototype.CHECK_FREQUENCY = 30;
 SpawnerState.prototype.BLUEPRINTS = [
     // Small gold spotted koi
     new Blueprint(
-        new SamplerPlateau(2, 5, 6, 1),
+        new SamplerPlateau(2, 3, 4, 1),
         new Sampler(170, 200),
         new Sampler(180, 200),
         new Sampler(4, 6),
@@ -36,7 +36,8 @@ SpawnerState.prototype.BLUEPRINTS = [
                     new Sampler(220, 240),
                     new Sampler(120, 140),
                     new Sampler(150, 160)),
-                new BlueprintLayerShapeFin(),
+                new BlueprintLayerShapeFin(
+                    new Sampler(60, 90)),
                 [
                     new BlueprintLayerSpots(
                         new BlueprintPaletteSample(
@@ -51,13 +52,13 @@ SpawnerState.prototype.BLUEPRINTS = [
                 ]))),
     // Black and white striped
     new Blueprint(
-        new SamplerPlateau(1, 6, 8, 1),
+        new SamplerPlateau(1, 2, 5, 1),
         new Sampler(130, 170),
         new Sampler(150, 160),
         new Sampler(2, 4),
         new Sampler(20000, 25000),
         new BlueprintBody(
-            new SamplerPlateau(80, 110, 150, 1),
+            new Sampler(150, 180),
             new Sampler(80, 100),
             new BlueprintFins(),
             new BlueprintTail(
@@ -72,13 +73,14 @@ SpawnerState.prototype.BLUEPRINTS = [
                     new Sampler(50, 100),
                     new Sampler(170, 200),
                     new Sampler(160, 170)),
-                new BlueprintLayerShapeFin(),
+                new BlueprintLayerShapeFin(
+                    new Sampler(200, 230)),
                 [
                     new BlueprintLayerStripes(
                         new BlueprintPaletteSample(
                             new Sampler(4, 6),
                             new Sampler(4, 6)),
-                        new Sampler(200, 250),
+                        new Sampler(210, 240),
                         new Sampler(70, 100),
                         new Sampler(100, 130),
                         new Sampler(120, 136),

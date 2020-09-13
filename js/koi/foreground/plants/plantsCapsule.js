@@ -95,9 +95,9 @@ Plants.prototype.modelCapsule = function(
     }
 
     vertices.push(
-        color.r,
-        color.g,
-        color.b,
+        color.r * .5 * (shade + 1),
+        color.g * .5 * (shade + 1),
+        color.b * .5 * (shade + 1),
         x2,
         y,
         z2,
