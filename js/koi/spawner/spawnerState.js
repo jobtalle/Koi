@@ -126,6 +126,42 @@ SpawnerState.prototype.BLUEPRINTS = [
                         new Sampler(120, 136),
                         new Sampler(30, 50))
                 ]))),
+    // Big red ridged koi
+    new Blueprint(
+        new SamplerPlateau(2, 3, 4, 1),
+        new Sampler(170, 200),
+        new Sampler(180, 200),
+        new Sampler(4, 6),
+        new Sampler(25000, 30000),
+        new BlueprintBody(
+            new Sampler(160, 200),
+            new Sampler(130, 150),
+            new BlueprintFins(),
+            new BlueprintTail(
+                new Sampler(120, 150),
+                new Sampler(100, 120)),
+            new BlueprintPattern(
+                new BlueprintLayerBase(
+                    new BlueprintPaletteSample(
+                        new Sampler(3, 5),
+                        new Sampler(10, 12))),
+                new BlueprintLayerShapeBody(
+                    new Sampler(220, 240),
+                    new Sampler(120, 140),
+                    new Sampler(150, 160)),
+                new BlueprintLayerShapeFin(
+                    new Sampler(60, 90)),
+                [
+                    new BlueprintLayerRidge(
+                        new BlueprintPaletteSample(
+                            new Sampler(2, 4),
+                            new Sampler(4, 6)),
+                        new Sampler(150, 170),
+                        new Sampler(150, 170),
+                        new Sampler(100, 130),
+                        new Sampler(120, 160),
+                        new Sampler(180, 210))
+                ])))
 ];
 
 /**
