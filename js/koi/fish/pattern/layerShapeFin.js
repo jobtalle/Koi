@@ -35,8 +35,6 @@ varying mediump vec2 iUv;
 #define POWER 0.15
 
 void main() {
-  mediump float phase = 0.5;
-  // mediump float angle = atan(iUv.y, iUv.x) / phase - 3.141593 * (1.0 - phase);
   mediump float angle = atan(iUv.y, iUv.x) / 1.570796;
   
   if (length(iUv) > pow(sin(pow(angle, roundness) * 3.141593), POWER))

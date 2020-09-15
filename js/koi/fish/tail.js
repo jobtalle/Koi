@@ -125,8 +125,8 @@ Tail.prototype.renderBottom = function(
     size,
     pattern,
     time) {
-    const u = pattern.region.uFinStart;
-    const v = pattern.region.vEnd;
+    const u = pattern.region.uFinStart + .02; // TODO: Magic numbers
+    const v = pattern.region.vEnd - .02;
 
     bodies.buffer.addIndices(
         firstVertebra,

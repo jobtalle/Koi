@@ -88,7 +88,44 @@ SpawnerState.prototype.BLUEPRINTS = [
                         new Sampler(80, 100),
                         new Sampler(120, 136),
                         new Sampler(30, 60))
-                ])))
+                ]))),
+    // Big red spotted koi
+    new Blueprint(
+        new SamplerPlateau(2, 3, 4, 1),
+        new Sampler(170, 200),
+        new Sampler(180, 200),
+        new Sampler(4, 6),
+        new Sampler(25000, 30000),
+        new BlueprintBody(
+            new Sampler(160, 200),
+            new Sampler(130, 150),
+            new BlueprintFins(),
+            new BlueprintTail(
+                new Sampler(120, 150),
+                new Sampler(100, 120)),
+            new BlueprintPattern(
+                new BlueprintLayerBase(
+                    new BlueprintPaletteSample(
+                        new Sampler(3, 5),
+                        new Sampler(10, 12))),
+                new BlueprintLayerShapeBody(
+                    new Sampler(220, 240),
+                    new Sampler(120, 140),
+                    new Sampler(150, 160)),
+                new BlueprintLayerShapeFin(
+                    new Sampler(60, 90)),
+                [
+                    new BlueprintLayerSpots(
+                        new BlueprintPaletteSample(
+                            new Sampler(2, 4),
+                            new Sampler(4, 6)),
+                        new Sampler(50, 100),
+                        new Sampler(120, 136),
+                        new Sampler(80, 100),
+                        new Sampler(120, 136),
+                        new Sampler(120, 136),
+                        new Sampler(30, 50))
+                ]))),
 ];
 
 /**
@@ -173,7 +210,7 @@ SpawnerState.prototype.update = function(
         }
         else if (river.getFishCount() < limit && random.getFloat() < .1) {
             // TODO: Choose blueprint
-            this.spawning = this.BLUEPRINTS[Math.floor(random.getFloat() * this.BLUEPRINTS.length)];
+            this.spawning = this.BLUEPRINTS[Math.floor(this.BLUEPRINTS.length * random.getFloat())];
             this.school = this.spawning.getSchoolSize(random);
 
             console.log("Primed " + this.school);
