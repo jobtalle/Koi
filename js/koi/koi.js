@@ -43,7 +43,7 @@ Koi.prototype.SCALE_FACTOR = .051;
 Koi.prototype.SCALE_MIN = 50;
 Koi.prototype.FISH_CAPACITY = 80;
 Koi.prototype.COLOR_BACKGROUND = Color.fromCSS("--color-earth");
-Koi.prototype.PHASE_SPEED = .005; // TODO: This may change depending on weather conditions
+Koi.prototype.PHASE_SPEED = .005;
 Koi.prototype.TOUCH_WATER_RADIUS = .1;
 Koi.prototype.TOUCH_WATER_INTENSITY = .5;
 

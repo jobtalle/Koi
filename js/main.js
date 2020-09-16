@@ -86,10 +86,7 @@ if (gl) {
 
     requestAnimationFrame(loop);
 
-    // TODO: Debug save
-    save();
-
-    // Autosave
+    // Auto save
     setInterval(() => {
         if (!document["hidden"])
             save();
