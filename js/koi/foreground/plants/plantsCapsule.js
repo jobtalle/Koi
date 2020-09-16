@@ -40,9 +40,9 @@ Plants.prototype.modelCapsule = function(
     const segments = Math.max(this.CAPSULE_SEGMENTS_MIN, Math.round(length / this.CAPSULE_RESOLUTION) + 1);
 
     vertices.push(
-        color.r * shade,
-        color.g * shade,
-        color.b * shade,
+        color.r * .5 * (shade + 1),
+        color.g * .5 * (shade + 1),
+        color.b * .5 * (shade + 1),
         x1,
         y,
         z1,
