@@ -18,14 +18,13 @@ WeatherState.prototype.ID_DRIZZLE = 2;
 WeatherState.prototype.ID_RAIN = 3;
 WeatherState.prototype.ID_THUNDERSTORM = 4;
 WeatherState.prototype.TRANSITION_MATRIX = [
-    // [         // Transitions from sunny weather
-    //     0.6,  // Sunny
-    //     0.3,  // Overcast
-    //     0.1,  // Drizzle
-    //     0,    // Rain
-    //     0     // Thunderstorm
-    // ],
-    [0, 0, 0, 0, 1],
+    [         // Transitions from sunny weather
+        0.6,  // Sunny
+        0.3,  // Overcast
+        0.1,  // Drizzle
+        0,    // Rain
+        0     // Thunderstorm
+    ],
     [         // Transitions from overcast weather
         0.3,  // Sunny
         0.25, // Overcast
