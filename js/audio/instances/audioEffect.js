@@ -33,10 +33,18 @@ AudioEffect.Track = function(engine, audio) {
  * Play this audio effect
  */
 AudioEffect.prototype.play = function() {
-    const index = Math.floor(this.engine.random.getFloat() * this.variations);
+    let index = Math.floor(this.engine.random.getFloat() * this.variations);
 
-    if (this.tracks[index] === null)
-        this.tracks[index] = new AudioEffect.Track(this.engine, this.elements[index]);
+    for (let offset = 0; offset < this.variations; ++offset) {
+        if (this.elements[index].paused) {
+            if (this.tracks[index] === null)
+                this.tracks[index] = new AudioEffect.Track(this.engine, this.elements[index]);
 
-    this.elements[index].play();
+            this.elements[index].play();
+
+            return;
+        }
+        else if (++index === this.variations)
+            index = 0;
+    }
 }
