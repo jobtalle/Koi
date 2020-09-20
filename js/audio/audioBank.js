@@ -17,5 +17,12 @@ const AudioBank = function(engine) {
         "audio/ogg/SFX_Splash_10.ogg"
     ]);
 
-    this.effectFishDown = this.effectFishUp;
+    this.effectFishDown = new AudioEffect(engine, [
+        "audio/ogg/SFX_WaterImpact_01.ogg",
+        "audio/ogg/SFX_WaterImpact_02.ogg",
+        "audio/ogg/SFX_WaterImpact_03.ogg",
+        "audio/ogg/SFX_WaterImpact_04.ogg",
+        "audio/ogg/SFX_WaterImpact_05.ogg",
+        "audio/ogg/SFX_WaterImpact_06.ogg"
+    ]);
 };

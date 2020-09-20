@@ -18,6 +18,7 @@ const LayerRidge = function(
     focus,
     focusPower) {
     this.plane = plane;
+    this.paletteIndex = paletteIndex;
     this.scale = scale;
     this.power = power;
     this.threshold = threshold;
@@ -88,7 +89,7 @@ void main() {
 LayerRidge.deserialize = function(buffer) {
     return new LayerRidge(
         Plane.deserialize(buffer),
-        Palette.Sample.deserialize(buffer),
+        buffer.readUint8(),
         buffer.readUint8(),
         buffer.readUint8(),
         buffer.readUint8(),
@@ -102,8 +103,8 @@ LayerRidge.deserialize = function(buffer) {
  */
 LayerRidge.prototype.serialize = function(buffer) {
     this.plane.serialize(buffer);
-    this.paletteIndex.serialize(buffer);
 
+    buffer.writeUint8(this.paletteIndex);
     buffer.writeUint8(this.scale);
     buffer.writeUint8(this.power);
     buffer.writeUint8(this.threshold);
@@ -118,7 +119,7 @@ LayerRidge.prototype.serialize = function(buffer) {
 LayerRidge.prototype.copy = function() {
     return new LayerRidge(
         this.plane.copy(),
-        this.paletteIndex.copy(),
+        this.paletteIndex,
         this.scale,
         this.power,
         this.threshold,

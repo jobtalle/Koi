@@ -24,7 +24,7 @@ const LayerStripes = function(
     focus,
     power) {
     this.plane = plane;
-    this.sample = sample;
+    this.paletteIndex = paletteIndex;
     this.scale = scale;
     this.distortion = distortion;
     this.roughness = roughness;
@@ -104,7 +104,7 @@ void main() {
 LayerStripes.deserialize = function(buffer) {
     return new LayerStripes(
         Plane.deserialize(buffer),
-        Palette.Sample.deserialize(buffer),
+        buffer.readUint8(),
         buffer.readUint8(),
         buffer.readUint8(),
         buffer.readUint8(),
@@ -121,7 +121,7 @@ LayerStripes.deserialize = function(buffer) {
  */
 LayerStripes.prototype.serialize = function(buffer) {
     this.plane.serialize(buffer);
-    this.sample.serialize(buffer);
+    buffer.writeUint8(this.paletteIndex);
 
     buffer.writeUint8(this.scale);
     buffer.writeUint8(this.distortion);
@@ -140,7 +140,7 @@ LayerStripes.prototype.serialize = function(buffer) {
 LayerStripes.prototype.copy = function() {
     return new LayerStripes(
         this.plane.copy(),
-        this.sample.copy(),
+        this.paletteIndex,
         this.scale,
         this.distortion,
         this.roughness,
