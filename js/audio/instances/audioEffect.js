@@ -23,9 +23,6 @@ const AudioEffect = function(engine, sources) {
 AudioEffect.Track = function(engine, audio) {
     const source = engine.createSourceNode(audio);
 
-    if (!source)
-        return null;
-
     source.connect(engine.getDestinationNode());
 };
 
@@ -34,7 +31,7 @@ AudioEffect.Track = function(engine, audio) {
  * @returns {Number} The duration of the effect
  */
 AudioEffect.prototype.play = function() {
-    if (!this.engine.initialized())
+    if (!this.engine.initialized)
         return 0;
 
     let index = Math.floor(this.engine.random.getFloat() * this.variations);

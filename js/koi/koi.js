@@ -270,11 +270,19 @@ Koi.prototype.resize = function() {
 };
 
 /**
+ * Update ambient audio
+ */
+Koi.prototype.updateAudio = function() {
+    this.audio.ambientWaterTop.update(this.UPDATE_RATE);
+    this.audio.ambientWaterLow.update(this.UPDATE_RATE);
+    this.audio.ambientWind.loop();
+};
+
+/**
  * Update the scene
  */
 Koi.prototype.update = function() {
-    this.audio.effectAmbientWaterTop.update(this.UPDATE_RATE);
-    this.audio.effectAmbientWaterLow.update(this.UPDATE_RATE);
+    this.updateAudio();
 
     this.spawner.update(this.UPDATE_RATE, this.systems.atlas, this.systems.patterns, this.randomSource, this.random);
     this.constellation.update(this.systems.atlas, this.systems.patterns, this.randomSource, this.water, this.random);

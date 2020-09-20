@@ -42,6 +42,8 @@ const AudioBank = function(engine) {
         "audio/ogg/AMB_WaterTop_06.ogg"
     ]);
 
-    this.effectAmbientWaterTop = new AudioEffectPeriodic(1, this.effectWaterTop);
-    this.effectAmbientWaterLow = new AudioEffectPeriodic(1, this.effectWaterLow);
+    this.ambientWaterTop = new AudioEffectPeriodic(1, this.effectWaterTop);
+    this.ambientWaterLow = new AudioEffectPeriodic(1, this.effectWaterLow);
+    this.ambientWind = new AudioLoop(engine, "audio/ogg/AMB_Wind.ogg");
+
 };

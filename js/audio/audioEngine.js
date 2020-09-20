@@ -5,6 +5,7 @@
  */
 const AudioEngine = function(random) {
     this.context = null;
+    this.initialized = false;
     this.random = random;
 };
 
@@ -12,16 +13,10 @@ const AudioEngine = function(random) {
  * Interact with the audio engine to enable it
  */
 AudioEngine.prototype.interact = function() {
-    if (!this.context)
+    if (!this.context) {
         this.context = new AudioContext();
-};
-
-/**
- * Check whether the engine has been initialized
- * @returns {Boolean} True if the engine has been initialized
- */
-AudioEngine.prototype.initialized = function() {
-    return this.context !== null;
+        this.initialized = true;
+    }
 };
 
 /**
