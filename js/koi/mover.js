@@ -60,20 +60,20 @@ Mover.prototype.render = function(
  * @param {Air} air The air to displace
  */
 Mover.prototype.touchMove = function(x, y, air) {
-    this.cursorPrevious.set(this.cursor);
-    this.cursor.x = x;
-    this.cursor.y = y;
-
     if (this.move) {
+        this.cursorPrevious.set(this.cursor);
+        this.cursor.x = x;
+        this.cursor.y = y;
+
         this.cursorOffset.set(this.cursor).add(this.offset);
         this.move.moveTo(this.cursorOffset);
-    }
 
-    if (this.touch) {
-        const intensity = this.AIR_INTENSITY * (this.cursor.x - this.cursorPrevious.x);
+        if (this.touch) {
+            const intensity = this.AIR_INTENSITY * (this.cursor.x - this.cursorPrevious.x);
 
-        // TODO: This makes very large steps, smooth this out
-        air.addDisplacement(x, y + this.AIR_HEIGHT, this.AIR_RADIUS, intensity);
+            // TODO: This makes very large steps, smooth this out
+            air.addDisplacement(x, y + this.AIR_HEIGHT, this.AIR_RADIUS, intensity);
+        }
     }
 };
 
