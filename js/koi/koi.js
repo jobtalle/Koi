@@ -12,6 +12,7 @@ const Koi = function(
     environmentSeed,
     random) {
     this.systems = systems;
+    this.audio = audio;
     this.random = random;
     this.environmentSeed = environmentSeed;
     this.scale = this.getScale(systems.width, systems.height);
@@ -272,6 +273,9 @@ Koi.prototype.resize = function() {
  * Update the scene
  */
 Koi.prototype.update = function() {
+    this.audio.effectAmbientWaterTop.update(this.UPDATE_RATE);
+    this.audio.effectAmbientWaterLow.update(this.UPDATE_RATE);
+
     this.spawner.update(this.UPDATE_RATE, this.systems.atlas, this.systems.patterns, this.randomSource, this.random);
     this.constellation.update(this.systems.atlas, this.systems.patterns, this.randomSource, this.water, this.random);
     this.weather.update(this.air, this.water, this.random);

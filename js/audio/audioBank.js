@@ -25,4 +25,23 @@ const AudioBank = function(engine) {
         "audio/ogg/SFX_WaterImpact_05.ogg",
         "audio/ogg/SFX_WaterImpact_06.ogg"
     ]);
+
+    this.effectWaterLow = new AudioEffect(engine, [
+        "audio/ogg/AMB_WaterLow_01.ogg",
+        "audio/ogg/AMB_WaterLow_02.ogg",
+        "audio/ogg/AMB_WaterLow_03.ogg",
+        "audio/ogg/AMB_WaterLow_04.ogg"
+    ]);
+
+    this.effectWaterTop = new AudioEffect(engine, [
+        "audio/ogg/AMB_WaterTop_01.ogg",
+        "audio/ogg/AMB_WaterTop_02.ogg",
+        "audio/ogg/AMB_WaterTop_03.ogg",
+        "audio/ogg/AMB_WaterTop_04.ogg",
+        "audio/ogg/AMB_WaterTop_05.ogg",
+        "audio/ogg/AMB_WaterTop_06.ogg"
+    ]);
+
+    this.effectAmbientWaterTop = new AudioEffectPeriodic(1, this.effectWaterTop);
+    this.effectAmbientWaterLow = new AudioEffectPeriodic(1, this.effectWaterLow);
 };

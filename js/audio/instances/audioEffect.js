@@ -31,8 +31,12 @@ AudioEffect.Track = function(engine, audio) {
 
 /**
  * Play this audio effect
+ * @returns {Number} The duration of the effect
  */
 AudioEffect.prototype.play = function() {
+    if (!this.engine.initialized())
+        return 0;
+
     let index = Math.floor(this.engine.random.getFloat() * this.variations);
 
     for (let offset = 0; offset < this.variations; ++offset) {
@@ -42,9 +46,11 @@ AudioEffect.prototype.play = function() {
 
             this.elements[index].play();
 
-            return;
+            return this.elements[index].duration;
         }
         else if (++index === this.variations)
             index = 0;
     }
+
+    return 0;
 }

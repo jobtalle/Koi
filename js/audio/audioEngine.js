@@ -17,15 +17,20 @@ AudioEngine.prototype.interact = function() {
 };
 
 /**
+ * Check whether the engine has been initialized
+ * @returns {Boolean} True if the engine has been initialized
+ */
+AudioEngine.prototype.initialized = function() {
+    return this.context !== null;
+};
+
+/**
  * Create a source node from an audio element
  * @param {HTMLMediaElement} audio An audio element
  * @returns {MediaElementAudioSourceNode|null} A source node, or null if the engine is not yet active
  */
 AudioEngine.prototype.createSourceNode = function(audio) {
-    if (this.context)
-        return this.context.createMediaElementSource(audio);
-
-    return null;
+    return this.context.createMediaElementSource(audio);
 };
 
 /**
@@ -33,10 +38,7 @@ AudioEngine.prototype.createSourceNode = function(audio) {
  * @returns {GainNode} A gain node
  */
 AudioEngine.prototype.createGainNode = function() {
-    if (this.context)
-        return this.context.createGain();
-
-    return null;
+    return this.context.createGain();
 };
 
 /**
@@ -44,10 +46,7 @@ AudioEngine.prototype.createGainNode = function() {
  * @returns {StereoPannerNode} A stereo panner node
  */
 AudioEngine.prototype.createPanNode = function() {
-    if (this.context)
-        return new StereoPannerNode(this.context);
-
-    return null;
+    return new StereoPannerNode(this.context);
 };
 
 /**
@@ -55,27 +54,5 @@ AudioEngine.prototype.createPanNode = function() {
  * @returns {AudioDestinationNode|null} The destination node, or null if the engine is not yet active
  */
 AudioEngine.prototype.getDestinationNode = function() {
-    if (this.context)
-        return this.context.destination;
-
-    return null;
-};
-
-/**
- * Make a new audio track
- * @param {HTMLMediaElement} audio An audio element
- */
-AudioEngine.prototype.makeTrack = function(audio) {
-    if (this.context) {
-        const track = this.context.createMediaElementSource(audio);
-        const gain = this.context.createGain();
-
-        gain.gain.value = 3.5;
-
-        track.connect(gain).connect(this.context.destination);
-
-        return track;
-    }
-
-    return null;
+    return this.context.destination;
 };
