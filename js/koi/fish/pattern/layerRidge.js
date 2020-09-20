@@ -1,7 +1,7 @@
 /**
  * A pattern along the back of a fish
  * @param {Plane} plane A plane sampler
- * @param {Palette.Sample} sample A palette sample
+ * @param {Number} paletteIndex A palette sample index
  * @param {Number} scale The noise scale in the range [0, 255]
  * @param {Number} power The ridge power in the range [0, 255]
  * @param {Number} threshold The noise threshold in the range [0, 255]
@@ -11,7 +11,7 @@
  */
 const LayerRidge = function(
     plane,
-    sample,
+    paletteIndex,
     scale,
     power,
     threshold,
@@ -24,7 +24,7 @@ const LayerRidge = function(
     this.focus = focus;
     this.focusPower = focusPower;
 
-    Layer.call(this, this.ID, sample, true, false, true, this.DOMINANCE);
+    Layer.call(this, this.ID, paletteIndex, true, false, true, this.DOMINANCE);
 };
 
 LayerRidge.prototype = Object.create(Layer.prototype);
@@ -102,7 +102,7 @@ LayerRidge.deserialize = function(buffer) {
  */
 LayerRidge.prototype.serialize = function(buffer) {
     this.plane.serialize(buffer);
-    this.paletteSample.serialize(buffer);
+    this.paletteIndex.serialize(buffer);
 
     buffer.writeUint8(this.scale);
     buffer.writeUint8(this.power);
@@ -118,7 +118,7 @@ LayerRidge.prototype.serialize = function(buffer) {
 LayerRidge.prototype.copy = function() {
     return new LayerRidge(
         this.plane.copy(),
-        this.paletteSample.copy(),
+        this.paletteIndex.copy(),
         this.scale,
         this.power,
         this.threshold,

@@ -20,22 +20,6 @@ Mutator.prototype.mutateUint8 = function(n, sampler, x) {
 };
 
 /**
- * Mutate a palette sample
- * @param {Palette.Sample} sample The palette sampler
- * @param {Sampler} distance A mutate distance sampler
- * @param {Random} random A randomizer
- */
-Mutator.prototype.mutatePalette = function(sample, distance, random) {
-    const angle = Math.PI * 2 * random.getFloat();
-    const radius = distance.sample(random.getFloat());
-
-    sample.x += Math.round(Math.cos(angle) * radius);
-    sample.y += Math.round(Math.sin(angle) * radius);
-
-    sample.tile();
-};
-
-/**
  * Move a 3D vector in a random direction
  * @param {Vector3} vector The vector to move
  * @param {Sampler} distance A distance sampler

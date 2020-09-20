@@ -21,7 +21,6 @@ MutatorLayerRidge.prototype.SAMPLER_FOCUS_POWER = new SamplerPlateau(-6, 0, 6, 2
  * @param {Random} random A randomizer
  */
 MutatorLayerRidge.prototype.mutate = function(random) {
-    this.mutatePalette(this.layer.paletteSample, this.SAMPLER_PALETTE_DISTANCE, random);
     this.mutateVector3(this.layer.plane.anchor, this.SAMPLER_ANCHOR_DISTANCE, random);
     this.mutateNormalVector3(this.layer.plane.x, this.SAMPLER_X_DISTANCE, random);
 

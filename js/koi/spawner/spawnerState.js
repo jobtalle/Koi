@@ -13,44 +13,7 @@ const SpawnerState = function(time = 0, school = 0, spawning = null) {
 
 SpawnerState.prototype.CHECK_FREQUENCY = 30;
 SpawnerState.prototype.BLUEPRINTS = [
-    // Small gold spotted koi
-    new Blueprint(
-        new SamplerPlateau(2, 3, 4, 1),
-        new Sampler(170, 200),
-        new Sampler(180, 200),
-        new Sampler(4, 6),
-        new Sampler(25000, 30000),
-        new BlueprintBody(
-            new SamplerPlateau(70, 90, 120, 5),
-            new Sampler(100, 120),
-            new BlueprintFins(),
-            new BlueprintTail(
-                new Sampler(120, 150),
-                new Sampler(100, 120)),
-            new BlueprintPattern(
-                new BlueprintLayerBase(
-                    new BlueprintPaletteSample(
-                        new Sampler(3, 5),
-                        new Sampler(10, 11))),
-                new BlueprintLayerShapeBody(
-                    new Sampler(220, 240),
-                    new Sampler(120, 140),
-                    new Sampler(150, 160)),
-                new BlueprintLayerShapeFin(
-                    new Sampler(60, 90)),
-                [
-                    new BlueprintLayerSpots(
-                        new BlueprintPaletteSample(
-                            new Sampler(6, 8),
-                            new Sampler(6, 8)),
-                        new Sampler(50, 100),
-                        new Sampler(120, 136),
-                        new Sampler(80, 100),
-                        new Sampler(120, 136),
-                        new Sampler(120, 136),
-                        new Sampler(30, 50))
-                ]))),
-    // Black and white striped
+    // Black koi
     new Blueprint(
         new SamplerPlateau(1, 2, 5, 1),
         new Sampler(130, 170),
@@ -65,10 +28,7 @@ SpawnerState.prototype.BLUEPRINTS = [
                 new Sampler(100, 140),
                 new Sampler(180, 220)),
             new BlueprintPattern(
-                new BlueprintLayerBase(
-                    new BlueprintPaletteSample(
-                        new Sampler(7, 9),
-                        new Sampler(12, 14))),
+                new BlueprintLayerBase(1),
                 new BlueprintLayerShapeBody(
                     new Sampler(50, 100),
                     new Sampler(170, 200),
@@ -76,18 +36,14 @@ SpawnerState.prototype.BLUEPRINTS = [
                 new BlueprintLayerShapeFin(
                     new Sampler(200, 230)),
                 [
-                    new BlueprintLayerStripes(
-                        new BlueprintPaletteSample(
-                            new Sampler(4, 6),
-                            new Sampler(4, 6)),
-                        new Sampler(210, 240),
-                        new Sampler(70, 100),
-                        new Sampler(100, 130),
+                    new BlueprintLayerSpots(
+                        0,
+                        new Sampler(50, 100),
                         new Sampler(120, 136),
-                        new Sampler(130, 160),
                         new Sampler(80, 100),
                         new Sampler(120, 136),
-                        new Sampler(30, 60))
+                        new Sampler(120, 136),
+                        new Sampler(30, 50))
                 ]))),
     // Big red spotted koi
     new Blueprint(
@@ -104,10 +60,7 @@ SpawnerState.prototype.BLUEPRINTS = [
                 new Sampler(120, 150),
                 new Sampler(100, 120)),
             new BlueprintPattern(
-                new BlueprintLayerBase(
-                    new BlueprintPaletteSample(
-                        new Sampler(3, 5),
-                        new Sampler(10, 12))),
+                new BlueprintLayerBase(0),
                 new BlueprintLayerShapeBody(
                     new Sampler(220, 240),
                     new Sampler(120, 140),
@@ -116,51 +69,13 @@ SpawnerState.prototype.BLUEPRINTS = [
                     new Sampler(60, 90)),
                 [
                     new BlueprintLayerSpots(
-                        new BlueprintPaletteSample(
-                            new Sampler(2, 4),
-                            new Sampler(4, 6)),
+                        1,
                         new Sampler(50, 100),
                         new Sampler(120, 136),
                         new Sampler(80, 100),
                         new Sampler(120, 136),
                         new Sampler(120, 136),
                         new Sampler(30, 50))
-                ]))),
-    // Big red ridged koi
-    new Blueprint(
-        new SamplerPlateau(2, 3, 4, 1),
-        new Sampler(170, 200),
-        new Sampler(180, 200),
-        new Sampler(4, 6),
-        new Sampler(25000, 30000),
-        new BlueprintBody(
-            new Sampler(160, 200),
-            new Sampler(130, 150),
-            new BlueprintFins(),
-            new BlueprintTail(
-                new Sampler(120, 150),
-                new Sampler(100, 120)),
-            new BlueprintPattern(
-                new BlueprintLayerBase(
-                    new BlueprintPaletteSample(
-                        new Sampler(3, 5),
-                        new Sampler(10, 12))),
-                new BlueprintLayerShapeBody(
-                    new Sampler(220, 240),
-                    new Sampler(120, 140),
-                    new Sampler(150, 160)),
-                new BlueprintLayerShapeFin(
-                    new Sampler(60, 90)),
-                [
-                    new BlueprintLayerRidge(
-                        new BlueprintPaletteSample(
-                            new Sampler(2, 4),
-                            new Sampler(4, 6)),
-                        new Sampler(150, 170),
-                        new Sampler(150, 170),
-                        new Sampler(100, 130),
-                        new Sampler(120, 160),
-                        new Sampler(180, 210))
                 ])))
 ];
 

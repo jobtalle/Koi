@@ -8,7 +8,6 @@ const MutatorLayerStripes = function(layer) {
 };
 
 MutatorLayerStripes.prototype = Object.create(Mutator.prototype);
-MutatorLayerStripes.prototype.SAMPLER_PALETTE_DISTANCE = new SamplerPower(0, 1.5, 8);
 MutatorLayerStripes.prototype.SAMPLER_ANCHOR_DISTANCE = new SamplerPower(0, 4, 5);
 MutatorLayerStripes.prototype.SAMPLER_X_DISTANCE = new SamplerPower(0, .6, 4);
 MutatorLayerStripes.prototype.SAMPLER_SCALE = new SamplerPlateau(-8, 0, 8, 1);
@@ -25,7 +24,6 @@ MutatorLayerStripes.prototype.SAMPLER_POWER = new SamplerPlateau(-5, 0, 5, 2.7);
  * @param {Random} random A randomizer
  */
 MutatorLayerStripes.prototype.mutate = function(random) {
-    this.mutatePalette(this.layer.paletteSample, this.SAMPLER_PALETTE_DISTANCE, random);
     this.mutateVector3(this.layer.plane.anchor, this.SAMPLER_ANCHOR_DISTANCE, random);
     this.mutateNormalVector3(this.layer.plane.x, this.SAMPLER_X_DISTANCE, random);
 

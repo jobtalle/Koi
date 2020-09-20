@@ -1,7 +1,7 @@
 /**
  * A coloured spots pattern
  * @param {Plane} plane A sampling plane
- * @param {Palette.Sample} sample A palette sample
+ * @param {Number} paletteIndex A palette sample index
  * @param {Number} scale The noise scale in the range [0, 255]
  * @param {Number} stretch The X axis stretch in the range [0, 255]
  * @param {Number} threshold The noise threshold in the range [0, 255]
@@ -12,7 +12,7 @@
  */
 const LayerSpots = function(
     plane,
-    sample,
+    paletteIndex,
     scale,
     stretch,
     threshold,
@@ -27,7 +27,7 @@ const LayerSpots = function(
     this.yFocus = yFocus;
     this.power = power;
 
-    Layer.call(this, this.ID, sample, true, false, false, this.DOMINANCE);
+    Layer.call(this, this.ID, paletteIndex, true, false, false, this.DOMINANCE);
 };
 
 LayerSpots.prototype = Object.create(Layer.prototype);
@@ -90,7 +90,7 @@ void main() {
 LayerSpots.deserialize = function(buffer) {
     return new LayerSpots(
         Plane.deserialize(buffer),
-        Palette.Sample.deserialize(buffer),
+        buffer.readUint8(),
         buffer.readUint8(),
         buffer.readUint8(),
         buffer.readUint8(),
@@ -105,8 +105,8 @@ LayerSpots.deserialize = function(buffer) {
  */
 LayerSpots.prototype.serialize = function(buffer) {
     this.plane.serialize(buffer);
-    this.paletteSample.serialize(buffer);
 
+    buffer.writeUint8(this.paletteIndex);
     buffer.writeUint8(this.scale);
     buffer.writeUint8(this.stretch);
     buffer.writeUint8(this.threshold);
@@ -122,7 +122,7 @@ LayerSpots.prototype.serialize = function(buffer) {
 LayerSpots.prototype.copy = function() {
     return new LayerSpots(
         this.plane.copy(),
-        this.paletteSample.copy(),
+        this.paletteIndex,
         this.scale,
         this.stretch,
         this.threshold,

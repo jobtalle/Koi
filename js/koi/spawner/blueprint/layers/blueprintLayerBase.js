@@ -1,10 +1,10 @@
 /**
  * A blueprint for a random base layer
- * @param {BlueprintPaletteSample} blueprintPaletteSample A palette sample blueprint
+ * @param {Number} paletteIndex A palette sample index
  * @constructor
  */
-const BlueprintLayerBase = function(blueprintPaletteSample) {
-    this.blueprintPaletteSample = blueprintPaletteSample;
+const BlueprintLayerBase = function(paletteIndex) {
+    this.paletteIndex = paletteIndex;
 };
 
 /**
@@ -13,5 +13,5 @@ const BlueprintLayerBase = function(blueprintPaletteSample) {
  * @returns {LayerBase} A base layer
  */
 BlueprintLayerBase.prototype.spawn = function(random) {
-    return new LayerBase(this.blueprintPaletteSample.spawn(random));
+    return new LayerBase(this.paletteIndex);
 };

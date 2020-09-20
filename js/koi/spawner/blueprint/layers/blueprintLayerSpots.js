@@ -1,6 +1,6 @@
 /**
  * A blueprint for a random spots layer
- * @param {BlueprintPaletteSample} blueprintPaletteSample A palette sample blueprint
+ * @param {Number} paletteIndex A palette sample index
  * @param {Sampler} samplerScale A scale sampler
  * @param {Sampler} samplerStretch A stretch sampler
  * @param {Sampler} samplerThreshold A threshold sampler
@@ -10,14 +10,14 @@
  * @constructor
  */
 const BlueprintLayerSpots = function(
-    blueprintPaletteSample,
+    paletteIndex,
     samplerScale,
     samplerStretch,
     samplerThreshold,
     samplerXFocus,
     samplerYFocus,
     samplerPower) {
-    this.blueprintPaletteSample = blueprintPaletteSample
+    this.paletteIndex = paletteIndex
     this.samplerScale = samplerScale
     this.samplerStretch = samplerStretch
     this.samplerThreshold = samplerThreshold
@@ -34,7 +34,7 @@ const BlueprintLayerSpots = function(
 BlueprintLayerSpots.prototype.spawn = function(random) {
     return new LayerSpots(
         Plane.createRandom(random),
-        this.blueprintPaletteSample.spawn(random),
+        this.paletteIndex,
         Math.round(this.samplerScale.sample(random.getFloat())),
         Math.round(this.samplerStretch.sample(random.getFloat())),
         Math.round(this.samplerThreshold.sample(random.getFloat())),

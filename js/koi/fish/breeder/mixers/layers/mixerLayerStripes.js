@@ -31,9 +31,7 @@ MixerLayerStripes.prototype.mix = function(random) {
 
     return new LayerStripes(
         this.mother.plane.interpolate(this.father.plane, this.SAMPLER_PLANE.sample(interpolateSample)),
-        this.mother.paletteSample.interpolate(
-            this.father.paletteSample,
-            this.SAMPLER_PALETTE.sample(random.getFloat())),
+        interpolateSample < .5 ? this.mother.paletteIndex : this.father.paletteIndex,
         this.mixUint8(this.mother.scale, this.father.scale, this.SAMPLER_SCALE, interpolateSample),
         this.mixUint8(this.mother.distortion, this.father.distortion, this.SAMPLER_DISTORTION, interpolateSample),
         this.mixUint8(this.mother.roughness, this.father.roughness, this.SAMPLER_ROUGHNESS, interpolateSample),

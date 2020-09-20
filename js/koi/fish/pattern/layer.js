@@ -1,7 +1,7 @@
 /**
  * A layer in a composite fish pattern
  * @param {Number} [id] The layer ID, -1 for base layers and shapes
- * @param {Palette.Sample} [paletteSample] A palette sample, if this layer samples
+ * @param {Number} [paletteIndex] A palette index, if this layer samples
  * @param {Boolean} [allowOverlap] Indicates whether this layer may be overlapped
  * @param {Boolean} [overlaps] Indicates whether this layer will overlap when possible
  * @param {Boolean} [recessive] Indicates that this layer always loses to non recessive layers in reproduction
@@ -10,14 +10,14 @@
  */
 const Layer = function(
     id = -1,
-    paletteSample = null,
+    paletteIndex = -1,
     allowOverlap = true,
     overlaps = true,
     recessive = false,
     dominance = 1) {
     this.id = id;
     this.dominance = dominance;
-    this.paletteSample = paletteSample;
+    this.paletteIndex = paletteIndex;
     this.flags = 0;
 
     if (allowOverlap)

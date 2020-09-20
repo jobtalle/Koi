@@ -28,9 +28,7 @@ MixerLayerSpots.prototype.mix = function(random) {
 
     return new LayerSpots(
         this.mother.plane.interpolate(this.father.plane, this.SAMPLER_PLANE.sample(interpolateSample)),
-        this.mother.paletteSample.interpolate(
-            this.father.paletteSample,
-            this.SAMPLER_PALETTE.sample(random.getFloat())),
+        interpolateSample < .5 ? this.mother.paletteIndex : this.father.paletteIndex,
         this.mixUint8(this.mother.scale, this.father.scale, this.SAMPLER_SCALE, interpolateSample),
         this.mixUint8(this.mother.stretch, this.father.stretch, this.SAMPLER_STRETCH, interpolateSample),
         this.mixUint8(this.mother.threshold, this.father.threshold, this.SAMPLER_THRESHOLD, interpolateSample),

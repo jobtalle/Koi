@@ -32,14 +32,3 @@ Mixer.prototype.mixUint8Ordered = function(a, b, sampler, x) {
 
     return this.clampUint8(b + (a - b) * sampler.sample(x));
 };
-
-/**
- * Mix two palette samples
- * @param {Palette.Sample} a The first palette sample
- * @param {Palette.Sample} b The second palette sample
- * @param {Sampler} sampler A sampler
- * @param {Number} x The interpolation factor in the range [0, 1]
- */
-Mixer.prototype.mixPalette = function(a, b, sampler, x) {
-    return a.interpolate(b, sampler.sample(x));
-};

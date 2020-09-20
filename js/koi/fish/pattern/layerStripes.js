@@ -1,7 +1,7 @@
 /**
  * A stripes pattern
  * @param {Plane} plane The distortion sampling plane
- * @param {Palette.Sample} sample A palette sample
+ * @param {Number} paletteIndex A palette sample index
  * @param {Number} scale The stripe scale in the range [0, 255]
  * @param {Number} distortion The stripe distortion in the range [0, 255]
  * @param {Number} roughness The stripe distortion frequency in the range [0, 255]
@@ -14,7 +14,7 @@
  */
 const LayerStripes = function(
     plane,
-    sample,
+    paletteIndex,
     scale,
     distortion,
     roughness,
@@ -34,7 +34,7 @@ const LayerStripes = function(
     this.focus = focus;
     this.power = power;
 
-    Layer.call(this, this.ID, sample, true, false, false, this.DOMINANCE);
+    Layer.call(this, this.ID, paletteIndex, true, false, false, this.DOMINANCE);
 };
 
 LayerStripes.prototype = Object.create(Layer.prototype);

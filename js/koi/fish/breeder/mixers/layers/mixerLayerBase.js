@@ -10,7 +10,6 @@ const MixerLayerBase = function(mother, father) {
 };
 
 MixerLayerBase.prototype = Object.create(Mixer.prototype);
-MixerLayerBase.prototype.SAMPLER_PALETTE = new SamplerSigmoid(0, 1, 20);
 
 /**
  * Create a new layer that mixes the properties from both parents
@@ -19,9 +18,5 @@ MixerLayerBase.prototype.SAMPLER_PALETTE = new SamplerSigmoid(0, 1, 20);
  */
 MixerLayerBase.prototype.mix = function(random) {
     return new LayerBase(
-        this.mixPalette(
-            this.mother.paletteSample,
-            this.father.paletteSample,
-            this.SAMPLER_PALETTE,
-            random.getFloat()));
+        random.getFloat() < .5 ? this.mother.paletteIndex : this.father.paletteIndex);
 };

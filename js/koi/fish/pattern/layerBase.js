@@ -1,10 +1,10 @@
 /**
  * A base color for a fish pattern
- * @param {Palette.Sample} sample A palette sample
+ * @param {Number} paletteIndex A palette sample index
  * @constructor
  */
-const LayerBase = function(sample) {
-    Layer.call(this, -1, sample, false);
+const LayerBase = function(paletteIndex) {
+    Layer.call(this, -1, paletteIndex, false);
 };
 
 LayerBase.prototype = Object.create(Layer.prototype);
@@ -29,7 +29,7 @@ void main() {
  * @param {BinBuffer} buffer A buffer to deserialize from
  */
 LayerBase.deserialize = function(buffer) {
-    return new LayerBase(Palette.Sample.deserialize(buffer));
+    return new LayerBase(buffer.readUint8());
 };
 
 /**
@@ -37,7 +37,7 @@ LayerBase.deserialize = function(buffer) {
  * @param {BinBuffer} buffer A buffer to serialize to
  */
 LayerBase.prototype.serialize = function(buffer) {
-    this.paletteSample.serialize(buffer);
+    buffer.writeUint8(this.paletteIndex);
 };
 
 /**

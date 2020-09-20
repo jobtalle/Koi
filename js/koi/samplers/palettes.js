@@ -12,17 +12,17 @@ const Palettes = function() {
     const colorDetailWhite = Color.fromCSS("--color-fish-detail-white");
 
     const paletteDetailOnRed = new Palette([
-        new Palette.Color(new Palette.Sample(8, 8), colorDetailGold)]);
+        new Palette.Color(colorDetailGold)]);
 
     const paletteDetailOnWhite = new Palette([
-        new Palette.Color(new Palette.Sample(3, 5), colorDetailRed),
-        new Palette.Color(new Palette.Sample(7, 7), colorDetailGold),
-        new Palette.Color(new Palette.Sample(10, 10), colorDetailOrange, paletteDetailOnRed)]);
+        new Palette.Color(colorDetailRed),
+        new Palette.Color(colorDetailGold),
+        new Palette.Color(colorDetailOrange, paletteDetailOnRed)]);
 
     const paletteDetailOnBlack = new Palette([
-        new Palette.Color(new Palette.Sample(5, 5), colorDetailWhite)]);
+        new Palette.Color(colorDetailWhite)]);
 
     this.base = new Palette([
-        new Palette.Color(new Palette.Sample(4, 11), colorBaseWhite, paletteDetailOnWhite),
-        new Palette.Color(new Palette.Sample(8, 13), colorBaseBlack, paletteDetailOnBlack)]);
+        new Palette.Color(colorBaseWhite, paletteDetailOnWhite),
+        new Palette.Color(colorBaseBlack, paletteDetailOnBlack)]);
 };
