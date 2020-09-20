@@ -15,10 +15,11 @@ const Session = function(
 /**
  * Make a Koi object, to be called once
  * @param {Systems} systems Render systems for this koi object
+ * @param {AudioBank} audio Game audio
  * @returns {Koi} A koi object for this session
  */
-Session.prototype.makeKoi = function(systems) {
-    const koi = new Koi(systems, this.environmentSeed, this.random);
+Session.prototype.makeKoi = function(systems, audio) {
+    const koi = new Koi(systems, audio, this.environmentSeed, this.random);
 
     if (this.buffer) {
         koi.deserialize(this.buffer);

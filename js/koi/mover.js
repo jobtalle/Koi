@@ -1,10 +1,12 @@
 /**
  * A fish mover for moving fish through user input
  * @param {Constellation} constellation A constellation to move fish in
+ * @param {AudioBank} audio Game audio
  * @constructor
  */
-const Mover = function(constellation) {
+const Mover = function(constellation, audio) {
     this.constellation = constellation;
+    this.audio = audio;
     this.move = null;
     this.cursor = new Vector2();
     this.cursorPrevious = new Vector2();
@@ -131,6 +133,9 @@ Mover.prototype.pickUp = function(fish, x, y, waterPlane, random) {
     this.offset.x = fish.position.x - this.cursor.x;
     this.offset.y = fish.position.y - this.cursor.y;
     this.touch = true;
+
+    this.audio.effectFishUp.play();
+
     console.log(fish); // TODO: For debugging only
     this.createBodySplash(fish.body, waterPlane, random);
 };
@@ -145,6 +150,8 @@ Mover.prototype.drop = function(waterPlane, random) {
         this.constellation.drop(this.move);
         this.createBodySplash(this.move.body, waterPlane, random);
         this.move = null;
+
+        this.audio.effectFishDown.play();
     }
 
     this.touch = false;

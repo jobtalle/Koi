@@ -19,6 +19,8 @@ if (gl) {
     const wrapper = document.getElementById("wrapper");
     const sessionData = window["localStorage"].getItem("session");
     const systems = new Systems(gl, new Random(session.environmentSeed), wrapper.clientWidth, wrapper.clientHeight);
+    const audioEngine = new AudioEngine(new Random());
+    const audio = new AudioBank(audioEngine);
     let lastDate = null;
     let koi = null;
     let loaded = true;
@@ -51,7 +53,7 @@ if (gl) {
      */
     const newSession = () => {
         session = new Session();
-        koi = session.makeKoi(systems);
+        koi = session.makeKoi(systems, audio);
     };
 
     // Retrieve last session if it exists
@@ -59,7 +61,7 @@ if (gl) {
         try {
             // throw new Error();
             session.deserialize(new BinBuffer(sessionData));
-            koi = session.makeKoi(systems);
+            koi = session.makeKoi(systems, audio);
         }
         catch (error) {
             newSession();
@@ -96,12 +98,16 @@ if (gl) {
         event.preventDefault();
 
         koi.touchStart(event.clientX, event.clientY);
+
+        audioEngine.interact(); // TODO: Trigger only once
     });
 
     canvas.addEventListener("touchstart", event => {
         event.preventDefault();
 
         koi.touchStart(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+
+        audioEngine.interact(); // TODO: Trigger only once
     });
 
     canvas.addEventListener("mousemove", event => {

@@ -1,12 +1,14 @@
 /**
  * The koi game
  * @param {Systems} systems The render systems
+ * @param {AudioBank} audio Game audio
  * @param {Number} environmentSeed The seed for all stable systems
  * @param {Random} random A randomizer
  * @constructor
  */
 const Koi = function(
     systems,
+    audio,
     environmentSeed,
     random) {
     this.systems = systems;
@@ -16,7 +18,7 @@ const Koi = function(
     this.constellation =  new Constellation(
         systems.width / this.scale,
         systems.height / this.scale);
-    this.mover = new Mover(this.constellation);
+    this.mover = new Mover(this.constellation, audio);
     this.shadowBuffer = null;
     this.rocks = null;
     this.background = null;
