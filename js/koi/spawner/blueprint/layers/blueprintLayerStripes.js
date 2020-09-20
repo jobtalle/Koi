@@ -1,6 +1,6 @@
 /**
  * A blueprint for a random stripes layer
- * @param {BlueprintPaletteSample} blueprintPaletteSample A palette sample blueprint
+ * @param {Number} paletteIndex A palette sample index
  * @param {Sampler} samplerScale A scale sampler
  * @param {Sampler} samplerDistortion A distortion sampler
  * @param {Sampler} samplerRoughness A roughness sampler
@@ -12,7 +12,7 @@
  * @constructor
  */
 const BlueprintLayerStripes = function(
-    blueprintPaletteSample,
+    paletteIndex,
     samplerScale,
     samplerDistortion,
     samplerRoughness,
@@ -21,7 +21,7 @@ const BlueprintLayerStripes = function(
     samplerSuppression,
     samplerFocus,
     samplerPower) {
-    this.blueprintPaletteSample = blueprintPaletteSample;
+    this.paletteIndex = paletteIndex;
     this.samplerScale = samplerScale;
     this.samplerDistortion = samplerDistortion;
     this.samplerRoughness = samplerRoughness;
@@ -40,7 +40,7 @@ const BlueprintLayerStripes = function(
 BlueprintLayerStripes.prototype.spawn = function(random) {
     return new LayerStripes(
         Plane.createRandom(random),
-        this.blueprintPaletteSample.spawn(random),
+        this.paletteIndex,
         Math.round(this.samplerScale.sample(random.getFloat())),
         Math.round(this.samplerDistortion.sample(random.getFloat())),
         Math.round(this.samplerRoughness.sample(random.getFloat())),
