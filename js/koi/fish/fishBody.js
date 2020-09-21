@@ -48,6 +48,7 @@ FishBody.prototype.SAMPLER_SPRING_START = new SamplerPlateau(.15, .85, .95, 1.5)
 FishBody.prototype.SAMPLER_SPRING_END = new SamplerPlateau(.05, .6, .7, 1.5);
 FishBody.prototype.SPRING_POWER = 1.7;
 FishBody.prototype.OFFSPRING_VERTEBRA = .3;
+FishBody.prototype.KILOGRAMS_PER_AREA = 15;
 
 /**
  * Deserialize a fish body
@@ -98,6 +99,14 @@ FishBody.prototype.serialize = function(buffer) {
 
     buffer.writeUint8(this.length);
     buffer.writeUint8(this.radius);
+};
+
+/**
+ * Get the weight of the fish
+ * @returns {Number} The weight in kilograms
+ */
+FishBody.prototype.getWeight = function() {
+    return Math.PI * this.lengthSampled * .5 * this.radiusSampled * this.KILOGRAMS_PER_AREA;
 };
 
 /**

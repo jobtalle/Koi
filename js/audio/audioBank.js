@@ -26,6 +26,25 @@ const AudioBank = function(engine) {
         "audio/ogg/SFX_WaterImpact_06.ogg"
     ]);
 
+    this.effectFishMoveSmall = new AudioEffect(engine, [
+        "audio/ogg/SFX_SmallFishMove_01.ogg",
+        "audio/ogg/SFX_SmallFishMove_02.ogg",
+        "audio/ogg/SFX_SmallFishMove_03.ogg",
+        "audio/ogg/SFX_SmallFishMove_04.ogg",
+        "audio/ogg/SFX_SmallFishMove_05.ogg"
+    ]);
+
+    this.effectFishMoveBig = new AudioEffect(engine, [
+        "audio/ogg/SFX_BigFishMove_01.ogg",
+        "audio/ogg/SFX_BigFishMove_02.ogg",
+        "audio/ogg/SFX_BigFishMove_03.ogg",
+        "audio/ogg/SFX_BigFishMove_04.ogg",
+        "audio/ogg/SFX_BigFishMove_05.ogg",
+        "audio/ogg/SFX_BigFishMove_06.ogg",
+        "audio/ogg/SFX_BigFishMove_07.ogg",
+        "audio/ogg/SFX_BigFishMove_08.ogg"
+    ]);
+
     this.effectWaterLow = new AudioEffect(engine, [
         "audio/ogg/AMB_WaterLow_01.ogg",
         "audio/ogg/AMB_WaterLow_02.ogg",
