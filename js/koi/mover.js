@@ -124,7 +124,7 @@ Mover.prototype.startTouch = function(x, y) {
  * @param {Fish} fish The fish to play the sound for
  */
 Mover.prototype.playInteractionSound = function(fish) {
-    if (fish.body.getWeight() > this.BIG_THRESHOLD)
+    if (fish.getWeight() > this.BIG_THRESHOLD)
         this.audio.effectFishMoveBig.play();
     else
         this.audio.effectFishMoveSmall.play();
@@ -150,7 +150,7 @@ Mover.prototype.pickUp = function(fish, x, y, waterPlane, random) {
 
     this.playInteractionSound(fish);
 
-    console.log(fish.body.getWeight().toFixed(2) + "kg");
+    console.log(fish.getWeight().toFixed(2) + "kg");
     console.log(fish); // TODO: For debugging only
     this.createBodySplash(fish.body, waterPlane, random);
 };

@@ -170,6 +170,14 @@ Fish.prototype.serialize = function(buffer) {
 };
 
 /**
+ * Get the weight of the fish
+ * @returns {Number} The weight in kilograms
+ */
+Fish.prototype.getWeight = function() {
+    return this.body.getWeight(this.size);
+};
+
+/**
  * Move the fish to a given position
  * @param {Vector2} position The position to move to
  */

@@ -103,10 +103,14 @@ FishBody.prototype.serialize = function(buffer) {
 
 /**
  * Get the weight of the fish
+ * @param {Number} size The fish size in the range [0, 1]
  * @returns {Number} The weight in kilograms
  */
-FishBody.prototype.getWeight = function() {
-    return Math.PI * this.lengthSampled * .5 * this.radiusSampled * this.KILOGRAMS_PER_AREA;
+FishBody.prototype.getWeight = function(size) {
+    const axisLength = this.lengthSampled * .5 * size;
+    const axisRadius = this.radiusSampled * size;
+
+    return Math.PI * axisLength * axisRadius * this.KILOGRAMS_PER_AREA;
 };
 
 /**
