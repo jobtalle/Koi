@@ -21,6 +21,7 @@ Mover.prototype.SPLASH_DROP_DISTANCE = 0.1;
 Mover.prototype.AIR_RADIUS = 1.5;
 Mover.prototype.AIR_INTENSITY = .4;
 Mover.prototype.AIR_HEIGHT = .5;
+Mover.prototype.BIG_THRESHOLD = 1.8;
 
 /**
  * Update the mover
@@ -119,6 +120,17 @@ Mover.prototype.startTouch = function(x, y) {
 };
 
 /**
+ * Play the fish specific interaction sound
+ * @param {Fish} fish The fish to play the sound for
+ */
+Mover.prototype.playInteractionSound = function(fish) {
+    if (fish.body.getWeight() > this.BIG_THRESHOLD)
+        this.audio.effectFishMoveBig.play();
+    else
+        this.audio.effectFishMoveSmall.play();
+};
+
+/**
  * Start a new move
  * @param {Fish} fish The fish that needs to be moved
  * @param {Number} x The X position in meters
@@ -136,6 +148,9 @@ Mover.prototype.pickUp = function(fish, x, y, waterPlane, random) {
 
     this.audio.effectFishUp.play();
 
+    this.playInteractionSound(fish);
+
+    console.log(fish.body.getWeight().toFixed(2) + "kg");
     console.log(fish); // TODO: For debugging only
     this.createBodySplash(fish.body, waterPlane, random);
 };
@@ -147,11 +162,12 @@ Mover.prototype.pickUp = function(fish, x, y, waterPlane, random) {
  */
 Mover.prototype.drop = function(waterPlane, random) {
     if (this.move) {
+        this.playInteractionSound(this.move);
+        this.audio.effectFishDown.play();
+
         this.constellation.drop(this.move);
         this.createBodySplash(this.move.body, waterPlane, random);
         this.move = null;
-
-        this.audio.effectFishDown.play();
     }
 
     this.touch = false;
