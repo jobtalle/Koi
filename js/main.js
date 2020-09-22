@@ -95,19 +95,19 @@ if (gl) {
     }, 60000);
 
     canvas.addEventListener("mousedown", event => {
+        audioEngine.interact(); // TODO: Trigger only once
+
         event.preventDefault();
 
         koi.touchStart(event.clientX, event.clientY);
-
-        audioEngine.interact(); // TODO: Trigger only once
     });
 
     canvas.addEventListener("touchstart", event => {
+        audioEngine.interact(); // TODO: Trigger only once
+
         event.preventDefault();
 
         koi.touchStart(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
-
-        audioEngine.interact(); // TODO: Trigger only once
     });
 
     canvas.addEventListener("mousemove", event => {
