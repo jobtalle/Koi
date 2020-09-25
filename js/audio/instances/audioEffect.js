@@ -30,10 +30,11 @@ AudioEffect.Track = function(engine, audio) {
 
 /**
  * Set the pan
+ * @param {AudioEngine} engine The audio engine
  * @param {Number} pan The pan in the range [-1, 1];
  */
-AudioEffect.Track.prototype.setPan = function(pan) {
-    this.nodePan.pan.value = pan;
+AudioEffect.Track.prototype.setPan = function(engine, pan) {
+    this.nodePan.pan.value = engine.transformPan(pan);
 };
 
 /**
@@ -52,7 +53,7 @@ AudioEffect.prototype.play = function(pan = 0) {
             if (this.tracks[index] === null)
                 this.tracks[index] = new AudioEffect.Track(this.engine, this.elements[index]);
 
-            this.tracks[index].setPan(pan);
+            this.tracks[index].setPan(this.engine, pan);
             this.elements[index].play();
 
             return this.elements[index].duration;

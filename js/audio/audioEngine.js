@@ -9,6 +9,9 @@ const AudioEngine = function(random) {
     this.random = random;
 };
 
+AudioEngine.prototype.PAN_AMPLITUDE = .75;
+AudioEngine.prototype.PAN_DEAD_ZONE = .25;
+
 /**
  * Interact with the audio engine to enable it
  */
@@ -50,4 +53,15 @@ AudioEngine.prototype.createPanNode = function() {
  */
 AudioEngine.prototype.getDestinationNode = function() {
     return this.context.destination;
+};
+
+/**
+ * Transform the pan position to audio pan
+ * @param {Number} pan The pan position in the range [-1, 1]
+ * @returns {Number} The pan in the range [-1, 1]
+ */
+AudioEngine.prototype.transformPan = function(pan) {
+    return Math.sign(pan) * Math.max(
+        0,
+        Math.abs(pan) - this.PAN_DEAD_ZONE) * (this.PAN_AMPLITUDE / (1 - this.PAN_DEAD_ZONE));
 };
