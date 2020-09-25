@@ -41,7 +41,7 @@ AudioEngine.prototype.createGainNode = function() {
  * @returns {StereoPannerNode} A stereo panner node
  */
 AudioEngine.prototype.createPanNode = function() {
-    return new StereoPannerNode(this.context);
+    return this.context.createStereoPanner();
 };
 
 /**

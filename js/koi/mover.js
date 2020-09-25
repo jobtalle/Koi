@@ -21,7 +21,7 @@ Mover.prototype.SPLASH_DROP_DISTANCE = 0.1;
 Mover.prototype.AIR_RADIUS = 1.5;
 Mover.prototype.AIR_INTENSITY = .4;
 Mover.prototype.AIR_HEIGHT = .5;
-Mover.prototype.BIG_THRESHOLD = 1.8;
+Mover.prototype.BIG_THRESHOLD = 2;
 
 /**
  * Update the mover
@@ -122,12 +122,13 @@ Mover.prototype.startTouch = function(x, y) {
 /**
  * Play the fish specific interaction sound
  * @param {Fish} fish The fish to play the sound for
+ * @param {Number} pan The pan in the range [-1, 1]
  */
-Mover.prototype.playInteractionSound = function(fish) {
+Mover.prototype.playInteractionSound = function(fish, pan) {
     if (fish.getWeight() > this.BIG_THRESHOLD)
-        this.audio.effectFishMoveBig.play();
+        this.audio.effectFishMoveBig.play(pan);
     else
-        this.audio.effectFishMoveSmall.play();
+        this.audio.effectFishMoveSmall.play(pan);
 };
 
 /**
@@ -139,6 +140,8 @@ Mover.prototype.playInteractionSound = function(fish) {
  * @param {Random} random A randomizer
  */
 Mover.prototype.pickUp = function(fish, x, y, waterPlane, random) {
+    const pan = 2 * fish.position.x / this.constellation.width - 1;
+
     this.cursorPrevious.x = this.cursor.x = x;
     this.cursorPrevious.y = this.cursor.y = y;
     this.move = fish;
@@ -146,9 +149,9 @@ Mover.prototype.pickUp = function(fish, x, y, waterPlane, random) {
     this.offset.y = fish.position.y - this.cursor.y;
     this.touch = true;
 
-    this.audio.effectFishUp.play();
+    this.audio.effectFishUp.play(pan);
 
-    this.playInteractionSound(fish);
+    this.playInteractionSound(fish, pan);
 
     console.log(fish.getWeight().toFixed(2) + "kg");
     console.log(fish); // TODO: For debugging only
@@ -162,8 +165,11 @@ Mover.prototype.pickUp = function(fish, x, y, waterPlane, random) {
  */
 Mover.prototype.drop = function(waterPlane, random) {
     if (this.move) {
-        this.playInteractionSound(this.move);
-        this.audio.effectFishDown.play();
+        const pan = 2 * this.move.position.x / this.constellation.width - 1;
+
+        this.audio.effectFishDown.play(pan);
+
+        this.playInteractionSound(this.move, pan);
 
         this.constellation.drop(this.move);
         this.createBodySplash(this.move.body, waterPlane, random);

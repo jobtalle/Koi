@@ -48,7 +48,7 @@ FishBody.prototype.SAMPLER_SPRING_START = new SamplerPlateau(.15, .85, .95, 1.5)
 FishBody.prototype.SAMPLER_SPRING_END = new SamplerPlateau(.05, .6, .7, 1.5);
 FishBody.prototype.SPRING_POWER = 1.7;
 FishBody.prototype.OFFSPRING_VERTEBRA = .3;
-FishBody.prototype.KILOGRAMS_PER_AREA = 15;
+FishBody.prototype.KILOGRAMS_PER_AREA = 22;
 
 /**
  * Deserialize a fish body
