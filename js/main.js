@@ -17,6 +17,7 @@ if (gl) {
 
     let session = new Session();
     const wrapper = document.getElementById("wrapper");
+    const gui = new GUI(document.getElementById("gui"));
     const sessionData = window["localStorage"].getItem("session");
     const systems = new Systems(gl, new Random(session.environmentSeed), wrapper.clientWidth, wrapper.clientHeight);
     const audioEngine = new AudioEngine(new Random());
@@ -53,7 +54,7 @@ if (gl) {
      */
     const newSession = () => {
         session = new Session();
-        koi = session.makeKoi(systems, audio);
+        koi = session.makeKoi(systems, audio, gui);
     };
 
     // Retrieve last session if it exists
@@ -61,7 +62,7 @@ if (gl) {
         try {
             // throw new Error();
             session.deserialize(new BinBuffer(sessionData));
-            koi = session.makeKoi(systems, audio);
+            koi = session.makeKoi(systems, audio, gui);
         }
         catch (error) {
             newSession();

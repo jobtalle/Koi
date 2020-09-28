@@ -1,10 +1,10 @@
 /**
  * A koi card
- * @param {Fish} fish The fish represented by this card
+ * @param {FishBody} body The fish body represented by this card
  * @constructor
  */
-const Card = function(fish) {
-
+const Card = function(body) {
+    this.body = body;
 };
 
 Card.prototype.CLASS = "card";

@@ -2,6 +2,7 @@
  * The koi game
  * @param {Systems} systems The render systems
  * @param {AudioBank} audio Game audio
+ * @param {GUI} gui The GUI
  * @param {Number} environmentSeed The seed for all stable systems
  * @param {Random} random A randomizer
  * @constructor
@@ -9,6 +10,7 @@
 const Koi = function(
     systems,
     audio,
+    gui,
     environmentSeed,
     random) {
     this.systems = systems;
@@ -19,7 +21,7 @@ const Koi = function(
     this.constellation =  new Constellation(
         systems.width / this.scale,
         systems.height / this.scale);
-    this.mover = new Mover(this.constellation, audio);
+    this.mover = new Mover(this.constellation, audio, gui);
     this.shadowBuffer = null;
     this.rocks = null;
     this.background = null;
@@ -238,7 +240,7 @@ Koi.prototype.touchMove = function(x, y) {
  * End a touch event
  */
 Koi.prototype.touchEnd = function() {
-    this.mover.drop(this.water, this.random);
+    this.mover.drop(this.water, this.systems.atlas, this.random);
 };
 
 /**

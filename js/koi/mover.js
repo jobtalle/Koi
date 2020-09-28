@@ -2,11 +2,13 @@
  * A fish mover for moving fish through user input
  * @param {Constellation} constellation A constellation to move fish in
  * @param {AudioBank} audio Game audio
+ * @param {GUI} gui The GUI
  * @constructor
  */
-const Mover = function(constellation, audio) {
+const Mover = function(constellation, audio, gui) {
     this.constellation = constellation;
     this.audio = audio;
+    this.gui = gui;
     this.move = null;
     this.cursor = new Vector2();
     this.cursorPrevious = new Vector2();
@@ -160,18 +162,28 @@ Mover.prototype.pickUp = function(fish, x, y, waterPlane, random) {
 /**
  * Release any move
  * @param {Water} waterPlane A water plane to splash on
+ * @param {Atlas} atlas The atlas
  * @param {Random} random A randomizer
  */
-Mover.prototype.drop = function(waterPlane, random) {
+Mover.prototype.drop = function(waterPlane, atlas, random) {
     if (this.move) {
         const pan = 2 * this.move.position.x / this.constellation.width - 1;
 
-        this.audio.effectFishDown.play(pan);
+        // TODO: Create card drop spot
+        if (this.move.position.y / this.constellation.height < .1) {
+            this.gui.cards.add(new Card(this.move.body));
 
-        this.playInteractionSound(this.move, pan);
+            this.move.free(atlas);
+        }
+        else {
+            this.audio.effectFishDown.play(pan);
 
-        this.constellation.drop(this.move);
-        this.createBodySplash(this.move.body, waterPlane, random);
+            this.playInteractionSound(this.move, pan);
+
+            this.constellation.drop(this.move);
+            this.createBodySplash(this.move.body, waterPlane, random);
+        }
+
         this.move = null;
     }
 
