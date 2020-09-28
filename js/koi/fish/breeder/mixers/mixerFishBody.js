@@ -16,6 +16,9 @@ const MixerFishBody = function(mother, father) {
 MixerFishBody.prototype = Object.create(Mixer.prototype);
 MixerFishBody.prototype.SAMPLER_LENGTH = new SamplerPower(0, 1, 1.5);
 MixerFishBody.prototype.SAMPLER_RADIUS = MixerFishBody.prototype.SAMPLER_LENGTH;
+MixerFishBody.prototype.SAMPLER_GROWTH_SPEED = new Sampler(0, 1);
+MixerFishBody.prototype.SAMPLER_MATING_FREQUENCY = new SamplerPower(0, 1, 3);
+MixerFishBody.prototype.SAMPLER_OFFSPRING_COUNT = new SamplerPower(0, 1, 4);
 
 /**
  * Create a new body that combines properties from both parents
@@ -39,5 +42,20 @@ MixerFishBody.prototype.mix = function(patterns, random) {
             this.mother.radius,
             this.father.radius,
             this.SAMPLER_RADIUS,
-            interpolation));
+            interpolation),
+        this.mixUint8(
+            this.mother.growthSpeed,
+            this.father.growthSpeed,
+            this.SAMPLER_GROWTH_SPEED,
+            random.getFloat()),
+        this.mixUint8Ordered(
+            this.mother.matingFrequency,
+            this.father.matingFrequency,
+            this.SAMPLER_MATING_FREQUENCY,
+            random.getFloat()),
+        this.mixUint8Ordered(
+            this.mother.offspringCount,
+            this.father.offspringCount,
+            this.SAMPLER_OFFSPRING_COUNT,
+            random.getFloat()));
 };

@@ -3,46 +3,29 @@
  * @param {FishBody} body The fish body
  * @param {Vector2} position The initial position
  * @param {Vector2} direction The initial direction vector, which must be normalized
- * @param {Number} growthSpeed The growth speed in the range [0, 255]
- * @param {Number} matingFrequency The frequency with which this fish can mate in the range [0, 255]
- * @param {Number} offspringCount The offspring count in the range [0, 255]
- * @param {Number} [age] The fish age in updates, zero by default
  * @constructor
  */
 const Fish = function(
     body,
     position,
-    direction,
-    growthSpeed,
-    matingFrequency,
-    offspringCount,
-    age = 0) {
+    direction) {
     this.position = position.copy();
     this.positionPrevious = position.copy();
     this.direction = direction.copy();
     this.velocity = direction.copy();
-    this.growthSpeed = growthSpeed;
-    this.matingFrequency = matingFrequency;
-    this.offspringCount = offspringCount;
     this.body = body;
     this.speed = this.SPEED_MIN;
     this.boost = 0;
     this.turnDirection = new Vector2();
     this.turnForce = 0;
     this.nibbleTime = this.NIBBLE_TIME_MIN;
-    this.age = age;
-    this.samplerSize = new SamplerInverse(
-        this.SIZE_MIN,
-        1,
-        this.SAMPLER_GROWTH_MULTIPLIER.sample(growthSpeed / 0xFF));
-    this.size = this.samplerSize.sample(this.age / 0xFFFF);
-    this.mateTimeout = this.SAMPLER_MATING_FREQUENCY.sample(matingFrequency / 0xFF);
+    this.mateTimeout = body.getMateTimeout();
     this.mateTime = 0;
     this.mated = 0;
     this.interactions = 0;
     this.lastInteraction = null;
 
-    this.body.initializeSpine(position, direction, this.size);
+    this.body.initializeSpine(position, direction);
 };
 
 Fish.prototype.FORCE_CONSTRAINT = .6;
@@ -77,12 +60,8 @@ Fish.prototype.TURN_THRESHOLD = .005;
 Fish.prototype.TURN_CARRY = .95;
 Fish.prototype.TURN_FOLLOW_CHANCE = .025;
 Fish.prototype.TURN_AMPLITUDE = Math.PI * .4;
-Fish.prototype.SIZE_MIN = .1;
 Fish.prototype.SIZE_MATING = .2; // TODO: Reduced for debugging
 Fish.prototype.MATE_PROXIMITY_TIME = 120;
-Fish.prototype.SAMPLER_GROWTH_MULTIPLIER = new SamplerPower(50, 100, 4);
-Fish.prototype.SAMPLER_MATING_FREQUENCY = new SamplerPower(300 * .1, 4500 * .1, .3); // TODO: Reduced for debugging
-Fish.prototype.SAMPLER_OFFSPRING_COUNT = new SamplerPlateau(1, 5, 12, 2.5);
 
 /**
  * Deserialize a fish
@@ -103,11 +82,7 @@ Fish.deserialize = function(buffer, position, atlas, randomSource) {
     const fish = new Fish(
         body,
         position,
-        direction,
-        buffer.readUint8(),
-        buffer.readUint8(),
-        buffer.readUint8(),
-        buffer.readUint16());
+        direction);
 
     fish.mated = buffer.readUint16();
     fish.mateTime = buffer.readUint8();
@@ -153,11 +128,6 @@ Fish.prototype.serialize = function(buffer) {
     this.body.serialize(buffer);
     this.direction.serialize(buffer);
 
-    buffer.writeUint8(this.growthSpeed);
-    buffer.writeUint8(this.matingFrequency);
-    buffer.writeUint8(this.offspringCount);
-    buffer.writeUint16(this.age);
-
     buffer.writeUint16(Math.min(0xFFFF, this.mated));
     buffer.writeUint8(this.mateTime);
     buffer.writeUint8(this.nibbleTime);
@@ -174,7 +144,7 @@ Fish.prototype.serialize = function(buffer) {
  * @returns {Number} The weight in kilograms
  */
 Fish.prototype.getWeight = function() {
-    return this.body.getWeight(this.size);
+    return this.body.getWeight(this.body.size);
 };
 
 /**
@@ -261,14 +231,6 @@ Fish.prototype.applyTurn = function() {
         this.turnForce = 0;
     else
         this.turnForce *= this.TURN_DECAY;
-};
-
-/**
- * Get the number of children this fish should produce
- * @returns {Number} The number of children this fish should produce
- */
-Fish.prototype.getOffspringCount = function() {
-    return Math.round(this.SAMPLER_OFFSPRING_COUNT.sample(this.offspringCount / 0xFF));
 };
 
 /**
@@ -423,15 +385,12 @@ Fish.prototype.update = function(constraint, water, random) {
 
     ++this.mated;
 
-    if (this.mated > this.mateTimeout && this.size > this.SIZE_MATING) {
+    if (this.mated > this.mateTimeout && this.body.size > this.SIZE_MATING) {
         if (this.mateTime < this.MATE_PROXIMITY_TIME)
             ++this.mateTime;
     }
     else
         this.mateTime = 0;
-
-    if (this.age !== 0xFFFF)
-        this.size = this.samplerSize.sample(++this.age / 0xFFFF);
 
     if (this.turnDirection)
         this.applyTurn();
@@ -472,11 +431,11 @@ Fish.prototype.update = function(constraint, water, random) {
         }
     }
 
-    const adjustedSpeed = this.speed * (this.SPEED_BASE + (1 - this.SPEED_BASE) * this.size);
+    const adjustedSpeed = this.speed * (this.SPEED_BASE + (1 - this.SPEED_BASE) * this.body.size);
 
     this.positionPrevious.set(this.position);
     this.position.add(this.velocity.multiply(adjustedSpeed));
-    this.body.update(this.position, this.direction, adjustedSpeed, this.size, water, random);
+    this.body.update(this.position, this.direction, adjustedSpeed, true, water, random);
 
     return false;
 };
@@ -487,7 +446,7 @@ Fish.prototype.update = function(constraint, water, random) {
  * @param {Number} time The interpolation factor
  */
 Fish.prototype.render = function(bodies, time) {
-    this.body.render(bodies, this.size, time);
+    this.body.render(bodies, time);
 };
 
 /**

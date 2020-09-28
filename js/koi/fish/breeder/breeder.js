@@ -20,7 +20,7 @@ const Breeder = function(mother, father) {
  * @returns {Fish[]} An array of offspring
  */
 Breeder.prototype.breed = function(atlas, patterns, randomSource, random) {
-    const offspring = new Array(this.mother.getOffspringCount());
+    const offspring = new Array(this.mother.body.getOffspringCount());
 
     for (let fish = 0, fishCount = offspring.length; fish < fishCount; ++fish) {
         const newFish = this.mixer.mix(patterns, random);

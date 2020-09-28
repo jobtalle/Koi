@@ -9,8 +9,8 @@ const AudioEngine = function(random) {
     this.random = random;
 };
 
-AudioEngine.prototype.PAN_AMPLITUDE = .75;
-AudioEngine.prototype.PAN_DEAD_ZONE = .25;
+AudioEngine.prototype.PAN_AMPLITUDE = .7;
+AudioEngine.prototype.PAN_DEAD_ZONE = .3;
 
 /**
  * Interact with the audio engine to enable it

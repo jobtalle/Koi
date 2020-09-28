@@ -16,13 +16,13 @@ SpawnerState.prototype.BLUEPRINTS = [
     // Black koi
     new Blueprint(
         new SamplerPlateau(1, 2, 5, 1),
-        new Sampler(130, 170),
-        new Sampler(150, 160),
-        new Sampler(2, 4),
-        new Sampler(20000, 25000),
         new BlueprintBody(
             new Sampler(150, 180),
             new Sampler(80, 100),
+            new Sampler(130, 170),
+            new Sampler(150, 160),
+            new Sampler(2, 4),
+            new Sampler(20000, 25000),
             new BlueprintFins(),
             new BlueprintTail(
                 new Sampler(100, 140),
@@ -48,13 +48,13 @@ SpawnerState.prototype.BLUEPRINTS = [
     // Big red spotted koi
     new Blueprint(
         new SamplerPlateau(2, 3, 4, 1),
-        new Sampler(170, 200),
-        new Sampler(180, 200),
-        new Sampler(4, 6),
-        new Sampler(25000, 30000),
         new BlueprintBody(
             new Sampler(160, 200),
             new Sampler(130, 150),
+            new Sampler(170, 200),
+            new Sampler(180, 200),
+            new Sampler(4, 6),
+            new Sampler(25000, 30000),
             new BlueprintFins(),
             new BlueprintTail(
                 new Sampler(120, 150),

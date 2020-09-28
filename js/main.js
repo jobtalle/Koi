@@ -95,7 +95,7 @@ if (gl) {
     }, 60000);
 
     canvas.addEventListener("mousedown", event => {
-        audioEngine.interact(); // TODO: Trigger only once
+        audioEngine.interact(); // TODO: Use earlier trigger
 
         event.preventDefault();
 
@@ -103,7 +103,7 @@ if (gl) {
     });
 
     canvas.addEventListener("touchstart", event => {
-        audioEngine.interact(); // TODO: Trigger only once
+        audioEngine.interact(); // TODO: Use earlier trigger
 
         event.preventDefault();
 
