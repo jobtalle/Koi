@@ -266,7 +266,7 @@ Rocks.prototype.createPillar = function(
     random) {
     const firstIndex = this.getFirstIndex(vertices);
     const precision = Math.ceil(2 * Math.PI * radius / this.PILLAR_RESOLUTION);
-    const offset = random.getFloat() * 2 * Math.PI / precision;
+    const offset = random.getFloat() * Math.PI / precision;
     const zShift = (-.5 + random.getFloat()) * .5;
     const lightTop = .8 - zShift * .4;
     let lastStep = precision - 1;
@@ -302,7 +302,7 @@ Rocks.prototype.createPillar = function(
             y + dy * this.PILLAR_SKEW,
             height + dx * zShift * this.PILLAR_SKEW);
 
-        if (step <= precision >> 1)
+        if (step !== 0 && step <= precision >> 1)
             indices.push(
                 firstIndex + lastStep * 3,
                 firstIndex + lastStep * 3 + 1,
