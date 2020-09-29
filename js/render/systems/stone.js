@@ -160,9 +160,7 @@ Stone.prototype.render = function() {
         this.filter = null;
     }
 
-    this.gl.enable(this.gl.CULL_FACE);
     this.renderMesh();
-    this.gl.disable(this.gl.CULL_FACE);
 };
 
 /**

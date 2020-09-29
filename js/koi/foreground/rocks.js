@@ -301,13 +301,17 @@ Rocks.prototype.createPillar = function(
             x + dx * this.PILLAR_SKEW,
             y + dy * this.PILLAR_SKEW,
             height + dx * zShift * this.PILLAR_SKEW);
+
+        if (step <= precision >> 1)
+            indices.push(
+                firstIndex + lastStep * 3,
+                firstIndex + lastStep * 3 + 1,
+                firstIndex + step * 3 + 1,
+                firstIndex + step * 3 + 1,
+                firstIndex + step * 3,
+                firstIndex + lastStep * 3);
+
         indices.push(
-            firstIndex + lastStep * 3,
-            firstIndex + lastStep * 3 + 1,
-            firstIndex + step * 3 + 1,
-            firstIndex + step * 3 + 1,
-            firstIndex + step * 3,
-            firstIndex + lastStep * 3,
             firstIndex + precision * 3,
             firstIndex + step * 3 + 2,
             firstIndex + lastStep * 3 + 2);
