@@ -269,32 +269,17 @@ Rocks.prototype.createPillar = function(
     const offset = random.getFloat() * Math.PI / precision;
     const zShift = (-.5 + random.getFloat()) * .5;
     const lightTop = .8 - zShift * .4;
-    let lastStep = precision - 1;
+    let index = firstIndex;
+    let indexPrevious = index;
 
     for (let step = 0; step < precision; ++step) {
+        const frontFace = step <= precision >> 1;
+        const stride = frontFace ? 3 : 1;
         const radians = Math.PI * 2 * step / precision + offset;
         const dx = Math.cos(radians) * radius;
         const dy = Math.sin(radians) * radius * yScale;
-        const l = Math.sqrt(dx * dx + dy * dy);
-        const lx = 1 / Math.sqrt(2);
-        const ly = 1 / Math.sqrt(2);
-        const nx = dx / l;
-        const ny = dy / l;
-        const light = this.PILLAR_LIGHT_AMBIENT + (1 - this.PILLAR_LIGHT_AMBIENT) * Math.max(0, nx * lx + ny * ly);
 
         vertices.push(
-            this.COLOR_SIDE.r * light * this.PILLAR_LIGHT_BASE,
-            this.COLOR_SIDE.g * light * this.PILLAR_LIGHT_BASE,
-            this.COLOR_SIDE.b * light * this.PILLAR_LIGHT_BASE,
-            x + dx,
-            y + dy,
-            0,
-            this.COLOR_SIDE.r * light,
-            this.COLOR_SIDE.g * light,
-            this.COLOR_SIDE.b * light,
-            x + dx * this.PILLAR_SKEW,
-            y + dy * this.PILLAR_SKEW,
-            height + dx * zShift * this.PILLAR_SKEW,
             this.COLOR_TOP.r * lightTop,
             this.COLOR_TOP.g * lightTop,
             this.COLOR_TOP.b * lightTop,
@@ -302,30 +287,49 @@ Rocks.prototype.createPillar = function(
             y + dy * this.PILLAR_SKEW,
             height + dx * zShift * this.PILLAR_SKEW);
 
-        if (step !== 0 && step <= precision >> 1)
+        if (frontFace) {
+            // TODO: Put lighting calculations in constants
+            const l = Math.sqrt(dx * dx + dy * dy);
+            const nx = dx / l;
+            const ny = dy / l;
+            const lx = 1 / Math.sqrt(2);
+            const ly = 1 / Math.sqrt(2);
+            const light = this.PILLAR_LIGHT_AMBIENT + (1 - this.PILLAR_LIGHT_AMBIENT) *
+                Math.max(0, nx * lx + ny * ly);
+
+            vertices.push(
+                this.COLOR_SIDE.r * light * this.PILLAR_LIGHT_BASE,
+                this.COLOR_SIDE.g * light * this.PILLAR_LIGHT_BASE,
+                this.COLOR_SIDE.b * light * this.PILLAR_LIGHT_BASE,
+                x + dx,
+                y + dy,
+                0,
+                this.COLOR_SIDE.r * light,
+                this.COLOR_SIDE.g * light,
+                this.COLOR_SIDE.b * light,
+                x + dx * this.PILLAR_SKEW,
+                y + dy * this.PILLAR_SKEW,
+                height + dx * zShift * this.PILLAR_SKEW);
+        }
+
+        if (frontFace && step !== 0)
             indices.push(
-                firstIndex + lastStep * 3,
-                firstIndex + lastStep * 3 + 1,
-                firstIndex + step * 3 + 1,
-                firstIndex + step * 3 + 1,
-                firstIndex + step * 3,
-                firstIndex + lastStep * 3);
+                indexPrevious + 1,
+                indexPrevious + 2,
+                index + 2,
+                index + 2,
+                index + 1,
+                indexPrevious + 1);
 
-        indices.push(
-            firstIndex + precision * 3,
-            firstIndex + step * 3 + 2,
-            firstIndex + lastStep * 3 + 2);
+        if (step > 1)
+            indices.push(
+                firstIndex,
+                indexPrevious,
+                index);
 
-        lastStep = step;
+        indexPrevious = index;
+        index += stride;
     }
-
-    vertices.push(
-        this.COLOR_TOP.r * lightTop,
-        this.COLOR_TOP.g * lightTop,
-        this.COLOR_TOP.b * lightTop,
-        x,
-        y,
-        height);
 };
 
 /**
