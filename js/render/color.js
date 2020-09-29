@@ -38,6 +38,14 @@ Color.prototype.multiply = function(n) {
 };
 
 /**
+ * Return an array with the R, G and B values of this color
+ * @returns {Number[]} The color array
+ */
+Color.prototype.toArrayRGB = function() {
+    return [this.r, this.g, this.b];
+};
+
+/**
  * Make a color from a CSS variable
  * @param name
  */

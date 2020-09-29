@@ -11,14 +11,8 @@ const Sand = function(gl) {
         ["position", "depth"],
         ["scale"],
         [
-            new Shader.Constant("colorDeep", "f", [
-                this.COLOR_DEEP.r,
-                this.COLOR_DEEP.g,
-                this.COLOR_DEEP.b]),
-            new Shader.Constant("colorShallow", "f", [
-                this.COLOR_SHALLOW.r,
-                this.COLOR_SHALLOW.g,
-                this.COLOR_SHALLOW.b])
+            new Shader.Constant("colorDeep", "f", this.COLOR_DEEP.toArrayRGB()),
+            new Shader.Constant("colorShallow", "f", this.COLOR_SHALLOW.toArrayRGB())
         ]);
     this.vao = gl.vao.createVertexArrayOES();
 

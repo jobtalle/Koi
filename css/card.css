@@ -1,5 +1,20 @@
+:root {
+    /* Colors */
+    --card-color-background: #967a74;
+    --card-color-border: #242424;
+
+    /* Dimensions */
+    --card-width: 220px;
+    --card-height: 308px;
+    --card-border-width: 2px;
+}
+
 .card {
-    background-color: red;
-    width: 250px;
-    height: 350px;
+    background-color: var(--card-color-background);
+    cursor: pointer;
+    width: calc(var(--card-width) - 2 * var(--card-border-width));
+    height: calc(var(--card-height) - 2 * var(--card-border-width));
+    pointer-events: all;
+    border: var(--card-border-width) solid var(--card-color-border);
+    border-radius: 12px;
 }

@@ -4,5 +4,13 @@
  * @constructor
  */
 const GUI = function(element) {
-    this.cards = new Cards(element);
+    const elementCards = document.createElement("div");
+
+    elementCards.id = this.ID_CARDS;
+
+    element.appendChild(elementCards);
+
+    this.cards = new Cards(elementCards);
 };
+
+GUI.prototype.ID_CARDS = "cards";
