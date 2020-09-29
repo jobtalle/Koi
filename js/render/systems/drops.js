@@ -13,10 +13,7 @@ const Drops = function(gl) {
         ["position", "origin", "alpha", "threshold"],
         ["window", "windowWidth", "transparency"],
         [
-            new Shader.Constant("color", "f", [
-                this.COLOR.r,
-                this.COLOR.g,
-                this.COLOR.b])
+            new Shader.Constant("color", "f", this.COLOR.toArrayRGB())
         ]);
 };
 

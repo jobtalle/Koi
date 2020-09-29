@@ -14,14 +14,8 @@ const Ponds = function(gl) {
             new Shader.Constant("background", "i", [0]),
             new Shader.Constant("reflections", "i", [1]),
             new Shader.Constant("water", "i", [2]),
-            new Shader.Constant("colorFilter", "f", [
-                this.COLOR_FILTER.r,
-                this.COLOR_FILTER.g,
-                this.COLOR_FILTER.b]),
-            new Shader.Constant("colorHighlight", "f", [
-                this.COLOR_HIGHLIGHT.r,
-                this.COLOR_HIGHLIGHT.g,
-                this.COLOR_HIGHLIGHT.b])
+            new Shader.Constant("colorFilter", "f", this.COLOR_FILTER.toArrayRGB()),
+            new Shader.Constant("colorHighlight", "f", this.COLOR_HIGHLIGHT.toArrayRGB())
         ]);
     this.programShape = new Shader(
         gl,
