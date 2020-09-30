@@ -10,8 +10,6 @@ const Cards = function(element) {
     this.grabbed = null;
 
     element.addEventListener("mousemove", event => {
-        event.preventDefault();
-
         this.move(
             event.clientX,
             event.clientY);
@@ -54,6 +52,17 @@ Cards.prototype.move = function(x, y) {
 Cards.prototype.grabCard = function(card, anchor) {
     this.grabbed = card;
     this.mouse = anchor;
+
+    this.moveToFront(card);
+};
+
+/**
+ * Move a card to the front
+ * @param {Card} card A card that exists in the cards system
+ */
+Cards.prototype.moveToFront = function(card) {
+    this.element.removeChild(card.element);
+    this.element.appendChild(card.element);
 };
 
 /**
@@ -72,7 +81,7 @@ Cards.prototype.add = function(card) {
         card,
         new Vector2(event.clientX, event.clientY)));
 
-    card.element.addEventListener("touchStart", event => this.grabCard(
+    card.element.addEventListener("touchstart", event => this.grabCard(
         card,
         new Vector2(event.changedTouches[0].clientX, event.changedTouches[0].clientY)));
 

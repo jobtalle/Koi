@@ -32,7 +32,6 @@ Card.prototype.move = function(dx, dy) {
 Card.prototype.updatePosition = function() {
     this.element.style.left = this.position.x + "px";
     this.element.style.top = this.position.y + "px";
-    console.log(this.element.style);
 };
 
 /**

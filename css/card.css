@@ -13,7 +13,7 @@
     position: absolute;
     background-color: var(--card-color-background);
     pointer-events: all;
-    cursor: pointer;
+    user-select: none;
     width: calc(var(--card-width) - 2 * var(--card-border-width));
     height: calc(var(--card-height) - 2 * var(--card-border-width));
     border: var(--card-border-width) solid var(--card-color-border);
