@@ -9,22 +9,19 @@ const Cards = function(element) {
     this.mouse = null;
     this.grabbed = null;
 
-    element.addEventListener("mousemove", event => {
+    this.functionOnMouseMove = event => {
         this.move(
             event.clientX,
             event.clientY);
-    });
+    };
 
-    element.addEventListener("touchmove", event => {
+    this.functionOnTouchMove = event => {
         event.preventDefault();
 
         this.move(
             event.changedTouches[0].clientX,
             event.changedTouches[0].clientY);
-    });
-
-    element.addEventListener("mouseup", () => this.release());
-    element.addEventListener("touchend", () => this.release());
+    };
 };
 
 /**
@@ -84,6 +81,12 @@ Cards.prototype.add = function(card) {
     card.element.addEventListener("touchstart", event => this.grabCard(
         card,
         new Vector2(event.changedTouches[0].clientX, event.changedTouches[0].clientY)));
+
+    card.element.addEventListener("mousemove", this.functionOnMouseMove);
+    card.element.addEventListener("touchmove", this.functionOnTouchMove);
+    card.element.addEventListener("mouseup", this.release.bind(this));
+    card.element.addEventListener("touchend", this.release.bind(this));
+    card.element.addEventListener("mouseleave", this.release.bind(this));
 
     this.cards.push(card);
     this.element.appendChild(card.element);
