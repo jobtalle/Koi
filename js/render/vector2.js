@@ -59,6 +59,17 @@ Vector2.prototype.set = function(other) {
 };
 
 /**
+ * Round the components of this vector
+ * @returns {Vector2} The vector
+ */
+Vector2.prototype.round = function() {
+    this.x = Math.round(this.x);
+    this.y = Math.round(this.y);
+
+    return this;
+};
+
+/**
  * Add a vector to this vector
  * @param {Vector2} vector A vector
  * @returns {Vector2} The modified vector

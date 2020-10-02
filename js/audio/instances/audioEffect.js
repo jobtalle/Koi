@@ -10,8 +10,13 @@ const AudioEffect = function(engine, sources) {
     this.elements = new Array(this.variations);
     this.tracks = new Array(this.variations).fill(null);
 
-    for (let source = 0; source < this.variations; ++source)
+    for (let source = 0; source < this.variations; ++source) {
         this.elements[source] = new Audio(sources[source]);
+
+        // TODO: Adapt to extension
+        this.elements[source].type = "audio/ogg";
+        this.elements[source].codecs = "vorbis";
+    }
 };
 
 /**

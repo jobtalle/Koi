@@ -4,7 +4,7 @@
  * @param {Vector2} position The initial card position
  * @constructor
  */
-const Card = function(body, position = new Vector2()) {
+const Card = function(body, position) {
     this.body = body;
     this.position = position;
     this.element = this.createElement();

@@ -240,7 +240,7 @@ Koi.prototype.touchMove = function(x, y) {
  * End a touch event
  */
 Koi.prototype.touchEnd = function() {
-    this.mover.drop(this.water, this.systems.atlas, this.random);
+    this.mover.drop(this.water, this.systems.atlas, this.scale, this.random);
 };
 
 /**

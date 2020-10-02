@@ -163,15 +163,18 @@ Mover.prototype.pickUp = function(fish, x, y, waterPlane, random) {
  * Release any move
  * @param {Water} waterPlane A water plane to splash on
  * @param {Atlas} atlas The atlas
+ * @param {Number} scale The world scale
  * @param {Random} random A randomizer
  */
-Mover.prototype.drop = function(waterPlane, atlas, random) {
+Mover.prototype.drop = function(waterPlane, atlas, scale, random) {
     if (this.move) {
         const pan = 2 * this.move.position.x / this.constellation.width - 1;
 
         // TODO: Create card drop spot
         if (this.move.position.y / this.constellation.height < .1) {
-            this.gui.cards.add(new Card(this.move.body));
+            this.gui.cards.add(new Card(
+                this.move.body,
+                this.move.position.copy().subtract(this.offset).multiply(scale).round()));
 
             this.move.free(atlas);
         }
