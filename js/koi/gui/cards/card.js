@@ -44,8 +44,9 @@ Card.prototype.move = function(dx, dy) {
 Card.prototype.shift = function(dx, dy) {
     this.position.x += dx;
     this.position.y += dy;
-    this.positionPrevious.x += dx;
-    this.positionPrevious.y += dy;
+    this.positionPrevious.set(this.position);
+
+    this.updatePosition(0);
 };
 
 /**

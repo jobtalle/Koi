@@ -46,8 +46,7 @@ Cards.prototype.update = function() {
  * @param {Number} time The amount of time since the last update
  */
 Cards.prototype.render = function(time) {
-    for (const card of this.cards)
-        card.render(time);
+    this.hand.render(time);
 };
 
 /**
@@ -77,6 +76,9 @@ Cards.prototype.grabCard = function(card, anchor) {
     this.mouse = anchor;
 
     this.moveToFront(card);
+
+    if (this.hand.contains(card))
+        this.hand.remove(card);
 };
 
 /**
@@ -92,7 +94,11 @@ Cards.prototype.moveToFront = function(card) {
  * Release any current drag or swipe motion
  */
 Cards.prototype.release = function() {
-    this.grabbed = 0;
+    if (this.grabbed) {
+        this.hand.add(this.grabbed);
+
+        this.grabbed = null;
+    }
 };
 
 /**

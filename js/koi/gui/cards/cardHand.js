@@ -12,6 +12,7 @@ const CardHand = function(width, height) {
 };
 
 CardHand.prototype.INTERPOLATION_FACTOR = .5;
+CardHand.prototype.CAPACITY = 8;
 
 /**
  * Resize the hand GUI
@@ -22,6 +23,23 @@ CardHand.prototype.resize = function(width, height) {
     this.width = width;
     this.height = height;
     this.targets = this.makeTargets(this.cards.length);
+};
+
+/**
+ * Check whether this hand is full
+ * @returns {Boolean} True if the hand is full
+ */
+CardHand.prototype.isFull = function() {
+    return this.cards.length === this.CAPACITY;
+};
+
+/**
+ * Check whether the hand contains a given card
+ * @param {Card} card The card
+ * @returns {Boolean} True if the card is in this hand
+ */
+CardHand.prototype.contains = function(card) {
+    return this.cards.indexOf(card) !== -1;
 };
 
 /**
@@ -53,6 +71,15 @@ CardHand.prototype.update = function() {
 };
 
 /**
+ * Render the card hand GUI
+ * @param {Number} time The amount of time since the last update
+ */
+CardHand.prototype.render = function(time) {
+    for (const card of this.cards)
+        card.render(time);
+};
+
+/**
  * Add a card to the hand
  * @param {Card} card A card
  */
@@ -66,6 +93,6 @@ CardHand.prototype.add = function(card) {
  * @param {Card} card A card
  */
 CardHand.prototype.remove = function(card) {
-    this.cards.remove(card);
+    this.cards.splice(this.cards.indexOf(card), 1);
     this.targets = this.makeTargets(this.cards.length);
 };
