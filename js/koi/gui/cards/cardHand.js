@@ -11,6 +11,8 @@ const CardHand = function(width, height) {
     this.targets = null;
 };
 
+CardHand.prototype.INTERPOLATION_FACTOR = .5;
+
 /**
  * Resize the hand GUI
  * @param {Number} width The screen width in pixels
@@ -44,16 +46,10 @@ CardHand.prototype.update = function() {
         const dx = this.targets[card].x - this.cards[card].position.x;
         const dy = this.targets[card].y - this.cards[card].position.y;
 
-        this.cards[card].move(dx * .3, dy * .3);
+        this.cards[card].move(
+            dx * this.INTERPOLATION_FACTOR,
+            dy * this.INTERPOLATION_FACTOR);
     }
-};
-
-/**
- * Render the card hand GUI
- * @param {Number} time The amount of time since the last update
- */
-CardHand.prototype.render = function(time) {
-
 };
 
 /**

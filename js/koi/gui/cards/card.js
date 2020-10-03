@@ -7,6 +7,7 @@
 const Card = function(body, position) {
     this.body = body;
     this.position = position;
+    this.positionPrevious = position.copy();
     this.element = this.createElement();
 
     this.updatePosition();
@@ -15,23 +16,48 @@ const Card = function(body, position) {
 Card.prototype.CLASS = "card";
 
 /**
+ * Render the card, updates every refresh
+ * @param {Number} time The amount of time since the last update
+ */
+Card.prototype.render = function(time) {
+    this.updatePosition(time);
+};
+
+/**
  * Move the card
  * @param {Number} dx The X delta
  * @param {Number} dy The Y delta
  */
 Card.prototype.move = function(dx, dy) {
+    this.positionPrevious.set(this.position);
+
     this.position.x += dx;
     this.position.y += dy;
+};
 
-    this.updatePosition();
+/**
+ * Move the card instantly without interpolation
+ * @param dx
+ * @param {Number} dx The X delta
+ * @param {Number} dy The Y delta
+ */
+Card.prototype.shift = function(dx, dy) {
+    this.position.x += dx;
+    this.position.y += dy;
+    this.positionPrevious.x += dx;
+    this.positionPrevious.y += dy;
 };
 
 /**
  * Update this cards element position
+ * @param {Number} time The amount of time since the last update
  */
-Card.prototype.updatePosition = function() {
-    this.element.style.left = this.position.x + "px";
-    this.element.style.top = this.position.y + "px";
+Card.prototype.updatePosition = function(time) {
+    const x = this.positionPrevious.x + (this.position.x - this.positionPrevious.x) * time;
+    const y = this.positionPrevious.y + (this.position.y - this.positionPrevious.y) * time;
+
+    this.element.style.left = x + "px";
+    this.element.style.top = y + "px";
 };
 
 /**

@@ -46,7 +46,8 @@ Cards.prototype.update = function() {
  * @param {Number} time The amount of time since the last update
  */
 Cards.prototype.render = function(time) {
-    this.hand.render(time);
+    for (const card of this.cards)
+        card.render(time);
 };
 
 /**
@@ -59,7 +60,7 @@ Cards.prototype.move = function(x, y) {
         const dx = x - this.mouse.x;
         const dy = y - this.mouse.y;
 
-        this.grabbed.move(dx, dy);
+        this.grabbed.shift(dx, dy);
 
         this.mouse.x = x;
         this.mouse.y = y;
