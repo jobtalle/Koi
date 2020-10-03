@@ -84,6 +84,8 @@ CardHand.prototype.render = function(time) {
  * @param {Card} card A card
  */
 CardHand.prototype.add = function(card) {
+    // TODO: Insert at closest position
+
     this.cards.push(card);
     this.targets = this.makeTargets(this.cards.length);
 };

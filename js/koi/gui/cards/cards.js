@@ -12,19 +12,23 @@ const Cards = function(element) {
     this.grabbed = null;
     this.visible = false;
 
-    this.functionOnMouseMove = event => {
+    element.addEventListener("mousemove", event => {
         this.move(
             event.clientX,
             event.clientY);
-    };
+    });
 
-    this.functionOnTouchMove = event => {
+    element.addEventListener("touchmove", event => {
         event.preventDefault();
 
         this.move(
             event.changedTouches[0].clientX,
             event.changedTouches[0].clientY);
-    };
+    });
+
+    element.addEventListener("mouseup", this.release.bind(this));
+    element.addEventListener("touchend", this.release.bind(this));
+    element.addEventListener("mouseleave", this.release.bind(this));
 };
 
 /**
@@ -74,6 +78,7 @@ Cards.prototype.move = function(x, y) {
 Cards.prototype.grabCard = function(card, anchor) {
     this.grabbed = card;
     this.mouse = anchor;
+    this.element.style.pointerEvents = "auto";
 
     this.moveToFront(card);
 
@@ -95,6 +100,8 @@ Cards.prototype.moveToFront = function(card) {
  */
 Cards.prototype.release = function() {
     if (this.grabbed) {
+        this.element.style.pointerEvents = "none";
+
         this.hand.add(this.grabbed);
 
         this.grabbed = null;
@@ -131,12 +138,6 @@ Cards.prototype.add = function(card) {
     card.element.addEventListener("touchstart", event => this.grabCard(
         card,
         new Vector2(event.changedTouches[0].clientX, event.changedTouches[0].clientY)));
-
-    card.element.addEventListener("mousemove", this.functionOnMouseMove);
-    card.element.addEventListener("touchmove", this.functionOnTouchMove);
-    card.element.addEventListener("mouseup", this.release.bind(this));
-    card.element.addEventListener("touchend", this.release.bind(this));
-    card.element.addEventListener("mouseleave", this.release.bind(this)); // TODO: Prevent focus loss
 
     this.cards.push(card);
     this.hand.add(card);

@@ -11,9 +11,9 @@
 }
 
 .card {
+    pointer-events: all;
     position: absolute;
     background-color: var(--card-color-background);
-    pointer-events: all;
     user-select: none;
     width: calc(var(--card-width) - 2 * var(--card-border-width));
     height: calc(var(--card-height) - 2 * var(--card-border-width));

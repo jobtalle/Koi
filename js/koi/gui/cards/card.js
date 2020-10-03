@@ -37,7 +37,6 @@ Card.prototype.move = function(dx, dy) {
 
 /**
  * Move the card instantly without interpolation
- * @param dx
  * @param {Number} dx The X delta
  * @param {Number} dy The Y delta
  */
@@ -46,19 +45,19 @@ Card.prototype.shift = function(dx, dy) {
     this.position.y += dy;
     this.positionPrevious.set(this.position);
 
-    this.updatePosition(0);
+    this.updatePosition();
 };
 
 /**
  * Update this cards element position
  * @param {Number} time The amount of time since the last update
  */
-Card.prototype.updatePosition = function(time) {
+Card.prototype.updatePosition = function(time = 0) {
     const x = this.positionPrevious.x + (this.position.x - this.positionPrevious.x) * time;
     const y = this.positionPrevious.y + (this.position.y - this.positionPrevious.y) * time;
 
-    this.element.style.left = x + "px";
-    this.element.style.top = y + "px";
+    this.element.style.left = Math.round(x) + "px";
+    this.element.style.top = Math.round(y) + "px";
 };
 
 /**
