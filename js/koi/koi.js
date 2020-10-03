@@ -15,6 +15,7 @@ const Koi = function(
     random) {
     this.systems = systems;
     this.audio = audio;
+    this.gui = gui;
     this.random = random;
     this.environmentSeed = environmentSeed;
     this.scale = this.getScale(systems.width, systems.height);
@@ -285,6 +286,7 @@ Koi.prototype.updateAudio = function() {
  */
 Koi.prototype.update = function() {
     this.updateAudio();
+    this.gui.update();
 
     this.spawner.update(this.UPDATE_RATE, this.systems.atlas, this.systems.patterns, this.randomSource, this.random);
     this.constellation.update(this.systems.atlas, this.systems.patterns, this.randomSource, this.water, this.random);
@@ -312,6 +314,9 @@ Koi.prototype.render = function(deltaTime) {
     }
 
     const timeFactor = this.time / this.UPDATE_RATE;
+
+    // Update GUI animations
+    this.gui.render(timeFactor);
 
     // Apply filter color
     if (this.weatherFilterChanged) {

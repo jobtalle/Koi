@@ -5,9 +5,12 @@
  */
 const Cards = function(element) {
     this.element = element;
+    this.hand = new CardHand(element.clientWidth, element.clientHeight);
+    this.book = null;
     this.cards = [];
     this.mouse = null;
     this.grabbed = null;
+    this.visible = false;
 
     this.functionOnMouseMove = event => {
         this.move(
@@ -22,6 +25,28 @@ const Cards = function(element) {
             event.changedTouches[0].clientX,
             event.changedTouches[0].clientY);
     };
+};
+
+/**
+ * Indicate that the GUI has resized
+ */
+Cards.prototype.resize = function() {
+    this.hand.resize(this.element.clientWidth, this.element.clientHeight);
+};
+
+/**
+ * Update the cards GUI
+ */
+Cards.prototype.update = function() {
+    this.hand.update();
+};
+
+/**
+ * Render the cards GUI
+ * @param {Number} time The amount of time since the last update
+ */
+Cards.prototype.render = function(time) {
+    this.hand.render(time);
 };
 
 /**
@@ -70,6 +95,24 @@ Cards.prototype.release = function() {
 };
 
 /**
+ * Show the card collection GUI
+ */
+Cards.prototype.show = function() {
+    if (!this.visible) {
+        this.visible = true;
+    }
+};
+
+/**
+ * Hide the card collection GUI
+ */
+Cards.prototype.hide = function() {
+    if (this.visible) {
+        this.visible = false;
+    }
+};
+
+/**
  * Add a card to the cards
  * @param {Card} card A card
  */
@@ -86,8 +129,11 @@ Cards.prototype.add = function(card) {
     card.element.addEventListener("touchmove", this.functionOnTouchMove);
     card.element.addEventListener("mouseup", this.release.bind(this));
     card.element.addEventListener("touchend", this.release.bind(this));
-    card.element.addEventListener("mouseleave", this.release.bind(this));
+    card.element.addEventListener("mouseleave", this.release.bind(this)); // TODO: Prevent focus loss
 
     this.cards.push(card);
+    this.hand.add(card);
     this.element.appendChild(card.element);
+
+    this.show();
 };

@@ -37,6 +37,7 @@ if (gl) {
         canvas.height = wrapper.offsetHeight;
 
         systems.resize(canvas.width, canvas.height);
+        gui.resize();
 
         if (koi)
             koi.resize();
@@ -81,6 +82,7 @@ if (gl) {
             const date = new Date();
 
             koi.render(.001 * (date - lastDate));
+
             lastDate = date;
 
             requestAnimationFrame(loop);
