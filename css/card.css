@@ -12,9 +12,11 @@
 
 .card {
     pointer-events: all;
+    cursor: pointer;
     position: absolute;
     background-color: var(--card-color-background);
     user-select: none;
+    -webkit-tap-highlight-color: transparent;
     width: calc(var(--card-width) - 2 * var(--card-border-width));
     height: calc(var(--card-height) - 2 * var(--card-border-width));
     border: var(--card-border-width) solid var(--card-color-border);
