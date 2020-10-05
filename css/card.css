@@ -21,4 +21,6 @@
     height: calc(var(--card-height) - 2 * var(--card-border-width));
     border: var(--card-border-width) solid var(--card-color-border);
     border-radius: var(--card-border-radius);
+    margin-left: -110px;
+    margin-top: -154px;
 }
