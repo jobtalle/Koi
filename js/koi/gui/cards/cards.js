@@ -138,24 +138,6 @@ Cards.prototype.release = function() {
 };
 
 /**
- * Show the card collection GUI
- */
-Cards.prototype.show = function() {
-    if (!this.visible) {
-        this.visible = true;
-    }
-};
-
-/**
- * Hide the card collection GUI
- */
-Cards.prototype.hide = function() {
-    if (this.visible) {
-        this.visible = false;
-    }
-};
-
-/**
  * Register a card on the cards GUI
  * @param {Card} card A card
  */
@@ -170,8 +152,6 @@ Cards.prototype.registerCard = function(card) {
 
     this.cards.push(card);
     this.element.appendChild(card.element);
-
-    this.show();
 };
 
 /**
