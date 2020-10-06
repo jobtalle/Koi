@@ -170,11 +170,19 @@ Vector3.prototype.normalize = function() {
  * @param {Vector3} other A vector
  * @returns {Vector3} The cross product of this vector and the other vector
  */
-Vector3.prototype.cross  = function(other) {
+Vector3.prototype.cross = function(other) {
     return new Vector3(
         this.y * other.z - other.y * this.z,
         this.z * other.x - other.z * this.x,
         this.x * other.y - other.x * this.y);
+};
+
+/**
+ * Get the 2D part of this vector
+ * @returns {Vector2} The 2D part of this vector
+ */
+Vector3.prototype.vector2 = function() {
+    return new Vector2(this.x, this.y);
 };
 
 /**

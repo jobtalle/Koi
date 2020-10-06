@@ -13,11 +13,11 @@ const CardHand = function(width, height) {
 
 CardHand.prototype.WIDTH = .8;
 CardHand.prototype.HEIGHT = .12;
-CardHand.prototype.RAISE = .15;
+CardHand.prototype.RAISE = .1;
 CardHand.prototype.INTERPOLATION_FACTOR = .5;
-CardHand.prototype.CAPACITY = 8;
 CardHand.prototype.CARD_WIDTH = StyleUtils.getInt("--card-width");
 CardHand.prototype.MAX_SPACING = .8;
+CardHand.prototype.EXTRA_ANGLE = -.05;
 
 /**
  * Deserialize the card hand
@@ -30,7 +30,7 @@ CardHand.prototype.deserialize = function(buffer, cards) {
     this.targets = this.makeTargets(cardCount);
 
     for (let card = 0; card < cardCount; ++card) {
-        const deserialized = Card.deserialize(buffer, this.targets[card]);
+        const deserialized = Card.deserialize(buffer, this.targets[card].vector2(), this.targets[card].z);
 
         this.cards.push(deserialized);
 
@@ -62,14 +62,6 @@ CardHand.prototype.resize = function(width, height) {
 };
 
 /**
- * Check whether this hand is full
- * @returns {Boolean} True if the hand is full
- */
-CardHand.prototype.isFull = function() {
-    return this.cards.length === this.CAPACITY;
-};
-
-/**
  * Check whether the hand contains a given card
  * @param {Card} card The card
  * @returns {Boolean} True if the card is in this hand
@@ -81,7 +73,7 @@ CardHand.prototype.contains = function(card) {
 /**
  * Make card position targets
  * @param {Number} count The card count
- * @returns {Vector2[]} The targets
+ * @returns {Vector3[]} The targets
  */
 CardHand.prototype.makeTargets = function(count) {
     const handWidth = Math.round(this.width * this.WIDTH);
@@ -98,9 +90,10 @@ CardHand.prototype.makeTargets = function(count) {
         const factor = 1 - (count === 1 ? 0.5 : target / (count - 1));
         const angle = fanPortion * fanAngle * (1 - 2 * factor) - Math.PI * .5;
 
-        targets[target] = new Vector2(
+        targets[target] = new Vector3(
             this.width * .5 + Math.cos(angle) * fanRadius,
-            this.height * (1 - this.RAISE) + fanRadius + Math.sin(angle) * fanRadius);
+            this.height * (1 - this.RAISE) + fanRadius + Math.sin(angle) * fanRadius,
+            fanPortion * fanAngle * (1 - 2 * factor) + this.EXTRA_ANGLE);
     }
 
     return targets;
@@ -113,10 +106,14 @@ CardHand.prototype.update = function() {
     for (let card = 0, cards = this.cards.length; card < cards; ++card) {
         const dx = this.targets[card].x - this.cards[card].position.x;
         const dy = this.targets[card].y - this.cards[card].position.y;
+        const da = this.targets[card].z - this.cards[card].angle;
 
         this.cards[card].move(
             dx * this.INTERPOLATION_FACTOR,
             dy * this.INTERPOLATION_FACTOR);
+
+        this.cards[card].rotate(
+            da * this.INTERPOLATION_FACTOR);
     }
 };
 

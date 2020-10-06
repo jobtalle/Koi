@@ -31,6 +31,8 @@ const Cards = function(element) {
     element.addEventListener("mouseleave", this.release.bind(this));
 };
 
+Cards.prototype.INTERPOLATION_FACTOR = .82;
+
 /**
  * Serialize the card collection
  * @param {BinBuffer} buffer The buffer to deserialize form
@@ -72,6 +74,9 @@ Cards.prototype.resize = function() {
  */
 Cards.prototype.update = function() {
     this.hand.update();
+
+    if (this.grabbed)
+        this.grabbed.rotate(this.grabbed.angle * -this.INTERPOLATION_FACTOR);
 };
 
 /**
@@ -80,6 +85,9 @@ Cards.prototype.update = function() {
  */
 Cards.prototype.render = function(time) {
     this.hand.render(time);
+
+    if (this.grabbed)
+        this.grabbed.render(time);
 };
 
 /**
@@ -108,6 +116,8 @@ Cards.prototype.grabCard = function(card, anchor) {
     this.grabbed = card;
     this.mouse = anchor;
     this.element.style.pointerEvents = "auto";
+
+    card.stopMoving();
 
     this.moveToFront(card);
 
