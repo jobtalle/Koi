@@ -16,6 +16,8 @@ CardHand.prototype.HEIGHT = .12;
 CardHand.prototype.RAISE = .15;
 CardHand.prototype.INTERPOLATION_FACTOR = .5;
 CardHand.prototype.CAPACITY = 8;
+CardHand.prototype.CARD_WIDTH = StyleUtils.getInt("--card-width");
+CardHand.prototype.MAX_SPACING = .8;
 
 /**
  * Resize the hand GUI
@@ -55,11 +57,13 @@ CardHand.prototype.makeTargets = function(count) {
     const handHeight = Math.round(this.height * this.HEIGHT);
     const fanAngle = Math.PI - Math.atan(0.5 * handWidth / handHeight) - Math.atan(handHeight / 0.5 * handWidth);
     const fanRadius = 0.5 * handWidth / Math.sin(fanAngle);
+    const fanPortion = Math.min(1, (count - 1) / ((2 * fanAngle * fanRadius) / (this.CARD_WIDTH * this.MAX_SPACING)));
+
     const targets = new Array(count);
 
     for (let target = 0; target < count; ++target) {
         const factor = 1 - (count === 1 ? 0.5 : target / (count - 1));
-        const angle = fanAngle - fanAngle * 2 * factor - Math.PI * .5;
+        const angle = fanPortion * fanAngle * (1 - 2 * factor) - Math.PI * .5;
 
         targets[target] = new Vector2(
             this.width * .5 + Math.cos(angle) * fanRadius,

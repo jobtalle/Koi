@@ -50,7 +50,7 @@ Color.prototype.toArrayRGB = function() {
  * @param name
  */
 Color.fromCSS = function(name) {
-    const value = getComputedStyle(document.body).getPropertyValue(name).trim();
+    const value = StyleUtils.get(name);
 
     if (value.charAt(0) === "#") {
         const integer = parseInt(value.substr(1), 16);
