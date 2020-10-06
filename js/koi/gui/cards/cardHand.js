@@ -33,6 +33,7 @@ CardHand.prototype.deserialize = function(buffer, cards) {
         const deserialized = Card.deserialize(buffer, this.targets[card]);
 
         this.cards.push(deserialized);
+
         cards.registerCard(deserialized);
     }
 };
@@ -133,10 +134,23 @@ CardHand.prototype.render = function(time) {
  * @param {Card} card A card
  */
 CardHand.prototype.add = function(card) {
-    // TODO: Insert at closest position
+    this.targets = this.makeTargets(this.cards.length + 1);
 
-    this.cards.push(card);
-    this.targets = this.makeTargets(this.cards.length);
+    let nearest = 0;
+    let nearestDistance = Number.MAX_VALUE;
+
+    for (let target = 0, targetCount = this.targets.length; target < targetCount; ++target) {
+        const dx = card.position.x - this.targets[target].x;
+        const dy = card.position.y - this.targets[target].y;
+        const distance = dx * dx + dy * dy;
+
+        if (distance < nearestDistance) {
+            nearestDistance = distance;
+            nearest = target;
+        }
+    }
+
+    this.cards.splice(nearest, 0, card);
 };
 
 /**
