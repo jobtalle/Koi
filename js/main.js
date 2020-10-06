@@ -47,7 +47,7 @@ if (gl) {
      * Save the game state to local storage
      */
     const save = () => {
-        window["localStorage"].setItem("session", session.serialize(koi).toString());
+        window["localStorage"].setItem("session", session.serialize(koi, gui).toString());
     };
 
     /**
@@ -55,6 +55,7 @@ if (gl) {
      */
     const newSession = () => {
         session = new Session();
+
         koi = session.makeKoi(systems, audio, gui);
     };
 
@@ -63,9 +64,12 @@ if (gl) {
         try {
             // throw new Error();
             session.deserialize(new BinBuffer(sessionData));
+
             koi = session.makeKoi(systems, audio, gui);
         }
         catch (error) {
+            gui.clear();
+
             newSession();
 
             console.warn(error);

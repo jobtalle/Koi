@@ -79,15 +79,16 @@ FishBody.prototype.KILOGRAMS_PER_AREA = 22;
 /**
  * Deserialize a fish body
  * @param {BinBuffer} buffer A buffer to deserialize from
- * @param {Atlas} atlas The atlas
- * @param {RandomSource} randomSource A random source
+ * @param {Atlas} [atlas] The atlas
+ * @param {RandomSource} [randomSource] A random source
  * @returns {FishBody} The deserialized fish body
  * @throws {RangeError} A range error if deserialized values are not valid
  */
-FishBody.deserialize = function(buffer, atlas, randomSource) {
+FishBody.deserialize = function(buffer, atlas = null, randomSource = null) {
     const pattern = Pattern.deserialize(buffer);
 
-    atlas.write(pattern, randomSource);
+    if (atlas)
+        atlas.write(pattern, randomSource);
 
     const fins = new Array(buffer.readUint8());
 

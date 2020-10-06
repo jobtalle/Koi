@@ -20,6 +20,36 @@ CardHand.prototype.CARD_WIDTH = StyleUtils.getInt("--card-width");
 CardHand.prototype.MAX_SPACING = .8;
 
 /**
+ * Deserialize the card hand
+ * @param {BinBuffer} buffer The buffer to deserialize from
+ * @param {Cards} cards The cards GUI
+ */
+CardHand.prototype.deserialize = function(buffer, cards) {
+    const cardCount = buffer.readUint8();
+
+    this.targets = this.makeTargets(cardCount);
+
+    for (let card = 0; card < cardCount; ++card) {
+        const deserialized = Card.deserialize(buffer, this.targets[card]);
+
+        this.cards.push(deserialized);
+        cards.registerCard(deserialized);
+    }
+};
+
+/**
+ * Serialize the card hand
+ * @param {BinBuffer} buffer The buffer to serialize to
+ * @throws {RangeError} A range error if deserialized values are not valid
+ */
+CardHand.prototype.serialize = function(buffer) {
+    buffer.writeUint8(this.cards.length);
+
+    for (const card of this.cards)
+        card.serialize(buffer);
+};
+
+/**
  * Resize the hand GUI
  * @param {Number} width The screen width in pixels
  * @param {Number} height The screen height in pixels
@@ -57,7 +87,9 @@ CardHand.prototype.makeTargets = function(count) {
     const handHeight = Math.round(this.height * this.HEIGHT);
     const fanAngle = Math.PI - Math.atan(0.5 * handWidth / handHeight) - Math.atan(handHeight / 0.5 * handWidth);
     const fanRadius = 0.5 * handWidth / Math.sin(fanAngle);
-    const fanPortion = Math.min(1, (count - 1) / ((2 * fanAngle * fanRadius) / (this.CARD_WIDTH * this.MAX_SPACING)));
+    const fanPortion = Math.min(
+        1,
+        (count - 1) / ((2 * fanAngle * fanRadius) / (this.CARD_WIDTH * this.MAX_SPACING)));
 
     const targets = new Array(count);
 
@@ -114,4 +146,11 @@ CardHand.prototype.add = function(card) {
 CardHand.prototype.remove = function(card) {
     this.cards.splice(this.cards.indexOf(card), 1);
     this.targets = this.makeTargets(this.cards.length);
+};
+
+/**
+ * Clear the card hand
+ */
+CardHand.prototype.clear = function() {
+    this.cards = [];
 };

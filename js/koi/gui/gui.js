@@ -14,6 +14,30 @@ const GUI = function(element) {
 };
 
 /**
+ * Serialize the GUI
+ * @param {BinBuffer} buffer The buffer to deserialize form
+ * @throws {RangeError} A range error if deserialized values are not valid
+ */
+GUI.prototype.deserialize = function(buffer) {
+    this.cards.deserialize(buffer);
+};
+
+/**
+ * Serialize the GUI
+ * @param {BinBuffer} buffer The buffer to serialize to
+ */
+GUI.prototype.serialize = function(buffer) {
+    this.cards.serialize(buffer);
+};
+
+/**
+ * Clear the GUI contents
+ */
+GUI.prototype.clear = function() {
+    this.cards.clear();
+};
+
+/**
  * Indicate that the GUI has resized
  */
 GUI.prototype.resize = function() {

@@ -16,6 +16,25 @@ const Card = function(body, position) {
 Card.prototype.CLASS = "card";
 
 /**
+ * Deserialize a card
+ * @param {BinBuffer} buffer The buffer to deserialize from
+ * @param {Vector2} position The position to deserialize the card at
+ * @returns {Card} The deserialized card
+ * @throws {RangeError} A range error if deserialized values are not valid
+ */
+Card.deserialize = function(buffer, position) {
+    return new Card(FishBody.deserialize(buffer), position);
+};
+
+/**
+ * Serialize the card
+ * @param {BinBuffer} buffer The buffer to serialize to
+ */
+Card.prototype.serialize = function(buffer) {
+    this.body.serialize(buffer);
+};
+
+/**
  * Render the card, updates every refresh
  * @param {Number} time The amount of time since the last update
  */

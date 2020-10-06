@@ -24,6 +24,7 @@ Session.prototype.makeKoi = function(systems, audio, gui) {
 
     if (this.buffer) {
         koi.deserialize(this.buffer);
+        gui.deserialize(this.buffer);
 
         this.buffer = null;
     }
@@ -49,9 +50,10 @@ Session.prototype.deserialize = function(buffer) {
 /**
  * Serialize a session
  * @param {Koi} koi The Koi object to serialize
+ * @param {GUI} gui The GUI object to serialize
  * @returns {BinBuffer} A buffer containing the serialized session data
  */
-Session.prototype.serialize = function(koi) {
+Session.prototype.serialize = function(koi, gui) {
     const buffer = new BinBuffer();
 
     this.random.serialize(buffer);
@@ -59,6 +61,7 @@ Session.prototype.serialize = function(koi) {
     buffer.writeUint32(this.environmentSeed);
 
     koi.serialize(buffer);
+    gui.serialize(buffer);
 
     return buffer;
 };

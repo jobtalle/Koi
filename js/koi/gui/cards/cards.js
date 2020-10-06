@@ -32,6 +32,35 @@ const Cards = function(element) {
 };
 
 /**
+ * Serialize the card collection
+ * @param {BinBuffer} buffer The buffer to deserialize form
+ * @throws {RangeError} A range error if deserialized values are not valid
+ */
+Cards.prototype.deserialize = function(buffer) {
+    this.hand.deserialize(buffer, this);
+};
+
+/**
+ * Serialize the card collection
+ * @param {BinBuffer} buffer The buffer to serialize to
+ */
+Cards.prototype.serialize = function(buffer) {
+    this.hand.serialize(buffer);
+};
+
+/**
+ * Clear the cards GUI
+ */
+Cards.prototype.clear = function() {
+    this.hand.clear();
+
+    for (const card of this.cards)
+        this.element.removeChild(card.element);
+
+    this.cards = [];
+};
+
+/**
  * Indicate that the GUI has resized
  */
 Cards.prototype.resize = function() {
@@ -127,10 +156,10 @@ Cards.prototype.hide = function() {
 };
 
 /**
- * Add a card to the cards
+ * Register a card on the cards GUI
  * @param {Card} card A card
  */
-Cards.prototype.add = function(card) {
+Cards.prototype.registerCard = function(card) {
     card.element.addEventListener("mousedown", event => this.grabCard(
         card,
         new Vector2(event.clientX, event.clientY)));
@@ -140,8 +169,17 @@ Cards.prototype.add = function(card) {
         new Vector2(event.changedTouches[0].clientX, event.changedTouches[0].clientY)));
 
     this.cards.push(card);
-    this.hand.add(card);
     this.element.appendChild(card.element);
 
     this.show();
+};
+
+/**
+ * Add a card to the cards
+ * @param {Card} card A card
+ */
+Cards.prototype.add = function(card) {
+    this.hand.add(card);
+
+    this.registerCard(card);
 };
