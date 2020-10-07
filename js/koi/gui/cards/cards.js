@@ -5,12 +5,14 @@
  */
 const Cards = function(element) {
     this.element = element;
+    this.book = new CardBook(element.clientWidth, element.clientHeight);
     this.hand = new CardHand(element.clientWidth, element.clientHeight);
-    this.book = null;
     this.cards = [];
     this.mouse = null;
     this.grabbed = null;
-    this.visible = false;
+    this.visible = false; // TODO: Implement
+
+    element.appendChild(this.book.element);
 
     element.addEventListener("mousemove", event => {
         this.move(

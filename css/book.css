@@ -1,0 +1,22 @@
+#book {
+    pointer-events: auto;
+    position: absolute;
+    background-color: #8EA451;
+    width: 800px;
+    height: 600px;
+    display: flex;
+    align-items: center;
+}
+
+#book #spine {
+    width: 0;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    background-color: gray;
+}
+
+#book #spine .page {
+    position: absolute;
+    background-color: crimson;
+}

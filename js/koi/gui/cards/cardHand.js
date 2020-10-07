@@ -11,18 +11,20 @@ const CardHand = function(width, height) {
     this.targets = null;
 };
 
-CardHand.prototype.WIDTH = .8;
-CardHand.prototype.HEIGHT = .12;
-CardHand.prototype.RAISE = .1;
+CardHand.prototype.WIDTH = .5;
+CardHand.prototype.HEIGHT = .3;
+CardHand.prototype.RAISE = .6;
 CardHand.prototype.INTERPOLATION_FACTOR = .5;
 CardHand.prototype.CARD_WIDTH = StyleUtils.getInt("--card-width");
+CardHand.prototype.CARD_HEIGHT = StyleUtils.getInt("--card-height");
 CardHand.prototype.MAX_SPACING = .8;
-CardHand.prototype.EXTRA_ANGLE = -.05;
+CardHand.prototype.EXTRA_ANGLE = -.03;
 
 /**
  * Deserialize the card hand
  * @param {BinBuffer} buffer The buffer to deserialize from
  * @param {Cards} cards The cards GUI
+ * @throws {RangeError} A range error if deserialized values are not valid
  */
 CardHand.prototype.deserialize = function(buffer, cards) {
     const cardCount = buffer.readUint8();
@@ -41,7 +43,6 @@ CardHand.prototype.deserialize = function(buffer, cards) {
 /**
  * Serialize the card hand
  * @param {BinBuffer} buffer The buffer to serialize to
- * @throws {RangeError} A range error if deserialized values are not valid
  */
 CardHand.prototype.serialize = function(buffer) {
     buffer.writeUint8(this.cards.length);
@@ -77,7 +78,8 @@ CardHand.prototype.contains = function(card) {
  */
 CardHand.prototype.makeTargets = function(count) {
     const handWidth = Math.round(this.width * this.WIDTH);
-    const handHeight = Math.round(this.height * this.HEIGHT);
+    const handHeight = Math.round(this.CARD_HEIGHT * this.HEIGHT);
+    const extraAngle = count === 1 ? 0 : this.EXTRA_ANGLE;
     const fanAngle = Math.PI - Math.atan(0.5 * handWidth / handHeight) - Math.atan(handHeight / 0.5 * handWidth);
     const fanRadius = 0.5 * handWidth / Math.sin(fanAngle);
     const fanPortion = Math.min(
@@ -92,8 +94,8 @@ CardHand.prototype.makeTargets = function(count) {
 
         targets[target] = new Vector3(
             this.width * .5 + Math.cos(angle) * fanRadius,
-            this.height * (1 - this.RAISE) + fanRadius + Math.sin(angle) * fanRadius,
-            fanPortion * fanAngle * (1 - 2 * factor) + this.EXTRA_ANGLE);
+            this.height + (.5 - this.RAISE) * this.CARD_HEIGHT + fanRadius + Math.sin(angle) * fanRadius,
+            fanPortion * fanAngle * (1 - 2 * factor) + extraAngle);
     }
 
     return targets;

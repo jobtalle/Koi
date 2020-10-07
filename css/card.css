@@ -11,8 +11,7 @@
 }
 
 .card {
-    display: block;
-    pointer-events: all;
+    pointer-events: auto;
     cursor: pointer;
     position: absolute;
     background-color: var(--card-color-background);
