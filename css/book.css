@@ -2,8 +2,6 @@
     pointer-events: auto;
     position: absolute;
     background-color: #8EA451;
-    width: 800px;
-    height: 600px;
     display: flex;
     align-items: center;
 }
@@ -19,4 +17,13 @@
 #book #spine .page {
     position: absolute;
     background-color: crimson;
+    height: 100%;
+}
+
+#book #spine .page.left {
+    right: 0;
+}
+
+#book #spine .page.right {
+    left: 0;
 }

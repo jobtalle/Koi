@@ -13,12 +13,18 @@ const CardBook = function(width, height) {
     this.page = 0;
 
     this.spine.appendChild(this.pages[0].element);
-    this.spine.appendChild(this.pages[1].element)
+    this.spine.appendChild(this.pages[1].element);
+
+    this.fit();
 };
 
 CardBook.prototype.ID = "book";
 CardBook.prototype.ID_SPINE = "spine";
 CardBook.prototype.PAGE_COUNT = 8;
+CardBook.prototype.PADDING_TOP = .07;
+CardBook.prototype.PADDING_PAGE = .05;
+CardBook.prototype.PADDING_CARD = .05;
+CardBook.prototype.HEIGHT = .65;
 
 /**
  * Deserialize the card book
@@ -38,6 +44,23 @@ CardBook.prototype.serialize = function(buffer) {
 };
 
 /**
+ * Fit the book and its contents to the view size
+ */
+CardBook.prototype.fit = function() {
+    const spineHeight = this.height * this.HEIGHT * (1 - 2 * this.PADDING_PAGE);
+    const cardHeight = (spineHeight - this.height * this.PADDING_CARD * 3) * .5;
+    const cardWidth = cardHeight * Card.prototype.RATIO;
+    const pageWidth = this.height * this.PADDING_CARD * 3 + cardWidth * 2;
+    const bookWidth = pageWidth * 2 + this.height * this.HEIGHT * this.PADDING_PAGE * 4;
+
+    this.element.style.width = bookWidth + "px";
+    this.element.style.height = this.height * this.HEIGHT + "px";
+    this.element.style.left = (this.width - bookWidth) * .5 + "px";
+    this.element.style.top = this.height * this.PADDING_TOP + "px";
+    this.spine.style.height = spineHeight + "px";
+};
+
+/**
  * Create the initial set of pages
  * @returns {CardPage[]} The initial pages
  */
@@ -45,7 +68,7 @@ CardBook.prototype.createPages = function() {
     const pages = new Array(this.PAGE_COUNT);
 
     for (let page = 0; page < this.PAGE_COUNT; ++page)
-        pages[page] = new CardPage(300, 500, ((page & 1) << 1) - 1);
+        pages[page] = new CardPage(300, ((page & 1) << 1) - 1);
 
     return pages;
 };
@@ -59,7 +82,6 @@ CardBook.prototype.createSpine = function(pageHeight) {
     const element = document.createElement("div");
 
     element.id = this.ID_SPINE;
-    element.style.height = pageHeight + "px";
 
     return element;
 };
@@ -87,4 +109,6 @@ CardBook.prototype.createElement = function(spine) {
 CardBook.prototype.resize = function(width, height) {
     this.width = width;
     this.height = height;
+
+    this.fit();
 };

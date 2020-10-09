@@ -15,8 +15,6 @@ CardHand.prototype.WIDTH = .5;
 CardHand.prototype.HEIGHT = .3;
 CardHand.prototype.RAISE = .6;
 CardHand.prototype.INTERPOLATION_FACTOR = .5;
-CardHand.prototype.CARD_WIDTH = StyleUtils.getInt("--card-width");
-CardHand.prototype.CARD_HEIGHT = StyleUtils.getInt("--card-height");
 CardHand.prototype.MAX_SPACING = .8;
 CardHand.prototype.EXTRA_ANGLE = -.03;
 
@@ -78,13 +76,13 @@ CardHand.prototype.contains = function(card) {
  */
 CardHand.prototype.makeTargets = function(count) {
     const handWidth = Math.round(this.width * this.WIDTH);
-    const handHeight = Math.round(this.CARD_HEIGHT * this.HEIGHT);
+    const handHeight = Math.round(Card.prototype.HEIGHT * this.HEIGHT);
     const extraAngle = count === 1 ? 0 : this.EXTRA_ANGLE;
     const fanAngle = Math.PI - Math.atan(0.5 * handWidth / handHeight) - Math.atan(handHeight / 0.5 * handWidth);
     const fanRadius = 0.5 * handWidth / Math.sin(fanAngle);
     const fanPortion = Math.min(
         1,
-        (count - 1) / ((2 * fanAngle * fanRadius) / (this.CARD_WIDTH * this.MAX_SPACING)));
+        (count - 1) / ((2 * fanAngle * fanRadius) / (Card.prototype.WIDTH * this.MAX_SPACING)));
 
     const targets = new Array(count);
 
@@ -94,7 +92,7 @@ CardHand.prototype.makeTargets = function(count) {
 
         targets[target] = new Vector3(
             this.width * .5 + Math.cos(angle) * fanRadius,
-            this.height + (.5 - this.RAISE) * this.CARD_HEIGHT + fanRadius + Math.sin(angle) * fanRadius,
+            this.height + (.5 - this.RAISE) * Card.prototype.WIDTH + fanRadius + Math.sin(angle) * fanRadius,
             fanPortion * fanAngle * (1 - 2 * factor) + extraAngle);
     }
 

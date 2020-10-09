@@ -16,6 +16,9 @@ const Card = function(body, position, angle = 0) {
 };
 
 Card.prototype.CLASS = "card";
+Card.prototype.WIDTH = StyleUtils.getInt("--card-width");
+Card.prototype.HEIGHT = StyleUtils.getInt("--card-height");
+Card.prototype.RATIO = Card.prototype.WIDTH / Card.prototype.HEIGHT;
 
 /**
  * Deserialize a card

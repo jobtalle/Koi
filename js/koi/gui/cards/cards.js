@@ -69,6 +69,7 @@ Cards.prototype.clear = function() {
  */
 Cards.prototype.resize = function() {
     this.hand.resize(this.element.clientWidth, this.element.clientHeight);
+    this.book.resize(this.element.clientWidth, this.element.clientHeight);
 };
 
 /**
