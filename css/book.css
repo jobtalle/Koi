@@ -16,8 +16,11 @@
 
 #book #spine .page {
     position: absolute;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    background-color: crimson;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 #book #spine .page.left {

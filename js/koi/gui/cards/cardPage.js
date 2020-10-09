@@ -57,8 +57,12 @@ CardPage.prototype.createSlots = function(element) {
  * Fit the card page contents to a given resolution
  * @param {Number} cardWidth The card width in pixels
  * @param {Number} cardHeight The card height in pixels
+ * @param {Number} cardPadding The card padding in pixels
  */
-CardPage.prototype.fit = function(cardWidth, cardHeight) {
+CardPage.prototype.fit = function(cardWidth, cardHeight, cardPadding) {
+    this.element.style.width = (cardWidth * 2 + cardPadding * 3) + "px";
+    this.element.style.height = (cardHeight * 2 + cardPadding * 3) + "px";
+
     for (const slot of this.slots) {
         slot.style.width = cardWidth + "px";
         slot.style.height = cardHeight + "px";
