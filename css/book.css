@@ -16,8 +16,8 @@
 
 #book #spine .page {
     position: absolute;
-    background-color: crimson;
-    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 
 #book #spine .page.left {
@@ -26,4 +26,8 @@
 
 #book #spine .page.right {
     left: 0;
+}
+
+#book #spine .page .slot {
+    background-color: #967A74;
 }

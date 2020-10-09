@@ -22,8 +22,7 @@ CardBook.prototype.ID = "book";
 CardBook.prototype.ID_SPINE = "spine";
 CardBook.prototype.PAGE_COUNT = 8;
 CardBook.prototype.PADDING_TOP = .07;
-CardBook.prototype.PADDING_PAGE = .05;
-CardBook.prototype.PADDING_CARD = .05;
+CardBook.prototype.PADDING_PAGE = .07;
 CardBook.prototype.HEIGHT = .65;
 
 /**
@@ -47,17 +46,20 @@ CardBook.prototype.serialize = function(buffer) {
  * Fit the book and its contents to the view size
  */
 CardBook.prototype.fit = function() {
-    const spineHeight = this.height * this.HEIGHT * (1 - 2 * this.PADDING_PAGE);
-    const cardHeight = (spineHeight - this.height * this.PADDING_CARD * 3) * .5;
-    const cardWidth = cardHeight * Card.prototype.RATIO;
-    const pageWidth = this.height * this.PADDING_CARD * 3 + cardWidth * 2;
-    const bookWidth = pageWidth * 2 + this.height * this.HEIGHT * this.PADDING_PAGE * 4;
+    const pageHeight = this.height * this.HEIGHT * (1 - 2 * this.PADDING_PAGE);
+    const slotHeight = pageHeight * .5;
+    const slotWidth = slotHeight * Card.prototype.RATIO;
+    const pageWidth = slotWidth * 2;
+    const bookWidth = pageWidth * 2 + this.height * this.HEIGHT * this.PADDING_PAGE * 2;
 
     this.element.style.width = bookWidth + "px";
     this.element.style.height = this.height * this.HEIGHT + "px";
     this.element.style.left = (this.width - bookWidth) * .5 + "px";
     this.element.style.top = this.height * this.PADDING_TOP + "px";
-    this.spine.style.height = spineHeight + "px";
+    this.spine.style.height = pageHeight + "px";
+
+    for (const page of this.pages)
+        page.fit(slotWidth, slotHeight);
 };
 
 /**
@@ -68,7 +70,7 @@ CardBook.prototype.createPages = function() {
     const pages = new Array(this.PAGE_COUNT);
 
     for (let page = 0; page < this.PAGE_COUNT; ++page)
-        pages[page] = new CardPage(300, ((page & 1) << 1) - 1);
+        pages[page] = new CardPage(((page & 1) << 1) - 1);
 
     return pages;
 };
