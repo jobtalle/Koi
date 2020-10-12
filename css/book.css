@@ -4,6 +4,11 @@
     background-color: #8EA451;
     display: flex;
     align-items: center;
+    transition: 0.5s ease-in-out;
+}
+
+#book.hidden {
+    margin-top: -100%;
 }
 
 #book #spine {
@@ -32,7 +37,7 @@
 
 #book #spine .page .slot {
     position: relative;
-    background-color: #967A74;
+    background-color: #9d9d9d;
     border-radius: var(--card-border-radius);
 }
 

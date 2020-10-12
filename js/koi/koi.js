@@ -223,6 +223,8 @@ Koi.prototype.touchStart = function(x, y) {
 
         this.mover.startTouch(wx, wy);
     }
+
+    this.gui.interactGame();
 };
 
 /**

@@ -9,6 +9,7 @@ const CardHand = function(width, height) {
     this.height = height;
     this.cards = [];
     this.targets = null;
+    this.visible = true; // TODO: Invert, probably
 };
 
 CardHand.prototype.WIDTH = .5;
@@ -17,6 +18,7 @@ CardHand.prototype.RAISE = .6;
 CardHand.prototype.INTERPOLATION_FACTOR = .5;
 CardHand.prototype.MAX_SPACING = .8;
 CardHand.prototype.EXTRA_ANGLE = -.03;
+CardHand.prototype.HIDE_HEIGHT = 1;
 
 /**
  * Deserialize the card hand
@@ -103,9 +105,11 @@ CardHand.prototype.makeTargets = function(count) {
  * Update the card hand GUI
  */
 CardHand.prototype.update = function() {
+    const yShift = this.visible ? 0 : this.HIDE_HEIGHT * Card.prototype.HEIGHT;
+
     for (let card = 0, cards = this.cards.length; card < cards; ++card) {
         const dx = this.targets[card].x - this.cards[card].position.x;
-        const dy = this.targets[card].y - this.cards[card].position.y;
+        const dy = this.targets[card].y + yShift - this.cards[card].position.y;
         const da = this.targets[card].z - this.cards[card].angle;
 
         this.cards[card].move(
@@ -164,4 +168,18 @@ CardHand.prototype.remove = function(card) {
  */
 CardHand.prototype.clear = function() {
     this.cards = [];
+};
+
+/**
+ * Show the card hand GUI
+ */
+CardHand.prototype.show = function() {
+    this.visible = true;
+};
+
+/**
+ * Hide the card hand GUI
+ */
+CardHand.prototype.hide = function() {
+    this.visible = false;
 };

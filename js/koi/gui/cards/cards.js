@@ -11,7 +11,7 @@ const Cards = function(element) {
     this.mouse = null;
     this.grabbed = null;
     this.grabOffset = null;
-    this.visible = false; // TODO: Implement
+    this.visible = true; // TODO: Implement
     this.snap = null;
 
     element.appendChild(this.book.element);
@@ -203,13 +203,16 @@ Cards.prototype.release = function() {
  * @param {Boolean} [addToGUI] True if the card element should be added to the GUI
  */
 Cards.prototype.registerCard = function(card, addToGUI = true) {
-    card.element.addEventListener("mousedown", event => this.grabCard(
-        card,
-        new Vector2(event.clientX, event.clientY)));
+    card.element.addEventListener("mousedown", event => {
+        if (event.button === 0)
+            this.grabCard(
+                card,
+                new Vector2(event.clientX, event.clientY));
+    });
 
     card.element.addEventListener("touchstart", event => this.grabCard(
-        card,
-        new Vector2(event.changedTouches[0].clientX, event.changedTouches[0].clientY)));
+            card,
+            new Vector2(event.changedTouches[0].clientX, event.changedTouches[0].clientY)));
 
     this.cards.push(card);
 
@@ -222,7 +225,33 @@ Cards.prototype.registerCard = function(card, addToGUI = true) {
  * @param {Card} card A card
  */
 Cards.prototype.add = function(card) {
+    this.show();
+
     this.hand.add(card);
 
     this.registerCard(card);
 };
+
+/**
+ * Hide the cards GUI
+ */
+Cards.prototype.hide = function() {
+    if (this.visible) {
+        this.book.hide();
+        this.hand.hide();
+
+        this.visible = false;
+    }
+};
+
+/**
+ * Show the cards GUI
+ */
+Cards.prototype.show = function() {
+    if (!this.visible) {
+        this.book.show();
+        this.hand.show();
+
+        this.visible = true;
+    }
+}

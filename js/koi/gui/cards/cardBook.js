@@ -20,6 +20,7 @@ const CardBook = function(width, height) {
 
 CardBook.prototype.ID = "book";
 CardBook.prototype.ID_SPINE = "spine";
+CardBook.prototype.CLASS_HIDDEN = "hidden";
 CardBook.prototype.PAGE_COUNT = 8;
 CardBook.prototype.PADDING_TOP = .07;
 CardBook.prototype.PADDING_PAGE = .07;
@@ -44,6 +45,20 @@ CardBook.prototype.deserialize = function(buffer, cards) {
 CardBook.prototype.serialize = function(buffer) {
     for (const page of this.pages)
         page.serialize(buffer);
+};
+
+/**
+ * Hide the book
+ */
+CardBook.prototype.hide = function() {
+    this.element.classList.add(this.CLASS_HIDDEN);
+};
+
+/**
+ * Show the book
+ */
+CardBook.prototype.show = function() {
+    this.element.classList.remove(this.CLASS_HIDDEN);
 };
 
 /**

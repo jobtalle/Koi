@@ -31,6 +31,13 @@ GUI.prototype.serialize = function(buffer) {
 };
 
 /**
+ * This function should be called whenever the game (not the GUI) is interacted with
+ */
+GUI.prototype.interactGame = function() {
+    this.cards.hide();
+};
+
+/**
  * Clear the GUI contents
  */
 GUI.prototype.clear = function() {
