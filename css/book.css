@@ -33,6 +33,7 @@
 #book #spine .page .slot {
     position: relative;
     background-color: #967A74;
+    border-radius: var(--card-border-radius);
 }
 
 #book #spine .page .slot .card {
