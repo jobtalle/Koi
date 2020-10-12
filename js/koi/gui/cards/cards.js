@@ -8,9 +8,11 @@ const Cards = function(element) {
     this.book = new CardBook(element.clientWidth, element.clientHeight);
     this.hand = new CardHand(element.clientWidth, element.clientHeight);
     this.cards = [];
-    this.mouse = null;
+    this.mouse = null; // TODO: Maybe factor out
     this.grabbed = null;
+    this.grabOffset = null;
     this.visible = false; // TODO: Implement
+    this.snap = null;
 
     element.appendChild(this.book.element);
 
@@ -33,7 +35,7 @@ const Cards = function(element) {
     element.addEventListener("mouseleave", this.release.bind(this));
 };
 
-Cards.prototype.INTERPOLATION_FACTOR = .82;
+Cards.prototype.INTERPOLATION_FACTOR = .9;
 
 /**
  * Serialize the card collection
@@ -50,6 +52,14 @@ Cards.prototype.deserialize = function(buffer) {
  */
 Cards.prototype.serialize = function(buffer) {
     this.hand.serialize(buffer);
+};
+
+/**
+ * Find a point to snap to
+ * @returns {Vector2} A snap position if applicable, null otherwise
+ */
+Cards.prototype.findSnap = function() {
+    return this.book.findSnap(this.mouse);
 };
 
 /**
@@ -78,8 +88,22 @@ Cards.prototype.resize = function() {
 Cards.prototype.update = function() {
     this.hand.update();
 
-    if (this.grabbed)
+    if (this.grabbed) {
         this.grabbed.rotate(this.grabbed.angle * -this.INTERPOLATION_FACTOR);
+
+        if (this.snap) {
+            const dx = (this.snap.x - this.grabbed.position.x) * this.INTERPOLATION_FACTOR;
+            const dy = (this.snap.y - this.grabbed.position.y) * this.INTERPOLATION_FACTOR;
+
+            this.grabbed.move(dx, dy);
+        }
+        else {
+            const dx = (this.mouse.x - this.grabOffset.x - this.grabbed.position.x) * this.INTERPOLATION_FACTOR;
+            const dy = (this.mouse.y - this.grabOffset.y - this.grabbed.position.y) * this.INTERPOLATION_FACTOR;
+
+            this.grabbed.move(dx, dy);
+        }
+    }
 };
 
 /**
@@ -95,37 +119,38 @@ Cards.prototype.render = function(time) {
 
 /**
  * Move the mouse to a new position
- * @param {Number} x The X position in pixels
- * @param {Number} y The Y position in pixels
+ * @param {Number} x The mouse X position in pixels
+ * @param {Number} y The mouse Y position in pixels
  */
 Cards.prototype.move = function(x, y) {
     if (this.grabbed) {
-        const dx = x - this.mouse.x;
-        const dy = y - this.mouse.y;
-
-        this.grabbed.shift(dx, dy);
-
         this.mouse.x = x;
         this.mouse.y = y;
+
+        this.snap = this.findSnap();
     }
 };
 
 /**
  * Grab a card
  * @param {Card} card The card that was grabbed
- * @param {Vector2} anchor The position relative to the card origin where it was grabbed
+ * @param {Vector2} mouse The mouse position
  */
-Cards.prototype.grabCard = function(card, anchor) {
+Cards.prototype.grabCard = function(card, mouse) {
     this.grabbed = card;
-    this.mouse = anchor;
+    this.mouse = mouse;
+    this.grabOffset = mouse.copy().subtract(card.position); // TODO: Account for rotation
+    this.snap = this.findSnap();
     this.element.style.pointerEvents = "auto";
 
     card.stopMoving();
 
-    this.moveToFront(card);
-
-    if (this.hand.contains(card))
+    if (this.hand.contains(card)) {
         this.hand.remove(card);
+        this.moveToFront(card);
+    }
+    else
+        this.removeFromBook(card);
 };
 
 /**
@@ -138,13 +163,35 @@ Cards.prototype.moveToFront = function(card) {
 };
 
 /**
+ * Remove a card from the book
+ * @param {Card} card The card
+ */
+Cards.prototype.removeFromBook = function(card) {
+    this.book.removeFromBook(card);
+    this.element.appendChild(card.element);
+};
+
+/**
+ * Add a card to the book
+ * @param {Card} card The card to add
+ * @param {Vector2} snap The snap position on the book
+ */
+Cards.prototype.addToBook = function(card, snap) {
+    this.element.removeChild(card.element);
+    this.book.addToBook(card, snap);
+};
+
+/**
  * Release any current drag or swipe motion
  */
 Cards.prototype.release = function() {
     if (this.grabbed) {
         this.element.style.pointerEvents = "none";
 
-        this.hand.add(this.grabbed);
+        if (this.snap)
+            this.addToBook(this.grabbed, this.snap);
+        else
+            this.hand.add(this.grabbed);
 
         this.grabbed = null;
     }

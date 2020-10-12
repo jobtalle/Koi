@@ -7,12 +7,116 @@ const CardPage = function(direction) {
     this.cards = new Array(4).fill(null);
     this.element = this.createElement(direction);
     this.slots = this.createSlots(this.element);
+    this.rect = null;
+    this.targets = null;
 };
 
 CardPage.prototype.CLASS = "page";
 CardPage.prototype.CLASS_SLOT = "slot";
 CardPage.prototype.CLASS_LEFT = "left";
 CardPage.prototype.CLASS_RIGHT = "right";
+
+/**
+ * Get this pages' rectangle
+ * @returns {DOMRect} The page rectangle
+ */
+CardPage.prototype.getRect = function() {
+    return this.element.getBoundingClientRect();
+};
+
+/**
+ * Get the bounding rectangles of slot elements
+ * @param {HTMLDivElement[]} slots An array of slot elements
+ * @returns {DOMRect[]} An array of bounding client rects corresponding with the slots
+ */
+CardPage.prototype.getRects = function(slots) {
+    const rects = new Array(slots.length);
+
+    for (let rect = 0, rectCount = slots.length; rect < rectCount; ++rect)
+        rects[rect] = slots[rect].getBoundingClientRect();
+
+    return rects;
+};
+
+/**
+ * Make snap targets for a set of bounding client rects
+ * @param {DOMRect[]} rects An array of bounding client rectangles
+ * @returns {Vector2[]} An array of snap targets corresponding with the given rectangles
+ */
+CardPage.prototype.makeTargets = function(rects) {
+    const targets = new Array(rects.length);
+
+    for (let rect = 0, rectCount = rects.length; rect < rectCount; ++rect)
+        targets[rect] = new Vector2(
+            (rects[rect].left + rects[rect].right) * .5,
+            (rects[rect].top + rects[rect].bottom) * .5);
+
+    return targets;
+};
+
+/**
+ * Find a point to snap to
+ * @param {Vector2} position The position
+ * @returns {Vector2} A snap position if applicable, null otherwise
+ */
+CardPage.prototype.findSnap = function(position) {
+    if (this.rect === null) {
+        this.rect = this.getRect();
+        this.targets = this.makeTargets(this.getRects(this.slots));
+    }
+
+    if (position.x > this.rect.left &&
+        position.x < this.rect.right &&
+        position.y > this.rect.top &&
+        position.y < this.rect.bottom) {
+        const horizontal = position.x > (this.rect.right + this.rect.left) * .5;
+        const vertical = position.y > (this.rect.bottom + this.rect.top) * .5;
+        const index = horizontal + (vertical << 1);
+
+        if (this.cards[index])
+            return null;
+
+        return this.targets[index];
+    }
+
+    return null;
+};
+
+/**
+ * Try to add a card to this page
+ * @param {Card} card A card
+ * @param {Vector2} snap A snap position
+ * @returns {Boolean} True if the card was added, false if the snap position is not on this page
+ */
+CardPage.prototype.addCard = function(card, snap) {
+    for (let target = 0, targets = this.targets.length; target < targets; ++target) {
+        if (snap === this.targets[target]) {
+            this.slots[target].appendChild(card.element);
+            this.cards[target] = card;
+
+            card.clearTransform();
+
+            return true;
+        }
+    }
+
+    return false;
+};
+
+/**
+ * Try to remove a card from this page
+ * @param {Card} card A card
+ * @returns {Boolean} True if the card was removed from this page, false if the card is not on this page
+ */
+CardPage.prototype.removeCard = function(card) {
+    const index = this.cards.indexOf(card);
+
+    if (index === -1)
+        return false;
+
+    this.cards[index] = null;
+    this.slots[index].removeChild(card.element);
+};
 
 /**
  * Create a page element
@@ -67,4 +171,6 @@ CardPage.prototype.fit = function(cardWidth, cardHeight, cardPadding) {
         slot.style.width = cardWidth + "px";
         slot.style.height = cardHeight + "px";
     }
+
+    this.rect = null;
 };

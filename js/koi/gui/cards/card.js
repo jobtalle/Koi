@@ -77,19 +77,6 @@ Card.prototype.stopMoving = function() {
 };
 
 /**
- * Move the card instantly without interpolation
- * @param {Number} dx The X delta
- * @param {Number} dy The Y delta
- */
-Card.prototype.shift = function(dx, dy) {
-    this.position.x += dx;
-    this.position.y += dy;
-
-    this.stopMoving();
-    this.updatePosition();
-};
-
-/**
  * Update this cards element position
  * @param {Number} time The amount of time since the last update
  */
@@ -102,6 +89,13 @@ Card.prototype.updatePosition = function(time = 0) {
 
     if (this.angle !== 0)
         this.element.style.transform += "rotate(" + angle + "rad)";
+};
+
+/**
+ * Clear the card transformation
+ */
+Card.prototype.clearTransform = function() {
+    this.element.style.removeProperty("transform");
 };
 
 /**

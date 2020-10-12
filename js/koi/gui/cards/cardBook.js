@@ -5,7 +5,7 @@
  * @constructor
  */
 const CardBook = function(width, height) {
-    this.spine = this.createSpine(500);
+    this.spine = this.createSpine();
     this.element = this.createElement(this.spine);
     this.width = width;
     this.height = height;
@@ -44,15 +44,41 @@ CardBook.prototype.serialize = function(buffer) {
 };
 
 /**
+ * Find a point to snap to
+ * @param {Vector2} position The position
+ * @returns {Vector2} A snap position if applicable, null otherwise
+ */
+CardBook.prototype.findSnap = function(position) {
+    return this.pages[this.page].findSnap(position) || this.pages[this.page + 1].findSnap(position);
+};
+
+/**
+ * Add a card to the book
+ * @param {Card} card The card
+ * @param {Vector2} snap A valid snap position obtained from one of the pages
+ */
+CardBook.prototype.addToBook = function(card, snap) {
+    this.pages[this.page].addCard(card, snap) || this.pages[this.page + 1].addCard(card, snap);
+};
+
+/**
+ * Remove a card from the book
+ * @param {Card} card A card
+ */
+CardBook.prototype.removeFromBook = function(card) {
+    this.pages[this.page].removeCard(card) || this.pages[this.page + 1].removeCard(card);
+};
+
+/**
  * Fit the book and its contents to the view size
  */
 CardBook.prototype.fit = function() {
     const pageHeight = Math.round(this.height * this.HEIGHT * (1 - 2 * this.PADDING_PAGE));
-    const cardPadding =  Math.round(pageHeight * this.PADDING_CARD);
-    const cardHeight =  Math.round((pageHeight - 3 * cardPadding) * .5);
-    const cardWidth =  Math.round(cardHeight * Card.prototype.RATIO);
+    const cardPadding = Math.round(pageHeight * this.PADDING_CARD);
+    const cardHeight = Math.round((pageHeight - 3 * cardPadding) * .5);
+    const cardWidth = Math.round(cardHeight * Card.prototype.RATIO);
     const pageWidth = cardWidth * 2 + cardPadding * 3;
-    const bookWidth = pageWidth * 2 +  Math.round(this.height * this.HEIGHT * this.PADDING_PAGE * 2);
+    const bookWidth = pageWidth * 2 + Math.round(this.height * this.HEIGHT * this.PADDING_PAGE * 2);
 
     this.element.style.width = bookWidth + "px";
     this.element.style.height = this.height * this.HEIGHT + "px";
@@ -79,10 +105,9 @@ CardBook.prototype.createPages = function() {
 
 /**
  * Create the book spine element
- * @param {Number} pageHeight The height of a page
  * @returns {HTMLDivElement} The spine element
  */
-CardBook.prototype.createSpine = function(pageHeight) {
+CardBook.prototype.createSpine = function() {
     const element = document.createElement("div");
 
     element.id = this.ID_SPINE;
