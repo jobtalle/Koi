@@ -205,9 +205,8 @@ Cards.prototype.release = function() {
 
         if (this.snap)
             this.addToBook(this.grabbed, this.snap);
-        else {
+        else
             this.hand.addCardsAfter(this.element, this.hand.add(this.grabbed));
-        }
 
         this.grabbed = null;
     }
@@ -243,9 +242,9 @@ Cards.prototype.registerCard = function(card, addToGUI = true) {
 Cards.prototype.add = function(card) {
     this.show();
 
-    this.hand.add(card);
-
     this.registerCard(card);
+
+    this.hand.add(card, false);
 };
 
 /**

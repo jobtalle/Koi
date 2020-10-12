@@ -133,34 +133,42 @@ CardHand.prototype.render = function(time) {
 /**
  * Add a card to the hand
  * @param {Card} card A card
+ * @param {Boolean} insert True if the card should be inserted at its nearest suitable position
  * @returns {Number} The card index after insertion
  */
-CardHand.prototype.add = function(card) {
+CardHand.prototype.add = function(card, insert = true) {
     this.targets = this.makeTargets(this.cards.length + 1);
 
-    let nearest = -1;
-    let nearestDistance = Number.MAX_VALUE;
+    if (insert) {
+        let nearest = -1;
+        let nearestDistance = Number.MAX_VALUE;
 
-    for (let target = 0, targetCount = this.targets.length; target < targetCount; ++target) {
-        const dx = card.position.x - this.targets[target].x;
-        const dy = card.position.y - this.targets[target].y;
-        const distance = dx * dx + dy * dy;
+        for (let target = 0, targetCount = this.targets.length; target < targetCount; ++target) {
+            const dx = card.position.x - this.targets[target].x;
+            const dy = card.position.y - this.targets[target].y;
+            const distance = dx * dx + dy * dy;
 
-        if (distance < nearestDistance) {
-            nearestDistance = distance;
-            nearest = target;
+            if (distance < nearestDistance) {
+                nearestDistance = distance;
+                nearest = target;
+            }
+        }
+
+        if (nearest === -1) {
+            this.cards.push(card);
+
+            return 1;
+        }
+        else {
+            this.cards.splice(nearest, 0, card);
+
+            return nearest + 1;
         }
     }
-
-    if (nearest === -1) {
+    else {
         this.cards.push(card);
 
-        return 1;
-    }
-    else {
-        this.cards.splice(nearest, 0, card);
-
-        return nearest + 1;
+        return this.cards.length;
     }
 };
 
