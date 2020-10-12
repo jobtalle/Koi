@@ -11,8 +11,10 @@ const Cards = function(element) {
     this.mouse = null;
     this.grabbed = null;
     this.grabOffset = null;
-    this.visible = true; // TODO: Implement
     this.snap = null;
+    this.visible = true; // TODO: Implement
+    this.hidden = false;
+    this.hideTimer = 0;
 
     element.appendChild(this.book.element);
 
@@ -36,6 +38,7 @@ const Cards = function(element) {
 };
 
 Cards.prototype.INTERPOLATION_FACTOR = .9;
+Cards.prototype.HIDE_TIME = 10;
 
 /**
  * Serialize the card collection
@@ -88,6 +91,15 @@ Cards.prototype.resize = function() {
  * Update the cards GUI
  */
 Cards.prototype.update = function() {
+    if (this.hidden)
+        return;
+
+    if (!this.visible && --this.hideTimer === 0) {
+        this.hidden = true;
+
+        return;
+    }
+
     this.hand.update();
 
     if (this.grabbed) {
@@ -113,6 +125,9 @@ Cards.prototype.update = function() {
  * @param {Number} time The amount of time since the last update
  */
 Cards.prototype.render = function(time) {
+    if (this.hidden)
+        return;
+
     this.hand.render(time);
 
     if (this.grabbed)
@@ -240,6 +255,7 @@ Cards.prototype.hide = function() {
         this.book.hide();
         this.hand.hide();
 
+        this.hideTimer = this.HIDE_TIME;
         this.visible = false;
     }
 };
@@ -253,5 +269,6 @@ Cards.prototype.show = function() {
         this.hand.show();
 
         this.visible = true;
+        this.hidden = false;
     }
 }

@@ -18,7 +18,7 @@ CardHand.prototype.RAISE = .6;
 CardHand.prototype.INTERPOLATION_FACTOR = .5;
 CardHand.prototype.MAX_SPACING = .8;
 CardHand.prototype.EXTRA_ANGLE = -.03;
-CardHand.prototype.HIDE_HEIGHT = 1;
+CardHand.prototype.HIDE_HEIGHT = 2;
 
 /**
  * Deserialize the card hand

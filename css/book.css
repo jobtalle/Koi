@@ -4,7 +4,8 @@
     background-color: #8EA451;
     display: flex;
     align-items: center;
-    transition: 0.5s ease-in-out;
+    transition: 0.5s;
+    transition-property: margin-top;
 }
 
 #book.hidden {
