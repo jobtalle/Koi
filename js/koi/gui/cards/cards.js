@@ -1,6 +1,6 @@
 /**
  * The cards visible on the GUI
- * @param {HTMLElement} element The root element for the GUI
+ * @param {HTMLDivElement} element The root element for the GUI
  * @constructor
  */
 const Cards = function(element) {
@@ -205,8 +205,9 @@ Cards.prototype.release = function() {
 
         if (this.snap)
             this.addToBook(this.grabbed, this.snap);
-        else
-            this.hand.add(this.grabbed);
+        else {
+            this.hand.addCardsAfter(this.element, this.hand.add(this.grabbed));
+        }
 
         this.grabbed = null;
     }

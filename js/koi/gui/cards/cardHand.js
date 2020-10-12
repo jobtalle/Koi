@@ -133,11 +133,12 @@ CardHand.prototype.render = function(time) {
 /**
  * Add a card to the hand
  * @param {Card} card A card
+ * @returns {Number} The card index after insertion
  */
 CardHand.prototype.add = function(card) {
     this.targets = this.makeTargets(this.cards.length + 1);
 
-    let nearest = 0;
+    let nearest = -1;
     let nearestDistance = Number.MAX_VALUE;
 
     for (let target = 0, targetCount = this.targets.length; target < targetCount; ++target) {
@@ -151,7 +152,28 @@ CardHand.prototype.add = function(card) {
         }
     }
 
-    this.cards.splice(nearest, 0, card);
+    if (nearest === -1) {
+        this.cards.push(card);
+
+        return 1;
+    }
+    else {
+        this.cards.splice(nearest, 0, card);
+
+        return nearest + 1;
+    }
+};
+
+/**
+ * Insert all cards after a given index
+ * @param {HTMLDivElement} parent The parent element containing all cards
+ * @param {Number} index The index of the first card to be re-added
+ */
+CardHand.prototype.addCardsAfter = function(parent, index) {
+    for (let card = index, cards = this.cards.length; card < cards; ++card) {
+        parent.removeChild(this.cards[card].element);
+        parent.appendChild(this.cards[card].element);
+    }
 };
 
 /**
