@@ -105,7 +105,7 @@ Cards.prototype.update = function() {
     if (this.grabbed) {
         this.grabbed.rotate(this.grabbed.angle * -this.INTERPOLATION_FACTOR);
 
-        if (this.snap) {
+        if (this.snap && false) {
             const dx = (this.snap.x - this.grabbed.position.x) * this.INTERPOLATION_FACTOR;
             const dy = (this.snap.y - this.grabbed.position.y) * this.INTERPOLATION_FACTOR;
 

@@ -160,6 +160,8 @@ CardPage.prototype.removeCard = function(card) {
 
     this.cards[index] = null;
     this.slots[index].removeChild(card.element);
+
+    return true;
 };
 
 /**

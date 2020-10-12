@@ -1,10 +1,20 @@
+:root {
+    /* colors */
+    --book-page-color: #bca994;
+    --book-page-color-shade: #92806b;
+    --book-page-color-highlight: #ded1bf;
+
+    /* dimensions */
+    --book-page-shade-size: 95%;
+}
+
 #book {
     pointer-events: auto;
     position: absolute;
     background-color: #8EA451;
     display: flex;
     align-items: center;
-    transition: 0.5s;
+    transition: 0.5s ease;
     transition-property: margin-top;
 }
 
@@ -21,7 +31,6 @@
 
 #book #spine .page {
     position: absolute;
-    background-color: crimson;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
@@ -30,10 +39,18 @@
 
 #book #spine .page.left {
     right: 0;
+    background: linear-gradient(
+        to right,
+        var(--book-page-color) var(--book-page-shade-size),
+        var(--book-page-color-highlight));
 }
 
 #book #spine .page.right {
     left: 0;
+    background: linear-gradient(
+        to left,
+        var(--book-page-color) var(--book-page-shade-size),
+        var(--book-page-color-shade));
 }
 
 #book #spine .page .slot {

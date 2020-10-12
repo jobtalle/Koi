@@ -77,8 +77,8 @@ CardHand.prototype.contains = function(card) {
  * @returns {Vector3[]} The targets
  */
 CardHand.prototype.makeTargets = function(count) {
-    const handWidth = Math.round(this.width * this.WIDTH);
-    const handHeight = Math.round(Card.prototype.HEIGHT * this.HEIGHT);
+    const handWidth = this.width * this.WIDTH;
+    const handHeight = Card.prototype.HEIGHT * this.HEIGHT;
     const extraAngle = count === 1 ? 0 : this.EXTRA_ANGLE;
     const fanAngle = Math.PI - Math.atan(0.5 * handWidth / handHeight) - Math.atan(handHeight / 0.5 * handWidth);
     const fanRadius = 0.5 * handWidth / Math.sin(fanAngle);
