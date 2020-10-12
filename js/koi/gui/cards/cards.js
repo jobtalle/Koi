@@ -8,7 +8,7 @@ const Cards = function(element) {
     this.book = new CardBook(element.clientWidth, element.clientHeight);
     this.hand = new CardHand(element.clientWidth, element.clientHeight);
     this.cards = [];
-    this.mouse = null; // TODO: Maybe factor out
+    this.mouse = null;
     this.grabbed = null;
     this.grabOffset = null;
     this.visible = false; // TODO: Implement
@@ -44,6 +44,7 @@ Cards.prototype.INTERPOLATION_FACTOR = .9;
  */
 Cards.prototype.deserialize = function(buffer) {
     this.hand.deserialize(buffer, this);
+    this.book.deserialize(buffer, this);
 };
 
 /**
@@ -52,6 +53,7 @@ Cards.prototype.deserialize = function(buffer) {
  */
 Cards.prototype.serialize = function(buffer) {
     this.hand.serialize(buffer);
+    this.book.serialize(buffer);
 };
 
 /**
@@ -200,8 +202,9 @@ Cards.prototype.release = function() {
 /**
  * Register a card on the cards GUI
  * @param {Card} card A card
+ * @param {Boolean} [addToGUI] True if the card element should be added to the GUI
  */
-Cards.prototype.registerCard = function(card) {
+Cards.prototype.registerCard = function(card, addToGUI = true) {
     card.element.addEventListener("mousedown", event => this.grabCard(
         card,
         new Vector2(event.clientX, event.clientY)));
@@ -211,7 +214,9 @@ Cards.prototype.registerCard = function(card) {
         new Vector2(event.changedTouches[0].clientX, event.changedTouches[0].clientY)));
 
     this.cards.push(card);
-    this.element.appendChild(card.element);
+
+    if (addToGUI)
+        this.element.appendChild(card.element);
 };
 
 /**

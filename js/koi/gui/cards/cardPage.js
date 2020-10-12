@@ -17,6 +17,39 @@ CardPage.prototype.CLASS_LEFT = "left";
 CardPage.prototype.CLASS_RIGHT = "right";
 
 /**
+ * Deserialize this card page
+ * @param {BinBuffer} buffer A buffer to deserialize from
+ * @param {Cards} cards The cards GUI
+ * @throws {RangeError} A range error if deserialized values are not valid
+ */
+CardPage.prototype.deserialize = function(buffer, cards) {
+    const occupied = buffer.readUint8();
+
+    for (let card = 0; card < 4; ++card) if (occupied & (1 << card)) {
+        this.cards[card] = Card.deserialize(buffer);
+
+        cards.registerCard(this.cards[card], false);
+
+        this.slots[card].appendChild(this.cards[card].element);
+    }
+};
+
+/**
+ * Serialize this card page
+ * @param {BinBuffer} buffer A buffer to serialize to
+ */
+CardPage.prototype.serialize = function(buffer) {
+    buffer.writeUint8(
+        this.cards[0] !== null |
+        (this.cards[1] !== null) << 1 |
+        (this.cards[2] !== null) << 2 |
+        (this.cards[3] !== null) << 3);
+
+    for (const card of this.cards) if (card)
+        card.serialize(buffer);
+};
+
+/**
  * Get this pages' rectangle
  * @returns {DOMRect} The page rectangle
  */

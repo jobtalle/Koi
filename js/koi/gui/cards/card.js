@@ -23,12 +23,12 @@ Card.prototype.RATIO = Card.prototype.WIDTH / Card.prototype.HEIGHT;
 /**
  * Deserialize a card
  * @param {BinBuffer} buffer The buffer to deserialize from
- * @param {Vector2} position The position to deserialize the card at
- * @param {Number} angle The card angle
+ * @param {Vector2} [position] The position to deserialize the card at
+ * @param {Number} [angle] The card angle
  * @returns {Card} The deserialized card
  * @throws {RangeError} A range error if deserialized values are not valid
  */
-Card.deserialize = function(buffer, position, angle) {
+Card.deserialize = function(buffer, position = new Vector2(), angle = 0) {
     return new Card(FishBody.deserialize(buffer), position, angle);
 };
 

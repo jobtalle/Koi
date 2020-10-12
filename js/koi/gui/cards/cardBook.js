@@ -29,10 +29,12 @@ CardBook.prototype.HEIGHT = .65;
 /**
  * Deserialize the card book
  * @param {BinBuffer} buffer The buffer to deserialize from
+ * @param {Cards} cards The cards GUI
  * @throws {RangeError} A range error if deserialized values are not valid
  */
-CardBook.prototype.deserialize = function(buffer) {
-    // TODO
+CardBook.prototype.deserialize = function(buffer, cards) {
+    for (const page of this.pages)
+        page.deserialize(buffer, cards);
 };
 
 /**
@@ -40,7 +42,8 @@ CardBook.prototype.deserialize = function(buffer) {
  * @param {BinBuffer} buffer The buffer to serialize to
  */
 CardBook.prototype.serialize = function(buffer) {
-    // TODO
+    for (const page of this.pages)
+        page.serialize(buffer);
 };
 
 /**
