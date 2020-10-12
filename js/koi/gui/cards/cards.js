@@ -139,20 +139,18 @@ Cards.prototype.move = function(x, y) {
  * @param {Vector2} mouse The mouse position
  */
 Cards.prototype.grabCard = function(card, mouse) {
-    this.grabbed = card;
-    this.mouse = mouse;
-    this.grabOffset = mouse.copy().subtract(card.position); // TODO: Account for rotation
-    this.snap = this.findSnap();
-    this.element.style.pointerEvents = "auto";
-
-    card.stopMoving();
-
     if (this.hand.contains(card)) {
         this.hand.remove(card);
         this.moveToFront(card);
     }
     else
         this.removeFromBook(card);
+
+    this.grabbed = card;
+    this.mouse = mouse;
+    this.grabOffset = mouse.copy().subtract(card.position); // TODO: Account for rotation
+    this.snap = this.findSnap();
+    this.element.style.pointerEvents = "auto";
 };
 
 /**

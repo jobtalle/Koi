@@ -88,15 +88,21 @@ CardPage.prototype.makeTargets = function(rects) {
 };
 
 /**
+ * Reset the rect & targets info after it has been invalidated
+ */
+CardPage.prototype.updateRect = function() {
+    this.rect = this.getRect();
+    this.targets = this.makeTargets(this.getRects(this.slots));
+};
+
+/**
  * Find a point to snap to
  * @param {Vector2} position The position
  * @returns {Vector2} A snap position if applicable, null otherwise
  */
 CardPage.prototype.findSnap = function(position) {
-    if (this.rect === null) {
-        this.rect = this.getRect();
-        this.targets = this.makeTargets(this.getRects(this.slots));
-    }
+    if (this.rect === null)
+        this.updateRect();
 
     if (position.x > this.rect.left &&
         position.x < this.rect.right &&
@@ -146,6 +152,11 @@ CardPage.prototype.removeCard = function(card) {
 
     if (index === -1)
         return false;
+
+    if (this.rect === null)
+        this.updateRect();
+
+    card.setPosition(this.targets[index]);
 
     this.cards[index] = null;
     this.slots[index].removeChild(card.element);

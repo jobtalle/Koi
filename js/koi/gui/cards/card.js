@@ -70,10 +70,12 @@ Card.prototype.rotate = function(da) {
 };
 
 /**
- * Stop interpolated motion
+ * Set the position of this card instantly
+ * @param {Vector2} position The new position
  */
-Card.prototype.stopMoving = function() {
-    this.positionPrevious.set(this.position);
+Card.prototype.setPosition = function(position) {
+    this.position.set(position);
+    this.positionPrevious.set(position);
 };
 
 /**
