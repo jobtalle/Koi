@@ -102,22 +102,8 @@ Cards.prototype.update = function() {
 
     this.hand.update();
 
-    if (this.grabbed) {
-        this.grabbed.rotate(this.grabbed.angle * -this.INTERPOLATION_FACTOR);
-
-        if (this.snap && false) {
-            const dx = (this.snap.x - this.grabbed.position.x) * this.INTERPOLATION_FACTOR;
-            const dy = (this.snap.y - this.grabbed.position.y) * this.INTERPOLATION_FACTOR;
-
-            this.grabbed.move(dx, dy);
-        }
-        else {
-            const dx = (this.mouse.x - this.grabOffset.x - this.grabbed.position.x) * this.INTERPOLATION_FACTOR;
-            const dy = (this.mouse.y - this.grabOffset.y - this.grabbed.position.y) * this.INTERPOLATION_FACTOR;
-
-            this.grabbed.move(dx, dy);
-        }
-    }
+    if (this.grabbed)
+        this.grabbed.rotate(0, this.INTERPOLATION_FACTOR);
 };
 
 /**
@@ -145,6 +131,8 @@ Cards.prototype.move = function(x, y) {
         this.mouse.y = y;
 
         this.snap = this.findSnap();
+
+        this.grabbed.moveTo(this.mouse.x - this.grabOffset.x, this.mouse.y - this.grabOffset.y);
     }
 };
 

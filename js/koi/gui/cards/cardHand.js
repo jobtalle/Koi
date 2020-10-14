@@ -108,16 +108,8 @@ CardHand.prototype.update = function() {
     const yShift = this.visible ? 0 : this.HIDE_HEIGHT * Card.prototype.HEIGHT;
 
     for (let card = 0, cards = this.cards.length; card < cards; ++card) {
-        const dx = this.targets[card].x - this.cards[card].position.x;
-        const dy = this.targets[card].y + yShift - this.cards[card].position.y;
-        const da = this.targets[card].z - this.cards[card].angle;
-
-        this.cards[card].move(
-            dx * this.INTERPOLATION_FACTOR,
-            dy * this.INTERPOLATION_FACTOR);
-
-        this.cards[card].rotate(
-            da * this.INTERPOLATION_FACTOR);
+        this.cards[card].move(this.targets[card].x, this.targets[card].y + yShift, this.INTERPOLATION_FACTOR);
+        this.cards[card].rotate(this.targets[card].z, this.INTERPOLATION_FACTOR);
     }
 };
 

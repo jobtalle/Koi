@@ -49,24 +49,38 @@ Card.prototype.render = function(time) {
 };
 
 /**
- * Move the card
- * @param {Number} dx The X delta
- * @param {Number} dy The Y delta
+ * Move the card to a position
+ * @param {Number} x The X position in pixels
+ * @param {Number} y The Y position in pixels
  */
-Card.prototype.move = function(dx, dy) {
-    this.positionPrevious.set(this.position);
+Card.prototype.moveTo = function(x, y) {
+    this.position.x = x;
+    this.position.y = y;
 
-    this.position.x += dx;
-    this.position.y += dy;
+    this.positionPrevious.set(this.position);
 };
 
 /**
- * Rotate the card
- * @param {Number} da The rotation delta in radians
+ * Move the card towards a position
+ * @param {Number} x The X position to move towards
+ * @param {Number} y The Y position to move towards
+ * @param {Number} interpolationFactor The interpolation factor
  */
-Card.prototype.rotate = function(da) {
+Card.prototype.move = function(x, y, interpolationFactor) {
+    this.positionPrevious.set(this.position);
+
+    this.position.x += (x - this.position.x) * interpolationFactor;
+    this.position.y += (y - this.position.y) * interpolationFactor;
+};
+
+/**
+ * Rotate the card towards a target
+ * @param {Number} target The target angle
+ * @param {Number} interpolationFactor The interpolation factor
+ */
+Card.prototype.rotate = function(target, interpolationFactor) {
     this.anglePrevious = this.angle;
-    this.angle += da;
+    this.angle += (target - this.angle) * interpolationFactor;
 };
 
 /**
