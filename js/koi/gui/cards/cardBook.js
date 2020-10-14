@@ -143,6 +143,7 @@ CardBook.prototype.createElement = function(spine) {
     const element = document.createElement("div");
 
     element.id = this.ID;
+    element.className = this.CLASS_HIDDEN;
 
     element.appendChild(spine);
 

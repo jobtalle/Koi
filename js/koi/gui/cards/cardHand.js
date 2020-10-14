@@ -9,7 +9,7 @@ const CardHand = function(width, height) {
     this.height = height;
     this.cards = [];
     this.targets = null;
-    this.visible = true; // TODO: Invert, probably
+    this.visible = false;
 };
 
 CardHand.prototype.WIDTH = .5;
@@ -32,7 +32,11 @@ CardHand.prototype.deserialize = function(buffer, cards) {
     this.targets = this.makeTargets(cardCount);
 
     for (let card = 0; card < cardCount; ++card) {
-        const deserialized = Card.deserialize(buffer, this.targets[card].vector2(), this.targets[card].z);
+        const position = this.targets[card].vector2();
+
+        position.y += Card.prototype.HEIGHT * this.HIDE_HEIGHT;
+
+        const deserialized = Card.deserialize(buffer, position, this.targets[card].z);
 
         this.cards.push(deserialized);
 

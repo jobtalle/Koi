@@ -11,8 +11,8 @@ const Cards = function(element) {
     this.grabbed = null;
     this.grabOffset = new Vector2();
     this.snap = null;
-    this.visible = true; // TODO: Implement
-    this.hidden = false;
+    this.visible = false; // TODO: Implement
+    this.hidden = false; // TODO: Use for pausing card animations
     this.hideTimer = 0;
 
     element.appendChild(this.book.element);
