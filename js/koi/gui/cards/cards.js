@@ -92,14 +92,8 @@ Cards.prototype.resize = function() {
  * Update the cards GUI
  */
 Cards.prototype.update = function() {
-    if (this.hidden)
-        return;
-
-    if (!this.visible && --this.hideTimer === 0) {
+    if (!this.visible && --this.hideTimer === 0)
         this.hidden = true;
-
-        return;
-    }
 
     this.hand.update();
 
@@ -112,9 +106,6 @@ Cards.prototype.update = function() {
  * @param {Number} time The amount of time since the last update
  */
 Cards.prototype.render = function(time) {
-    if (this.hidden)
-        return;
-
     this.hand.render(time);
 
     if (this.grabbed)
