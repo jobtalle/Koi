@@ -8,9 +8,8 @@ const Cards = function(element) {
     this.book = new CardBook(element.clientWidth, element.clientHeight);
     this.hand = new CardHand(element.clientWidth, element.clientHeight);
     this.cards = [];
-    this.mouse = null;
     this.grabbed = null;
-    this.grabOffset = null;
+    this.grabOffset = new Vector2();
     this.snap = null;
     this.visible = true; // TODO: Implement
     this.hidden = false;
@@ -61,10 +60,12 @@ Cards.prototype.serialize = function(buffer) {
 
 /**
  * Find a point to snap to
+ * @param {Number} x The X position in pixels
+ * @param {Number} y The Y position in pixels
  * @returns {Vector2} A snap position if applicable, null otherwise
  */
-Cards.prototype.findSnap = function() {
-    return this.book.findSnap(this.mouse);
+Cards.prototype.findSnap = function(x, y) {
+    return this.book.findSnap(x, y);
 };
 
 /**
@@ -127,21 +128,19 @@ Cards.prototype.render = function(time) {
  */
 Cards.prototype.move = function(x, y) {
     if (this.grabbed) {
-        this.mouse.x = x;
-        this.mouse.y = y;
+        this.snap = this.findSnap(x, y);
 
-        this.snap = this.findSnap();
-
-        this.grabbed.moveTo(this.mouse.x - this.grabOffset.x, this.mouse.y - this.grabOffset.y);
+        this.grabbed.moveTo(x - this.grabOffset.x, y - this.grabOffset.y);
     }
 };
 
 /**
  * Grab a card
  * @param {Card} card The card that was grabbed
- * @param {Vector2} mouse The mouse position
+ * @param {Number} x The mouse X position in pixels
+ * @param {Number} y The mouse Y position in pixels
  */
-Cards.prototype.grabCard = function(card, mouse) {
+Cards.prototype.grabCard = function(card, x, y) {
     if (this.hand.contains(card)) {
         this.hand.remove(card);
         this.moveToFront(card);
@@ -150,9 +149,9 @@ Cards.prototype.grabCard = function(card, mouse) {
         this.removeFromBook(card);
 
     this.grabbed = card;
-    this.mouse = mouse;
-    this.grabOffset = mouse.copy().subtract(card.position); // TODO: Account for rotation
-    this.snap = this.findSnap();
+    this.grabOffset.x = x - card.position.x;
+    this.grabOffset.y = y - card.position.y;
+    this.snap = this.findSnap(x, y);
     this.element.style.pointerEvents = "auto";
 };
 
@@ -210,12 +209,14 @@ Cards.prototype.registerCard = function(card, addToGUI = true) {
         if (event.button === 0)
             this.grabCard(
                 card,
-                new Vector2(event.clientX, event.clientY));
+                event.clientX,
+                event.clientY);
     });
 
     card.element.addEventListener("touchstart", event => this.grabCard(
             card,
-            new Vector2(event.changedTouches[0].clientX, event.changedTouches[0].clientY)));
+            event.changedTouches[0].clientX,
+            event.changedTouches[0].clientY));
 
     this.cards.push(card);
 

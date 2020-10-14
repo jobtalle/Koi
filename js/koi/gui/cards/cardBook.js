@@ -63,11 +63,12 @@ CardBook.prototype.show = function() {
 
 /**
  * Find a point to snap to
- * @param {Vector2} position The position
+ * @param {Number} x The X position in pixels
+ * @param {Number} y The Y position in pixels
  * @returns {Vector2} A snap position if applicable, null otherwise
  */
-CardBook.prototype.findSnap = function(position) {
-    return this.pages[this.page].findSnap(position) || this.pages[this.page + 1].findSnap(position);
+CardBook.prototype.findSnap = function(x, y) {
+    return this.pages[this.page].findSnap(x, y) || this.pages[this.page + 1].findSnap(x, y);
 };
 
 /**
