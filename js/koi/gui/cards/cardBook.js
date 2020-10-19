@@ -2,12 +2,11 @@
  * A book with card pages
  * @param {Number} width The screen width in pixels
  * @param {Number} height The screen height in pixels
- * @param {Function} onHide A function to call when the book should be hidden
  * @constructor
  */
-const CardBook = function(width, height, onHide) {
+const CardBook = function(width, height) {
     this.spine = this.createSpine();
-    this.element = this.createElement(this.spine, this.createClose(onHide));
+    this.element = this.createElement(this.spine);
     this.width = width;
     this.height = height;
     this.pages = this.createPages();
@@ -21,7 +20,6 @@ const CardBook = function(width, height, onHide) {
 
 CardBook.prototype.ID = "book";
 CardBook.prototype.ID_SPINE = "spine";
-CardBook.prototype.ID_CLOSE = "close";
 CardBook.prototype.CLASS_HIDDEN = "hidden";
 CardBook.prototype.PAGE_COUNT = 8;
 CardBook.prototype.PADDING_TOP = .07;
@@ -137,33 +135,17 @@ CardBook.prototype.createSpine = function() {
 };
 
 /**
- * Create the close button element
- * @param {Function} onHide A function to call when the book should be hidden
- * @returns {HTMLDivElement} The close button element
- */
-CardBook.prototype.createClose = function(onHide) {
-    const element = document.createElement("div");
-
-    element.id = this.ID_CLOSE;
-    element.onclick = () => onHide();
-
-    return element;
-};
-
-/**
  * Create the root element for the card book GUI
  * @param {HTMLDivElement} spine The book spine element
- * @param {HTMLDivElement} close The close button element
  * @returns {HTMLDivElement} The element
  */
-CardBook.prototype.createElement = function(spine, close) {
+CardBook.prototype.createElement = function(spine) {
     const element = document.createElement("div");
 
     element.id = this.ID;
     element.className = this.CLASS_HIDDEN;
 
     element.appendChild(spine);
-    element.appendChild(close);
 
     return element;
 };

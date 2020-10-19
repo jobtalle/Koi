@@ -24,6 +24,7 @@ Mover.prototype.AIR_RADIUS = 1.5;
 Mover.prototype.AIR_INTENSITY = .4;
 Mover.prototype.AIR_HEIGHT = .5;
 Mover.prototype.BIG_THRESHOLD = 2;
+Mover.prototype.CARD_HAND_HEIGHT = .1;
 
 /**
  * Update the mover
@@ -182,7 +183,7 @@ Mover.prototype.dropEffect = function(fish, waterPlane, random) {
  */
 Mover.prototype.drop = function(waterPlane, atlas, scale, random) {
     if (this.move) {
-        if (this.move.position.y / this.constellation.height < .1) {
+        if (this.move.position.y / this.constellation.height > 1 - this.CARD_HAND_HEIGHT) {
             this.gui.cards.add(new Card(
                 this.move.body,
                 this.move.position.copy().subtract(this.offset).multiply(scale).round()));
