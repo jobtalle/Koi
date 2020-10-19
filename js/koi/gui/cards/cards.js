@@ -262,8 +262,6 @@ Cards.prototype.registerCard = function(card, addToGUI = true) {
  * @param {Card} card A card
  */
 Cards.prototype.add = function(card) {
-    this.show();
-
     this.registerCard(card);
 
     this.hand.add(card, false);
