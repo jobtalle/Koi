@@ -211,6 +211,9 @@ Koi.prototype.touchWater = function(x, y) {
  * @param {Number} y The Y position in pixels
  */
 Koi.prototype.touchStart = function(x, y) {
+    if (this.gui.showsOverlay())
+        return;
+
     const wx = this.constellation.getWorldX(x, this.scale);
     const wy = this.constellation.getWorldY(y, this.scale);
 
@@ -233,8 +236,6 @@ Koi.prototype.touchStart = function(x, y) {
 
         this.mover.startTouch(wx, wy);
     }
-
-    this.gui.interactGame();
 };
 
 /**

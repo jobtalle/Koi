@@ -5,7 +5,7 @@
  */
 const Cards = function(element) {
     this.element = element;
-    this.book = new CardBook(element.clientWidth, element.clientHeight);
+    this.book = new CardBook(element.clientWidth, element.clientHeight, this.hide.bind(this));
     this.hand = new CardHand(element.clientWidth, element.clientHeight);
     this.cards = [];
     this.grabbed = null;
@@ -39,6 +39,7 @@ const Cards = function(element) {
 
 Cards.prototype.INTERPOLATION_FACTOR = .9;
 Cards.prototype.HIDE_TIME = 10;
+Cards.prototype.FISH_DROP_DIRECTION = new Vector2(1, 0);
 
 /**
  * Serialize the card collection
@@ -200,7 +201,7 @@ Cards.prototype.addToPond = function(card) {
 
     this.koi.systems.atlas.write(card.body.pattern, this.koi.randomSource);
 
-    const fish = new Fish(card.body, new Vector2(x, y), new Vector2(1, 0)); // TODO: Calculate direction
+    const fish = new Fish(card.body, new Vector2(x, y), this.FISH_DROP_DIRECTION);
 
     this.koi.constellation.drop(fish);
     this.koi.mover.dropEffect(fish, this.koi.water, this.koi.random);

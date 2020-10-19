@@ -39,13 +39,6 @@ GUI.prototype.setKoi = function(koi) {
 };
 
 /**
- * This function should be called whenever the game (not the GUI) is interacted with
- */
-GUI.prototype.interactGame = function() {
-    this.cards.hide();
-};
-
-/**
  * Clear the GUI contents
  */
 GUI.prototype.clear = function() {
@@ -72,6 +65,14 @@ GUI.prototype.update = function() {
  */
 GUI.prototype.render = function(time) {
     this.cards.render(time);
+};
+
+/**
+ * A function that checks whether the GUI overlays (and occupies) the screen
+ * @returns {Boolean} True if the GUI is using the screen
+ */
+GUI.prototype.showsOverlay = function() {
+    return this.cards.visible;
 };
 
 GUI.prototype.ID_CARDS = "cards";

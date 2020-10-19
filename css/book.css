@@ -6,6 +6,7 @@
 
     /* dimensions */
     --book-page-shade-size: 95%;
+    --book-button-radius: 80px;
 }
 
 #book {
@@ -64,4 +65,15 @@
     margin: 0;
     width: calc(100% - 2 * var(--card-border-width));
     height: calc(100% - 2 * var(--card-border-width));
+}
+
+#book #close {
+    position: absolute;
+    right: calc(-0.5 * var(--book-button-radius));
+    top: calc(-0.5 * var(--book-button-radius));
+    width: var(--book-button-radius);
+    height: var(--book-button-radius);
+    border-radius: calc(0.5 * var(--book-button-radius));
+    cursor: pointer;
+    background-color: blue;
 }
