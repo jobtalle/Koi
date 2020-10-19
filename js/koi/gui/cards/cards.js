@@ -11,7 +11,7 @@ const Cards = function(element) {
     this.grabbed = null;
     this.grabOffset = new Vector2();
     this.snap = null;
-    this.visible = false; // TODO: Implement
+    this.bookVisible = false;
     this.hidden = false; // TODO: Use for pausing card animations
     this.hideTimer = 0;
     this.koi = null;
@@ -75,7 +75,7 @@ Cards.prototype.setKoi = function(koi) {
  * @returns {Vector2} A snap position if applicable, null otherwise
  */
 Cards.prototype.findSnap = function(x, y) {
-    if (!this.visible)
+    if (!this.bookVisible)
         return null;
 
     return this.book.findSnap(x, y);
@@ -105,7 +105,7 @@ Cards.prototype.resize = function() {
  * Update the cards GUI
  */
 Cards.prototype.update = function() {
-    if (!this.visible && --this.hideTimer === 0)
+    if (!this.bookVisible && --this.hideTimer === 0)
         this.hidden = true;
 
     this.hand.update();
@@ -148,6 +148,9 @@ Cards.prototype.grabCard = function(card, x, y) {
     if (this.hand.contains(card)) {
         this.hand.remove(card);
         this.moveToFront(card);
+
+        if (!this.bookVisible)
+            this.hand.hide();
     }
     else
         this.removeFromBook(card);
@@ -219,7 +222,7 @@ Cards.prototype.release = function() {
     if (this.grabbed) {
         this.element.style.pointerEvents = "none";
 
-        if (this.visible) {
+        if (this.bookVisible) {
             if (this.snap)
                 this.addToBook(this.grabbed, this.snap);
             else
@@ -229,6 +232,7 @@ Cards.prototype.release = function() {
             this.hand.addCardsAfter(this.element, this.hand.add(this.grabbed));
 
         this.grabbed = null;
+        this.hand.show();
     }
 };
 
@@ -271,12 +275,11 @@ Cards.prototype.add = function(card) {
  * Hide the cards GUI
  */
 Cards.prototype.hide = function() {
-    if (this.visible) {
+    if (this.bookVisible) {
         this.book.hide();
-        this.hand.hide();
 
         this.hideTimer = this.HIDE_TIME;
-        this.visible = false;
+        this.bookVisible = false;
     }
 };
 
@@ -284,11 +287,10 @@ Cards.prototype.hide = function() {
  * Show the cards GUI
  */
 Cards.prototype.show = function() {
-    if (!this.visible) {
+    if (!this.bookVisible) {
         this.book.show();
-        this.hand.show();
 
-        this.visible = true;
+        this.bookVisible = true;
         this.hidden = false;
     }
 }

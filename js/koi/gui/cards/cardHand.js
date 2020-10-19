@@ -9,7 +9,7 @@ const CardHand = function(width, height) {
     this.height = height;
     this.cards = [];
     this.targets = null;
-    this.visible = false;
+    this.visible = true;
 };
 
 CardHand.prototype.WIDTH = .5;
@@ -18,7 +18,7 @@ CardHand.prototype.RAISE = .6;
 CardHand.prototype.INTERPOLATION_FACTOR = .5;
 CardHand.prototype.MAX_SPACING = .8;
 CardHand.prototype.EXTRA_ANGLE = -.03;
-CardHand.prototype.HIDE_HEIGHT = .2;
+CardHand.prototype.HIDE_HEIGHT = 1;
 
 /**
  * Deserialize the card hand

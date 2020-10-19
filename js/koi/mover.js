@@ -158,6 +158,8 @@ Mover.prototype.pickUp = function(fish, x, y, waterPlane, random) {
     console.log(fish.getWeight().toFixed(2) + "kg");
     console.log(fish); // TODO: For debugging only
     this.createBodySplash(fish.body, waterPlane, random);
+
+    this.gui.cards.hand.hide();
 };
 
 /**
@@ -197,6 +199,8 @@ Mover.prototype.drop = function(waterPlane, atlas, scale, random) {
         }
 
         this.move = null;
+
+        this.gui.cards.hand.show();
     }
 
     this.touch = false;
