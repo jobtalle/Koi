@@ -2,12 +2,22 @@
     /* Colors */
     --card-color-background: #967a74;
     --card-color-border: #242424;
+    --card-color-drop-target: #ffffff55;
 
     /* Dimensions */
     --card-width: 250px;
     --card-height: 350px;
     --card-border-width: 2px;
     --card-border-radius: 12px;
+    --card-drop-target-raise: -0.2;
+}
+
+.card-shape {
+    width: calc(var(--card-width) - 2 * var(--card-border-width));
+    height: calc(var(--card-height) - 2 * var(--card-border-width));
+    margin-left: calc(var(--card-width) * -0.5 - var(--card-border-width));
+    margin-top: calc(var(--card-height) * -0.5 - var(--card-border-width));
+    border-radius: var(--card-border-radius);
 }
 
 .card {
@@ -17,10 +27,17 @@
     background-color: var(--card-color-background);
     user-select: none;
     -webkit-tap-highlight-color: transparent;
-    width: calc(var(--card-width) - 2 * var(--card-border-width));
-    height: calc(var(--card-height) - 2 * var(--card-border-width));
-    margin-left: calc(var(--card-width) * -0.5 - var(--card-border-width));
-    margin-top: calc(var(--card-height) * -0.5 - var(--card-border-width));
     border: var(--card-border-width) solid var(--card-color-border);
-    border-radius: var(--card-border-radius);
+}
+
+#drop-target {
+    position: absolute;
+    left: 50%;
+    bottom: calc(var(--card-drop-target-raise) * var(--card-height));
+    border: var(--card-border-width) dashed var(--card-color-border);
+    background-color: var(--card-color-drop-target);
+}
+
+#drop-target.hidden {
+    bottom: calc(-1 * var(--card-height));
 }

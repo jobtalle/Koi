@@ -2,11 +2,13 @@
  * A hand of cards
  * @param {Number} width The screen width in pixels
  * @param {Number} height The screen height in pixels
+ * @param {HTMLDivElement} dropTarget A card drop target that is hidden by default
  * @constructor
  */
-const CardHand = function(width, height) {
+const CardHand = function(width, height, dropTarget) {
     this.width = width;
     this.height = height;
+    this.dropTarget = dropTarget;
     this.cards = [];
     this.targets = null;
     this.visible = true;
@@ -19,6 +21,7 @@ CardHand.prototype.INTERPOLATION_FACTOR = .5;
 CardHand.prototype.MAX_SPACING = .8;
 CardHand.prototype.EXTRA_ANGLE = -.03;
 CardHand.prototype.HIDE_HEIGHT = 1;
+CardHand.prototype.CLASS_DROP_TARGET_HIDDEN = "hidden";
 
 /**
  * Deserialize the card hand
@@ -201,6 +204,7 @@ CardHand.prototype.clear = function() {
  */
 CardHand.prototype.show = function() {
     this.visible = true;
+    this.dropTarget.classList.add(this.CLASS_DROP_TARGET_HIDDEN);
 };
 
 /**
@@ -208,4 +212,5 @@ CardHand.prototype.show = function() {
  */
 CardHand.prototype.hide = function() {
     this.visible = false;
+    this.dropTarget.classList.remove(this.CLASS_DROP_TARGET_HIDDEN);
 };

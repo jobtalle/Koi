@@ -5,8 +5,9 @@
  */
 const Cards = function(element) {
     this.element = element;
-    this.book = new CardBook(element.clientWidth, element.clientHeight, this.hide.bind(this));
-    this.hand = new CardHand(element.clientWidth, element.clientHeight);
+    this.dropTarget = this.createDropTarget();
+    this.book = new CardBook(element.clientWidth, element.clientHeight);
+    this.hand = new CardHand(element.clientWidth, element.clientHeight, this.dropTarget);
     this.cards = [];
     this.grabbed = null;
     this.grabOffset = new Vector2();
@@ -17,6 +18,7 @@ const Cards = function(element) {
     this.koi = null;
 
     element.appendChild(this.book.element);
+    element.appendChild(this.dropTarget);
 
     element.addEventListener("mousemove", event => {
         this.move(
@@ -40,6 +42,9 @@ const Cards = function(element) {
 Cards.prototype.INTERPOLATION_FACTOR = .9;
 Cards.prototype.HIDE_TIME = 10;
 Cards.prototype.FISH_DROP_DIRECTION = new Vector2(1, 0);
+Cards.prototype.ID_DROP_TARGET = "drop-target";
+Cards.prototype.CLASS_DROP_TARGET = "card-shape hidden";
+Cards.prototype.DROP_TARGET_THRESHOLD = .2;
 
 /**
  * Serialize the card collection
@@ -58,6 +63,61 @@ Cards.prototype.deserialize = function(buffer) {
 Cards.prototype.serialize = function(buffer) {
     this.hand.serialize(buffer);
     this.book.serialize(buffer);
+};
+
+/**
+ * Create the card drop target element
+ * @returns {HTMLDivElement} The drop target element
+ */
+Cards.prototype.createDropTarget = function() {
+    const element = document.createElement("div");
+
+    element.id = this.ID_DROP_TARGET;
+    element.className = this.CLASS_DROP_TARGET;
+
+    return element;
+};
+
+/**
+ * Check whether a card element is on the drop target
+ * @param {Card} card A card
+ * @returns {Boolean} True if a card is on the drop target
+ */
+Cards.prototype.cardOnDropTarget = function(card) {
+    const rectCard = card.element.getBoundingClientRect();
+    const rectDropTarget = this.dropTarget.getBoundingClientRect();
+    const left = Math.max(rectCard.left, rectDropTarget.left);
+    const top = Math.max(rectCard.top, rectDropTarget.top);
+    const right = Math.min(rectCard.right, rectDropTarget.right);
+    const bottom = Math.min(rectCard.bottom, rectDropTarget.bottom);
+    const width = Math.max(0, right - left);
+    const height = Math.max(0, bottom - top);
+
+    return (width * height) / (Card.prototype.WIDTH * Card.prototype.HEIGHT) > this.DROP_TARGET_THRESHOLD;
+};
+
+/**
+ * Check whether a point is inside the drop target
+ * @param {Number} x The X coordinate
+ * @param {Number} y The Y coordinate
+ * @returns {Boolean} True if the point is inside the drop target
+ */
+Cards.prototype.onDropTarget = function(x, y) {
+    const rect = this.dropTarget.getBoundingClientRect();
+
+    return x > rect.left && x < rect.right && y > rect.top && y < rect.bottom;
+};
+
+/**
+ * Move a card to the drop target position
+ * @param {Card} card The card to move
+ */
+Cards.prototype.toDropTarget = function(card) {
+    const rectDropTarget = this.dropTarget.getBoundingClientRect();
+    const x = (rectDropTarget.right + rectDropTarget.left) * .5;
+    const y = (rectDropTarget.bottom + rectDropTarget.top) * .5;
+
+    card.moveTo(x, y);
 };
 
 /**
@@ -228,7 +288,11 @@ Cards.prototype.release = function() {
             else
                 this.hand.addCardsAfter(this.element, this.hand.add(this.grabbed));
         }
-        else if (!this.addToPond(this.grabbed))
+        else if (this.cardOnDropTarget(this.grabbed)) {
+            this.toDropTarget(this.grabbed);
+
+            this.hand.addCardsAfter(this.element, this.hand.add(this.grabbed));
+        } else if(!this.addToPond(this.grabbed))
             this.hand.addCardsAfter(this.element, this.hand.add(this.grabbed));
 
         this.grabbed = null;
