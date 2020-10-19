@@ -16,7 +16,7 @@ const CardHand = function(width, height, dropTarget) {
 
 CardHand.prototype.WIDTH = .5;
 CardHand.prototype.HEIGHT = .3;
-CardHand.prototype.RAISE = .6;
+CardHand.prototype.RAISE = .5;
 CardHand.prototype.INTERPOLATION_FACTOR = .5;
 CardHand.prototype.MAX_SPACING = .8;
 CardHand.prototype.EXTRA_ANGLE = -.03;

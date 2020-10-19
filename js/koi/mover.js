@@ -137,10 +137,10 @@ Mover.prototype.playInteractionSound = function(fish, pan) {
  * @param {Fish} fish The fish that needs to be moved
  * @param {Number} x The X position in meters
  * @param {Number} y The Y position in meters
- * @param {Water} waterPlane A water plane to splash on
- * @param {Random} random A randomizer
+ * @param {Water} [waterPlane] A water plane to splash on, null if fish does not come from water
+ * @param {Random} [random] A randomizer
  */
-Mover.prototype.pickUp = function(fish, x, y, waterPlane, random) {
+Mover.prototype.pickUp = function(fish, x, y, waterPlane = null, random = null) {
     const pan = 2 * fish.position.x / this.constellation.width - 1;
 
     this.cursorPrevious.x = this.cursor.x = x;
@@ -150,15 +150,17 @@ Mover.prototype.pickUp = function(fish, x, y, waterPlane, random) {
     this.offset.y = fish.position.y - this.cursor.y;
     this.touch = true;
 
-    this.audio.effectFishUp.play(pan);
+    if (waterPlane) {
+        this.audio.effectFishUp.play(pan);
 
-    this.playInteractionSound(fish, pan);
+        this.playInteractionSound(fish, pan);
 
-    console.log(fish.getWeight().toFixed(2) + "kg");
-    console.log(fish); // TODO: For debugging only
-    this.createBodySplash(fish.body, waterPlane, random);
+        console.log(fish.getWeight().toFixed(2) + "kg");
+        console.log(fish); // TODO: For debugging only
+        this.createBodySplash(fish.body, waterPlane, random);
 
-    this.gui.cards.hand.hide();
+        this.gui.cards.hand.hide();
+    }
 };
 
 /**

@@ -229,17 +229,33 @@ Cards.prototype.grabCard = function(card, x, y) {
         this.hand.remove(card);
         this.moveToFront(card);
 
-        if (!this.bookVisible)
+        if (!this.bookVisible) {
             this.hand.hide();
+
+            this.remove(card);
+
+            const worldX = this.koi.constellation.getWorldX(x, this.koi.scale);
+            const worldY = this.koi.constellation.getWorldY(y, this.koi.scale);
+            const fish = new Fish(
+                    card.body,
+                    new Vector2(worldX, worldY),
+                    this.FISH_DROP_DIRECTION);
+            const offset = fish.body.getOffspringPosition();
+
+            this.koi.systems.atlas.write(card.body.pattern, this.koi.randomSource);
+            this.koi.mover.pickUp(fish, offset.x, offset.y);
+        }
     }
     else
         this.removeFromBook(card);
 
-    this.grabbed = card;
-    this.grabOffset.x = x - card.position.x;
-    this.grabOffset.y = y - card.position.y;
-    this.snap = this.findSnap(x, y);
-    this.element.style.pointerEvents = "auto";
+    if (this.bookVisible) {
+        this.grabbed = card;
+        this.grabOffset.x = x - card.position.x;
+        this.grabOffset.y = y - card.position.y;
+        this.snap = this.findSnap(x, y);
+        this.element.style.pointerEvents = "auto";
+    }
 };
 
 /**
@@ -271,31 +287,6 @@ Cards.prototype.addToBook = function(card, snap) {
 };
 
 /**
- * Add a card to the connected koi object
- * @param {Card} card The card to add
- * @returns {Boolean} True if a fish has been instantiated, false if not
- */
-Cards.prototype.addToPond = function(card) {
-    const x = this.koi.constellation.getWorldX(card.position.x, this.koi.scale);
-    const y = this.koi.constellation.getWorldY(card.position.y, this.koi.scale);
-
-    if (!this.koi.constellation.contains(x, y))
-        return false;
-
-    this.koi.systems.atlas.write(card.body.pattern, this.koi.randomSource);
-
-    const fish = new Fish(card.body, new Vector2(x, y), this.FISH_DROP_DIRECTION);
-
-    this.koi.constellation.drop(fish);
-    this.koi.mover.dropEffect(fish, this.koi.water, this.koi.random);
-
-    this.cards.splice(this.cards.indexOf(this.grabbed), 1);
-    this.element.removeChild(this.grabbed.element);
-
-    return true;
-};
-
-/**
  * Release any current drag or swipe motion
  */
 Cards.prototype.release = function() {
@@ -312,8 +303,7 @@ Cards.prototype.release = function() {
             this.toDropTarget(this.grabbed);
 
             this.hand.addCardsAfter(this.element, this.hand.add(this.grabbed));
-        } else if(!this.addToPond(this.grabbed))
-            this.hand.addCardsAfter(this.element, this.hand.add(this.grabbed));
+        }
 
         this.grabbed = null;
         this.hand.show();
@@ -353,6 +343,15 @@ Cards.prototype.add = function(card) {
     this.registerCard(card);
 
     this.hand.add(card, false);
+};
+
+/**
+ * Remove a card from the cards
+ * @param {Card} card A card
+ */
+Cards.prototype.remove = function(card) {
+    this.cards.splice(this.cards.indexOf(card), 1);
+    this.element.removeChild(card.element);
 };
 
 /**
