@@ -1,0 +1,27 @@
+:root {
+    /* Colors */
+    --button-color: #75a757;
+
+    /* Dimensions */
+    --button-width: 80px;
+    --button-height: 80px;
+    --button-border-width: 2px;
+    --button-border-color: var(--card-color-border);
+    --button-padding: 16px;
+}
+
+button {
+    width: calc(var(--button-width) - 2 * var(--button-border-width));
+    height: calc(var(--button-height) - 2 * var(--button-border-width));
+    border: var(--button-border-width) solid var(--button-border-color);
+    cursor: pointer;
+    pointer-events: auto;
+    outline: none;
+    background-color: var(--button-color);
+}
+
+#button-book {
+    position: absolute;
+    left: var(--button-padding);
+    top: var(--button-padding);
+}

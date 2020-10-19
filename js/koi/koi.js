@@ -214,13 +214,6 @@ Koi.prototype.touchStart = function(x, y) {
     const wx = this.constellation.getWorldX(x, this.scale);
     const wy = this.constellation.getWorldY(y, this.scale);
 
-    // TODO: Create proper GUI show button
-    if (wy / this.constellation.height < .1) {
-        this.gui.cards.show();
-
-        return;
-    }
-
     const fish = this.mover.hasFish() ? null : this.constellation.pick(wx, wy);
 
     if (fish)

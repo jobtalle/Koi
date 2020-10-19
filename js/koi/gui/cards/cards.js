@@ -17,6 +17,7 @@ const Cards = function(element) {
     this.hideTimer = 0;
     this.koi = null;
 
+    element.appendChild(this.createButtonBook());
     element.appendChild(this.book.element);
     element.appendChild(this.dropTarget);
 
@@ -42,6 +43,7 @@ const Cards = function(element) {
 Cards.prototype.INTERPOLATION_FACTOR = .9;
 Cards.prototype.HIDE_TIME = 10;
 Cards.prototype.FISH_DROP_DIRECTION = new Vector2(1, 0);
+Cards.prototype.ID_BUTTON_BOOK = "button-book";
 Cards.prototype.ID_DROP_TARGET = "drop-target";
 Cards.prototype.CLASS_DROP_TARGET = "card-shape hidden";
 Cards.prototype.DROP_TARGET_THRESHOLD = .2;
@@ -74,6 +76,24 @@ Cards.prototype.createDropTarget = function() {
 
     element.id = this.ID_DROP_TARGET;
     element.className = this.CLASS_DROP_TARGET;
+
+    return element;
+};
+
+/**
+ * Create the button that pulls up the book GUI
+ * @returns {HTMLButtonElement} The book button element
+ */
+Cards.prototype.createButtonBook = function() {
+    const element = document.createElement("button");
+
+    element.id = this.ID_BUTTON_BOOK;
+    element.onclick = () => {
+        if (this.bookVisible)
+            this.hide();
+        else
+            this.show();
+    };
 
     return element;
 };
