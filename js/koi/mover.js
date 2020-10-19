@@ -160,6 +160,20 @@ Mover.prototype.pickUp = function(fish, x, y, waterPlane, random) {
 };
 
 /**
+ * Create a drop effect for a fish
+ * @param {Fish} fish A fish
+ * @param {Water} waterPlane A water plane to splash on
+ * @param {Random} random A randomizer
+ */
+Mover.prototype.dropEffect = function(fish, waterPlane, random) {
+    const pan = 2 * fish.position.x / this.constellation.width - 1;
+
+    this.audio.effectFishDown.play(pan);
+    this.playInteractionSound(fish, pan);
+    this.createBodySplash(fish.body, waterPlane, random);
+};
+
+/**
  * Release any move
  * @param {Water} waterPlane A water plane to splash on
  * @param {Atlas} atlas The atlas
@@ -168,9 +182,6 @@ Mover.prototype.pickUp = function(fish, x, y, waterPlane, random) {
  */
 Mover.prototype.drop = function(waterPlane, atlas, scale, random) {
     if (this.move) {
-        const pan = 2 * this.move.position.x / this.constellation.width - 1;
-
-        // TODO: Create card drop spot
         if (this.move.position.y / this.constellation.height < .1) {
             this.gui.cards.add(new Card(
                 this.move.body,
@@ -179,12 +190,9 @@ Mover.prototype.drop = function(waterPlane, atlas, scale, random) {
             this.move.free(atlas);
         }
         else {
-            this.audio.effectFishDown.play(pan);
-
-            this.playInteractionSound(this.move, pan);
+            this.dropEffect(this.move, waterPlane, random);
 
             this.constellation.drop(this.move);
-            this.createBodySplash(this.move.body, waterPlane, random);
         }
 
         this.move = null;

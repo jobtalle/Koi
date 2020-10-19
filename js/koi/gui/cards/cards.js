@@ -14,6 +14,7 @@ const Cards = function(element) {
     this.visible = false; // TODO: Implement
     this.hidden = false; // TODO: Use for pausing card animations
     this.hideTimer = 0;
+    this.koi = null;
 
     element.appendChild(this.book.element);
 
@@ -56,6 +57,14 @@ Cards.prototype.deserialize = function(buffer) {
 Cards.prototype.serialize = function(buffer) {
     this.hand.serialize(buffer);
     this.book.serialize(buffer);
+};
+
+/**
+ * Set the koi object this GUI is linked to
+ * @param {Koi} koi The koi object
+ */
+Cards.prototype.setKoi = function(koi) {
+    this.koi = koi;
 };
 
 /**
@@ -178,15 +187,44 @@ Cards.prototype.addToBook = function(card, snap) {
 };
 
 /**
+ * Add a card to the connected koi object
+ * @param {Card} card The card to add
+ * @returns {Boolean} True if a fish has been instantiated, false if not
+ */
+Cards.prototype.addToPond = function(card) {
+    const x = this.koi.constellation.getWorldX(card.position.x, this.koi.scale);
+    const y = this.koi.constellation.getWorldY(card.position.y, this.koi.scale);
+
+    if (!this.koi.constellation.contains(x, y))
+        return false;
+
+    this.koi.systems.atlas.write(card.body.pattern, this.koi.randomSource);
+
+    const fish = new Fish(card.body, new Vector2(x, y), new Vector2(1, 0)); // TODO: Calculate direction
+
+    this.koi.constellation.drop(fish);
+    this.koi.mover.dropEffect(fish, this.koi.water, this.koi.random);
+
+    this.cards.splice(this.cards.indexOf(this.grabbed), 1);
+    this.element.removeChild(this.grabbed.element);
+
+    return true;
+};
+
+/**
  * Release any current drag or swipe motion
  */
 Cards.prototype.release = function() {
     if (this.grabbed) {
         this.element.style.pointerEvents = "none";
 
-        if (this.snap)
-            this.addToBook(this.grabbed, this.snap);
-        else
+        if (this.visible) {
+            if (this.snap)
+                this.addToBook(this.grabbed, this.snap);
+            else
+                this.hand.addCardsAfter(this.element, this.hand.add(this.grabbed));
+        }
+        else if (!this.addToPond(this.grabbed))
             this.hand.addCardsAfter(this.element, this.hand.add(this.grabbed));
 
         this.grabbed = null;

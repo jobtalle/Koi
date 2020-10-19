@@ -31,6 +31,14 @@ GUI.prototype.serialize = function(buffer) {
 };
 
 /**
+ * Set the koi object this GUI is linked to
+ * @param {Koi} koi The koi object
+ */
+GUI.prototype.setKoi = function(koi) {
+    this.cards.setKoi(koi);
+};
+
+/**
  * This function should be called whenever the game (not the GUI) is interacted with
  */
 GUI.prototype.interactGame = function() {

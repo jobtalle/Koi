@@ -41,6 +41,8 @@ const Koi = function(
     this.phase = 0;
 
     this.createRenderables();
+
+    gui.setKoi(this);
 };
 
 Koi.prototype.FRAME_TIME_MAX = 1;

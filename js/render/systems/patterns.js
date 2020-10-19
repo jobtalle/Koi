@@ -81,7 +81,7 @@ Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
     const paletteTrack = new PaletteTrack(this.palettes.base);
 
     this.gl.activeTexture(this.gl.TEXTURE0);
-    this.gl.bindTexture(this.gl.TEXTURE_2D, randomSource.texture);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, randomSource.texture); // TODO: Don't use variable random source for this
 
     this.gl.vao.bindVertexArrayOES(this.vao);
 
