@@ -65,6 +65,9 @@ Cards.prototype.serialize = function(buffer) {
  * @returns {Vector2} A snap position if applicable, null otherwise
  */
 Cards.prototype.findSnap = function(x, y) {
+    if (!this.visible)
+        return null;
+
     return this.book.findSnap(x, y);
 };
 
