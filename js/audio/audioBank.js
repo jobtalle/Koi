@@ -32,6 +32,52 @@ const AudioBank = function(engine) {
     this.ambientThunder = new AudioEffect(
         engine,
         this.enumerateSources("audio/ogg/AMB_Thunder_", 1, 4, ".ogg"));
+    this.ambientCrickets = [
+        new AudioEffectPeriodicBounded(
+            1,
+            new AudioEffect(
+                engine,
+                ["audio/ogg/AMB_CricketsA_Start.ogg"]),
+            new AudioEffect(
+                engine,
+                this.enumerateSources("audio/ogg/AMB_CricketsA_Loop_", 1, 4, ".ogg")),
+            new AudioEffect(
+                engine,
+                ["audio/ogg/AMB_CricketsA_Stop.ogg"])),
+        new AudioEffectPeriodicBounded(
+            1,
+            new AudioEffect(
+                engine,
+                ["audio/ogg/AMB_CricketsB_Start.ogg"]),
+            new AudioEffect(
+                engine,
+                this.enumerateSources("audio/ogg/AMB_CricketsB_Loop_", 1, 4, ".ogg")),
+            new AudioEffect(
+                engine,
+                ["audio/ogg/AMB_CricketsB_Stop.ogg"])),
+        new AudioEffectPeriodicBounded(
+            1,
+            new AudioEffect(
+                engine,
+                ["audio/ogg/AMB_CricketsC_Start.ogg"]),
+            new AudioEffect(
+                engine,
+                this.enumerateSources("audio/ogg/AMB_CricketsC_Loop_", 1, 4, ".ogg")),
+            new AudioEffect(
+                engine,
+                ["audio/ogg/AMB_CricketsC_Stop.ogg"])),
+        new AudioEffectPeriodicBounded(
+            1,
+            new AudioEffect(
+                engine,
+                ["audio/ogg/AMB_CricketsD_Start.ogg"]),
+            new AudioEffect(
+                engine,
+                this.enumerateSources("audio/ogg/AMB_CricketsD_Loop_", 1, 4, ".ogg")),
+            new AudioEffect(
+                engine,
+                ["audio/ogg/AMB_CricketsD_Stop.ogg"]))
+    ];
 };
 
 /**

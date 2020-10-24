@@ -23,7 +23,7 @@ const Weather = function(gl, constellation, random) {
 Weather.prototype.TRANSITION_SPEED = .015;
 Weather.prototype.COLOR_FILTER_LIGHTNING = new Color(1.5, 1.5, 2);
 Weather.prototype.SAMPLER_LIGHTING = new SamplerPower(0, 1, 4);
-Weather.prototype.SAMPLER_LIGHTING_DELAY = new Sampler(1, 35);
+Weather.prototype.SAMPLER_LIGHTING_DELAY = new Sampler(1, 22);
 Weather.prototype.SAMPLER_LIGHTING_PAN = new SamplerPlateau(-.3, 0, .3, 2);
 Weather.prototype.LIGHTNING_CHANCE = .006;
 Weather.prototype.LIGHTNING_DECAY = .3;
@@ -129,6 +129,8 @@ Weather.prototype.setThunderstorm = function() {
 
     this.rain.start(this.RAIN_SPEED_THUNDERSTORM, this.RAIN_AMOUNT_THUNDERSTORM);
     this.gusts.setWind(this.WIND_FREQUENCY_THUNDERSTORM, this.WIND_INTENSITY_THUNDERSTORM);
+
+    this.thunderTime = 0;
 };
 
 /**

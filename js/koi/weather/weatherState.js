@@ -4,26 +4,30 @@
  * @param {Number} [state] The state ID
  * @param {Number} [time] The current state time
  * @param {Number} [timeOneShot] The time until the next one shot sound effect
+ * @param {Number} [cricketsIndex] The index of the currently active crickets
  * @constructor
  */
 const WeatherState = function(
     lastState = this.ID_SUNNY,
     state = this.ID_SUNNY,
     time = 0,
-    timeOneShot = 1) {
+    timeOneShot = 1,
+    cricketsIndex = 0) {
     this.lastState = lastState;
     this.state = state;
     this.time = time;
     this.timeOneShot = timeOneShot;
+    this.cricketsIndex = cricketsIndex;
+    this.initialized = false;
 };
 
 WeatherState.prototype.STATE_TIME = 500;
-// WeatherState.prototype.STATE_TIME = 300;
 WeatherState.prototype.ID_SUNNY = 0;
 WeatherState.prototype.ID_OVERCAST = 1;
 WeatherState.prototype.ID_DRIZZLE = 2;
 WeatherState.prototype.ID_RAIN = 3;
 WeatherState.prototype.ID_THUNDERSTORM = 4;
+WeatherState.prototype.CRICKET_COUNT = 4;
 WeatherState.prototype.SAMPLER_ONE_SHOT_TIME = new SamplerPower(20, 150, 0.3);
 WeatherState.prototype.SAMPLER_ONE_SHOT_PAN = new Sampler(-.8, .8);
 WeatherState.prototype.ONE_SHOT_VOLUME_SUPPRESION = .7;
@@ -81,6 +85,7 @@ WeatherState.deserialize = function(buffer) {
     const state = buffer.readUint8();
     const time = buffer.readUint16();
     const timeOneShot = buffer.readUint8();
+    const cricketsIndex = buffer.readUint8();
 
     if (Math.max(lastState, state) > WeatherState.prototype.ID_THUNDERSTORM)
         throw new RangeError();
@@ -91,7 +96,10 @@ WeatherState.deserialize = function(buffer) {
     if (timeOneShot > WeatherState.prototype.SAMPLER_ONE_SHOT_TIME.max)
         throw new RangeError();
 
-    return new WeatherState(lastState, state, time, timeOneShot);
+    if (cricketsIndex > WeatherState.prototype.CRICKET_COUNT)
+        throw new RangeError();
+
+    return new WeatherState(lastState, state, time, timeOneShot, cricketsIndex);
 };
 
 /**
@@ -103,6 +111,7 @@ WeatherState.prototype.serialize = function(buffer) {
     buffer.writeUint8(this.state);
     buffer.writeUint16(this.time);
     buffer.writeUint8(this.timeOneShot);
+    buffer.writeUint8(this.cricketsIndex);
 };
 
 /**
@@ -115,10 +124,11 @@ WeatherState.prototype.timeToTransition = function() {
 
 /**
  * Go to a new weather state
+ * @param {AudioBank} audio Game audio
  * @param {Random} random A randomizer
  * @returns {Boolean} A boolean indicating whether the state changed
  */
-WeatherState.prototype.transition = function(random) {
+WeatherState.prototype.transition = function(audio, random) {
     const statePrevious = this.state;
     const randomValue = random.getFloat();
     let chanceSum = 0;
@@ -133,8 +143,17 @@ WeatherState.prototype.transition = function(random) {
         }
     }
 
+    if (this.lastState === this.ID_THUNDERSTORM)
+        audio.ambientCrickets[this.cricketsIndex].stop();
+
     if (statePrevious !== this.state) {
         this.lastState = statePrevious;
+
+        if (statePrevious === this.ID_THUNDERSTORM) {
+            this.cricketsIndex = Math.floor(random.getFloat() * this.CRICKET_COUNT);
+
+            audio.ambientCrickets[this.cricketsIndex].play();
+        }
 
         return true;
     }
@@ -149,10 +168,19 @@ WeatherState.prototype.transition = function(random) {
  * @returns {Boolean} True if the state has changed
  */
 WeatherState.prototype.update = function(audio, random) {
+    if (!this.initialized) {
+        if (this.lastState === this.ID_THUNDERSTORM)
+            audio.ambientCrickets[this.cricketsIndex].play();
+
+        this.initialized = true;
+    }
+
+    audio.ambientCrickets[this.cricketsIndex].update(Koi.prototype.UPDATE_RATE);
+
     if (++this.time === this.STATE_TIME) {
         this.time = 0;
 
-        return this.transition(random);
+        return this.transition(audio, random);
     }
 
     if (--this.timeOneShot === 0) {
@@ -163,7 +191,8 @@ WeatherState.prototype.update = function(audio, random) {
             case this.ID_SUNNY:
             case this.ID_OVERCAST:
             case this.ID_DRIZZLE:
-                audio.ambientOneShot.play(pan, volume);
+                if (this.lastState !== this.ID_THUNDERSTORM)
+                    audio.ambientOneShot.play(pan, volume);
 
                 break;
         }
