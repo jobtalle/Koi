@@ -23,7 +23,9 @@ WeatherState.prototype.ID_OVERCAST = 1;
 WeatherState.prototype.ID_DRIZZLE = 2;
 WeatherState.prototype.ID_RAIN = 3;
 WeatherState.prototype.ID_THUNDERSTORM = 4;
-WeatherState.prototype.SAMPLER_TIME_ONE_SHOT = new SamplerPower(20, 150, 0.3);
+WeatherState.prototype.SAMPLER_ONE_SHOT_TIME = new SamplerPower(20, 150, 0.3);
+WeatherState.prototype.SAMPLER_ONE_SHOT_PAN = new Sampler(-.8, .8);
+WeatherState.prototype.ONE_SHOT_VOLUME_SUPPRESION = .7;
 WeatherState.prototype.TRANSITION_MATRIX = [
     [         // Transitions from sunny weather
         0.6,  // Sunny
@@ -80,7 +82,7 @@ WeatherState.deserialize = function(buffer) {
     if (time > WeatherState.prototype.STATE_TIME)
         throw new RangeError();
 
-    if (timeOneShot > WeatherState.prototype.SAMPLER_TIME_ONE_SHOT.max)
+    if (timeOneShot > WeatherState.prototype.SAMPLER_ONE_SHOT_TIME.max)
         throw new RangeError();
 
     return new WeatherState(lastState, state, time, timeOneShot);
@@ -148,9 +150,12 @@ WeatherState.prototype.update = function(audio, random) {
     }
 
     if (--this.timeOneShot === 0) {
-        this.timeOneShot = Math.round(this.SAMPLER_TIME_ONE_SHOT.sample(random.getFloat()));
+        const pan = this.SAMPLER_ONE_SHOT_PAN.sample(random.getFloat());
+        const volume = 1 - Math.abs(pan) * this.ONE_SHOT_VOLUME_SUPPRESION;
 
-        audio.ambientOneShot.play();
+        audio.ambientOneShot.play(pan, volume);
+
+        this.timeOneShot = Math.round(this.SAMPLER_ONE_SHOT_TIME.sample(random.getFloat()));
     }
 
     return false;

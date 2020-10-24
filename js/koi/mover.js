@@ -127,9 +127,9 @@ Mover.prototype.startTouch = function(x, y) {
  */
 Mover.prototype.playInteractionSound = function(fish, pan) {
     if (fish.getWeight() > this.BIG_THRESHOLD)
-        this.audio.effectFishMoveBig.play(pan);
+        this.audio.effectFishMoveBig.play(this.audio.effectFishMoveBig.engine.transformPan(pan));
     else
-        this.audio.effectFishMoveSmall.play(pan);
+        this.audio.effectFishMoveSmall.play(this.audio.effectFishMoveSmall.engine.transformPan(pan));
 };
 
 /**
@@ -151,7 +151,7 @@ Mover.prototype.pickUp = function(fish, x, y, waterPlane = null, random = null) 
     this.touch = true;
 
     if (waterPlane) {
-        this.audio.effectFishUp.play(pan);
+        this.audio.effectFishUp.play(this.audio.effectFishUp.engine.transformPan(pan));
 
         this.playInteractionSound(fish, pan);
 
@@ -172,7 +172,7 @@ Mover.prototype.pickUp = function(fish, x, y, waterPlane = null, random = null) 
 Mover.prototype.dropEffect = function(fish, waterPlane, random) {
     const pan = 2 * fish.position.x / this.constellation.width - 1;
 
-    this.audio.effectFishDown.play(pan);
+    this.audio.effectFishDown.play(this.audio.effectFishDown.engine.transformPan(pan));
     this.playInteractionSound(fish, pan);
     this.createBodySplash(fish.body, waterPlane, random);
 };

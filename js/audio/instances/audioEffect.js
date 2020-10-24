@@ -29,25 +29,34 @@ AudioEffect.Track = function(engine, audio) {
     const source = engine.createSourceNode(audio);
 
     this.nodePan = engine.createPanNode();
+    this.nodeGain = engine.createGainNode();
 
-    source.connect(this.nodePan).connect(engine.getDestinationNode());
+    source.connect(this.nodePan).connect(this.nodeGain).connect(engine.getDestinationNode());
 };
 
 /**
  * Set the pan
- * @param {AudioEngine} engine The audio engine
  * @param {Number} pan The pan in the range [-1, 1];
  */
-AudioEffect.Track.prototype.setPan = function(engine, pan) {
-    this.nodePan.pan.value = engine.transformPan(pan);
+AudioEffect.Track.prototype.setPan = function(pan) {
+    this.nodePan.pan.value = pan;
+};
+
+/**
+ * Set the volume
+ * @param {Number} volume The volume in the range [0, 1]
+ */
+AudioEffect.Track.prototype.setVolume = function(volume) {
+    this.nodeGain.gain.value = volume;
 };
 
 /**
  * Play this audio effect
- * @param {Number} pan The pan in the range [-1, 1];
+ * @param {Number} [pan] The pan in the range [-1, 1]
+ * @param {Number} [volume] The volume in the range [0, 1]
  * @returns {Number} The duration of the effect
  */
-AudioEffect.prototype.play = function(pan = 0) {
+AudioEffect.prototype.play = function(pan = 0, volume = 1) {
     if (!this.engine.initialized)
         return 0;
 
@@ -58,7 +67,8 @@ AudioEffect.prototype.play = function(pan = 0) {
             if (this.tracks[index] === null)
                 this.tracks[index] = new AudioEffect.Track(this.engine, this.elements[index]);
 
-            this.tracks[index].setPan(this.engine, pan);
+            this.tracks[index].setPan(pan);
+            this.tracks[index].setVolume(volume);
             this.elements[index].play();
 
             return this.elements[index].duration;
