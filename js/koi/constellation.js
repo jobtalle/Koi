@@ -63,6 +63,24 @@ Constellation.prototype.getWorldY = function(y, scale) {
 };
 
 /**
+ * Get the X position in pixels
+ * @param {Number} x The X position in meters
+ * @param {Number} scale The scale
+ */
+Constellation.prototype.getPixelX = function(x, scale) {
+    return x * scale;
+};
+
+/**
+ * Get the Y position in pixels
+ * @param {Number} y The Y position in meters
+ * @param {Number} scale The scale
+ */
+Constellation.prototype.getPixelY = function(y , scale) {
+    return y * scale / this.Y_SCALE;
+};
+
+/**
  * Resize the constellation
  * @param {Number} width The scene width
  * @param {Number} height The scene height

@@ -186,8 +186,8 @@ Mover.prototype.dropEffect = function(fish, waterPlane, random) {
  */
 Mover.prototype.drop = function(waterPlane, atlas, scale, random) {
     if (this.move) {
-        const x = this.move.position.x * scale;
-        const y = this.move.position.y * scale;
+        const x = this.constellation.getPixelX(this.move.position.x, scale);
+        const y = this.constellation.getPixelY(this.move.position.y, scale);
 
         if (this.gui.cards.onDropTarget(x, y)) {
             const card = new Card(
