@@ -162,10 +162,11 @@ Weather.prototype.applyState = function(state) {
  * Update the weather
  * @param {Air} air The air
  * @param {Water} water The water
+ * @param {AudioBank} audio Game audio
  * @param {Random} random A randomizer
  */
-Weather.prototype.update = function(air, water, random) {
-    if (this.state.update(random))
+Weather.prototype.update = function(air, water, audio, random) {
+    if (this.state.update(audio, random))
         this.applyState(this.state.state);
 
     this.transitionPrevious = this.transition;

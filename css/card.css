@@ -9,7 +9,7 @@
     --card-height: 350px;
     --card-border-width: 2px;
     --card-border-radius: 12px;
-    --card-drop-target-raise: -0.2;
+    --card-drop-target-raise: -0.5;
 }
 
 .card-shape {

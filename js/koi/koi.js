@@ -295,7 +295,7 @@ Koi.prototype.update = function() {
 
     this.spawner.update(this.UPDATE_RATE, this.systems.atlas, this.systems.patterns, this.randomSource, this.random);
     this.constellation.update(this.systems.atlas, this.systems.patterns, this.randomSource, this.water, this.random);
-    this.weather.update(this.air, this.water, this.random);
+    this.weather.update(this.air, this.water, this.audio, this.random);
     this.mover.update();
 
     this.systems.waves.propagate(this.water, this.systems.influencePainter);
@@ -409,4 +409,6 @@ Koi.prototype.render = function(deltaTime) {
  */
 Koi.prototype.free = function() {
     this.freeRenderables();
+
+    this.audio.ambientWind.stop();
 };
