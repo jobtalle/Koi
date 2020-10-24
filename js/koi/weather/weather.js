@@ -14,16 +14,20 @@ const Weather = function(gl, constellation, random) {
     this.filter = new Color(1, 1, 1);
     this.filterPrevious = this.filterCurrent = this.COLOR_FILTER_SUNNY;
     this.lightning = this.lightningPrevious = 0;
+    this.thunderTime = 0;
+    this.thunderVolume = 0;
 
     this.applyState(this.state.state);
 };
 
 Weather.prototype.TRANSITION_SPEED = .015;
-Weather.prototype.LIGHTNING_CHANCE = .02;
-Weather.prototype.LIGHTNING_DECAY = .3;
-Weather.prototype.LIGHTNING_STEPS = Math.ceil(1 / Weather.prototype.LIGHTNING_DECAY);
 Weather.prototype.COLOR_FILTER_LIGHTNING = new Color(1.5, 1.5, 2);
 Weather.prototype.SAMPLER_LIGHTING = new SamplerPower(0, 1, 4);
+Weather.prototype.SAMPLER_LIGHTING_DELAY = new Sampler(1, 35);
+Weather.prototype.SAMPLER_LIGHTING_PAN = new SamplerPlateau(-.3, 0, .3, 2);
+Weather.prototype.LIGHTNING_CHANCE = .006;
+Weather.prototype.LIGHTNING_DECAY = .3;
+Weather.prototype.LIGHTING_VOLUME_DECAY = .8 / Weather.prototype.SAMPLER_LIGHTING_DELAY.max;
 Weather.prototype.COLOR_FILTER_SUNNY = Color.fromCSS("--color-ambient-sunny");
 Weather.prototype.COLOR_FILTER_OVERCAST = Color.fromCSS("--color-ambient-overcast");
 Weather.prototype.COLOR_FILTER_DRIZZLE = Color.fromCSS("--color-ambient-drizzle");
@@ -159,6 +163,14 @@ Weather.prototype.applyState = function(state) {
 };
 
 /**
+ * Check whether the weather can thunder before the weather changes
+ * @returns {Boolean} True if thunder can be spawned
+ */
+Weather.prototype.canThunder = function() {
+    return this.state.timeToTransition() > this.SAMPLER_LIGHTING.max;
+};
+
+/**
  * Update the weather
  * @param {Air} air The air
  * @param {Water} water The water
@@ -194,8 +206,19 @@ Weather.prototype.update = function(air, water, audio, random) {
                     this.interpolateFilter(1);
                 }
             }
-            else if (random.getFloat() < this.LIGHTNING_CHANCE && this.state.timeToTransition() > this.LIGHTNING_STEPS)
-                this.lightning = 1;
+            else {
+                if (this.thunderTime !== 0) {
+                    if (--this.thunderTime === 0)
+                        audio.ambientThunder.play(
+                            this.SAMPLER_LIGHTING_PAN.sample(random.getFloat()),
+                            this.thunderVolume);
+                }
+                else if (random.getFloat() < this.LIGHTNING_CHANCE && this.canThunder()) {
+                    this.lightning = 1;
+                    this.thunderTime = Math.round(this.SAMPLER_LIGHTING_DELAY.sample(random.getFloat()));
+                    this.thunderVolume = 1 - this.thunderTime * this.LIGHTING_VOLUME_DECAY;
+                }
+            }
 
         case this.state.ID_DRIZZLE:
         case this.state.ID_RAIN:

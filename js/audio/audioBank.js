@@ -29,6 +29,9 @@ const AudioBank = function(engine) {
     this.ambientOneShot = new AudioEffect(
         engine,
         this.enumerateSources("audio/ogg/AMB_EnvironmentOneShot_", 1, 28, ".ogg"));
+    this.ambientThunder = new AudioEffect(
+        engine,
+        this.enumerateSources("audio/ogg/AMB_Thunder_", 1, 4, ".ogg"));
 };
 
 /**
