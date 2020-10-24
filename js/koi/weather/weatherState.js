@@ -153,7 +153,14 @@ WeatherState.prototype.update = function(audio, random) {
         const pan = this.SAMPLER_ONE_SHOT_PAN.sample(random.getFloat());
         const volume = 1 - Math.abs(pan) * this.ONE_SHOT_VOLUME_SUPPRESION;
 
-        audio.ambientOneShot.play(pan, volume);
+        switch (this.state) {
+            case this.ID_SUNNY:
+            case this.ID_OVERCAST:
+            case this.ID_DRIZZLE:
+                audio.ambientOneShot.play(pan, volume);
+
+                break;
+        }
 
         this.timeOneShot = Math.round(this.SAMPLER_ONE_SHOT_TIME.sample(random.getFloat()));
     }
