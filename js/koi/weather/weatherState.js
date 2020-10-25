@@ -22,7 +22,6 @@ const WeatherState = function(
     this.timeCrickets = timeCrickets;
     this.cricketsIndex = cricketsIndex;
     this.initialized = false;
-    console.log(this.timeCrickets);
 };
 
 WeatherState.prototype.STATE_TIME = 500;
@@ -184,6 +183,23 @@ WeatherState.prototype.transition = function(audio, random) {
 };
 
 /**
+ * Initialize the weather state after deserialization
+ * @param {AudioBank} audio Game audio
+ */
+WeatherState.prototype.initialize = function(audio) {
+    if (this.timeCrickets !== 0)
+        audio.ambientCrickets[this.cricketsIndex].playBody();
+
+    switch (this.state) {
+        case this.ID_THUNDERSTORM:
+        case this.ID_RAIN:
+            audio.ambientRain.playBody();
+
+            break;
+    }
+};
+
+/**
  * Update the weather state
  * @param {AudioBank} audio Game audio
  * @param {Random} random A randomizer
@@ -191,16 +207,7 @@ WeatherState.prototype.transition = function(audio, random) {
  */
 WeatherState.prototype.update = function(audio, random) {
     if (!this.initialized) {
-        if (this.timeCrickets !== 0)
-            audio.ambientCrickets[this.cricketsIndex].play();
-
-        switch (this.state) {
-            case this.ID_THUNDERSTORM:
-            case this.ID_RAIN:
-                audio.ambientRain.play();
-
-                break;
-        }
+        this.initialize(audio);
 
         this.initialized = true;
     }

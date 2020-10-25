@@ -26,6 +26,15 @@ AudioEffectPeriodicBounded.prototype.play = function() {
 };
 
 /**
+ * Start playing the effect without the intro segment
+ */
+AudioEffectPeriodicBounded.prototype.playBody = function() {
+    this.stopped = false;
+    this.ended = false;
+    this.countdown = this.body.play() - this.overlap;
+};
+
+/**
  * Stop playing the effect, and queue the closing sequence as soon as possible
  */
 AudioEffectPeriodicBounded.prototype.stop = function() {
