@@ -4,6 +4,7 @@
  * @param {Number} [state] The state ID
  * @param {Number} [time] The current state time
  * @param {Number} [timeOneShot] The time until the next one shot sound effect
+ * @param {Number} [timeCrickets] The time until a cricket effect should be stopped
  * @param {Number} [cricketsIndex] The index of the currently active crickets
  * @constructor
  */
@@ -12,22 +13,25 @@ const WeatherState = function(
     state = this.ID_SUNNY,
     time = 0,
     timeOneShot = 1,
+    timeCrickets = 0,
     cricketsIndex = 0) {
     this.lastState = lastState;
     this.state = state;
     this.time = time;
     this.timeOneShot = timeOneShot;
+    this.timeCrickets = timeCrickets;
     this.cricketsIndex = cricketsIndex;
     this.initialized = false;
 };
 
 WeatherState.prototype.STATE_TIME = 500;
+WeatherState.prototype.CRICKET_TIME = 350;
+WeatherState.prototype.CRICKET_COUNT = 4;
 WeatherState.prototype.ID_SUNNY = 0;
 WeatherState.prototype.ID_OVERCAST = 1;
 WeatherState.prototype.ID_DRIZZLE = 2;
 WeatherState.prototype.ID_RAIN = 3;
 WeatherState.prototype.ID_THUNDERSTORM = 4;
-WeatherState.prototype.CRICKET_COUNT = 4;
 WeatherState.prototype.SAMPLER_ONE_SHOT_TIME = new SamplerPower(20, 150, 0.3);
 WeatherState.prototype.SAMPLER_ONE_SHOT_PAN = new Sampler(-.8, .8);
 WeatherState.prototype.ONE_SHOT_VOLUME_SUPPRESION = .7;
@@ -85,6 +89,7 @@ WeatherState.deserialize = function(buffer) {
     const state = buffer.readUint8();
     const time = buffer.readUint16();
     const timeOneShot = buffer.readUint8();
+    const timeCrickets = buffer.readUint16();
     const cricketsIndex = buffer.readUint8();
 
     if (Math.max(lastState, state) > WeatherState.prototype.ID_THUNDERSTORM)
@@ -96,10 +101,13 @@ WeatherState.deserialize = function(buffer) {
     if (timeOneShot > WeatherState.prototype.SAMPLER_ONE_SHOT_TIME.max)
         throw new RangeError();
 
+    if (timeCrickets > WeatherState.prototype.CRICKET_TIME)
+        throw new RangeError();
+
     if (cricketsIndex > WeatherState.prototype.CRICKET_COUNT)
         throw new RangeError();
 
-    return new WeatherState(lastState, state, time, timeOneShot, cricketsIndex);
+    return new WeatherState(lastState, state, time, timeOneShot, timeCrickets, cricketsIndex);
 };
 
 /**
@@ -111,6 +119,7 @@ WeatherState.prototype.serialize = function(buffer) {
     buffer.writeUint8(this.state);
     buffer.writeUint16(this.time);
     buffer.writeUint8(this.timeOneShot);
+    buffer.writeUint16(this.timeCrickets);
     buffer.writeUint8(this.cricketsIndex);
 };
 
@@ -143,14 +152,12 @@ WeatherState.prototype.transition = function(audio, random) {
         }
     }
 
-    if (this.lastState === this.ID_THUNDERSTORM)
-        audio.ambientCrickets[this.cricketsIndex].stop();
-
     if (statePrevious !== this.state) {
         this.lastState = statePrevious;
 
         if (statePrevious === this.ID_THUNDERSTORM) {
             this.cricketsIndex = Math.floor(random.getFloat() * this.CRICKET_COUNT);
+            this.timeCrickets = this.CRICKET_TIME;
 
             audio.ambientCrickets[this.cricketsIndex].play();
         }
@@ -169,13 +176,16 @@ WeatherState.prototype.transition = function(audio, random) {
  */
 WeatherState.prototype.update = function(audio, random) {
     if (!this.initialized) {
-        if (this.lastState === this.ID_THUNDERSTORM)
+        if (this.timeCrickets !== 0)
             audio.ambientCrickets[this.cricketsIndex].play();
 
         this.initialized = true;
     }
 
     audio.ambientCrickets[this.cricketsIndex].update(Koi.prototype.UPDATE_RATE);
+
+    if (this.timeCrickets !== 0) if (--this.timeCrickets === 0)
+        audio.ambientCrickets[this.cricketsIndex].stop();
 
     if (++this.time === this.STATE_TIME) {
         this.time = 0;
@@ -191,7 +201,7 @@ WeatherState.prototype.update = function(audio, random) {
             case this.ID_SUNNY:
             case this.ID_OVERCAST:
             case this.ID_DRIZZLE:
-                if (this.lastState !== this.ID_THUNDERSTORM)
+                if (this.timeCrickets === 0)
                     audio.ambientOneShot.play(pan, volume);
 
                 break;
