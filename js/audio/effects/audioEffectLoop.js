@@ -4,7 +4,7 @@
  * @param {String} source The source file
  * @constructor
  */
-const AudioLoop = function(engine, source) {
+const AudioEffectLoop = function(engine, source) {
     this.engine = engine;
     this.element = new Audio(source);
     this.element.loop = true;
@@ -17,7 +17,7 @@ const AudioLoop = function(engine, source) {
  * @param {HTMLMediaElement} audio An audio element
  * @constructor
  */
-AudioLoop.Track = function(engine, audio) {
+AudioEffectLoop.Track = function(engine, audio) {
     const source = engine.createSourceNode(audio);
 
     source.connect(engine.getDestinationNode());
@@ -26,12 +26,12 @@ AudioLoop.Track = function(engine, audio) {
 /**
  * Ensure the audio is playing
  */
-AudioLoop.prototype.loop = function() {
+AudioEffectLoop.prototype.loop = function() {
     if (!this.engine.initialized)
         return;
 
     if (!this.track)
-        this.track = new AudioLoop.Track(this.engine, this.element);
+        this.track = new AudioEffectLoop.Track(this.engine, this.element);
 
     if (this.element.paused)
         this.element.play();
@@ -40,6 +40,6 @@ AudioLoop.prototype.loop = function() {
 /**
  * Stop the loop
  */
-AudioLoop.prototype.stop = function() {
+AudioEffectLoop.prototype.stop = function() {
     this.element.pause();
 };

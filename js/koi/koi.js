@@ -239,7 +239,8 @@ Koi.prototype.touchMove = function(x, y) {
     this.mover.touchMove(
         this.constellation.getWorldX(x, this.scale),
         this.constellation.getWorldY(y, this.scale),
-        this.air);
+        this.air,
+        this.audio);
 };
 
 /**

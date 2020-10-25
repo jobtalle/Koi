@@ -24,6 +24,8 @@ Mover.prototype.AIR_RADIUS = 1.5;
 Mover.prototype.AIR_INTENSITY = .4;
 Mover.prototype.AIR_HEIGHT = .5;
 Mover.prototype.BIG_THRESHOLD = 2;
+Mover.prototype.GRANULAR_INTENSITY = 5;
+Mover.prototype.GRANULAR_VOLUME = 6;
 
 /**
  * Update the mover
@@ -62,8 +64,9 @@ Mover.prototype.render = function(
  * @param {Number} x The X position in meters
  * @param {Number} y The Y position in meters
  * @param {Air} air The air to displace
+ * @param {AudioBank} audio Game audio
  */
-Mover.prototype.touchMove = function(x, y, air) {
+Mover.prototype.touchMove = function(x, y, air, audio) {
     if (this.touch) {
         this.cursorPrevious.set(this.cursor);
         this.cursor.x = x;
@@ -74,10 +77,15 @@ Mover.prototype.touchMove = function(x, y, air) {
             this.move.moveTo(this.cursorOffset);
         }
 
-        const intensity = this.AIR_INTENSITY * (this.cursor.x - this.cursorPrevious.x);
+        const delta = this.cursor.x - this.cursorPrevious.x;
+        const pan = 2 * this.cursor.x / this.constellation.width - 1;
 
         // TODO: This makes very large steps, smooth this out
-        air.addDisplacement(x, y + this.AIR_HEIGHT, this.AIR_RADIUS, intensity);
+        air.addDisplacement(x, y + this.AIR_HEIGHT, this.AIR_RADIUS, this.AIR_INTENSITY * delta);
+        audio.effectGrass.generate(
+            this.GRANULAR_INTENSITY * Math.abs(delta),
+            audio.effectGrass.effect.engine.transformPan(pan),
+            Math.max(1, Math.abs(delta) * this.GRANULAR_VOLUME));
     }
 };
 

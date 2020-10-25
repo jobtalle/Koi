@@ -19,6 +19,10 @@ const AudioBank = function(engine) {
     this.effectGust = new AudioEffect(
         engine,
         this.enumerateSources("audio/ogg/SFX_WindGust_", 1, 5, ".ogg"));
+    this.effectGrass = new AudioEffectGranular(
+        new AudioEffect(
+            engine,
+            this.enumerateSources("audio/ogg/SFX_GrassInteract_", 1, 22, ".ogg")));
 
     this.ambientWaterTop = new AudioEffectPeriodic(
         1,
@@ -30,7 +34,7 @@ const AudioBank = function(engine) {
         new AudioEffect(
             engine,
             this.enumerateSources("audio/ogg/AMB_WaterLow_", 1, 4, ".ogg")));
-    this.ambientWind = new AudioLoop(engine, "audio/ogg/AMB_Wind.ogg");
+    this.ambientWind = new AudioEffectLoop(engine, "audio/ogg/AMB_Wind.ogg");
     this.ambientOneShot = new AudioEffect(
         engine,
         this.enumerateSources("audio/ogg/AMB_EnvironmentOneShot_", 1, 28, ".ogg"));
