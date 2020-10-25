@@ -37,6 +37,17 @@ const AudioBank = function(engine) {
     this.ambientThunder = new AudioEffect(
         engine,
         this.enumerateSources("audio/ogg/AMB_Thunder_", 1, 4, ".ogg"));
+    this.ambientRain = new AudioEffectPeriodicBounded(
+        2,
+        new AudioEffect(
+            engine,
+            ["audio/ogg/AMB_Rain_Start.ogg"]),
+        new AudioEffect(
+            engine,
+            ["audio/ogg/AMB_Rain_Loop.ogg", "audio/ogg/AMB_Rain_Loop.ogg"]), // TODO: Allow overlapping sound
+        new AudioEffect(
+            engine,
+            ["audio/ogg/AMB_Rain_Stop.ogg"]));
     this.ambientCrickets = [
         new AudioEffectPeriodicBounded(
             3,

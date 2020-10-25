@@ -42,7 +42,8 @@ Gusts.prototype.createGust = function(audio, random) {
 
     this.gusts.push(gust);
 
-    audio.effectGust.play(audio.effectGust.engine.transformPan(pan));
+    // TODO: Determine when gusts play sound, and how loud
+    // audio.effectGust.play(audio.effectGust.engine.transformPan(pan));
 };
 
 /**

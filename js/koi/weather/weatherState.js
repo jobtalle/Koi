@@ -22,6 +22,7 @@ const WeatherState = function(
     this.timeCrickets = timeCrickets;
     this.cricketsIndex = cricketsIndex;
     this.initialized = false;
+    console.log(this.timeCrickets);
 };
 
 WeatherState.prototype.STATE_TIME = 500;
@@ -155,11 +156,25 @@ WeatherState.prototype.transition = function(audio, random) {
     if (statePrevious !== this.state) {
         this.lastState = statePrevious;
 
-        if (statePrevious === this.ID_THUNDERSTORM) {
-            this.cricketsIndex = Math.floor(random.getFloat() * this.CRICKET_COUNT);
-            this.timeCrickets = this.CRICKET_TIME;
+        switch (statePrevious) {
+            case this.ID_THUNDERSTORM:
+                this.cricketsIndex = Math.floor(random.getFloat() * this.CRICKET_COUNT);
+                this.timeCrickets = this.CRICKET_TIME;
 
-            audio.ambientCrickets[this.cricketsIndex].play();
+                audio.ambientCrickets[this.cricketsIndex].play();
+
+            case this.ID_RAIN:
+                audio.ambientRain.stop();
+
+                break;
+        }
+
+        switch (this.state) {
+            case this.ID_THUNDERSTORM:
+            case this.ID_RAIN:
+                audio.ambientRain.play();
+
+                break;
         }
 
         return true;
@@ -179,10 +194,19 @@ WeatherState.prototype.update = function(audio, random) {
         if (this.timeCrickets !== 0)
             audio.ambientCrickets[this.cricketsIndex].play();
 
+        switch (this.state) {
+            case this.ID_THUNDERSTORM:
+            case this.ID_RAIN:
+                audio.ambientRain.play();
+
+                break;
+        }
+
         this.initialized = true;
     }
 
     audio.ambientCrickets[this.cricketsIndex].update(Koi.prototype.UPDATE_RATE);
+    audio.ambientRain.update(Koi.prototype.UPDATE_RATE);
 
     if (this.timeCrickets !== 0) if (--this.timeCrickets === 0)
         audio.ambientCrickets[this.cricketsIndex].stop();
