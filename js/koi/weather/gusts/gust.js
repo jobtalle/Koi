@@ -27,6 +27,14 @@ Gust.prototype.LAG_AMPLITUDE = 2;
 Gust.prototype.LAG_POWER = 2.5;
 
 /**
+ * Get the X coordinate where this gust is at its strongest
+ * @returns {Number} The X coordinate where this gust is at its strongest
+ */
+Gust.prototype.getFocus = function() {
+    return this.from.x + this.distance * .5;
+};
+
+/**
  * Calculate the number of points for this gust
  * @returns {Number} The point count
  */

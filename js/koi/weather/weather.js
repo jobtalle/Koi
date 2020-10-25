@@ -229,7 +229,7 @@ Weather.prototype.update = function(air, water, audio, random) {
             break;
     }
 
-    this.gusts.update(air, random);
+    this.gusts.update(air, audio, random);
 };
 
 /**

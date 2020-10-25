@@ -16,15 +16,20 @@ const AudioBank = function(engine) {
     this.effectFishMoveBig = new AudioEffect(
         engine,
         this.enumerateSources("audio/ogg/SFX_BigFishMove_", 1, 8, ".ogg"));
-    this.effectWaterLow = new AudioEffect(
+    this.effectGust = new AudioEffect(
         engine,
-        this.enumerateSources("audio/ogg/AMB_WaterLow_", 1, 4, ".ogg"));
-    this.effectWaterTop = new AudioEffect(
-        engine,
-        this.enumerateSources("audio/ogg/AMB_WaterTop_", 1, 6, ".ogg"));
+        this.enumerateSources("audio/ogg/SFX_WindGust_", 1, 5, ".ogg"));
 
-    this.ambientWaterTop = new AudioEffectPeriodic(1, this.effectWaterTop);
-    this.ambientWaterLow = new AudioEffectPeriodic(1, this.effectWaterLow);
+    this.ambientWaterTop = new AudioEffectPeriodic(
+        1,
+        new AudioEffect(
+            engine,
+            this.enumerateSources("audio/ogg/AMB_WaterTop_", 1, 6, ".ogg")));
+    this.ambientWaterLow = new AudioEffectPeriodic(
+        1,
+        new AudioEffect(
+            engine,
+            this.enumerateSources("audio/ogg/AMB_WaterLow_", 1, 4, ".ogg")));
     this.ambientWind = new AudioLoop(engine, "audio/ogg/AMB_Wind.ogg");
     this.ambientOneShot = new AudioEffect(
         engine,
@@ -34,7 +39,7 @@ const AudioBank = function(engine) {
         this.enumerateSources("audio/ogg/AMB_Thunder_", 1, 4, ".ogg"));
     this.ambientCrickets = [
         new AudioEffectPeriodicBounded(
-            1,
+            3,
             new AudioEffect(
                 engine,
                 ["audio/ogg/AMB_CricketsA_Start.ogg"]),
@@ -45,7 +50,7 @@ const AudioBank = function(engine) {
                 engine,
                 ["audio/ogg/AMB_CricketsA_Stop.ogg"])),
         new AudioEffectPeriodicBounded(
-            1,
+            3,
             new AudioEffect(
                 engine,
                 ["audio/ogg/AMB_CricketsB_Start.ogg"]),
@@ -56,7 +61,7 @@ const AudioBank = function(engine) {
                 engine,
                 ["audio/ogg/AMB_CricketsB_Stop.ogg"])),
         new AudioEffectPeriodicBounded(
-            1,
+            3,
             new AudioEffect(
                 engine,
                 ["audio/ogg/AMB_CricketsC_Start.ogg"]),
@@ -67,7 +72,7 @@ const AudioBank = function(engine) {
                 engine,
                 ["audio/ogg/AMB_CricketsC_Stop.ogg"])),
         new AudioEffectPeriodicBounded(
-            1,
+            3,
             new AudioEffect(
                 engine,
                 ["audio/ogg/AMB_CricketsD_Start.ogg"]),

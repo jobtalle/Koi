@@ -20,5 +20,14 @@ const StyleUtils = {
             return Number.parseInt(value.substr(0, value.length - 2));
 
         return -1;
+    },
+
+    /**
+     * Get a CSS variable as a float
+     * @param {String} name The full css variable name
+     * @returns {Number} The float associated with this variable
+     */
+    getFloat: name => {
+        return Number.parseFloat(StyleUtils.get(name));
     }
 };

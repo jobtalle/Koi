@@ -16,7 +16,7 @@ const CardHand = function(width, height, dropTarget) {
 
 CardHand.prototype.WIDTH = .5;
 CardHand.prototype.HEIGHT = .3;
-CardHand.prototype.RAISE = .5;
+CardHand.prototype.RAISE = StyleUtils.getFloat("--card-drop-target-raise");
 CardHand.prototype.INTERPOLATION_FACTOR = .5;
 CardHand.prototype.MAX_SPACING = .8;
 CardHand.prototype.EXTRA_ANGLE = -.03;
@@ -101,7 +101,7 @@ CardHand.prototype.makeTargets = function(count) {
 
         targets[target] = new Vector3(
             this.width * .5 + Math.cos(angle) * fanRadius,
-            this.height + (.5 - this.RAISE) * Card.prototype.WIDTH + fanRadius + Math.sin(angle) * fanRadius,
+            this.height + (-.5 - this.RAISE) * Card.prototype.HEIGHT + fanRadius + Math.sin(angle) * fanRadius,
             fanPortion * fanAngle * (1 - 2 * factor) + extraAngle);
     }
 
