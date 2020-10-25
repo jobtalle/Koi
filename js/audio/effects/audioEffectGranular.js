@@ -17,8 +17,6 @@ const AudioEffectGranular = function(effect) {
 AudioEffectGranular.prototype.generate = function(amount, pan = 0, volume = 1) {
     this.countdown -= amount;
 
-    if (this.countdown < 0) while (this.countdown++ < 0) {
+    if (this.countdown < 0) while (this.countdown++ < 0)
         this.effect.play(pan, volume);
-        console.log("+");
-    }
 };
