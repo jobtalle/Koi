@@ -9,6 +9,7 @@ const AudioEffect = function(engine, sources) {
     this.variations = sources.length;
     this.elements = new Array(this.variations);
     this.tracks = new Array(this.variations).fill(null);
+    this.playbackRate = 1;
 
     for (let source = 0; source < this.variations; ++source) {
         this.elements[source] = new Audio(sources[source]);
@@ -69,6 +70,10 @@ AudioEffect.prototype.play = function(pan = 0, volume = 1) {
 
             this.tracks[index].setPan(pan);
             this.tracks[index].setVolume(volume);
+
+            if (this.playbackRate !== 1)
+                this.elements[index].playbackRate = this.playbackRate;
+
             this.elements[index].play();
 
             return this.elements[index].duration;
@@ -78,4 +83,12 @@ AudioEffect.prototype.play = function(pan = 0, volume = 1) {
     }
 
     return 0;
-}
+};
+
+/**
+ * Set the playback rate of this effect
+ * @param {Number} playbackRate The playback rate
+ */
+AudioEffect.prototype.setPlaybackRate = function(playbackRate) {
+    this.playbackRate = playbackRate;
+};

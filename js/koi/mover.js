@@ -12,6 +12,7 @@ const Mover = function(constellation, audio, gui) {
     this.move = null;
     this.cursor = new Vector2();
     this.cursorPrevious = new Vector2();
+    this.cursorPreviousUpdate = new Vector2();
     this.offset = new Vector2();
     this.cursorOffset = new Vector2();
     this.touch = false;
@@ -25,19 +26,53 @@ Mover.prototype.AIR_INTENSITY = .3;
 Mover.prototype.AIR_HEIGHT = .5;
 Mover.prototype.BIG_THRESHOLD = 2;
 Mover.prototype.GRANULAR_VOLUME = 13;
+Mover.prototype.GRANULAR_PLAYBACK_RATE_MIN = 0.5;
+Mover.prototype.GRANULAR_PLAYBACK_RATE_MAX = 3;
+Mover.prototype.GRANULAR_PLAYBACK_RATE_STRENGTH = 15;
+
+/**
+ * Apply motion effects
+ * @param {Air} air The air to displace
+ * @param {AudioBank} audio Game audio
+ */
+Mover.prototype.applyMotion = function(air, audio) {
+    const delta = this.cursor.x - this.cursorPreviousUpdate.x;
+    console.log(delta);
+    if (delta === 0)
+        return;
+
+    air.addDisplacement(
+        this.cursor.x,
+        this.cursor.y + this.AIR_HEIGHT,
+        this.AIR_RADIUS,
+        this.AIR_INTENSITY * delta);
+    audio.effectGrass.set(
+        audio.effectGrass.effect.engine.transformPan(2 * this.cursor.x / this.constellation.width - 1),
+        Math.min(1, Math.abs(delta) * this.GRANULAR_VOLUME),
+        Math.min(
+            this.GRANULAR_PLAYBACK_RATE_MIN + this.GRANULAR_PLAYBACK_RATE_STRENGTH * Math.abs(delta),
+            this.GRANULAR_PLAYBACK_RATE_MAX));
+};
 
 /**
  * Update the mover
+ * @param {Air} air The air to displace
  * @param {AudioBank} audio Game audio
  */
-Mover.prototype.update = function(audio) {
+Mover.prototype.update = function(air, audio) {
     if (this.move)
         this.move.body.update(
             this.move.position,
             this.move.direction,
             this.move.speed);
 
-    audio.effectGrass.update(Koi.prototype.UPDATE_RATE);
+    if (this.touch) {
+        this.applyMotion(air, audio);
+
+        audio.effectGrass.update(Koi.prototype.UPDATE_RATE);
+    }
+
+    this.cursorPreviousUpdate.set(this.cursor);
 };
 
 /**
@@ -65,10 +100,8 @@ Mover.prototype.render = function(
  * Move the cursor
  * @param {Number} x The X position in meters
  * @param {Number} y The Y position in meters
- * @param {Air} air The air to displace
- * @param {AudioBank} audio Game audio
  */
-Mover.prototype.touchMove = function(x, y, air, audio) {
+Mover.prototype.touchMove = function(x, y) {
     if (this.touch) {
         this.cursorPrevious.set(this.cursor);
         this.cursor.x = x;
@@ -78,16 +111,6 @@ Mover.prototype.touchMove = function(x, y, air, audio) {
             this.cursorOffset.set(this.cursor).add(this.offset);
             this.move.moveTo(this.cursorOffset);
         }
-
-        const delta = this.cursor.x - this.cursorPrevious.x;
-        const pan = 2 * this.cursor.x / this.constellation.width - 1;
-
-        // TODO: This makes very large steps, smooth this out
-        air.addDisplacement(x, y + this.AIR_HEIGHT, this.AIR_RADIUS, this.AIR_INTENSITY * delta);
-
-        audio.effectGrass.set(
-            audio.effectGrass.effect.engine.transformPan(pan),
-            Math.min(1, Math.abs(delta) * this.GRANULAR_VOLUME));
     }
 };
 
@@ -125,9 +148,12 @@ Mover.prototype.createBodySplash = function(body, water, random) {
  * @param {Number} y The Y position in meters
  */
 Mover.prototype.startTouch = function(x, y) {
-    this.cursorPrevious.x = this.cursor.x = x;
-    this.cursorPrevious.y = this.cursor.y = y;
+    this.cursor.x = x;
+    this.cursor.y = y;
     this.touch = true;
+
+    this.cursorPrevious.set(this.cursor);
+    this.cursorPreviousUpdate.set(this.cursor);
 };
 
 /**

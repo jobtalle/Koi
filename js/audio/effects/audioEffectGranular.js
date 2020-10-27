@@ -27,10 +27,12 @@ AudioEffectGranular.prototype.update = function(delta) {
 
 /**
  * Set the granular effect parameters
- * @param {Number} [pan] The pan in the range [-1, 1]
- * @param {Number} [volume] The volume in the range [0, 1]
+ * @param {Number} pan The pan in the range [-1, 1]
+ * @param {Number} volume The volume in the range [0, 1]
+ * @param {Number} [playbackRate] The playback rate, which also changes pitch
  */
-AudioEffectGranular.prototype.set = function(pan, volume) {
+AudioEffectGranular.prototype.set = function(pan, volume, playbackRate = 1) {
     this.pan = pan;
     this.volume = volume;
+    this.effect.setPlaybackRate(playbackRate);
 };
