@@ -24,11 +24,31 @@ Mover.prototype.SPLASH_DROP_DISTANCE = 0.1;
 Mover.prototype.AIR_RADIUS = 1.5;
 Mover.prototype.AIR_INTENSITY = .3;
 Mover.prototype.AIR_HEIGHT = .5;
+Mover.prototype.AIR_INTERVAL = 1;
 Mover.prototype.BIG_THRESHOLD = 2;
 Mover.prototype.GRANULAR_VOLUME = .3;
 Mover.prototype.GRANULAR_PLAYBACK_RATE_MIN = 0.5;
 Mover.prototype.GRANULAR_PLAYBACK_RATE_MAX = 3;
 Mover.prototype.GRANULAR_PLAYBACK_RATE_STRENGTH = .2;
+
+/**
+ * Displace air between the last two cursor positions
+ * @param {Air} air The air to displace
+ */
+Mover.prototype.displaceAir = function(air) {
+    const dx = this.cursor.x - this.cursorPreviousUpdate.x;
+    const dy = this.cursor.y - this.cursorPreviousUpdate.y;
+    const steps = Math.ceil(Math.sqrt(dx * dx + dy * dy) / this.AIR_INTERVAL);
+    const intensity = dx * this.AIR_INTENSITY;
+
+    for (let step = 0; step < steps; ++step) {
+        const f = step / steps;
+        const x = this.cursorPreviousUpdate.x + dx * f;
+        const y = this.cursorPreviousUpdate.y + dy * f;
+
+        air.addDisplacement(x, y + this.AIR_HEIGHT, this.AIR_RADIUS, intensity);
+    }
+};
 
 /**
  * Apply motion effects
@@ -44,11 +64,8 @@ Mover.prototype.applyMotion = function(air, audio) {
         return;
     }
 
-    air.addDisplacement(
-        this.cursor.x,
-        this.cursor.y + this.AIR_HEIGHT,
-        this.AIR_RADIUS,
-        this.AIR_INTENSITY * delta);
+    this.displaceAir(air);
+
     audio.effectGrass.set(
         audio.effectGrass.effect.engine.transformPan(2 * this.cursor.x / this.constellation.width - 1),
         Math.min(1, Math.abs(delta) * this.GRANULAR_VOLUME),
