@@ -13,7 +13,7 @@ const Plants = function(
     slots,
     biome,
     random) {
-    this.plantMap = new PlantMap(constellation.width, constellation.height);
+    this.plantMap = new PlantMap(constellation.width, constellation.height, Slots.prototype.RESOLUTION);
     this.mesh = this.makeMesh(gl, constellation, new Planter(slots, biome, this.plantMap, random));
 };
 

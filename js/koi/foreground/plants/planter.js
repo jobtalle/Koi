@@ -63,4 +63,6 @@ Planter.prototype.plant = function(plants, vertices, indices) {
 
         this.plantMap.add(slot.x, slot.y);
     }
+
+    this.plantMap.toDensity();
 };

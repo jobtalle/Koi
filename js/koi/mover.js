@@ -30,6 +30,7 @@ Mover.prototype.GRANULAR_VOLUME = .3;
 Mover.prototype.GRANULAR_PLAYBACK_RATE_MIN = 0.5;
 Mover.prototype.GRANULAR_PLAYBACK_RATE_MAX = 3;
 Mover.prototype.GRANULAR_PLAYBACK_RATE_STRENGTH = .13;
+Mover.prototype.GRANULAR_INTENSITY_THRESHOLD = .2;
 
 /**
  * Displace air between the last two cursor positions
@@ -53,9 +54,18 @@ Mover.prototype.displaceAir = function(air) {
 /**
  * Create grass audio effects while moving
  * @param {AudioBank} audio Game audio
+ * @param {PlantMap} plantMap The plant map
  * @param {Number} delta The amount of displacement since the last update
  */
-Mover.prototype.createGrassAudio = function(audio, delta) {
+Mover.prototype.createGrassAudio = function(audio, plantMap, delta) {
+    const intensity = plantMap.sample(this.cursor.x, this.cursor.y);
+
+    if (intensity < this.GRANULAR_INTENSITY_THRESHOLD) {
+        audio.effectGrass.set(0, 0);
+
+        return;
+    }
+
     audio.effectGrass.set(
         audio.effectGrass.effect.engine.transformPan(2 * this.cursor.x / this.constellation.width - 1),
         Math.min(1, Math.abs(delta) * this.GRANULAR_VOLUME),
@@ -68,8 +78,9 @@ Mover.prototype.createGrassAudio = function(audio, delta) {
  * Apply motion effects
  * @param {Air} air The air to displace
  * @param {AudioBank} audio Game audio
+ * @param {PlantMap} plantMap The plant map
  */
-Mover.prototype.applyMotion = function(air, audio) {
+Mover.prototype.applyMotion = function(air, audio, plantMap) {
     const delta = this.cursor.x - this.cursorPreviousUpdate.x;
 
     if (delta === 0) {
@@ -79,15 +90,16 @@ Mover.prototype.applyMotion = function(air, audio) {
     }
 
     this.displaceAir(air);
-    this.createGrassAudio(audio, delta);
+    this.createGrassAudio(audio, plantMap, delta);
 };
 
 /**
  * Update the mover
  * @param {Air} air The air to displace
  * @param {AudioBank} audio Game audio
+ * @param {PlantMap} plantMap The plant map
  */
-Mover.prototype.update = function(air, audio) {
+Mover.prototype.update = function(air, audio, plantMap) {
     if (this.move)
         this.move.body.update(
             this.move.position,
@@ -95,7 +107,7 @@ Mover.prototype.update = function(air, audio) {
             this.move.speed);
 
     if (this.touch) {
-        this.applyMotion(air, audio);
+        this.applyMotion(air, audio, plantMap);
 
         audio.effectGrass.update(Koi.prototype.UPDATE_RATE);
     }
