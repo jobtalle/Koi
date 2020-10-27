@@ -1,22 +1,36 @@
 /**
  * Granular audio
+ * @param {Number} interval The interval between effects in seconds
  * @param {AudioEffect} effect The effect
  * @constructor
  */
-const AudioEffectGranular = function(effect) {
+const AudioEffectGranular = function(interval, effect) {
+    this.interval = interval;
     this.effect = effect;
-    this.countdown = 0;
+    this.pan = 0;
+    this.volume = 0;
+    this.time = 0;
 };
 
 /**
- * Trigger granular audio effects
- * @param {Number} amount The effect amount, every unit triggers 1 effect
+ * Update the effect
+ * @param {Number} delta The amount of time passed since the last update
+ */
+AudioEffectGranular.prototype.update = function(delta) {
+    if ((this.time += delta) > this.interval) {
+        this.time -= this.interval;
+
+        if (this.volume !== 0)
+            this.effect.play(this.pan, this.volume);
+    }
+};
+
+/**
+ * Set the granular effect parameters
  * @param {Number} [pan] The pan in the range [-1, 1]
  * @param {Number} [volume] The volume in the range [0, 1]
  */
-AudioEffectGranular.prototype.generate = function(amount, pan = 0, volume = 1) {
-    this.countdown -= amount;
-
-    if (this.countdown < 0) while (this.countdown++ < 0)
-        this.effect.play(pan, volume);
+AudioEffectGranular.prototype.set = function(pan, volume) {
+    this.pan = pan;
+    this.volume = volume;
 };

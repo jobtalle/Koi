@@ -20,10 +20,10 @@ const Weather = function(gl, constellation, random) {
     this.applyState(this.state.state);
 };
 
-Weather.prototype.TRANSITION_SPEED = .015;
+Weather.prototype.TRANSITION_SPEED = .01;
 Weather.prototype.COLOR_FILTER_LIGHTNING = new Color(1.5, 1.5, 2);
 Weather.prototype.SAMPLER_LIGHTING = new SamplerPower(0, 1, 4);
-Weather.prototype.SAMPLER_LIGHTING_DELAY = new Sampler(1, 22);
+Weather.prototype.SAMPLER_LIGHTING_DELAY = new SamplerPower(1, 22, 2);
 Weather.prototype.SAMPLER_LIGHTING_PAN = new SamplerPlateau(-.3, 0, .3, 2);
 Weather.prototype.LIGHTNING_CHANCE = .006;
 Weather.prototype.LIGHTNING_DECAY = .3;

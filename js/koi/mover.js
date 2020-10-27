@@ -21,21 +21,23 @@ Mover.prototype.SPLASH_DROP_RADIUS = 0.13;
 Mover.prototype.SPLASH_DROP_AMPLITUDE = 0.4;
 Mover.prototype.SPLASH_DROP_DISTANCE = 0.1;
 Mover.prototype.AIR_RADIUS = 1.5;
-Mover.prototype.AIR_INTENSITY = .4;
+Mover.prototype.AIR_INTENSITY = .3;
 Mover.prototype.AIR_HEIGHT = .5;
 Mover.prototype.BIG_THRESHOLD = 2;
-Mover.prototype.GRANULAR_INTENSITY = 5;
-Mover.prototype.GRANULAR_VOLUME = 6;
+Mover.prototype.GRANULAR_VOLUME = 13;
 
 /**
  * Update the mover
+ * @param {AudioBank} audio Game audio
  */
-Mover.prototype.update = function() {
+Mover.prototype.update = function(audio) {
     if (this.move)
         this.move.body.update(
             this.move.position,
             this.move.direction,
             this.move.speed);
+
+    audio.effectGrass.update(Koi.prototype.UPDATE_RATE);
 };
 
 /**
@@ -82,10 +84,10 @@ Mover.prototype.touchMove = function(x, y, air, audio) {
 
         // TODO: This makes very large steps, smooth this out
         air.addDisplacement(x, y + this.AIR_HEIGHT, this.AIR_RADIUS, this.AIR_INTENSITY * delta);
-        audio.effectGrass.generate(
-            this.GRANULAR_INTENSITY * Math.abs(delta),
+
+        audio.effectGrass.set(
             audio.effectGrass.effect.engine.transformPan(pan),
-            Math.max(1, Math.abs(delta) * this.GRANULAR_VOLUME));
+            Math.min(1, Math.abs(delta) * this.GRANULAR_VOLUME));
     }
 };
 
@@ -189,10 +191,11 @@ Mover.prototype.dropEffect = function(fish, waterPlane, random) {
  * Release any move
  * @param {Water} waterPlane A water plane to splash on
  * @param {Atlas} atlas The atlas
+ * @param {AudioBank} audio Game audio
  * @param {Number} scale The world scale
  * @param {Random} random A randomizer
  */
-Mover.prototype.drop = function(waterPlane, atlas, scale, random) {
+Mover.prototype.drop = function(waterPlane, atlas, audio, scale, random) {
     if (this.move) {
         const x = this.constellation.getPixelX(this.move.position.x, scale);
         const y = this.constellation.getPixelY(this.move.position.y, scale);
@@ -217,6 +220,8 @@ Mover.prototype.drop = function(waterPlane, atlas, scale, random) {
 
         this.gui.cards.hand.show();
     }
+
+    audio.effectGrass.set(0, 0);
 
     this.touch = false;
 };

@@ -247,7 +247,7 @@ Koi.prototype.touchMove = function(x, y) {
  * End a touch event
  */
 Koi.prototype.touchEnd = function() {
-    this.mover.drop(this.water, this.systems.atlas, this.scale, this.random);
+    this.mover.drop(this.water, this.systems.atlas, this.audio, this.scale, this.random);
 };
 
 /**
@@ -297,7 +297,7 @@ Koi.prototype.update = function() {
     this.spawner.update(this.UPDATE_RATE, this.systems.atlas, this.systems.patterns, this.randomSource, this.random);
     this.constellation.update(this.systems.atlas, this.systems.patterns, this.randomSource, this.water, this.random);
     this.weather.update(this.air, this.water, this.audio, this.random);
-    this.mover.update();
+    this.mover.update(this.audio);
 
     this.systems.waves.propagate(this.water, this.systems.influencePainter);
     this.systems.wind.propagate(this.air, this.systems.influencePainter);
