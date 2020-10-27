@@ -12,7 +12,7 @@ const PlantMap = function(width, height, slotResolution) {
     this.maxCount = (this.RESOLUTION / slotResolution) * (this.RESOLUTION / slotResolution);
 };
 
-PlantMap.prototype.RESOLUTION = .8;
+PlantMap.prototype.RESOLUTION = .4;
 
 /**
  * Add a plant to the map

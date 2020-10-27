@@ -177,9 +177,10 @@ Weather.prototype.canThunder = function() {
  * @param {Air} air The air
  * @param {Water} water The water
  * @param {AudioBank} audio Game audio
+ * @param {PlantMap} plantMap The plant map
  * @param {Random} random A randomizer
  */
-Weather.prototype.update = function(air, water, audio, random) {
+Weather.prototype.update = function(air, water, audio, plantMap, random) {
     if (this.state.update(audio, random))
         this.applyState(this.state.state);
 
@@ -229,7 +230,7 @@ Weather.prototype.update = function(air, water, audio, random) {
             break;
     }
 
-    this.gusts.update(air, audio, random);
+    this.gusts.update(air, audio, plantMap, random);
 };
 
 /**

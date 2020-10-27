@@ -30,8 +30,16 @@ Gust.prototype.LAG_POWER = 2.5;
  * Get the X coordinate where this gust is at its strongest
  * @returns {Number} The X coordinate where this gust is at its strongest
  */
-Gust.prototype.getFocus = function() {
-    return this.from.x + this.distance * .5;
+Gust.prototype.getFocusX = function() {
+    return this.from.x + (this.dx + this.distance) * .5;
+};
+
+/**
+ * Get the Y coordinate where gust is at its strongest
+ * @returns {Number} The Y coordinate where this gust is at its strongest
+ */
+Gust.prototype.getFocusY = function() {
+    return this.from.y + this.dy * .5;
 };
 
 /**
