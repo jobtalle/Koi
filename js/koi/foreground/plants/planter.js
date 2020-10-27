@@ -2,14 +2,16 @@
  * A planter that places plant species in slots according to a biome
  * @param {Slots} slots The slots to fill
  * @param {Biome} biome The biome
+ * @param {PlantMap} plantMap A plant map to populate
  * @param {Random} random The randomizer
  * @constructor
  */
-const Planter = function(slots, biome, random) {
+const Planter = function(slots, biome, plantMap, random) {
     slots.sort();
 
     this.slots = slots;
     this.biome = biome;
+    this.plantMap = plantMap;
     this.random = random;
 };
 
@@ -58,5 +60,7 @@ Planter.prototype.plant = function(plants, vertices, indices) {
                 this.random,
                 vertices,
                 indices);
+
+        this.plantMap.add(slot.x, slot.y);
     }
 };

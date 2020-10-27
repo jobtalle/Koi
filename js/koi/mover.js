@@ -22,14 +22,14 @@ Mover.prototype.SPLASH_DROP_RADIUS = 0.13;
 Mover.prototype.SPLASH_DROP_AMPLITUDE = 0.4;
 Mover.prototype.SPLASH_DROP_DISTANCE = 0.1;
 Mover.prototype.AIR_RADIUS = 1.5;
-Mover.prototype.AIR_INTENSITY = .3;
+Mover.prototype.AIR_INTENSITY = .2;
 Mover.prototype.AIR_HEIGHT = .5;
 Mover.prototype.AIR_INTERVAL = 1;
 Mover.prototype.BIG_THRESHOLD = 2;
 Mover.prototype.GRANULAR_VOLUME = .3;
 Mover.prototype.GRANULAR_PLAYBACK_RATE_MIN = 0.5;
 Mover.prototype.GRANULAR_PLAYBACK_RATE_MAX = 3;
-Mover.prototype.GRANULAR_PLAYBACK_RATE_STRENGTH = .2;
+Mover.prototype.GRANULAR_PLAYBACK_RATE_STRENGTH = .13;
 
 /**
  * Displace air between the last two cursor positions
@@ -51,6 +51,20 @@ Mover.prototype.displaceAir = function(air) {
 };
 
 /**
+ * Create grass audio effects while moving
+ * @param {AudioBank} audio Game audio
+ * @param {Number} delta The amount of displacement since the last update
+ */
+Mover.prototype.createGrassAudio = function(audio, delta) {
+    audio.effectGrass.set(
+        audio.effectGrass.effect.engine.transformPan(2 * this.cursor.x / this.constellation.width - 1),
+        Math.min(1, Math.abs(delta) * this.GRANULAR_VOLUME),
+        Math.min(
+            this.GRANULAR_PLAYBACK_RATE_MIN + this.GRANULAR_PLAYBACK_RATE_STRENGTH * Math.abs(delta),
+            this.GRANULAR_PLAYBACK_RATE_MAX));
+};
+
+/**
  * Apply motion effects
  * @param {Air} air The air to displace
  * @param {AudioBank} audio Game audio
@@ -65,13 +79,7 @@ Mover.prototype.applyMotion = function(air, audio) {
     }
 
     this.displaceAir(air);
-
-    audio.effectGrass.set(
-        audio.effectGrass.effect.engine.transformPan(2 * this.cursor.x / this.constellation.width - 1),
-        Math.min(1, Math.abs(delta) * this.GRANULAR_VOLUME),
-        Math.min(
-            this.GRANULAR_PLAYBACK_RATE_MIN + this.GRANULAR_PLAYBACK_RATE_STRENGTH * Math.abs(delta),
-            this.GRANULAR_PLAYBACK_RATE_MAX));
+    this.createGrassAudio(audio, delta);
 };
 
 /**
