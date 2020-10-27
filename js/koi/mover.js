@@ -25,10 +25,10 @@ Mover.prototype.AIR_RADIUS = 1.5;
 Mover.prototype.AIR_INTENSITY = .3;
 Mover.prototype.AIR_HEIGHT = .5;
 Mover.prototype.BIG_THRESHOLD = 2;
-Mover.prototype.GRANULAR_VOLUME = 13;
+Mover.prototype.GRANULAR_VOLUME = .3;
 Mover.prototype.GRANULAR_PLAYBACK_RATE_MIN = 0.5;
 Mover.prototype.GRANULAR_PLAYBACK_RATE_MAX = 3;
-Mover.prototype.GRANULAR_PLAYBACK_RATE_STRENGTH = 15;
+Mover.prototype.GRANULAR_PLAYBACK_RATE_STRENGTH = .2;
 
 /**
  * Apply motion effects
@@ -37,9 +37,12 @@ Mover.prototype.GRANULAR_PLAYBACK_RATE_STRENGTH = 15;
  */
 Mover.prototype.applyMotion = function(air, audio) {
     const delta = this.cursor.x - this.cursorPreviousUpdate.x;
-    console.log(delta);
-    if (delta === 0)
+
+    if (delta === 0) {
+        audio.effectGrass.set(0, 0);
+
         return;
+    }
 
     air.addDisplacement(
         this.cursor.x,
