@@ -60,11 +60,8 @@ Mover.prototype.displaceAir = function(air) {
 Mover.prototype.createGrassAudio = function(audio, plantMap, delta) {
     const intensity = plantMap.sample(this.cursor.x, this.cursor.y);
 
-    if (intensity < this.GRANULAR_INTENSITY_THRESHOLD) {
-        audio.effectGrass.set(0, 0);
-
+    if (intensity < this.GRANULAR_INTENSITY_THRESHOLD)
         return;
-    }
 
     audio.effectGrass.set(
         audio.effectGrass.effect.engine.transformPan(2 * this.cursor.x / this.constellation.width - 1),
@@ -83,11 +80,8 @@ Mover.prototype.createGrassAudio = function(audio, plantMap, delta) {
 Mover.prototype.applyMotion = function(air, audio, plantMap) {
     const delta = this.cursor.x - this.cursorPreviousUpdate.x;
 
-    if (delta === 0) {
-        audio.effectGrass.set(0, 0);
-
+    if (delta === 0)
         return;
-    }
 
     this.displaceAir(air);
     this.createGrassAudio(audio, plantMap, delta);
@@ -106,11 +100,10 @@ Mover.prototype.update = function(air, audio, plantMap) {
             this.move.direction,
             this.move.speed);
 
-    if (this.touch) {
+    if (this.touch)
         this.applyMotion(air, audio, plantMap);
 
-        audio.effectGrass.update(Koi.prototype.UPDATE_RATE);
-    }
+    audio.effectGrass.update(Koi.prototype.UPDATE_RATE);
 
     this.cursorPreviousUpdate.set(this.cursor);
 };
@@ -289,8 +282,6 @@ Mover.prototype.drop = function(waterPlane, atlas, audio, scale, random) {
 
         this.gui.cards.hand.show();
     }
-
-    audio.effectGrass.set(0, 0);
 
     this.touch = false;
 };

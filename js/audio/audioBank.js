@@ -21,6 +21,7 @@ const AudioBank = function(engine) {
         this.enumerateSources("audio/ogg/SFX_WindGust_", 1, 5, ".ogg"));
     this.effectGrass = new AudioEffectGranular(
         1 / 15,
+        1,
         new AudioEffect(
             engine,
             this.enumerateSources("audio/ogg/SFX_GrassInteract_", 1, 22, ".ogg")));
