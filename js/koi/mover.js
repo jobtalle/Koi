@@ -140,8 +140,10 @@ Mover.prototype.render = function(
  * Move the cursor
  * @param {Number} x The X position in meters
  * @param {Number} y The Y position in meters
+ * @param {Number} xPixel The X position in pixels
+ * @param {Number} yPixel The Y position in pixels
  */
-Mover.prototype.touchMove = function(x, y) {
+Mover.prototype.touchMove = function(x, y, xPixel, yPixel) {
     if (this.touch) {
         this.cursorPrevious.set(this.cursor);
         this.cursor.x = x;
@@ -150,6 +152,7 @@ Mover.prototype.touchMove = function(x, y) {
         if (this.move) {
             this.cursorOffset.set(this.cursor).add(this.offset);
             this.move.moveTo(this.cursorOffset);
+            this.gui.cards.hand.moveDraggable(xPixel, yPixel);
         }
     }
 };

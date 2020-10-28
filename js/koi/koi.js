@@ -238,7 +238,9 @@ Koi.prototype.touchStart = function(x, y) {
 Koi.prototype.touchMove = function(x, y) {
     this.mover.touchMove(
         this.constellation.getWorldX(x, this.scale),
-        this.constellation.getWorldY(y, this.scale));
+        this.constellation.getWorldY(y, this.scale),
+        x,
+        y);
 };
 
 /**

@@ -12,6 +12,7 @@ const CardHand = function(width, height, dropTarget) {
     this.cards = [];
     this.targets = null;
     this.visible = true;
+    this.dropTargetVisible = false;
 };
 
 CardHand.prototype.WIDTH = .5;
@@ -22,6 +23,7 @@ CardHand.prototype.MAX_SPACING = .8;
 CardHand.prototype.EXTRA_ANGLE = -.03;
 CardHand.prototype.HIDE_HEIGHT = 1;
 CardHand.prototype.CLASS_DROP_TARGET_HIDDEN = "hidden";
+CardHand.prototype.DROP_TARGET_TRIGGER_DISTANCE = Card.prototype.WIDTH;
 
 /**
  * Deserialize the card hand
@@ -200,11 +202,48 @@ CardHand.prototype.clear = function() {
 };
 
 /**
+ * Get the distance to the drop target
+ * @param {Number} x The X position in pixels
+ * @param {Number} y The Y position in pixels
+ * @returns {Number} The distance to the drop target
+ */
+CardHand.prototype.distanceToDropTarget = function(x, y) {
+    const rect = this.dropTarget.getBoundingClientRect();
+    const dx = x > rect.left && x < rect.right ? 0 : Math.min(
+        Math.abs(rect.left - x),
+        Math.abs(x - rect.right));
+    const dy = y > rect.top && y < rect.bottom ? 0 : Math.min(
+        Math.abs(rect.top - y),
+        Math.abs(y - rect.bottom));
+
+    return Math.sqrt(dx * dx + dy * dy);
+};
+
+/**
+ * Move a draggable item around
+ * @param {Number} x The X position in pixels
+ * @param {Number} y The Y position in pixels
+ */
+CardHand.prototype.moveDraggable = function(x, y) {
+    if (this.dropTargetVisible) {
+        if (this.distanceToDropTarget(x, y) > this.DROP_TARGET_TRIGGER_DISTANCE) {
+            this.dropTargetVisible = false;
+            this.dropTarget.classList.add(this.CLASS_DROP_TARGET_HIDDEN);
+        }
+    }
+    else if (this.distanceToDropTarget(x, y) < this.DROP_TARGET_TRIGGER_DISTANCE) {
+        this.dropTargetVisible = true;
+        this.dropTarget.classList.remove(this.CLASS_DROP_TARGET_HIDDEN);
+    }
+};
+
+/**
  * Show the card hand GUI
  */
 CardHand.prototype.show = function() {
     this.visible = true;
     this.dropTarget.classList.add(this.CLASS_DROP_TARGET_HIDDEN);
+    this.dropTargetVisible = false;
 };
 
 /**
@@ -212,5 +251,4 @@ CardHand.prototype.show = function() {
  */
 CardHand.prototype.hide = function() {
     this.visible = false;
-    this.dropTarget.classList.remove(this.CLASS_DROP_TARGET_HIDDEN);
 };
