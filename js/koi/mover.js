@@ -35,12 +35,17 @@ Mover.prototype.GRANULAR_INTERVAL = 0.75;
 
 /**
  * Displace air between the last two cursor positions
+ * @param {Number} dx The X delta for this movement
+ * @param {Number} dy The Y delta for this movement
+ * @param {Number} distance The moved distance
  * @param {Air} air The air to displace
  */
-Mover.prototype.displaceAir = function(air) {
-    const dx = this.cursor.x - this.cursorPreviousUpdate.x;
-    const dy = this.cursor.y - this.cursorPreviousUpdate.y;
-    const steps = Math.ceil(Math.sqrt(dx * dx + dy * dy) / this.AIR_INTERVAL);
+Mover.prototype.displaceAir = function(
+    dx,
+    dy,
+    distance,
+    air) {
+    const steps = Math.ceil(distance / this.AIR_INTERVAL);
     const intensity = dx * this.AIR_INTENSITY;
 
     for (let step = 0; step < steps; ++step) {
@@ -54,11 +59,18 @@ Mover.prototype.displaceAir = function(air) {
 
 /**
  * Create grass audio effects while moving
+ * @param {Number} dx The X delta for this movement
+ * @param {Number} dy The Y delta for this movement
+ * @param {Number} distance The moved distance
  * @param {AudioBank} audio Game audio
  * @param {PlantMap} plantMap The plant map
- * @param {Number} delta The amount of displacement since the last update
  */
-Mover.prototype.createGrassAudio = function(audio, plantMap, delta) {
+Mover.prototype.createGrassAudio = function(
+    dx,
+    dy,
+    distance,
+    audio,
+    plantMap) {
     const intensity = plantMap.sample(this.cursor.x, this.cursor.y);
 
     if (intensity < this.GRANULAR_INTENSITY_THRESHOLD)
@@ -66,9 +78,9 @@ Mover.prototype.createGrassAudio = function(audio, plantMap, delta) {
 
     audio.effectGrass.set(
         audio.effectGrass.effect.engine.transformPan(2 * this.cursor.x / this.constellation.width - 1),
-        Math.min(1, Math.abs(delta) * this.GRANULAR_VOLUME),
+        Math.min(1, Math.abs(dx) * this.GRANULAR_VOLUME),
         Math.min(
-            this.GRANULAR_PLAYBACK_RATE_MIN + this.GRANULAR_PLAYBACK_RATE_STRENGTH * Math.abs(delta),
+            this.GRANULAR_PLAYBACK_RATE_MIN + this.GRANULAR_PLAYBACK_RATE_STRENGTH * Math.abs(dx),
             this.GRANULAR_PLAYBACK_RATE_MAX));
 };
 
@@ -79,13 +91,16 @@ Mover.prototype.createGrassAudio = function(audio, plantMap, delta) {
  * @param {PlantMap} plantMap The plant map
  */
 Mover.prototype.applyMotion = function(air, audio, plantMap) {
-    const delta = this.cursor.x - this.cursorPreviousUpdate.x;
+    const dx = this.cursor.x - this.cursorPreviousUpdate.x;
+    const dy = this.cursor.y - this.cursorPreviousUpdate.y;
 
-    if (delta === 0)
+    if (dx === 0)
         return;
 
-    this.displaceAir(air);
-    this.createGrassAudio(audio, plantMap, delta);
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    this.displaceAir(dx, dy, distance, air);
+    this.createGrassAudio(dx, dy, distance, audio, plantMap);
 };
 
 /**
