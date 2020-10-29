@@ -239,6 +239,8 @@ FishBody.prototype.moveTo = function(position) {
         vertebra.y += dy;
     }
 
+    this.storePreviousState();
+
     for (const fin of this.fins)
         fin.shift(dx, dy);
 

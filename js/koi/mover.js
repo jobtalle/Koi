@@ -31,6 +31,7 @@ Mover.prototype.GRANULAR_PLAYBACK_RATE_MIN = 0.5;
 Mover.prototype.GRANULAR_PLAYBACK_RATE_MAX = 3;
 Mover.prototype.GRANULAR_PLAYBACK_RATE_STRENGTH = .13;
 Mover.prototype.GRANULAR_INTENSITY_THRESHOLD = .1;
+Mover.prototype.GRANULAR_INTERVAL = 0.75;
 
 /**
  * Displace air between the last two cursor positions

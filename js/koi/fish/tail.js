@@ -72,6 +72,8 @@ Tail.prototype.shift = function(dx, dy) {
         this.edge[vertebra].x += dx;
         this.edge[vertebra].y += dy;
     }
+
+    this.storePreviousState();
 };
 
 /**

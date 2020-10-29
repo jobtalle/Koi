@@ -240,10 +240,12 @@ Cards.prototype.grabCard = function(card, x, y) {
                     card.body,
                     new Vector2(worldX, worldY),
                     this.FISH_DROP_DIRECTION);
-            const offset = fish.body.getOffspringPosition();
+            const origin = fish.body.getOffspringPosition();
+
+            fish.moveTo(new Vector2(worldX * 2 - origin.x, worldY * 2 - origin.y));
 
             this.koi.systems.atlas.write(card.body.pattern, this.koi.randomSource);
-            this.koi.mover.pickUp(fish, offset.x, offset.y);
+            this.koi.mover.pickUp(fish, worldX, worldY);
         }
     }
     else

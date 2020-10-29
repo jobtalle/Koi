@@ -109,6 +109,8 @@ Fin.prototype.shift = function(dx, dy) {
     this.start.y += dy;
     this.end.x += dx;
     this.end.y += dy;
+
+    this.storePreviousState();
 };
 
 /**

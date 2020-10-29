@@ -152,8 +152,10 @@ Fish.prototype.getWeight = function() {
  * @param {Vector2} position The position to move to
  */
 Fish.prototype.moveTo = function(position) {
-    this.position.set(position);
     this.body.moveTo(position);
+
+    this.position.set(position);
+    this.positionPrevious.set(this.position);
 };
 
 /**
