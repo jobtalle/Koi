@@ -11,9 +11,14 @@ const CardBook = function(width, height) {
     this.height = height;
     this.pages = this.createPages();
     this.page = 0;
+    this.buttonPageLeft = this.createButtonPage(this.CLASS_BUTTON_LEFT, () => {});
+    this.buttonPageRight = this.createButtonPage(this.CLASS_BUTTON_RIGHT, () => {});
 
     this.spine.appendChild(this.pages[0].element);
     this.spine.appendChild(this.pages[1].element);
+
+    this.element.appendChild(this.buttonPageLeft);
+    this.element.appendChild(this.buttonPageRight);
 
     this.fit();
 };
@@ -21,6 +26,9 @@ const CardBook = function(width, height) {
 CardBook.prototype.ID = "book";
 CardBook.prototype.ID_SPINE = "spine";
 CardBook.prototype.CLASS_HIDDEN = "hidden";
+CardBook.prototype.CLASS_BUTTON = "button-page";
+CardBook.prototype.CLASS_BUTTON_LEFT = "left";
+CardBook.prototype.CLASS_BUTTON_RIGHT = "right";
 CardBook.prototype.PAGE_COUNT = 8;
 CardBook.prototype.PADDING_TOP = .07;
 CardBook.prototype.PADDING_PAGE = .07;
@@ -59,6 +67,20 @@ CardBook.prototype.hide = function() {
  */
 CardBook.prototype.show = function() {
     this.element.classList.remove(this.CLASS_HIDDEN);
+};
+
+/**
+ * Create a page turn button
+ * @param {String} classSide The class name for the buttons side
+ * @param {Function} onClick The function to execute when the button has been clicked
+ */
+CardBook.prototype.createButtonPage = function(classSide, onClick) {
+    const element = document.createElement("button");
+
+    element.className = this.CLASS_BUTTON;
+    element.classList.add(classSide);
+
+    return element;
 };
 
 /**

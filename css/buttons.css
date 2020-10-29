@@ -25,3 +25,15 @@ button {
     left: var(--button-padding);
     top: var(--button-padding);
 }
+
+.button-page {
+    position: absolute;
+}
+
+.button-page.left {
+    right: 0;
+}
+
+.button-page.right {
+    left: 0;
+}
