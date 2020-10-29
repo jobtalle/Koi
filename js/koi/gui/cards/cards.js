@@ -331,6 +331,16 @@ Cards.prototype.registerCard = function(card, addToGUI = true) {
             event.changedTouches[0].clientX,
             event.changedTouches[0].clientY));
 
+    card.element.addEventListener("touchmove", event => {
+        event.preventDefault();
+
+        this.koi.touchMove(
+            event.changedTouches[0].clientX,
+            event.changedTouches[0].clientY);
+    });
+
+    card.element.addEventListener("touchend", this.koi.touchEnd.bind(this.koi));
+
     this.cards.push(card);
 
     if (addToGUI)
