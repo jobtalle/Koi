@@ -83,8 +83,10 @@ Mover.prototype.createGrassAudio = function(
     if (intensity < this.GRANULAR_INTENSITY_THRESHOLD)
         return;
 
+    const panFactor = Math.max(0, Math.min(1, this.cursor.x / this.constellation.width));
+
     audio.effectGrass.set(
-        audio.effectGrass.effect.engine.transformPan(2 * this.cursor.x / this.constellation.width - 1),
+        audio.effectGrass.effect.engine.transformPan(2 * panFactor - 1),
         Math.min(1, Math.abs(dx) * this.GRANULAR_VOLUME),
         Math.min(
             this.GRANULAR_PLAYBACK_RATE_MIN + this.GRANULAR_PLAYBACK_RATE_STRENGTH * Math.abs(dx),
