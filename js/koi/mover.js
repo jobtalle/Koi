@@ -26,10 +26,7 @@ Mover.prototype.AIR_INTENSITY = .2;
 Mover.prototype.AIR_HEIGHT = .5;
 Mover.prototype.AIR_INTERVAL = 1;
 Mover.prototype.BIG_THRESHOLD = 2;
-Mover.prototype.GRANULAR_VOLUME = .3;
-Mover.prototype.GRANULAR_PLAYBACK_RATE_MIN = 0.5;
-Mover.prototype.GRANULAR_PLAYBACK_RATE_MAX = 3;
-Mover.prototype.GRANULAR_PLAYBACK_RATE_STRENGTH = .13;
+Mover.prototype.GRANULAR_VOLUME = .2;
 Mover.prototype.GRANULAR_INTENSITY_THRESHOLD = .1;
 Mover.prototype.GRANULAR_INTERVAL = 0.75;
 
@@ -87,10 +84,7 @@ Mover.prototype.createGrassAudio = function(
 
     audio.effectGrass.set(
         audio.effectGrass.effect.engine.transformPan(2 * panFactor - 1),
-        Math.min(1, Math.abs(dx) * this.GRANULAR_VOLUME),
-        Math.min(
-            this.GRANULAR_PLAYBACK_RATE_MIN + this.GRANULAR_PLAYBACK_RATE_STRENGTH * Math.abs(dx),
-            this.GRANULAR_PLAYBACK_RATE_MAX));
+        Math.min(1, Math.abs(dx) * this.GRANULAR_VOLUME));
 };
 
 /**
