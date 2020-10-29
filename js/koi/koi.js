@@ -234,13 +234,15 @@ Koi.prototype.touchStart = function(x, y) {
  * Move a touch event
  * @param {Number} x The X position in pixels
  * @param {Number} y The Y position in pixels
+ * @param {Boolean} [entered] True if the cursor just entered the view
  */
-Koi.prototype.touchMove = function(x, y) {
+Koi.prototype.touchMove = function(x, y, entered = false) {
     this.mover.touchMove(
         this.constellation.getWorldX(x, this.scale),
         this.constellation.getWorldY(y, this.scale),
         x,
-        y);
+        y,
+        entered);
 };
 
 /**

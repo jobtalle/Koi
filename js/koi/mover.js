@@ -154,12 +154,16 @@ Mover.prototype.render = function(
  * @param {Number} y The Y position in meters
  * @param {Number} xPixel The X position in pixels
  * @param {Number} yPixel The Y position in pixels
+ * @param {Boolean} entered True if the cursor just entered the view
  */
-Mover.prototype.touchMove = function(x, y, xPixel, yPixel) {
+Mover.prototype.touchMove = function(x, y, xPixel, yPixel, entered) {
     if (this.touch) {
         this.cursorPrevious.set(this.cursor);
         this.cursor.x = x;
         this.cursor.y = y;
+
+        if (entered)
+            this.cursorPreviousUpdate.set(this.cursor);
 
         if (this.move) {
             this.cursorOffset.set(this.cursor).add(this.offset);

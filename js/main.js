@@ -25,6 +25,7 @@ if (gl) {
     let lastDate = null;
     let koi = null;
     let loaded = true;
+    let mouseLeft = false;
 
     canvas.width = wrapper.clientWidth;
     canvas.height = wrapper.clientHeight;
@@ -118,7 +119,9 @@ if (gl) {
     });
 
     canvas.addEventListener("mousemove", event => {
-        koi.touchMove(event.clientX, event.clientY);
+        koi.touchMove(event.clientX, event.clientY, mouseLeft);
+
+        mouseLeft = false;
     });
 
     canvas.addEventListener("touchmove", event => {
@@ -127,14 +130,16 @@ if (gl) {
         koi.touchMove(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
     })
 
-    canvas.addEventListener("mouseup", () => {
-        koi.touchEnd();
-    });
+    canvas.addEventListener("mouseup", koi.touchEnd.bind(koi));
 
     canvas.addEventListener("touchend", event => {
         event.preventDefault();
 
         koi.touchEnd();
+    });
+
+    canvas.addEventListener("mouseleave", () => {
+        mouseLeft = true;
     });
 
     window.onbeforeunload = () => {
