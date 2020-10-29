@@ -77,7 +77,7 @@ Mover.prototype.createGrassAudio = function(
     for (let step = 0; step < steps; ++step) {
         const f = step / steps;
 
-        intensity = Math.max(intensity, plantMap.sample(this.cursor.x * dx * f, this.cursor.y * dy * f));
+        intensity = Math.max(intensity, plantMap.sample(this.cursor.x + dx * f, this.cursor.y + dy * f));
     }
 
     if (intensity < this.GRANULAR_INTENSITY_THRESHOLD)
