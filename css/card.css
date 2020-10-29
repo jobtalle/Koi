@@ -15,8 +15,8 @@
 .card-shape {
     width: calc(var(--card-width) - 2 * var(--card-border-width));
     height: calc(var(--card-height) - 2 * var(--card-border-width));
-    margin-left: calc(var(--card-width) * -0.5 - var(--card-border-width));
-    margin-top: calc(var(--card-height) * -0.5 - var(--card-border-width));
+    margin-left: calc(var(--card-width) * -0.5);
+    margin-top: calc(var(--card-height) * -0.5);
     border-radius: var(--card-border-radius);
 }
 
