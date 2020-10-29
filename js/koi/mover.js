@@ -234,12 +234,9 @@ Mover.prototype.playInteractionSound = function(fish, pan) {
 Mover.prototype.pickUp = function(fish, x, y, waterPlane = null, random = null) {
     const pan = 2 * fish.position.x / this.constellation.width - 1;
 
-    this.cursorPrevious.x = this.cursor.x = x;
-    this.cursorPrevious.y = this.cursor.y = y;
     this.move = fish;
-    this.offset.x = fish.position.x - this.cursor.x;
-    this.offset.y = fish.position.y - this.cursor.y;
-    this.touch = true;
+    this.offset.x = fish.position.x - x;
+    this.offset.y = fish.position.y - y;
 
     if (waterPlane) {
         this.audio.effectFishUp.play(this.audio.effectFishUp.engine.transformPan(pan));
@@ -252,6 +249,8 @@ Mover.prototype.pickUp = function(fish, x, y, waterPlane = null, random = null) 
 
         this.gui.cards.hand.hide();
     }
+
+    this.startTouch(x, y);
 };
 
 /**
