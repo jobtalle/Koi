@@ -8,6 +8,7 @@
     --button-border-width: 2px;
     --button-border-color: var(--card-color-border);
     --button-padding: 16px;
+    --button-page-shift: 0.5;
 }
 
 button {
@@ -31,9 +32,9 @@ button {
 }
 
 .button-page.left {
-    right: 0;
+    left: calc(var(--button-width) * var(--button-page-shift) * -1);
 }
 
 .button-page.right {
-    left: 0;
+    right: calc(var(--button-width) * var(--button-page-shift) * -1);
 }
