@@ -45,7 +45,7 @@ CardBook.Flip = function() {
     this.halfway = false;
 };
 
-CardBook.Flip.prototype.SPEED = .2;
+CardBook.Flip.prototype.SPEED = .3;
 
 /**
  * Update this flip
@@ -61,6 +61,15 @@ CardBook.Flip.prototype.update = function() {
     }
 
     return false;
+};
+
+/**
+ * Reverse this flip
+ */
+CardBook.Flip.prototype.reverse = function() {
+    this.flipPrevious = -this.flipPrevious;
+    this.flip = -this.flip;
+    this.halfway = !this.halfway;
 };
 
 /**
@@ -120,11 +129,29 @@ CardBook.prototype.show = function() {
 };
 
 /**
+ * Reverse any flips in progress
+ */
+CardBook.prototype.reverse = function() {
+    for (const flip of this.flips)
+        flip.reverse();
+
+    this.flips = this.flips.reverse();
+    this.page -= this.flips.length * this.flipDirection * 2;
+
+    this.flipDirection = -this.flipDirection;
+};
+
+/**
  * Flip to the right
  */
 CardBook.prototype.flipRight = function() {
-    if ((this.flips.length !== 0 && this.flipDirection === -1) ||
-        this.page === this.flips.length * 2)
+    if (this.flips.length !== 0 && this.flipDirection === -1) {
+        this.reverse();
+
+        return;
+    }
+
+    if (this.page === this.flips.length * 2)
         return;
 
     this.pages[this.page - (this.flips.length + 1) * 2].show();
@@ -137,8 +164,13 @@ CardBook.prototype.flipRight = function() {
  * Flip to the left
  */
 CardBook.prototype.flipLeft = function() {
-    if ((this.flips.length !== 0 && this.flipDirection === 1) ||
-        this.page + 2 === this.PAGE_COUNT - this.flips.length * 2)
+    if (this.flips.length !== 0 && this.flipDirection === 1) {
+        this.reverse();
+
+        return;
+    }
+
+    if (this.page + 2 === this.PAGE_COUNT - this.flips.length * 2)
         return;
 
     this.pages[this.page + this.flips.length * 2 + 3].show();
