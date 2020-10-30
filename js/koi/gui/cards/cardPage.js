@@ -56,6 +56,7 @@ CardPage.prototype.serialize = function(buffer) {
  */
 CardPage.prototype.show = function() {
     this.element.classList.add(this.CLASS_VISIBLE);
+    console.log("+");
 };
 
 /**
@@ -63,6 +64,7 @@ CardPage.prototype.show = function() {
  */
 CardPage.prototype.hide = function() {
     this.element.classList.remove(this.CLASS_VISIBLE);
+    console.log("-");
 };
 
 /**

@@ -42,6 +42,7 @@ CardBook.prototype.HEIGHT = .65;
  */
 CardBook.Flip = function() {
     this.flip = this.flipPrevious = 1;
+    this.halfway = false;
 };
 
 CardBook.Flip.prototype.SPEED = .2;
@@ -60,6 +61,15 @@ CardBook.Flip.prototype.update = function() {
     }
 
     return false;
+};
+
+/**
+ * Get the page scale produced by this flip
+ * @param {Number} time The time factor
+ * @returns {Number} The scale factor
+ */
+CardBook.Flip.prototype.getScale = function(time) {
+    return Math.sin((this.flipPrevious + (this.flip - this.flipPrevious) * time) * Math.PI * .5);
 };
 
 /**
@@ -143,11 +153,11 @@ CardBook.prototype.update = function() {
         this.flips.splice(flip, 1);
 
         if (this.flipDirection === 1) {
-            for (let page = this.page + 2 * flip; page < this.page + 2 * flip + 2; ++page)
+            for (let page = this.page + 2 * flip; page < this.page + 2 * flip + 1; ++page)
                 this.pages[page].hide();
         }
         else {
-            for (let page = this.page; page < this.page + 2; ++page)
+            for (let page = this.page + 1; page < this.page + 2; ++page)
                 this.pages[page].hide();
         }
 
@@ -165,15 +175,17 @@ CardBook.prototype.renderFlips = function(time) {
     for (const flip of this.flips) {
         const scale = Math.sin((flip.flipPrevious + (flip.flip - flip.flipPrevious) * time) * Math.PI * .5);
 
-        if (scale < 0) {
+        if (!flip.halfway && scale < 0) {
             this.pages[index].hide();
             this.pages[index - this.flipDirection].show();
+
+            flip.halfway = true;
         }
 
         this.pages[index].element.style.transform = "scaleX(" + scale + ")";
         this.pages[index - this.flipDirection].element.style.transform = "scaleX(" + (-scale) + ")";
 
-        index += 2;
+        index += 2 * this.flipDirection;
     }
 
     // TODO: Only edit range
