@@ -123,7 +123,8 @@ CardBook.prototype.show = function() {
  * Flip to the right
  */
 CardBook.prototype.flipRight = function() {
-    if (this.page === 0)
+    if ((this.flips.length !== 0 && this.flipDirection === -1) ||
+        this.page === this.flips.length * 2)
         return;
 
     this.pages[this.page - 2].show();
@@ -136,7 +137,8 @@ CardBook.prototype.flipRight = function() {
  * Flip to the left
  */
 CardBook.prototype.flipLeft = function() {
-    if (this.page + 2 === this.PAGE_COUNT)
+    if ((this.flips.length !== 0 && this.flipDirection === 1) ||
+        this.page + 2 === this.PAGE_COUNT - this.flips.length * 2)
         return;
 
     this.pages[this.page + 3].show();
@@ -185,12 +187,8 @@ CardBook.prototype.renderFlips = function(time) {
         this.pages[index].element.style.transform = "scaleX(" + scale + ")";
         this.pages[index - this.flipDirection].element.style.transform = "scaleX(" + (-scale) + ")";
 
-        index += 2 * this.flipDirection;
+        index -= 2 * this.flipDirection;
     }
-
-    // TODO: Only edit range
-    // this.orderPages(0, this.PAGE_COUNT - 1);
-    // this.orderPages(this.page, this.page + this.flips.length * 2 + 1);
 };
 
 /**
