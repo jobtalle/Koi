@@ -9,13 +9,14 @@ const CardBook = function(width, height) {
     this.element = this.createElement(this.spine);
     this.width = width;
     this.height = height;
-    this.pages = this.createPages();
-    this.page = 0;
-    this.buttonPageLeft = this.createButtonPage(this.CLASS_BUTTON_LEFT, () => {});
-    this.buttonPageRight = this.createButtonPage(this.CLASS_BUTTON_RIGHT, () => {});
+    this.page = 2;
+    this.pages = this.createPages(this.page);
+    this.flips = [];
+    this.flipDirection = 0;
+    this.buttonPageLeft = this.createButtonPage(this.CLASS_BUTTON_LEFT, this.flipRight.bind(this));
+    this.buttonPageRight = this.createButtonPage(this.CLASS_BUTTON_RIGHT, this.flipLeft.bind(this));
 
-    this.spine.appendChild(this.pages[0].element);
-    this.spine.appendChild(this.pages[1].element);
+    this.populateSpine();
 
     this.element.appendChild(this.buttonPageLeft);
     this.element.appendChild(this.buttonPageRight);
@@ -34,6 +35,32 @@ CardBook.prototype.PADDING_TOP = .07;
 CardBook.prototype.PADDING_PAGE = .07;
 CardBook.prototype.PADDING_CARD = .05;
 CardBook.prototype.HEIGHT = .65;
+
+/**
+ * A page flip action
+ * @constructor
+ */
+CardBook.Flip = function() {
+    this.flip = this.flipPrevious = 1;
+};
+
+CardBook.Flip.prototype.SPEED = .2;
+
+/**
+ * Update this flip
+ * @returns {Boolean} True if the flip has finished
+ */
+CardBook.Flip.prototype.update = function() {
+    this.flipPrevious = this.flip;
+
+    if ((this.flip -= this.SPEED) < -1) {
+        this.flip = -1;
+
+        return true;
+    }
+
+    return false;
+};
 
 /**
  * Deserialize the card book
@@ -56,6 +83,19 @@ CardBook.prototype.serialize = function(buffer) {
 };
 
 /**
+ * Add page elements to the spine
+ */
+CardBook.prototype.populateSpine = function() {
+    let page;
+
+    for (page = 0; page < this.PAGE_COUNT; page += 2)
+        this.spine.appendChild(this.pages[page].element);
+
+    for (--page; page >= 0; page -= 2)
+        this.spine.appendChild(this.pages[page].element);
+};
+
+/**
  * Hide the book
  */
 CardBook.prototype.hide = function() {
@@ -70,6 +110,87 @@ CardBook.prototype.show = function() {
 };
 
 /**
+ * Flip to the right
+ */
+CardBook.prototype.flipRight = function() {
+    if (this.page === 0)
+        return;
+
+    this.pages[this.page - 2].show();
+
+    this.flips.push(new CardBook.Flip());
+    this.flipDirection = 1;
+};
+
+/**
+ * Flip to the left
+ */
+CardBook.prototype.flipLeft = function() {
+    if (this.page + 2 === this.PAGE_COUNT)
+        return;
+
+    this.pages[this.page + 3].show();
+
+    this.flips.push(new CardBook.Flip());
+    this.flipDirection = -1;
+};
+
+/**
+ * Update the card book
+ */
+CardBook.prototype.update = function() {
+    for (let flip = this.flips.length; flip-- > 0;) if (this.flips[flip].update()) {
+        this.flips.splice(flip, 1);
+
+        if (this.flipDirection === 1) {
+            for (let page = this.page + 2 * flip; page < this.page + 2 * flip + 2; ++page)
+                this.pages[page].hide();
+        }
+        else {
+            for (let page = this.page; page < this.page + 2; ++page)
+                this.pages[page].hide();
+        }
+
+        this.page -= this.flipDirection * 2;
+    }
+};
+
+/**
+ * Render the page flips
+ * @param {Number} time The amount of time since the last update
+ */
+CardBook.prototype.renderFlips = function(time) {
+    let index = this.flipDirection === -1 ? this.page + 1 : this.page;
+
+    for (const flip of this.flips) {
+        const scale = Math.sin((flip.flipPrevious + (flip.flip - flip.flipPrevious) * time) * Math.PI * .5);
+
+        if (scale < 0) {
+            this.pages[index].hide();
+            this.pages[index - this.flipDirection].show();
+        }
+
+        this.pages[index].element.style.transform = "scaleX(" + scale + ")";
+        this.pages[index - this.flipDirection].element.style.transform = "scaleX(" + (-scale) + ")";
+
+        index += 2;
+    }
+
+    // TODO: Only edit range
+    // this.orderPages(0, this.PAGE_COUNT - 1);
+    // this.orderPages(this.page, this.page + this.flips.length * 2 + 1);
+};
+
+/**
+ * Render the card book
+ * @param {Number} time The amount of time since the last update
+ */
+CardBook.prototype.render = function(time) {
+    if (this.flips.length !== 0)
+        this.renderFlips(time);
+};
+
+/**
  * Create a page turn button
  * @param {String} classSide The class name for the buttons side
  * @param {Function} onClick The function to execute when the button has been clicked
@@ -79,6 +200,7 @@ CardBook.prototype.createButtonPage = function(classSide, onClick) {
 
     element.className = this.CLASS_BUTTON;
     element.classList.add(classSide);
+    element.onclick = onClick;
 
     return element;
 };
@@ -90,7 +212,10 @@ CardBook.prototype.createButtonPage = function(classSide, onClick) {
  * @returns {Vector2} A snap position if applicable, null otherwise
  */
 CardBook.prototype.findSnap = function(x, y) {
-    return this.pages[this.page].findSnap(x, y) || this.pages[this.page + 1].findSnap(x, y);
+    if (this.flips.length === 0)
+        return this.pages[this.page].findSnap(x, y) || this.pages[this.page + 1].findSnap(x, y);
+
+    return null;
 };
 
 /**
@@ -133,13 +258,18 @@ CardBook.prototype.fit = function() {
 
 /**
  * Create the initial set of pages
+ * @param {Number} first The index of the first open page on the left side of the book
  * @returns {CardPage[]} The initial pages
  */
-CardBook.prototype.createPages = function() {
+CardBook.prototype.createPages = function(first) {
     const pages = new Array(this.PAGE_COUNT);
 
-    for (let page = 0; page < this.PAGE_COUNT; ++page)
+    for (let page = 0; page < this.PAGE_COUNT; ++page) {
         pages[page] = new CardPage(((page & 1) << 1) - 1);
+
+        if (page === first || page === first + 1)
+            pages[page].show();
+    }
 
     return pages;
 };

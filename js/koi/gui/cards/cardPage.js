@@ -9,12 +9,14 @@ const CardPage = function(direction) {
     this.slots = this.createSlots(this.element);
     this.rect = null;
     this.targets = null;
+    this.direction = direction;
 };
 
 CardPage.prototype.CLASS = "page";
 CardPage.prototype.CLASS_SLOT = "slot";
 CardPage.prototype.CLASS_LEFT = "left";
 CardPage.prototype.CLASS_RIGHT = "right";
+CardPage.prototype.CLASS_VISIBLE = "visible";
 
 /**
  * Deserialize this card page
@@ -47,6 +49,20 @@ CardPage.prototype.serialize = function(buffer) {
 
     for (const card of this.cards) if (card)
         card.serialize(buffer);
+};
+
+/**
+ * Make the page visible
+ */
+CardPage.prototype.show = function() {
+    this.element.classList.add(this.CLASS_VISIBLE);
+};
+
+/**
+ * Make the page invisible
+ */
+CardPage.prototype.hide = function() {
+    this.element.classList.remove(this.CLASS_VISIBLE);
 };
 
 /**

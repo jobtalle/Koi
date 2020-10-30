@@ -189,6 +189,7 @@ Cards.prototype.update = function() {
         this.hidden = true;
 
     this.hand.update();
+    this.book.update();
 
     if (this.grabbed)
         this.grabbed.rotate(0, this.INTERPOLATION_FACTOR);
@@ -200,6 +201,7 @@ Cards.prototype.update = function() {
  */
 Cards.prototype.render = function(time) {
     this.hand.render(time);
+    this.book.render(time);
 
     if (this.grabbed)
         this.grabbed.render(time);
