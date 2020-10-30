@@ -127,7 +127,7 @@ CardBook.prototype.flipRight = function() {
         this.page === this.flips.length * 2)
         return;
 
-    this.pages[this.page - 2].show();
+    this.pages[this.page - (this.flips.length + 1) * 2].show();
 
     this.flips.push(new CardBook.Flip());
     this.flipDirection = 1;
@@ -141,7 +141,7 @@ CardBook.prototype.flipLeft = function() {
         this.page + 2 === this.PAGE_COUNT - this.flips.length * 2)
         return;
 
-    this.pages[this.page + 3].show();
+    this.pages[this.page + this.flips.length * 2 + 3].show();
 
     this.flips.push(new CardBook.Flip());
     this.flipDirection = -1;
