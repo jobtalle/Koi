@@ -153,12 +153,12 @@ CardBook.prototype.update = function() {
         this.flips.splice(flip, 1);
 
         if (this.flipDirection === 1) {
-            for (let page = this.page + 2 * flip; page < this.page + 2 * flip + 1; ++page)
-                this.pages[page].hide();
+            this.pages[this.page + 2 * flip].hide();
+            this.pages[this.page + 2 * flip - 1].element.style.removeProperty("transform");
         }
         else {
-            for (let page = this.page + 1; page < this.page + 2; ++page)
-                this.pages[page].hide();
+            this.pages[this.page + 1].hide();
+            this.pages[this.page + 2].element.style.removeProperty("transform");
         }
 
         this.page -= this.flipDirection * 2;
