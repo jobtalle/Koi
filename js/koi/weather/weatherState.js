@@ -204,7 +204,7 @@ WeatherState.prototype.initialize = function(audio) {
 
             break;
         case this.ID_THUNDERSTORM:
-            audio.ambientRainLight.playBody();
+            audio.ambientRainHeavy.playBody();
 
             break;
     }
