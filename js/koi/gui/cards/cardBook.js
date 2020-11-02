@@ -45,7 +45,7 @@ CardBook.Flip = function() {
     this.halfway = false;
 };
 
-CardBook.Flip.prototype.SPEED = .3;
+CardBook.Flip.prototype.SPEED = .1;
 
 /**
  * Update this flip
@@ -187,11 +187,11 @@ CardBook.prototype.update = function() {
         this.flips.splice(flip, 1);
 
         if (this.flipDirection === 1) {
-            this.pages[this.page + 2 * flip].hide();
+            this.pages[this.page + 2 * flip + 1].hide();
             this.pages[this.page + 2 * flip - 1].element.style.removeProperty("transform");
         }
         else {
-            this.pages[this.page + 1].hide();
+            this.pages[this.page].hide();
             this.pages[this.page + 2].element.style.removeProperty("transform");
         }
 
