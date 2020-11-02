@@ -286,7 +286,7 @@ Koi.prototype.resize = function() {
 Koi.prototype.updateAudio = function() {
     this.audio.ambientWaterTop.update(this.UPDATE_RATE);
     this.audio.ambientWaterLow.update(this.UPDATE_RATE);
-    this.audio.ambientWind.loop();
+    this.audio.ambientWind.update(this.UPDATE_RATE);
 };
 
 /**
@@ -412,6 +412,4 @@ Koi.prototype.render = function(deltaTime) {
  */
 Koi.prototype.free = function() {
     this.freeRenderables();
-
-    this.audio.ambientWind.stop();
 };
