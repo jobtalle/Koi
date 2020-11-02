@@ -2,12 +2,14 @@
  * Granular audio
  * @param {Number} interval The interval between effects in seconds
  * @param {Number} decay The decay time in seconds
+ * @param {Sampler} rateSampler The sampler for the playback rate depending on volume
  * @param {AudioEffect} effect The effect
  * @constructor
  */
-const AudioEffectGranular = function(interval, decay, effect) {
+const AudioEffectGranular = function(interval, decay, rateSampler, effect) {
     this.interval = interval;
     this.decay = decay;
+    this.rateSampler = rateSampler;
     this.effect = effect;
     this.pan = 0;
     this.volume = 0;
@@ -23,6 +25,7 @@ AudioEffectGranular.prototype.update = function(delta) {
         if ((this.time += delta) > this.interval) {
             this.time -= this.interval;
 
+            this.effect.setPlaybackRate(this.rateSampler.sample(this.volume));
             this.effect.play(this.pan, this.volume);
         }
 
@@ -35,10 +38,8 @@ AudioEffectGranular.prototype.update = function(delta) {
  * Set the granular effect parameters
  * @param {Number} pan The pan in the range [-1, 1]
  * @param {Number} volume The volume in the range [0, 1]
- * @param {Number} [playbackRate] The playback rate, which also changes pitch
  */
-AudioEffectGranular.prototype.set = function(pan, volume, playbackRate = 1) {
+AudioEffectGranular.prototype.set = function(pan, volume) {
     this.pan = pan;
     this.volume = Math.max(this.volume, volume);
-    this.effect.setPlaybackRate(playbackRate);
 };

@@ -22,6 +22,7 @@ const AudioBank = function(engine) {
     this.effectGrass = new AudioEffectGranular(
         Koi.prototype.UPDATE_RATE,
         0.5,
+        new SamplerPower(0.7, 1.4, 0.5),
         new AudioEffect(
             engine,
             this.enumerateSources("audio/ogg/SFX_GrassInteract_", 1, 22, ".ogg")));
