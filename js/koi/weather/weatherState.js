@@ -156,6 +156,10 @@ WeatherState.prototype.transition = function(audio, random) {
         this.lastState = statePrevious;
 
         switch (statePrevious) {
+            case this.ID_DRIZZLE:
+                audio.ambientRainLight.stop();
+
+                break;
             case this.ID_THUNDERSTORM:
                 this.cricketsIndex = Math.floor(random.getFloat() * this.CRICKET_COUNT);
                 this.timeCrickets = this.CRICKET_TIME;
@@ -163,15 +167,19 @@ WeatherState.prototype.transition = function(audio, random) {
                 audio.ambientCrickets[this.cricketsIndex].play();
 
             case this.ID_RAIN:
-                audio.ambientRain.stop();
+                audio.ambientRainHeavy.stop();
 
                 break;
         }
 
         switch (this.state) {
+            case this.ID_DRIZZLE:
+                audio.ambientRainLight.play();
+
+                break;
             case this.ID_THUNDERSTORM:
             case this.ID_RAIN:
-                audio.ambientRain.play();
+                audio.ambientRainHeavy.play();
 
                 break;
         }
@@ -191,9 +199,13 @@ WeatherState.prototype.initialize = function(audio) {
         audio.ambientCrickets[this.cricketsIndex].playBody();
 
     switch (this.state) {
+        case this.ID_DRIZZLE:
+            audio.ambientRainLight.playBody();
+
+            break;
         case this.ID_THUNDERSTORM:
         case this.ID_RAIN:
-            audio.ambientRain.playBody();
+            audio.ambientRainLight.playBody();
 
             break;
     }
@@ -213,7 +225,8 @@ WeatherState.prototype.update = function(audio, random) {
     }
 
     audio.ambientCrickets[this.cricketsIndex].update(Koi.prototype.UPDATE_RATE);
-    audio.ambientRain.update(Koi.prototype.UPDATE_RATE);
+    audio.ambientRainLight.update(Koi.prototype.UPDATE_RATE);
+    audio.ambientRainHeavy.update(Koi.prototype.UPDATE_RATE);
 
     if (this.timeCrickets !== 0) if (--this.timeCrickets === 0)
         audio.ambientCrickets[this.cricketsIndex].stop();
