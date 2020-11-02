@@ -52,17 +52,6 @@ const AudioBank = function(engine) {
         2,
         new AudioEffect(
             engine,
-            ["audio/ogg/AMB_RainLight_Start.ogg"]),
-        new AudioEffect(
-            engine,
-            ["audio/ogg/AMB_RainLight_Loop.ogg", "audio/ogg/AMB_RainLight_Loop.ogg"]), // TODO: Allow overlapping sound
-        new AudioEffect(
-            engine,
-            ["audio/ogg/AMB_RainLight_Stop.ogg"]));
-    this.ambientRainHeavy = new AudioEffectPeriodicBounded(
-        2,
-        new AudioEffect(
-            engine,
             ["audio/ogg/AMB_Rain_Start.ogg"]),
         new AudioEffect(
             engine,
@@ -70,6 +59,17 @@ const AudioBank = function(engine) {
         new AudioEffect(
             engine,
             ["audio/ogg/AMB_Rain_Stop.ogg"]));
+    this.ambientRainHeavy = new AudioEffectPeriodicBounded(
+        2,
+        new AudioEffect(
+            engine,
+            ["audio/ogg/AMB_RainHeavy_Start.ogg"]),
+        new AudioEffect(
+            engine,
+            ["audio/ogg/AMB_RainHeavy_Loop.ogg", "audio/ogg/AMB_RainHeavy_Loop.ogg"]), // TODO: Allow overlapping sound
+        new AudioEffect(
+            engine,
+            ["audio/ogg/AMB_RainHeavy_Stop.ogg"]));
     this.ambientCrickets = [
         new AudioEffectPeriodicBounded(
             3,
