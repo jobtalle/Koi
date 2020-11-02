@@ -45,7 +45,7 @@ CardBook.Flip = function() {
     this.halfway = false;
 };
 
-CardBook.Flip.prototype.SPEED = .1;
+CardBook.Flip.prototype.SPEED = .33;
 
 /**
  * Update this flip
@@ -188,11 +188,11 @@ CardBook.prototype.update = function() {
 
         if (this.flipDirection === 1) {
             this.pages[this.page + 2 * flip + 1].hide();
-            this.pages[this.page + 2 * flip - 1].element.style.removeProperty("transform");
+            this.pages[this.page + 2 * flip - 1].setNoFlip();
         }
         else {
             this.pages[this.page].hide();
-            this.pages[this.page + 2].element.style.removeProperty("transform");
+            this.pages[this.page + 2].setNoFlip();
         }
 
         this.page -= this.flipDirection * 2;
@@ -207,17 +207,17 @@ CardBook.prototype.renderFlips = function(time) {
     let index = this.flipDirection === -1 ? this.page + 1 : this.page;
 
     for (const flip of this.flips) {
-        const scale = Math.sin((flip.flipPrevious + (flip.flip - flip.flipPrevious) * time) * Math.PI * .5);
+        const flipAmount = flip.flipPrevious + (flip.flip - flip.flipPrevious) * time;
 
-        if (!flip.halfway && scale < 0) {
+        if (!flip.halfway && flipAmount < 0) {
             this.pages[index].hide();
             this.pages[index - this.flipDirection].show();
 
             flip.halfway = true;
         }
 
-        this.pages[index].element.style.transform = "scaleX(" + scale + ")";
-        this.pages[index - this.flipDirection].element.style.transform = "scaleX(" + (-scale) + ")";
+        this.pages[index].setFlip(flipAmount);
+        this.pages[index - this.flipDirection].setFlip(-flipAmount);
 
         index -= 2 * this.flipDirection;
     }

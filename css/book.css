@@ -1,12 +1,16 @@
 :root {
     /* colors */
+    --book-shadow-color: #1d1d1d;
     --book-page-color: #bca994;
     --book-page-color-shade: #92806b;
     --book-page-color-highlight: #ded1bf;
+    --book-page-shade-opacity: 0.5;
 
     /* dimensions */
     --book-page-shade-size: 95%;
+    --book-page-skew: 30;
     --book-button-radius: 64px;
+    --book-shadow-radius: 12px;
 }
 
 #book {
@@ -17,6 +21,7 @@
     align-items: center;
     transition: 0.5s ease;
     transition-property: top;
+    box-shadow: 0 0 var(--book-shadow-radius) var(--book-shadow-color);
 }
 
 #book.hidden {
@@ -38,9 +43,24 @@
     flex-wrap: wrap;
 }
 
+#book #spine .page .overlay {
+    position: absolute;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+}
+
+#book #spine .page .overlay.left {
+    background-color: white;
+}
+
+#book #spine .page .overlay.right {
+    background-color: black;
+}
+
 #book #spine .page.visible {
     display: flex;
-    box-shadow: 0 0 12px black;
 }
 
 #book #spine .page.left {

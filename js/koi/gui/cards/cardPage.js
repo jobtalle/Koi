@@ -7,6 +7,7 @@ const CardPage = function(direction) {
     this.cards = new Array(4).fill(null);
     this.element = this.createElement(direction);
     this.slots = this.createSlots(this.element);
+    this.overlay = this.createOverlay(this.element, direction);
     this.rect = null;
     this.targets = null;
     this.direction = direction;
@@ -17,6 +18,9 @@ CardPage.prototype.CLASS_SLOT = "slot";
 CardPage.prototype.CLASS_LEFT = "left";
 CardPage.prototype.CLASS_RIGHT = "right";
 CardPage.prototype.CLASS_VISIBLE = "visible";
+CardPage.prototype.CLASS_OVERLAY = "overlay";
+CardPage.prototype.SHADE_OPACITY = StyleUtils.getFloat("--book-page-shade-opacity");
+CardPage.prototype.PAGE_SKEW = -StyleUtils.getFloat("--book-page-skew");
 
 /**
  * Deserialize this card page
@@ -63,6 +67,26 @@ CardPage.prototype.show = function() {
  */
 CardPage.prototype.hide = function() {
     this.element.classList.remove(this.CLASS_VISIBLE);
+};
+
+/**
+ * Set the flip amount on this page
+ * @param {Number} flip The flip amount in the range [-1, 1]
+ */
+CardPage.prototype.setFlip = function(flip) {
+    const scale = Math.sin(flip * Math.PI * .5);
+    const skew = this.direction * this.PAGE_SKEW * (1 - Math.abs(flip));
+
+    this.element.style.transform = "scaleX(" + scale.toString() + ") skewY(" + skew.toString() + "deg)";
+    this.overlay.style.opacity = ((1 - Math.abs(scale)) * this.SHADE_OPACITY).toString();
+};
+
+/**
+ * Remove all flip effects
+ */
+CardPage.prototype.setNoFlip = function() {
+    this.element.style.removeProperty("transform");
+    this.element.style.removeProperty("opacity");
 };
 
 /**
@@ -218,6 +242,27 @@ CardPage.prototype.createSlots = function(element) {
     }
 
     return slots;
+};
+
+/**
+ * Create the shading overlay for this page
+ * @param {HTMLDivElement} element The page element
+ * @param {Number} direction The direction of the page from the book center, -1 or 1
+ * @returns {HTMLDivElement} The overlay element
+ */
+CardPage.prototype.createOverlay = function(element, direction) {
+    const overlay = document.createElement("div");
+
+    overlay.className = this.CLASS_OVERLAY;
+
+    if (direction === -1)
+        overlay.classList.add(this.CLASS_LEFT);
+    else
+        overlay.classList.add(this.CLASS_RIGHT);
+
+    element.appendChild(overlay);
+
+    return overlay;
 };
 
 /**
