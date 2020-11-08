@@ -11,6 +11,7 @@ const Card = function(body, position, angle = 0) {
     this.positionPrevious = position.copy();
     this.angle = this.anglePrevious = angle;
     this.previewFrame = this.createPreviewFrame();
+    this.previewURL = null;
     this.element = this.createElement(this.previewFrame);
     this.initialized = false;
 
@@ -53,11 +54,15 @@ Card.prototype.initialize = function(preview, atlas, bodies) {
     if (this.initialized)
         return;
 
-    const canvas = preview.render(this.body, atlas, bodies);
-
-    this.previewFrame.appendChild(canvas);
-
     this.initialized = true;
+
+    preview.render(this.body, atlas, bodies).toBlob(blob => {
+        if (!this.initialized)
+            return;
+
+        this.previewURL = URL.createObjectURL(blob);
+        this.previewFrame.style.backgroundImage = "url(" + this.previewURL + ")";
+    });
 };
 
 /**
@@ -161,4 +166,14 @@ Card.prototype.createElement = function(previewFrame) {
     element.appendChild(previewFrame);
 
     return element;
+};
+
+/**
+ * Release all resources maintained by the card
+ */
+Card.prototype.free = function() { // TODO: Free all cards!
+    if (this.previewURL)
+        URL.revokeObjectURL(this.previewURL);
+
+    this.initialized = false;
 };

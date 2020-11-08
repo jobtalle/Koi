@@ -44,7 +44,7 @@ Preview.prototype.createCanvas = function() {
 Preview.prototype.render = function(body, atlas, bodies) {
     this.target.target();
 
-    this.gl.clearColor(0, 0, 0, 0);
+    this.gl.clearColor(0, 1, 0, 1);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
 
     return this.createCanvas();
