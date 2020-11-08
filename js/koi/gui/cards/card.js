@@ -89,6 +89,7 @@ Card.prototype.rotate = function(target, interpolationFactor) {
  */
 Card.prototype.setPosition = function(position) {
     this.position.set(position);
+
     this.positionPrevious.set(position);
 };
 

@@ -85,7 +85,7 @@ Koi.prototype.deserialize = function(buffer) {
 };
 
 /**
- * Create all renderable objects
+ * Create all renderable instances
  */
 Koi.prototype.createRenderables = function() {
     const environmentRandomizer = new Random(this.environmentSeed);

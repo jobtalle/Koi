@@ -7,6 +7,8 @@
     /* Dimensions */
     --card-width: 250px;
     --card-height: 350px;
+    --card-preview-width: 200px;
+    --card-preview-height: 120px;
     --card-border-width: 2px;
     --card-border-radius: 12px;
     --card-drop-target-raise: -0.5;
