@@ -249,7 +249,14 @@ Koi.prototype.touchMove = function(x, y, entered = false) {
  * End a touch event
  */
 Koi.prototype.touchEnd = function() {
-    this.mover.drop(this.water, this.systems.atlas, this.audio, this.scale, this.random);
+    this.mover.drop(
+        this.water,
+        this.systems.preview,
+        this.systems.atlas,
+        this.systems.bodies,
+        this.audio,
+        this.scale,
+        this.random);
 };
 
 /**

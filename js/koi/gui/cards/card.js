@@ -10,7 +10,8 @@ const Card = function(body, position, angle = 0) {
     this.position = position;
     this.positionPrevious = position.copy();
     this.angle = this.anglePrevious = angle;
-    this.element = this.createElement();
+    this.previewFrame = this.createPreviewFrame();
+    this.element = this.createElement(this.previewFrame);
     this.initialized = false;
 
     this.updatePosition();
@@ -44,12 +45,17 @@ Card.prototype.serialize = function(buffer) {
 
 /**
  * Call this function when the card is made visible
+ * @param {Preview} preview A preview renderer
+ * @param {Atlas} atlas The atlas
+ * @param {Bodies} bodies The bodies renderer
  */
-Card.prototype.initialize = function() {
+Card.prototype.initialize = function(preview, atlas, bodies) {
     if (this.initialized)
         return;
 
+    const canvas = preview.render(this.body, atlas, bodies);
 
+    this.previewFrame.appendChild(canvas);
 
     this.initialized = true;
 };
@@ -132,14 +138,24 @@ Card.prototype.transformSlot = function(slotWidth) {
 };
 
 /**
+ * Create the preview frame
+ * @returns {HTMLDivElement} The preview frame element
+ */
+Card.prototype.createPreviewFrame = function() {
+    const element = document.createElement("div");
+
+    element.className = this.CLASS_PREVIEW_FRAME;
+
+    return element;
+};
+
+/**
  * Create an HTML element for this card
+ * @param {HTMLElement} previewFrame The preview frame element
  * @returns {HTMLElement} The card element
  */
-Card.prototype.createElement = function() {
+Card.prototype.createElement = function(previewFrame) {
     const element = document.createElement("div");
-    const previewFrame = document.createElement("div");
-
-    previewFrame.className = this.CLASS_PREVIEW_FRAME;
 
     element.className = this.CLASS;
     element.appendChild(previewFrame);
