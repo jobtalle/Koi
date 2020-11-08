@@ -11,11 +11,13 @@ const Card = function(body, position, angle = 0) {
     this.positionPrevious = position.copy();
     this.angle = this.anglePrevious = angle;
     this.element = this.createElement();
+    this.initialized = false;
 
     this.updatePosition();
 };
 
 Card.prototype.CLASS = "card-shape card";
+Card.prototype.CLASS_PREVIEW_FRAME = "preview-frame";
 Card.prototype.WIDTH = StyleUtils.getInt("--card-width");
 Card.prototype.HEIGHT = StyleUtils.getInt("--card-height");
 Card.prototype.RATIO = Card.prototype.WIDTH / Card.prototype.HEIGHT;
@@ -38,6 +40,18 @@ Card.deserialize = function(buffer, position = new Vector2(), angle = 0) {
  */
 Card.prototype.serialize = function(buffer) {
     this.body.serialize(buffer);
+};
+
+/**
+ * Call this function when the card is made visible
+ */
+Card.prototype.initialize = function() {
+    if (this.initialized)
+        return;
+
+
+
+    this.initialized = true;
 };
 
 /**
@@ -109,10 +123,12 @@ Card.prototype.updatePosition = function(time = 0) {
 };
 
 /**
- * Clear the card transformation
+ * Set the transform to fit inside the page slot
+ * @param {Number} slotWidth The width of a page slot
  */
-Card.prototype.clearTransform = function() {
-    this.element.style.removeProperty("transform");
+Card.prototype.transformSlot = function(slotWidth) {
+    console.log(slotWidth);
+    this.element.style.transform = "scale(" + (slotWidth / this.WIDTH) + ")";
 };
 
 /**
@@ -121,8 +137,12 @@ Card.prototype.clearTransform = function() {
  */
 Card.prototype.createElement = function() {
     const element = document.createElement("div");
+    const previewFrame = document.createElement("div");
+
+    previewFrame.className = this.CLASS_PREVIEW_FRAME;
 
     element.className = this.CLASS;
+    element.appendChild(previewFrame);
 
     return element;
 };

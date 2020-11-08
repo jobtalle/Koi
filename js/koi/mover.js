@@ -294,6 +294,8 @@ Mover.prototype.drop = function(waterPlane, atlas, audio, scale, random) {
             this.gui.cards.add(card);
             this.gui.cards.toDropTarget(card);
 
+            card.initialize();
+
             this.move.free(atlas);
         }
         else {

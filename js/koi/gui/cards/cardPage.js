@@ -11,6 +11,7 @@ const CardPage = function(direction) {
     this.rect = null;
     this.targets = null;
     this.direction = direction;
+    this.cardWidth = 0;
 };
 
 CardPage.prototype.CLASS = "page";
@@ -37,6 +38,10 @@ CardPage.prototype.deserialize = function(buffer, cards) {
         cards.registerCard(this.cards[card], false);
 
         this.slots[card].appendChild(this.cards[card].element);
+        this.cards[card].transformSlot(this.cardWidth);
+
+        if (this.element.classList.contains(this.CLASS_VISIBLE))
+            this.cards[card].initialize();
     }
 };
 
@@ -60,6 +65,9 @@ CardPage.prototype.serialize = function(buffer) {
  */
 CardPage.prototype.show = function() {
     this.element.classList.add(this.CLASS_VISIBLE);
+
+    for (const card of this.cards) if (card)
+        card.initialize();
 };
 
 /**
@@ -174,7 +182,7 @@ CardPage.prototype.addCard = function(card, snap) {
             this.slots[target].appendChild(card.element);
             this.cards[target] = card;
 
-            card.clearTransform();
+            card.transformSlot(this.cardWidth);
 
             return true;
         }
@@ -272,12 +280,16 @@ CardPage.prototype.createOverlay = function(element, direction) {
  * @param {Number} cardPadding The card padding in pixels
  */
 CardPage.prototype.fit = function(cardWidth, cardHeight, cardPadding) {
+    this.cardWidth = cardWidth;
     this.element.style.width = (cardWidth * 2 + cardPadding * 3) + "px";
     this.element.style.height = (cardHeight * 2 + cardPadding * 3) + "px";
 
-    for (const slot of this.slots) {
-        slot.style.width = cardWidth + "px";
-        slot.style.height = cardHeight + "px";
+    for (let slot = 0; slot < 4; ++slot) {
+        this.slots[slot].style.width = cardWidth + "px";
+        this.slots[slot].style.height = cardHeight + "px";
+
+        if (this.cards[slot])
+            this.cards[slot].transformSlot(cardWidth);
     }
 
     this.rect = null;

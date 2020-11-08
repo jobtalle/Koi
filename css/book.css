@@ -90,6 +90,5 @@
 
 #book #spine .page .slot .card {
     margin: 0;
-    width: calc(100% - 2 * var(--card-border-width));
-    height: calc(100% - 2 * var(--card-border-width));
+    transform-origin: left top;
 }

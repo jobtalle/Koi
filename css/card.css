@@ -8,7 +8,7 @@
     --card-width: 250px;
     --card-height: 350px;
     --card-preview-width: 200px;
-    --card-preview-height: 120px;
+    --card-preview-height: 140px;
     --card-border-width: 2px;
     --card-border-radius: 12px;
     --card-drop-target-raise: -0.5;
@@ -28,8 +28,15 @@
     position: absolute;
     background-color: var(--card-color-background);
     user-select: none;
-    -webkit-tap-highlight-color: transparent;
     border: var(--card-border-width) solid var(--card-color-border);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.card .preview-frame {
+    width: var(--card-preview-width);
+    height: var(--card-preview-height);
+    margin: calc((var(--card-width) - var(--card-preview-width) - 2 * var(--card-border-width)) * 0.5);
+    background-color: #6cb4a9;
 }
 
 #drop-target {
