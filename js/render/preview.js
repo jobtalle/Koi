@@ -44,8 +44,13 @@ Preview.prototype.createCanvas = function() {
 Preview.prototype.render = function(body, atlas, bodies) {
     this.target.target();
 
-    this.gl.clearColor(0, 1, 0, 1);
+    this.gl.clearColor(0, .5, 0, 1);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+
+    body.moveTo(new Vector2(1.5, 1.5));
+    body.render(bodies, 0);
+
+    bodies.render(atlas, 3, 3, false);
 
     return this.createCanvas();
 };
