@@ -36,7 +36,7 @@
     width: var(--card-preview-width);
     height: var(--card-preview-height);
     margin: calc((var(--card-width) - var(--card-preview-width) - 2 * var(--card-border-width)) * 0.5);
-    background-color: black;
+    background-color: #4f8bab;
 }
 
 #drop-target {

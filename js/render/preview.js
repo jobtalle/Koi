@@ -10,6 +10,7 @@ const Preview = function(gl) {
 
 Preview.prototype.PREVIEW_WIDTH = StyleUtils.getInt("--card-preview-width");
 Preview.prototype.PREVIEW_HEIGHT = StyleUtils.getInt("--card-preview-height");
+Preview.prototype.SCALE = 120;
 
 /**
  * Create a canvas from the render target
@@ -42,15 +43,17 @@ Preview.prototype.createCanvas = function() {
  * @returns {HTMLCanvasElement} The canvas containing the preview
  */
 Preview.prototype.render = function(body, atlas, bodies) {
+    const widthMeters = this.PREVIEW_WIDTH / this.SCALE;
+    const heightMeters = this.PREVIEW_HEIGHT / this.SCALE;
+
     this.target.target();
 
-    this.gl.clearColor(0, .5, 0, 1);
+    this.gl.clearColor(1, 1, 1, 0);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
 
-    body.moveTo(new Vector2(1.5, 1.5));
-    body.render(bodies, 0);
+    body.renderLoop(widthMeters, heightMeters, bodies, 0);
 
-    bodies.render(atlas, 3, 3, false);
+    bodies.render(atlas, widthMeters, -heightMeters, false);
 
     return this.createCanvas();
 };

@@ -85,10 +85,19 @@ Tail.prototype.storePreviousState = function() {
 };
 
 /**
- * Update the tail
+ * Set a neutral position for this tail
  * @param {Vector2[]} spine The spine this tail was connected to
  */
-Tail.prototype.update = function(spine) {
+Tail.prototype.setNeutral = function(spine) {
+    this.update(spine, 1);
+};
+
+/**
+ * Update the tail
+ * @param {Vector2[]} spine The spine this tail was connected to
+ * @param {Number} [spring] The spring strength
+ */
+Tail.prototype.update = function(spine, spring = this.SPRING) {
     this.storePreviousState();
 
     for (let vertebra = 0; vertebra < this.anchors; ++vertebra) {
@@ -98,8 +107,8 @@ Tail.prototype.update = function(spine) {
         const dx = spine[this.spineOffset + vertebra].x + sx * this.skewSampled - this.edge[vertebra].x;
         const dy = spine[this.spineOffset + vertebra].y + sy * this.skewSampled - this.edge[vertebra].y;
 
-        this.edge[vertebra].x += dx * this.SPRING;
-        this.edge[vertebra].y += dy * this.SPRING;
+        this.edge[vertebra].x += dx * spring;
+        this.edge[vertebra].y += dy * spring;
     }
 };
 
