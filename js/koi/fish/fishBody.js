@@ -297,6 +297,7 @@ FishBody.prototype.initializeSpine = function(head = new Vector2(), direction = 
     }
 
     this.tailOffset = this.tail.connect(this.spine, this.radiusSampled);
+    this.calculateSpacing();
 };
 
 /**
