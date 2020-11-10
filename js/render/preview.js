@@ -81,8 +81,6 @@ Preview.prototype.render = function(body, atlas, bodies) {
 
     this.gl.disable(this.gl.SCISSOR_TEST);
 
-    // bodies.render(atlas, widthMeters, -heightMeters, false);
-
     return this.createCanvas();
 };
 
