@@ -9,8 +9,9 @@
     --card-height: 350px;
     --card-preview-width: 200px;
     --card-preview-height: 140px;
-    --card-preview-columns: 5;
-    --card-preview-rows: 5;
+    --card-preview-columns: 7;
+    --card-preview-rows: 10;
+    --card-preview-fps: 60;
     --card-border-width: 2px;
     --card-border-radius: 12px;
     --card-drop-target-raise: -0.5;
@@ -52,8 +53,14 @@
     background-repeat: no-repeat;
     background-position: left bottom;
     animation:
-            fish-preview-x 0.2s steps(var(--card-preview-columns)) infinite,
-            fish-preview-y 1s steps(var(--card-preview-rows)) infinite;
+            fish-preview-x
+                calc(1s * var(--card-preview-columns) / var(--card-preview-fps))
+                steps(var(--card-preview-columns))
+                infinite,
+            fish-preview-y
+                calc(1s * var(--card-preview-rows) * var(--card-preview-columns) / var(--card-preview-fps))
+                steps(var(--card-preview-rows))
+                infinite;
 }
 
 #drop-target {

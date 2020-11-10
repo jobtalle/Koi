@@ -127,10 +127,11 @@ Fin.prototype.storePreviousState = function() {
  * @param {Vector2} vertebra The connected vertebra location
  * @param {Number} dx The normalized X direction of the vertebra
  * @param {Number} dy The normalized Y direction of the vertebra
+ * @param {Number} phase The fin phase
  * @param {Number} size The fin size in the range [0, 1]
  */
-Fin.prototype.setNeutral = function(vertebra, dx, dy, size) {
-    this.update(vertebra, dx, dy, Math.PI, size, 1);
+Fin.prototype.setNeutral = function(vertebra, dx, dy, phase, size) {
+    this.update(vertebra, dx, dy, phase, size, 1);
 };
 
 /**
