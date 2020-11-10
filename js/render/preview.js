@@ -17,7 +17,7 @@ Preview.prototype.PREVIEW_WIDTH = StyleUtils.getInt("--card-preview-width");
 Preview.prototype.PREVIEW_HEIGHT = StyleUtils.getInt("--card-preview-height");
 Preview.prototype.PREVIEW_COLUMNS = StyleUtils.getInt("--card-preview-columns");
 Preview.prototype.PREVIEW_ROWS = StyleUtils.getInt("--card-preview-rows");
-Preview.prototype.SCALE = 150;
+Preview.prototype.SCALE = 200;
 
 /**
  * Create a canvas from the render target
@@ -58,21 +58,30 @@ Preview.prototype.render = function(body, atlas, bodies) {
 
     this.gl.clearColor(1, 1, 1, 0);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+    this.gl.enable(this.gl.SCISSOR_TEST);
 
     for (let row = 0; row < this.PREVIEW_ROWS; ++row) for (let column = 0; column < this.PREVIEW_COLUMNS; ++column) {
-        const x = (column + .5) * this.PREVIEW_WIDTH / this.SCALE;
-        const y = (this.PREVIEW_ROWS - row - .5) * this.PREVIEW_HEIGHT / this.SCALE;
+        const left = column * this.PREVIEW_WIDTH;
+        const top = (this.PREVIEW_ROWS - row) * this.PREVIEW_HEIGHT;
+        const right = (column + 1) * this.PREVIEW_WIDTH;
+        const bottom = (this.PREVIEW_ROWS - row - 1) * this.PREVIEW_HEIGHT;
+
+        this.gl.scissor(left, row * this.PREVIEW_HEIGHT, this.PREVIEW_WIDTH, this.PREVIEW_HEIGHT);
 
         body.renderLoop(
-            (column + 1) * this.PREVIEW_WIDTH / this.SCALE,
-            (this.PREVIEW_ROWS - row) * this.PREVIEW_HEIGHT / this.SCALE,
-            column * this.PREVIEW_WIDTH / this.SCALE,
-            (this.PREVIEW_ROWS - row - 1) * this.PREVIEW_HEIGHT / this.SCALE,
+            right / this.SCALE,
+            top / this.SCALE,
+            left / this.SCALE,
+            bottom / this.SCALE,
             bodies,
             (row * this.PREVIEW_COLUMNS + column) / frames);
+
+        bodies.render(atlas, widthMeters, -heightMeters, false);
     }
 
-    bodies.render(atlas, widthMeters, -heightMeters, false);
+    this.gl.disable(this.gl.SCISSOR_TEST);
+
+    // bodies.render(atlas, widthMeters, -heightMeters, false);
 
     return this.createCanvas();
 };
