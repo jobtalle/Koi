@@ -196,8 +196,12 @@ CardHand.prototype.remove = function(card) {
 
 /**
  * Clear the card hand
+ * @param {Cards} cards The cards
  */
-CardHand.prototype.clear = function() {
+CardHand.prototype.clear = function(cards) {
+    for (const card of this.cards)
+        cards.remove(card);
+
     this.cards = [];
 };
 

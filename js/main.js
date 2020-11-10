@@ -147,6 +147,7 @@ if (gl) {
 
         koi.free();
         systems.free();
+        gui.clear();
         loaded = false;
     };
 }

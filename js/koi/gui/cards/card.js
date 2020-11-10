@@ -204,7 +204,7 @@ Card.prototype.createElement = function(previewFrame) {
 /**
  * Release all resources maintained by the card
  */
-Card.prototype.free = function() { // TODO: Free all cards!
+Card.prototype.free = function() {
     if (this.previewURL)
         URL.revokeObjectURL(this.previewURL);
 

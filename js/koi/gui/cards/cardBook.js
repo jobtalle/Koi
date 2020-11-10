@@ -104,6 +104,15 @@ CardBook.prototype.serialize = function(buffer) {
 };
 
 /**
+ * Remove all cards from this book
+ * @param {Cards} cards The cards
+ */
+CardBook.prototype.clear = function(cards) {
+    for (const page of this.pages)
+        page.clear(cards);
+};
+
+/**
  * Add page elements to the spine
  */
 CardBook.prototype.populateSpine = function() {

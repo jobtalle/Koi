@@ -176,6 +176,19 @@ CardPage.prototype.findSnap = function(x, y) {
 };
 
 /**
+ * Remove all cards from this page
+ * @param {Cards} cards The cards
+ */
+CardPage.prototype.clear = function(cards) {
+    for (let slot = 0; slot < 4; ++slot) if (this.cards[slot]) {
+        cards.remove(this.cards[slot], true);
+
+        this.slots[slot].removeChild(this.cards[slot].element);
+        this.cards[slot] = null;
+    }
+};
+
+/**
  * Try to add a card to this page
  * @param {Card} card A card
  * @param {Vector2} snap A snap position

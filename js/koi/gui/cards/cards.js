@@ -165,10 +165,14 @@ Cards.prototype.findSnap = function(x, y) {
  * Clear the cards GUI
  */
 Cards.prototype.clear = function() {
-    this.hand.clear();
+    this.hand.clear(this);
+    this.book.clear(this);
 
-    while (this.element.firstChild)
-        this.element.removeChild(this.element.firstChild);
+    if (this.grabbed) {
+        this.remove(this.grabbed);
+
+        this.grabbed = null;
+    }
 
     this.cards = [];
 };
@@ -370,10 +374,15 @@ Cards.prototype.add = function(card) {
 /**
  * Remove a card from the cards
  * @param {Card} card A card
+ * @param {Boolean} [noChild] True if the card being removed is not a child of cards
  */
-Cards.prototype.remove = function(card) {
+Cards.prototype.remove = function(card, noChild = false) {
     this.cards.splice(this.cards.indexOf(card), 1);
-    this.element.removeChild(card.element);
+
+    if (!noChild)
+        this.element.removeChild(card.element);
+
+    card.free();
 };
 
 /**
