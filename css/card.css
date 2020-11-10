@@ -51,7 +51,6 @@
     margin: calc((var(--card-width) - var(--card-preview-width) - 2 * var(--card-border-width)) * 0.5);
     background-color: #4f8bab;
     background-repeat: no-repeat;
-    background-position: left bottom;
     animation:
             fish-preview-x
                 calc(1s * var(--card-preview-columns) / var(--card-preview-fps))

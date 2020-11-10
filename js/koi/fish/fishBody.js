@@ -515,19 +515,32 @@ FishBody.prototype.render = function(bodies, time) {
 
 /**
  * Animate the spine with the loop animation
- * @param {Number} x The X position in meters
- * @param {Number} y The Y position in meters
+ * @param {Number} xStart The X start position in meters
+ * @param {Number} yStart The Y start position in meters
+ * @param {Number} xEnd The X end position in meters
+ * @param {Number} yEnd The Y end position in meters
  * @param {Number} progress The animation progress in the range [0, 1]
  */
-FishBody.prototype.animateSpineLoop = function(x, y, progress) {
-    this.spine[0].x = x + (this.spine.length - 1) * .5 * this.spacing;
-    this.spine[0].y = y;
+FishBody.prototype.animateSpineLoop = function(
+    xStart,
+    yStart,
+    xEnd,
+    yEnd,
+    progress) {
+    const dx = xEnd - xStart;
+    const dy = yEnd - yStart;
+    const d = Math.sqrt(dx * dx + dy * dy);
+    const direction = Math.asin(dy / d);
+    const shift = .5 * (d - (this.spine.length - 1) * this.spacing);
+
+    this.spine[0].x = xStart + shift * dx / d;
+    this.spine[0].y = yStart + shift * dy / d;
 
     for (let vertebra = 1, vertebrae = this.spine.length; vertebra < vertebrae; ++vertebra) {
         const distance = vertebra / (vertebrae - 1);
         const phase = progress * Math.PI * 2;
         const angle = Math.sin((this.SPINE_LOOP_FLEXIBILITY.sample(distance) - progress) * Math.PI * 2) *
-            this.SPINE_LOOP_ANGLE_AMPLITUDE;
+            this.SPINE_LOOP_ANGLE_AMPLITUDE - direction;
         const xDir = Math.cos(angle);
         const yDir = Math.sin(angle);
 
@@ -542,14 +555,21 @@ FishBody.prototype.animateSpineLoop = function(x, y, progress) {
 };
 
 /**
- * Render the loop sequence for this body
- * @param {Number} x The X position in meters
- * @param {Number} y The Y position in meters
+ * @param {Number} xStart The X start position in meters
+ * @param {Number} yStart The Y start position in meters
+ * @param {Number} xEnd The X end position in meters
+ * @param {Number} yEnd The Y end position in meters
  * @param {Bodies} bodies The bodies renderer
  * @param {Number} progress The animation progress in the range [0, 1]
  */
-FishBody.prototype.renderLoop = function(x, y, bodies, progress) {
-    this.animateSpineLoop(x, -y, progress);
+FishBody.prototype.renderLoop = function(
+    xStart,
+    yStart,
+    xEnd,
+    yEnd,
+    bodies,
+    progress) {
+    this.animateSpineLoop(xStart, -yStart, xEnd, -yEnd, progress);
 
     this.render(bodies, 1);
 };

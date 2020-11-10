@@ -64,8 +64,10 @@ Preview.prototype.render = function(body, atlas, bodies) {
         const y = (this.PREVIEW_ROWS - row - .5) * this.PREVIEW_HEIGHT / this.SCALE;
 
         body.renderLoop(
-            x,
-            y,
+            (column + 1) * this.PREVIEW_WIDTH / this.SCALE,
+            (this.PREVIEW_ROWS - row) * this.PREVIEW_HEIGHT / this.SCALE,
+            column * this.PREVIEW_WIDTH / this.SCALE,
+            (this.PREVIEW_ROWS - row - 1) * this.PREVIEW_HEIGHT / this.SCALE,
             bodies,
             (row * this.PREVIEW_COLUMNS + column) / frames);
     }
