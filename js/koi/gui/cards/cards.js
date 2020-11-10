@@ -318,8 +318,9 @@ Cards.prototype.release = function() {
  * Register a card on the cards GUI
  * @param {Card} card A card
  * @param {Boolean} [addToGUI] True if the card element should be added to the GUI
+ * @param {Boolean} [initialize] True if the card must be initialized
  */
-Cards.prototype.registerCard = function(card, addToGUI = true) {
+Cards.prototype.registerCard = function(card, addToGUI = true, initialize = false) {
     card.element.addEventListener("mousedown", event => {
         if (event.button === 0)
             this.grabCard(
@@ -345,15 +346,15 @@ Cards.prototype.registerCard = function(card, addToGUI = true) {
 
     this.cards.push(card);
 
-    if (addToGUI) {
+    if (addToGUI)
         this.element.appendChild(card.element);
 
+    if (initialize || addToGUI)
         card.initialize(
             this.koi.systems.preview,
             this.koi.systems.atlas,
             this.koi.systems.bodies,
             this.koi.randomSource);
-    }
 };
 
 /**

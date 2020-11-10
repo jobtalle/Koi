@@ -35,17 +35,13 @@ CardPage.prototype.deserialize = function(buffer, cards) {
     for (let card = 0; card < 4; ++card) if (occupied & (1 << card)) {
         this.cards[card] = Card.deserialize(buffer);
 
-        cards.registerCard(this.cards[card], false);
+        cards.registerCard(
+            this.cards[card],
+            false,
+            this.element.classList.contains(this.CLASS_VISIBLE));
 
         this.slots[card].appendChild(this.cards[card].element);
         this.cards[card].transformSlot(this.cardWidth);
-
-        if (this.element.classList.contains(this.CLASS_VISIBLE))
-            this.cards[card].initialize(
-                cards.koi.systems.preview,
-                cards.koi.systems.atlas,
-                cards.koi.systems.bodies,
-                cards.koi.randomSource);
     }
 };
 
