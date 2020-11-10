@@ -6,7 +6,7 @@
 const Cards = function(element) {
     this.element = element;
     this.dropTarget = this.createDropTarget();
-    this.book = new CardBook(element.clientWidth, element.clientHeight);
+    this.book = new CardBook(element.clientWidth, element.clientHeight, this);
     this.hand = new CardHand(element.clientWidth, element.clientHeight, this.dropTarget);
     this.cards = [];
     this.grabbed = null;
@@ -167,8 +167,8 @@ Cards.prototype.findSnap = function(x, y) {
 Cards.prototype.clear = function() {
     this.hand.clear();
 
-    for (const card of this.cards)
-        this.element.removeChild(card.element);
+    while (this.element.firstChild)
+        this.element.removeChild(this.element.firstChild);
 
     this.cards = [];
 };
@@ -345,8 +345,15 @@ Cards.prototype.registerCard = function(card, addToGUI = true) {
 
     this.cards.push(card);
 
-    if (addToGUI)
+    if (addToGUI) {
         this.element.appendChild(card.element);
+
+        card.initialize(
+            this.koi.systems.preview,
+            this.koi.systems.atlas,
+            this.koi.systems.bodies,
+            this.koi.randomSource);
+    }
 };
 
 /**

@@ -51,12 +51,23 @@ Card.prototype.serialize = function(buffer) {
  * @param {Preview} preview A preview renderer
  * @param {Atlas} atlas The atlas
  * @param {Bodies} bodies The bodies renderer
+ * @param {RandomSource} [randomSource] The random source, required if the body may not be written to the atlas
  */
-Card.prototype.initialize = function(preview, atlas, bodies) {
+Card.prototype.initialize = function(preview, atlas, bodies, randomSource = null) {
     if (this.initialized)
         return;
 
     this.initialized = true;
+
+    let createdTexture = false;
+
+    if (!this.body.pattern.region) {
+        this.body.initializeSpine();
+
+        atlas.write(this.body.pattern, randomSource);
+
+        createdTexture = true;
+    }
 
     preview.render(this.body, atlas, bodies).toBlob(blob => {
         if (!this.initialized)
@@ -65,6 +76,12 @@ Card.prototype.initialize = function(preview, atlas, bodies) {
         this.previewURL = URL.createObjectURL(blob);
         this.previewAnimation.style.backgroundImage = "url(" + this.previewURL + ")";
     });
+
+    if (createdTexture) {
+        atlas.returnRegion(this.body.pattern.region);
+
+        this.body.pattern.region = null;
+    }
 };
 
 /**

@@ -41,7 +41,11 @@ CardPage.prototype.deserialize = function(buffer, cards) {
         this.cards[card].transformSlot(this.cardWidth);
 
         if (this.element.classList.contains(this.CLASS_VISIBLE))
-            this.cards[card].initialize();
+            this.cards[card].initialize(
+                cards.koi.systems.preview,
+                cards.koi.systems.atlas,
+                cards.koi.systems.bodies,
+                cards.koi.randomSource);
     }
 };
 
@@ -62,12 +66,17 @@ CardPage.prototype.serialize = function(buffer) {
 
 /**
  * Make the page visible
+ * @param {Cards} [cards] The cards GUI, required if the page contains any cards
  */
-CardPage.prototype.show = function() {
+CardPage.prototype.show = function(cards = null) {
     this.element.classList.add(this.CLASS_VISIBLE);
 
     for (const card of this.cards) if (card)
-        card.initialize();
+        card.initialize(
+            cards.koi.systems.preview,
+            cards.koi.systems.atlas,
+            cards.koi.systems.bodies,
+            cards.koi.randomSource);
 };
 
 /**

@@ -2,9 +2,10 @@
  * A book with card pages
  * @param {Number} width The screen width in pixels
  * @param {Number} height The screen height in pixels
+ * @param {Cards} cards The cards object
  * @constructor
  */
-const CardBook = function(width, height) {
+const CardBook = function(width, height, cards) {
     this.spine = this.createSpine();
     this.element = this.createElement(this.spine);
     this.width = width;
@@ -15,6 +16,7 @@ const CardBook = function(width, height) {
     this.flipDirection = 0;
     this.buttonPageLeft = this.createButtonPage(this.CLASS_BUTTON_LEFT, this.flipRight.bind(this));
     this.buttonPageRight = this.createButtonPage(this.CLASS_BUTTON_RIGHT, this.flipLeft.bind(this));
+    this.cards = cards;
 
     this.populateSpine();
 
@@ -154,7 +156,7 @@ CardBook.prototype.flipRight = function() {
     if (this.page === this.flips.length * 2)
         return;
 
-    this.pages[this.page - (this.flips.length + 1) * 2].show();
+    this.pages[this.page - (this.flips.length + 1) * 2].show(this.cards);
 
     this.flips.push(new CardBook.Flip());
     this.flipDirection = 1;
@@ -173,7 +175,7 @@ CardBook.prototype.flipLeft = function() {
     if (this.page + 2 === this.PAGE_COUNT - this.flips.length * 2)
         return;
 
-    this.pages[this.page + this.flips.length * 2 + 3].show();
+    this.pages[this.page + this.flips.length * 2 + 3].show(this.cards);
 
     this.flips.push(new CardBook.Flip());
     this.flipDirection = -1;
@@ -211,7 +213,7 @@ CardBook.prototype.renderFlips = function(time) {
 
         if (!flip.halfway && flipAmount < 0) {
             this.pages[index].hide();
-            this.pages[index - this.flipDirection].show();
+            this.pages[index - this.flipDirection].show(this.cards);
 
             flip.halfway = true;
         }
@@ -236,6 +238,7 @@ CardBook.prototype.render = function(time) {
  * Create a page turn button
  * @param {String} classSide The class name for the buttons side
  * @param {Function} onClick The function to execute when the button has been clicked
+ * @returns {HTMLButtonElement} The page button element
  */
 CardBook.prototype.createButtonPage = function(classSide, onClick) {
     const element = document.createElement("button");

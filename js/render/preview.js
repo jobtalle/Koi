@@ -17,7 +17,7 @@ Preview.prototype.PREVIEW_WIDTH = StyleUtils.getInt("--card-preview-width");
 Preview.prototype.PREVIEW_HEIGHT = StyleUtils.getInt("--card-preview-height");
 Preview.prototype.PREVIEW_COLUMNS = StyleUtils.getInt("--card-preview-columns");
 Preview.prototype.PREVIEW_ROWS = StyleUtils.getInt("--card-preview-rows");
-Preview.prototype.SCALE = 200;
+Preview.prototype.SCALE = 150;
 
 /**
  * Create a canvas from the render target
@@ -47,12 +47,16 @@ Preview.prototype.createCanvas = function() {
  * @param {FishBody} body The fish body to render
  * @param {Atlas} atlas The atlas
  * @param {Bodies} bodies The bodies renderer
+ * @param {RandomSource} [randomSource] A random source, if the pattern region can be null
  * @returns {HTMLCanvasElement} The canvas containing the preview
  */
-Preview.prototype.render = function(body, atlas, bodies) {
+Preview.prototype.render = function(body, atlas, bodies, randomSource = null) {
     const widthMeters = this.target.width / this.SCALE;
     const heightMeters = this.target.height / this.SCALE;
     const frames = this.PREVIEW_COLUMNS * this.PREVIEW_ROWS;
+
+    if (!body.pattern.region)
+        atlas.write(body.pattern, randomSource);
 
     this.target.target();
 

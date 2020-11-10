@@ -303,8 +303,6 @@ Mover.prototype.drop = function(
             this.gui.cards.add(card);
             this.gui.cards.toDropTarget(card);
 
-            card.initialize(preview, atlas, bodies);
-
             this.move.free(atlas);
         }
         else {

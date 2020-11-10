@@ -73,7 +73,7 @@ FishBody.prototype.SAMPLER_GROWTH_MULTIPLIER = new SamplerPower(50, 100, 4);
 FishBody.prototype.SAMPLER_SPRING_START = new SamplerPlateau(.15, .85, .95, 1.5);
 FishBody.prototype.SAMPLER_SPRING_END = new SamplerPlateau(.05, .6, .7, 1.5);
 FishBody.prototype.SPINE_LOOP_FLEXIBILITY = new SamplerPower(0, 1.2, .4);
-FishBody.prototype.SPINE_LOOP_ANGLE_AMPLITUDE = .15;
+FishBody.prototype.SPINE_LOOP_ANGLE_AMPLITUDE = .1;
 FishBody.prototype.SPRING_POWER = 1.7;
 FishBody.prototype.OFFSPRING_VERTEBRA = .3;
 FishBody.prototype.KILOGRAMS_PER_AREA = 22;
@@ -280,10 +280,10 @@ FishBody.prototype.atPosition = function(x, y) {
 
 /**
  * Initialize the spine
- * @param {Vector2} head The head position
- * @param {Vector2} direction The initial body direction
+ * @param {Vector2} [head] The head position
+ * @param {Vector2} [direction] The initial body direction
  */
-FishBody.prototype.initializeSpine = function(head, direction) {
+FishBody.prototype.initializeSpine = function(head = new Vector2(), direction = new Vector2(1, 0)) {
     this.spine[0] = head.copy();
     this.spinePrevious[0] = head.copy();
 
