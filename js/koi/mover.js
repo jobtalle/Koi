@@ -276,19 +276,13 @@ Mover.prototype.dropEffect = function(fish, waterPlane, random) {
 /**
  * Release any move
  * @param {Water} waterPlane A water plane to splash on
- * @param {Preview} preview A preview renderer
  * @param {Atlas} atlas The atlas
- * @param {Bodies} bodies The bodies renderer
- * @param {AudioBank} audio Game audio
  * @param {Number} scale The world scale
  * @param {Random} random A randomizer
  */
 Mover.prototype.drop = function(
     waterPlane,
-    preview,
     atlas,
-    bodies,
-    audio,
     scale,
     random) {
     if (this.move) {
