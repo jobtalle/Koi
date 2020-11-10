@@ -127,7 +127,7 @@ Card.prototype.updatePosition = function(time = 0) {
     const y = this.positionPrevious.y + (this.position.y - this.positionPrevious.y) * time;
     const angle = this.anglePrevious + (this.angle - this.anglePrevious) * time;
 
-    this.element.style.transform = "translate(" + x + "px," + y + "px)";
+    this.element.style.transform = "translate(" + Math.round(x) + "px," + Math.round(y) + "px)";
 
     if (this.angle !== 0)
         this.element.style.transform += "rotate(" + angle + "rad)";
@@ -138,7 +138,6 @@ Card.prototype.updatePosition = function(time = 0) {
  * @param {Number} slotWidth The width of a page slot
  */
 Card.prototype.transformSlot = function(slotWidth) {
-    console.log(slotWidth);
     this.element.style.transform = "scale(" + (slotWidth / this.WIDTH) + ")";
 };
 

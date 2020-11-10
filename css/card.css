@@ -9,6 +9,8 @@
     --card-height: 350px;
     --card-preview-width: 200px;
     --card-preview-height: 140px;
+    --card-preview-columns: 5;
+    --card-preview-rows: 5;
     --card-border-width: 2px;
     --card-border-radius: 12px;
     --card-drop-target-raise: -0.5;
@@ -32,11 +34,26 @@
     -webkit-tap-highlight-color: transparent;
 }
 
+@keyframes fish-preview-x {
+    from {background-position-x: 0}
+    to {background-position-x: calc(-1 * var(--card-preview-width) * var(--card-preview-columns))}
+}
+
+@keyframes fish-preview-y {
+    from {background-position-y: 0}
+    to {background-position-y: calc(-1 * var(--card-preview-height) * var(--card-preview-rows))}
+}
+
 .card .preview-frame {
     width: var(--card-preview-width);
     height: var(--card-preview-height);
     margin: calc((var(--card-width) - var(--card-preview-width) - 2 * var(--card-border-width)) * 0.5);
     background-color: #4f8bab;
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    animation:
+            fish-preview-x 0.2s steps(var(--card-preview-columns)) infinite,
+            fish-preview-y 1s steps(var(--card-preview-rows)) infinite;
 }
 
 #drop-target {

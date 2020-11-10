@@ -5,12 +5,19 @@
  */
 const Preview = function(gl) {
     this.gl = gl;
-    this.target = new RenderTarget(gl, this.PREVIEW_WIDTH, this.PREVIEW_HEIGHT, gl.RGBA, false);
+    this.target = new RenderTarget(
+        gl,
+        this.PREVIEW_WIDTH * this.PREVIEW_COLUMNS,
+        this.PREVIEW_HEIGHT * this.PREVIEW_ROWS,
+        gl.RGBA,
+        false);
 };
 
 Preview.prototype.PREVIEW_WIDTH = StyleUtils.getInt("--card-preview-width");
 Preview.prototype.PREVIEW_HEIGHT = StyleUtils.getInt("--card-preview-height");
-Preview.prototype.SCALE = 120;
+Preview.prototype.PREVIEW_COLUMNS = StyleUtils.getInt("--card-preview-columns");
+Preview.prototype.PREVIEW_ROWS = StyleUtils.getInt("--card-preview-rows");
+Preview.prototype.SCALE = 150;
 
 /**
  * Create a canvas from the render target
@@ -43,15 +50,25 @@ Preview.prototype.createCanvas = function() {
  * @returns {HTMLCanvasElement} The canvas containing the preview
  */
 Preview.prototype.render = function(body, atlas, bodies) {
-    const widthMeters = this.PREVIEW_WIDTH / this.SCALE;
-    const heightMeters = this.PREVIEW_HEIGHT / this.SCALE;
+    const widthMeters = this.target.width / this.SCALE;
+    const heightMeters = this.target.height / this.SCALE;
+    const frames = this.PREVIEW_COLUMNS * this.PREVIEW_ROWS;
 
     this.target.target();
 
     this.gl.clearColor(1, 1, 1, 0);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
 
-    body.renderLoop(widthMeters, heightMeters, bodies, 0);
+    for (let row = 0; row < this.PREVIEW_ROWS; ++row) for (let column = 0; column < this.PREVIEW_COLUMNS; ++column) {
+        const x = (column + .5) * this.PREVIEW_WIDTH / this.SCALE;
+        const y = (this.PREVIEW_ROWS - row - .5) * this.PREVIEW_HEIGHT / this.SCALE;
+
+        body.renderLoop(
+            x,
+            y,
+            bodies,
+            (row * this.PREVIEW_COLUMNS + column) / frames);
+    }
 
     bodies.render(atlas, widthMeters, -heightMeters, false);
 

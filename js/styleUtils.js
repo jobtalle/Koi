@@ -14,12 +14,7 @@ const StyleUtils = {
      * @returns {Number} The integer associated with this variable
      */
     getInt: name => {
-        const value = StyleUtils.get(name);
-
-        if (value.endsWith("px"))
-            return Number.parseInt(value.substr(0, value.length - 2));
-
-        return -1;
+        return Number.parseInt(StyleUtils.get(name));
     },
 
     /**

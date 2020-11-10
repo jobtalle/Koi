@@ -513,15 +513,15 @@ FishBody.prototype.render = function(bodies, time) {
 
 /**
  * Animate the spine with the loop animation
- * @param {Number} x The X anchor
- * @param {Number} y The Y anchor
+ * @param {Number} x The X position in meters
+ * @param {Number} y The Y position in meters
  * @param {Number} progress The animation progress in the range [0, 1]
  */
 FishBody.prototype.animateSpineLoop = function(x, y, progress) {
     let angle = 0;
 
     this.spine[0].x = x + (this.spine.length - 1) * .5 * this.spacing;
-    this.spine[0].y = y;
+    this.spine[0].y = y + Math.sin(progress * Math.PI * 2) * .2;
 
     for (let vertebra = 1, vertebrae = this.spine.length; vertebra < vertebrae; ++vertebra) {
         const xDir = Math.cos(angle);
@@ -531,7 +531,7 @@ FishBody.prototype.animateSpineLoop = function(x, y, progress) {
         this.spine[vertebra].y = this.spine[vertebra - 1].y - yDir * this.spacing;
 
         if (this.finGroups[vertebra]) for (const fin of this.finGroups[vertebra])
-            fin.setNeutral(this.spine[vertebra], xDir, yDir, this.size);
+            fin.setNeutral(this.spine[vertebra], -xDir, yDir, this.size);
     }
 
     this.tail.setNeutral(this.spine);
@@ -539,17 +539,13 @@ FishBody.prototype.animateSpineLoop = function(x, y, progress) {
 
 /**
  * Render the loop sequence for this body
- * @param {Number} frameWidth The width of the preview frame
- * @param {Number} frameHeight The height of the preview frame
+ * @param {Number} x The X position in meters
+ * @param {Number} y The Y position in meters
  * @param {Bodies} bodies The bodies renderer
  * @param {Number} progress The animation progress in the range [0, 1]
  */
-FishBody.prototype.renderLoop = function(
-    frameWidth,
-    frameHeight,
-    bodies,
-    progress) {
-    this.animateSpineLoop(frameWidth * .5, frameHeight * -.5, progress);
+FishBody.prototype.renderLoop = function(x, y, bodies, progress) {
+    this.animateSpineLoop(x, -y, progress);
 
     this.render(bodies, 1);
 };
