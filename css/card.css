@@ -3,6 +3,8 @@
     --card-color-background: #967a74;
     --card-color-border: #242424;
     --card-color-drop-target: #ffffff55;
+    --card-color-background-dark: #37657e;
+    --card-color-background-light: var(--color-water-shallow);
 
     /* Dimensions */
     --card-width: 250px;
@@ -38,9 +40,10 @@
 .card .preview-frame {
     width: var(--card-preview-width);
     height: var(--card-preview-height);
-    margin: calc((var(--card-width) - var(--card-preview-width) - 2 * var(--card-border-width)) * 0.5);
+    margin: calc((var(--card-width) - var(--card-preview-width) - 4 * var(--card-border-width)) * 0.5);
+    border: var(--card-border-width) solid var(--card-color-border);
     border-radius: var(--card-border-radius);
-    background: linear-gradient(var(--color-water-shallow), var(--color-water-deep));
+    background: linear-gradient(var(--card-color-background-light), var(--card-color-background-dark));
 }
 
 @keyframes fish-preview-x {
