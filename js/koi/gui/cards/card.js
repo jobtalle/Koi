@@ -10,7 +10,8 @@ const Card = function(body, position, angle = 0) {
     this.position = position;
     this.positionPrevious = position.copy();
     this.angle = this.anglePrevious = angle;
-    this.previewFrame = this.createPreviewFrame();
+    this.previewAnimation = this.createPreviewAnimation();
+    this.previewFrame = this.createPreviewFrame(this.previewAnimation);
     this.previewURL = null;
     this.element = this.createElement(this.previewFrame);
     this.initialized = false;
@@ -20,6 +21,7 @@ const Card = function(body, position, angle = 0) {
 
 Card.prototype.CLASS = "card-shape card";
 Card.prototype.CLASS_PREVIEW_FRAME = "preview-frame";
+Card.prototype.CLASS_PREVIEW_ANIMATION = "preview-animation";
 Card.prototype.WIDTH = StyleUtils.getInt("--card-width");
 Card.prototype.HEIGHT = StyleUtils.getInt("--card-height");
 Card.prototype.RATIO = Card.prototype.WIDTH / Card.prototype.HEIGHT;
@@ -61,7 +63,7 @@ Card.prototype.initialize = function(preview, atlas, bodies) {
             return;
 
         this.previewURL = URL.createObjectURL(blob);
-        this.previewFrame.style.backgroundImage = "url(" + this.previewURL + ")";
+        this.previewAnimation.style.backgroundImage = "url(" + this.previewURL + ")";
     });
 };
 
@@ -142,13 +144,28 @@ Card.prototype.transformSlot = function(slotWidth) {
 };
 
 /**
+ * Create the preview animation element
+ * @returns {HTMLDivElement} The preview animation element
+ */
+Card.prototype.createPreviewAnimation = function() {
+    const element = document.createElement("div");
+
+    element.className = this.CLASS_PREVIEW_ANIMATION;
+
+    return element;
+};
+
+/**
  * Create the preview frame
+ * @param {HTMLDivElement} previewAnimation The preview animation element
  * @returns {HTMLDivElement} The preview frame element
  */
-Card.prototype.createPreviewFrame = function() {
+Card.prototype.createPreviewFrame = function(previewAnimation) {
     const element = document.createElement("div");
 
     element.className = this.CLASS_PREVIEW_FRAME;
+
+    element.appendChild(previewAnimation);
 
     return element;
 };

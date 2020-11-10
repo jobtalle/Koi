@@ -35,6 +35,14 @@
     -webkit-tap-highlight-color: transparent;
 }
 
+.card .preview-frame {
+    width: var(--card-preview-width);
+    height: var(--card-preview-height);
+    margin: calc((var(--card-width) - var(--card-preview-width) - 2 * var(--card-border-width)) * 0.5);
+    border-radius: var(--card-border-radius);
+    background: linear-gradient(var(--color-water-shallow), var(--color-water-deep));
+}
+
 @keyframes fish-preview-x {
     from {background-position-x: 0}
     to {background-position-x: calc(-1 * var(--card-preview-width) * var(--card-preview-columns))}
@@ -45,22 +53,19 @@
     to {background-position-y: calc(-1 * var(--card-preview-height) * var(--card-preview-rows))}
 }
 
-.card .preview-frame {
-    width: var(--card-preview-width);
-    height: var(--card-preview-height);
-    margin: calc((var(--card-width) - var(--card-preview-width) - 2 * var(--card-border-width)) * 0.5);
-    border-radius: var(--card-border-radius);
-    background-color: #4f8bab;
+.card .preview-animation {
+    width: 100%;
+    height: 100%;
     background-repeat: no-repeat;
     animation:
-            fish-preview-x
-                calc(1s * var(--card-preview-columns) / var(--card-preview-fps))
-                steps(var(--card-preview-columns))
-                infinite,
-            fish-preview-y
-                calc(1s * var(--card-preview-rows) * var(--card-preview-columns) / var(--card-preview-fps))
-                steps(var(--card-preview-rows))
-                infinite;
+        fish-preview-x
+            calc(1s * var(--card-preview-columns) / var(--card-preview-fps))
+            steps(var(--card-preview-columns))
+            infinite,
+        fish-preview-y
+            calc(1s * var(--card-preview-rows) * var(--card-preview-columns) / var(--card-preview-fps))
+            steps(var(--card-preview-rows))
+            infinite;
 }
 
 #drop-target {
