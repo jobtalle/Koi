@@ -64,8 +64,8 @@ ConstraintCircle.prototype.constrain = function(vector) {
 
     const distance = Math.sqrt(distanceSquared);
 
-    vector.x = this.position.x + this.radius * dx / distance;
-    vector.y = this.position.y + this.radius * dy / distance;
+    vector.x = this.position.x + (this.radius - this.CONSTRAIN_EPSILON) * dx / distance;
+    vector.y = this.position.y + (this.radius - this.CONSTRAIN_EPSILON) * dy / distance;
 
     return true;
 };

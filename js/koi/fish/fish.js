@@ -350,12 +350,12 @@ Fish.prototype.constrain = function(constraint) {
             }
 
             this.turnForce = 0;
-
-            return false;
         }
     }
     else if (proximity === -1)
         return true;
+
+    return false;
 };
 
 /**

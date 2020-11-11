@@ -28,12 +28,12 @@ ConstraintRing.prototype.constrain = function(vector, dx, dy, distance) {
         return;
 
     if (distance < this.radius - this.halfWidth) {
-        vector.x = this.position.x + (this.radius - this.halfWidth) * dx / distance;
-        vector.y = this.position.y + (this.radius - this.halfWidth) * dy / distance;
+        vector.x = this.position.x + (this.radius - this.halfWidth + this.CONSTRAIN_EPSILON) * dx / distance;
+        vector.y = this.position.y + (this.radius - this.halfWidth + this.CONSTRAIN_EPSILON) * dy / distance;
     }
     else {
-        vector.x = this.position.x + (this.radius + this.halfWidth) * dx / distance;
-        vector.y = this.position.y + (this.radius + this.halfWidth) * dy / distance;
+        vector.x = this.position.x + (this.radius + this.halfWidth - this.CONSTRAIN_EPSILON) * dx / distance;
+        vector.y = this.position.y + (this.radius + this.halfWidth - this.CONSTRAIN_EPSILON) * dy / distance;
     }
 };
 
