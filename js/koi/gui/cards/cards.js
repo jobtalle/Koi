@@ -232,26 +232,30 @@ Cards.prototype.move = function(x, y) {
  */
 Cards.prototype.grabCard = function(card, x, y) {
     if (this.hand.contains(card)) {
-        this.hand.remove(card);
-        this.moveToFront(card);
-
         if (!this.bookVisible) {
-            this.hand.hide();
+            if (this.koi.constellation.getFishCount() < Koi.prototype.FISH_CAPACITY) {
+                this.hand.remove(card);
+                this.hand.hide();
 
-            this.remove(card);
+                this.remove(card);
 
-            const worldX = this.koi.constellation.getWorldX(x, this.koi.scale);
-            const worldY = this.koi.constellation.getWorldY(y, this.koi.scale);
-            const fish = new Fish(
+                const worldX = this.koi.constellation.getWorldX(x, this.koi.scale);
+                const worldY = this.koi.constellation.getWorldY(y, this.koi.scale);
+                const fish = new Fish(
                     card.body,
                     new Vector2(worldX, worldY),
                     this.FISH_DROP_DIRECTION);
-            const origin = fish.body.getOffspringPosition();
+                const origin = fish.body.getOffspringPosition();
 
-            fish.moveTo(new Vector2(worldX * 2 - origin.x, worldY * 2 - origin.y));
+                fish.moveTo(new Vector2(worldX * 2 - origin.x, worldY * 2 - origin.y));
 
-            this.koi.systems.atlas.write(card.body.pattern, this.koi.randomSource);
-            this.koi.mover.pickUp(fish, worldX, worldY);
+                this.koi.systems.atlas.write(card.body.pattern, this.koi.randomSource);
+                this.koi.mover.pickUp(fish, worldX, worldY);
+            }
+        }
+        else {
+            this.hand.remove(card);
+            this.moveToFront(card);
         }
     }
     else

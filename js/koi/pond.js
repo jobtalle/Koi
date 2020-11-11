@@ -172,7 +172,7 @@ Pond.prototype.update = function(
         if (fish.update(this.constraint, water, random))
             this.removeFish(a, atlas);
         else {
-            if (this.canBreed && fish.interactions === 1) {
+            if (constellation.getFishCount() < Koi.prototype.FISH_CAPACITY && this.canBreed && fish.interactions === 1) {
                 if (fish.canMate() && fish.lastInteraction.canMate()) {
                     fish.mate(random);
                     fish.lastInteraction.mate(random);
