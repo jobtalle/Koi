@@ -233,7 +233,7 @@ Cards.prototype.move = function(x, y) {
 Cards.prototype.grabCard = function(card, x, y) {
     if (this.hand.contains(card)) {
         if (!this.bookVisible) {
-            if (this.koi.constellation.getFishCount() < Koi.prototype.FISH_CAPACITY) {
+            if (this.koi.constellation.getFishCount() < Koi.prototype.FISH_CAPACITY - 1) {
                 this.hand.remove(card);
                 this.hand.hide();
 

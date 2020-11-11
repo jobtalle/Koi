@@ -172,7 +172,8 @@ Pond.prototype.update = function(
         if (fish.update(this.constraint, water, random))
             this.removeFish(a, atlas);
         else {
-            if (constellation.getFishCount() < Koi.prototype.FISH_CAPACITY && this.canBreed && fish.interactions === 1) {
+            if (constellation.getFishCount() < Koi.prototype.FISH_CAPACITY - 1 &&
+                this.canBreed && fish.interactions === 1) {
                 if (fish.canMate() && fish.lastInteraction.canMate()) {
                     fish.mate(random);
                     fish.lastInteraction.mate(random);
@@ -183,7 +184,7 @@ Pond.prototype.update = function(
                     const offspring = breeder.breed(atlas, patterns, randomSource, random);
 
                     for (const fish of offspring) {
-                        if (constellation.getFishCount() < Koi.prototype.FISH_CAPACITY)
+                        if (constellation.getFishCount() < Koi.prototype.FISH_CAPACITY - 1)
                             this.addFish(fish);
                         else
                             break;
