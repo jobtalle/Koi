@@ -275,6 +275,7 @@ Constellation.prototype.drop = function(fish) {
         }
 
         fish.drop(nearestPosition);
+
         nearest.addFish(fish);
     }
 };

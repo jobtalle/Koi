@@ -10,5 +10,5 @@ const Constraint = function(border = this.BORDER) {
 
 Constraint.prototype.BORDER = 1.25;
 Constraint.prototype.MESH_RESOLUTION = .3;
-Constraint.prototype.CONSTRAIN_EPSILON = .00001;
+Constraint.prototype.CONSTRAIN_EPSILON = .0001;
 Constraint.prototype.MESH_DEPTH_PADDING = Ponds.prototype.DEPTH;

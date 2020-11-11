@@ -172,6 +172,7 @@ Fish.prototype.getOffspringPosition = function() {
  */
 Fish.prototype.drop = function(position) {
     this.moveTo(position);
+
     this.speed = this.SPEED_DROP;
 };
 
