@@ -144,6 +144,9 @@ if (gl) {
     });
 
     window.onbeforeunload = () => {
+        gui.cancelAction();
+        koi.touchEnd();
+
         save();
 
         koi.free();

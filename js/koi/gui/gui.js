@@ -31,6 +31,13 @@ GUI.prototype.serialize = function(buffer) {
 };
 
 /**
+ * Cancel any dragging action, called before unload
+ */
+GUI.prototype.cancelAction = function() {
+    this.cards.release();
+};
+
+/**
  * Set the koi object this GUI is linked to
  * @param {Koi} koi The koi object
  */
