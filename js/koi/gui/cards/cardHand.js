@@ -24,6 +24,7 @@ CardHand.prototype.EXTRA_ANGLE = -.03;
 CardHand.prototype.HIDE_HEIGHT = 1;
 CardHand.prototype.CLASS_DROP_TARGET_HIDDEN = "hidden";
 CardHand.prototype.DROP_TARGET_TRIGGER_DISTANCE = Card.prototype.WIDTH;
+CardHand.prototype.CAPACITY = 16;
 
 /**
  * Deserialize the card hand
@@ -58,6 +59,14 @@ CardHand.prototype.serialize = function(buffer) {
 
     for (const card of this.cards)
         card.serialize(buffer);
+};
+
+/**
+ * Check if this hand is full
+ * @returns {Boolean} True if the hand is full
+ */
+CardHand.prototype.isFull = function() {
+    return this.cards.length === this.CAPACITY;
 };
 
 /**
@@ -235,7 +244,7 @@ CardHand.prototype.moveDraggable = function(x, y) {
             this.dropTarget.classList.add(this.CLASS_DROP_TARGET_HIDDEN);
         }
     }
-    else if (this.distanceToDropTarget(x, y) < this.DROP_TARGET_TRIGGER_DISTANCE) {
+    else if (!this.isFull() && this.distanceToDropTarget(x, y) < this.DROP_TARGET_TRIGGER_DISTANCE) {
         this.dropTargetVisible = true;
         this.dropTarget.classList.remove(this.CLASS_DROP_TARGET_HIDDEN);
     }

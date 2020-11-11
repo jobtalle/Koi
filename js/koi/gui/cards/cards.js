@@ -258,8 +258,12 @@ Cards.prototype.grabCard = function(card, x, y) {
             this.moveToFront(card);
         }
     }
-    else
+    else {
+        if (this.hand.isFull())
+            return;
+
         this.removeFromBook(card);
+    }
 
     if (this.bookVisible) {
         this.grabbed = card;
