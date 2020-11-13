@@ -72,8 +72,9 @@ FishBody.prototype.SAMPLER_MATING_FREQUENCY = new SamplerPower(300 * .1, 4500 * 
 FishBody.prototype.SAMPLER_GROWTH_MULTIPLIER = new SamplerPower(50, 100, 4);
 FishBody.prototype.SAMPLER_SPRING_START = new SamplerPlateau(.15, .85, .95, 1.5);
 FishBody.prototype.SAMPLER_SPRING_END = new SamplerPlateau(.05, .6, .7, 1.5);
-FishBody.prototype.SPINE_LOOP_FLEXIBILITY = new SamplerPower(0, 1.2, .4);
-FishBody.prototype.SPINE_LOOP_ANGLE_AMPLITUDE = .1;
+FishBody.prototype.SPINE_LOOP_FLEXIBILITY = new SamplerPower(0, 2.3, .16);
+FishBody.prototype.SPINE_LOOP_ANGLE_AMPLITUDE = .07;
+FishBody.prototype.SPINE_LOOP_PHASE_AMPLITUDE = .6;
 FishBody.prototype.SPRING_POWER = 1.7;
 FishBody.prototype.OFFSPRING_VERTEBRA = .3;
 FishBody.prototype.KILOGRAMS_PER_AREA = 22;
@@ -549,7 +550,7 @@ FishBody.prototype.animateSpineLoop = function(
         this.spine[vertebra].y = this.spine[vertebra - 1].y - yDir * this.spacing;
 
         if (this.finGroups[vertebra]) for (const fin of this.finGroups[vertebra])
-            fin.setNeutral(this.spine[vertebra], -xDir, -yDir, phase, this.size);
+            fin.setNeutral(this.spine[vertebra], -xDir, -yDir, phase, this.SPINE_LOOP_PHASE_AMPLITUDE, this.size);
     }
 
     this.tail.setNeutral(this.spine);

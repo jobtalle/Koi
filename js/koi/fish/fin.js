@@ -128,10 +128,17 @@ Fin.prototype.storePreviousState = function() {
  * @param {Number} dx The normalized X direction of the vertebra
  * @param {Number} dy The normalized Y direction of the vertebra
  * @param {Number} phase The fin phase
+ * @param {Number} phaseAmplitude The phase amplitude multiplier
  * @param {Number} size The fin size in the range [0, 1]
  */
-Fin.prototype.setNeutral = function(vertebra, dx, dy, phase, size) {
-    this.update(vertebra, dx, dy, phase, size, 1);
+Fin.prototype.setNeutral = function(
+    vertebra,
+    dx,
+    dy,
+    phase,
+    phaseAmplitude,
+    size) {
+    this.update(vertebra, dx, dy, phase, size, 1, phaseAmplitude);
 };
 
 /**
@@ -142,6 +149,7 @@ Fin.prototype.setNeutral = function(vertebra, dx, dy, phase, size) {
  * @param {Number} phase The fin phase
  * @param {Number} size The fin size in the range [0, 1]
  * @param {Number} [spring] The spring strength
+ * @param {Number} [phaseAmplitude] The phase amplitude multiplier
  */
 Fin.prototype.update = function(
     vertebra,
@@ -149,7 +157,8 @@ Fin.prototype.update = function(
     dy,
     phase,
     size,
-    spring = this.SPRING) {
+    spring = this.SPRING,
+    phaseAmplitude = 1) {
     this.storePreviousState();
 
     this.finDepth = this.finRadius * this.DEPTH_FACTOR * size;
@@ -163,7 +172,7 @@ Fin.prototype.update = function(
     this.anchor.x = vertebra.x + dxSide * this.anchorRadius;
     this.anchor.y = vertebra.y + dySide * this.anchorRadius;
 
-    const skew = Math.sin(phase + this.at * this.PHASE_SHIFT) * this.WAVE_SKEW + this.SKEW;
+    const skew = Math.sin(phase + this.at * this.PHASE_SHIFT) * this.WAVE_SKEW * phaseAmplitude + this.SKEW;
 
     this.start.x += (this.anchor.x + dxStart + radius * dx * skew - this.start.x) * spring;
     this.start.y += (this.anchor.y + dyStart + radius * dy * skew - this.start.y) * spring;

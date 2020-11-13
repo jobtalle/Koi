@@ -10,8 +10,8 @@
     --card-width: 250px;
     --card-height: 350px;
     --card-preview-width: 200px;
-    --card-preview-height: 140px;
-    --card-preview-columns: 7;
+    --card-preview-height: 120px;
+    --card-preview-columns: 6;
     --card-preview-rows: 10;
     --card-preview-fps: 60;
     --card-border-width: 2px;
