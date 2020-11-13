@@ -148,7 +148,7 @@ FishBody.prototype.getAge = function() {
  * @returns {Number} The length in meters
  */
 FishBody.prototype.getLength = function() {
-    return (this.spine.length - 1) * this.spacing;
+    return (this.spine.length - 1) * this.spacing * this.size;
 };
 
 /**

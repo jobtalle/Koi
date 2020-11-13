@@ -138,8 +138,15 @@ Card.prototype.rotate = function(target, interpolationFactor) {
  */
 Card.prototype.setPosition = function(position) {
     this.position.set(position);
-
     this.positionPrevious.set(position);
+};
+
+/**
+ * Set the rotation of this card instantly
+ * @param {Number} rotation The rotation
+ */
+Card.prototype.setRotation = function(rotation) {
+    this.angle = this.anglePrevious = rotation;
 };
 
 /**
@@ -234,13 +241,15 @@ Card.prototype.createInfo = function() {
         this.CLASS_INFO_WEIGHT));
     element.appendChild(this.createProperty(
         "Length",
-        Math.round(this.body.getLength() * 100).toString(),
+        (this.body.getLength() * 100).toFixed(1).toString(),
         this.CLASS_INFO_LENGTH));
 
     if (ageMinutes < 1)
         element.appendChild(this.createProperty("Age", "Fry"));
     else if (ageMinutes < 2)
         element.appendChild(this.createProperty("Age", Math.round(ageMinutes).toString() + " minute"));
+    else if (ageMinutes > 60)
+        element.appendChild(this.createProperty("Age", "> 1 hour"));
     else
         element.appendChild(this.createProperty("Age", Math.round(ageMinutes).toString() + " minutes"));
 

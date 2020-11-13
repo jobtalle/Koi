@@ -224,6 +224,7 @@ CardPage.prototype.removeCard = function(card) {
         this.updateRect();
 
     card.setPosition(this.targets[index]);
+    card.setRotation(0);
 
     this.cards[index] = null;
     this.slots[index].removeChild(card.element);

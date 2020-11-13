@@ -22,6 +22,7 @@
     transition: 0.5s ease;
     transition-property: top;
     box-shadow: 0 0 var(--book-shadow-radius) var(--book-shadow-color);
+    user-select: none;
 }
 
 #book.hidden {
@@ -83,7 +84,6 @@
 
 #book #spine .page .slot {
     position: relative;
-    user-select: none;
     background-color: #9d9d9d;
     border-radius: var(--card-border-radius);
 }
