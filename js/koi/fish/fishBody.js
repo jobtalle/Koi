@@ -136,6 +136,22 @@ FishBody.prototype.serialize = function(buffer) {
 };
 
 /**
+ * Get the age of this fish body
+ * @returns {Number} The age in seconds
+ */
+FishBody.prototype.getAge = function() {
+    return this.age * Koi.prototype.UPDATE_RATE;
+};
+
+/**
+ * Get the length of this fish body
+ * @returns {Number} The length in meters
+ */
+FishBody.prototype.getLength = function() {
+    return (this.spine.length - 1) * this.spacing;
+};
+
+/**
  * Get the minimum number of updates between mating
  * @returns {Number} The minimum number of updates between mating
  */

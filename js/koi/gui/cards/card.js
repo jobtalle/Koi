@@ -21,6 +21,11 @@ const Card = function(body, position, angle = 0) {
 
 Card.prototype.CLASS = "card-shape card";
 Card.prototype.CLASS_PREVIEW_FRAME = "preview-frame";
+Card.prototype.CLASS_INFO = "info";
+Card.prototype.CLASS_INFO_LABEL = "label";
+Card.prototype.CLASS_INFO_VALUE = "value";
+Card.prototype.CLASS_INFO_WEIGHT = "weight";
+Card.prototype.CLASS_INFO_LENGTH = "length";
 Card.prototype.CLASS_PREVIEW_ANIMATION = "preview-animation";
 Card.prototype.WIDTH = StyleUtils.getInt("--card-width");
 Card.prototype.HEIGHT = StyleUtils.getInt("--card-height");
@@ -188,6 +193,61 @@ Card.prototype.createPreviewFrame = function(previewAnimation) {
 };
 
 /**
+ * Create an element describing a fish property
+ * @param {String} name The property name
+ * @param {String} value The property value
+ * @param {String} [valueClass] An optional class for the value span
+ * @returns {HTMLParagraphElement} The property element
+ */
+Card.prototype.createProperty = function(name, value, valueClass = null) {
+    const element = document.createElement("p");
+    const spanLabel = document.createElement("span");
+    const spanValue = document.createElement("span");
+
+    spanLabel.className = this.CLASS_INFO_LABEL;
+    spanLabel.appendChild(document.createTextNode(name));
+
+    spanValue.className = this.CLASS_INFO_VALUE;
+    spanValue.appendChild(document.createTextNode(value));
+
+    if (valueClass)
+        spanValue.classList.add(valueClass);
+
+    element.appendChild(spanLabel);
+    element.appendChild(spanValue);
+
+    return element;
+};
+
+/**
+ * Create the info element
+ * @returns {HTMLDivElement} The info element
+ */
+Card.prototype.createInfo = function() {
+    const element = document.createElement("div");
+    const ageMinutes = this.body.getAge() / 60;
+
+    element.className = this.CLASS_INFO;
+    element.appendChild(this.createProperty(
+        "Weight",
+        this.body.getWeight(this.body.size).toFixed(2),
+        this.CLASS_INFO_WEIGHT));
+    element.appendChild(this.createProperty(
+        "Length",
+        Math.round(this.body.getLength() * 100).toString(),
+        this.CLASS_INFO_LENGTH));
+
+    if (ageMinutes < 1)
+        element.appendChild(this.createProperty("Age", "Fry"));
+    else if (ageMinutes < 2)
+        element.appendChild(this.createProperty("Age", Math.round(ageMinutes).toString() + " minute"));
+    else
+        element.appendChild(this.createProperty("Age", Math.round(ageMinutes).toString() + " minutes"));
+
+    return element;
+};
+
+/**
  * Create an HTML element for this card
  * @param {HTMLElement} previewFrame The preview frame element
  * @returns {HTMLElement} The card element
@@ -197,6 +257,7 @@ Card.prototype.createElement = function(previewFrame) {
 
     element.className = this.CLASS;
     element.appendChild(previewFrame);
+    element.appendChild(this.createInfo());
 
     return element;
 };

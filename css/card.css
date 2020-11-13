@@ -11,12 +11,14 @@
     --card-height: 350px;
     --card-preview-width: 200px;
     --card-preview-height: 120px;
+    --card-preview-margin: calc((var(--card-width) - var(--card-preview-width) - 4 * var(--card-border-width)) * 0.5);
     --card-preview-columns: 6;
     --card-preview-rows: 10;
     --card-preview-fps: 60;
     --card-border-width: 2px;
     --card-border-radius: 12px;
     --card-drop-target-raise: -0.5;
+    --card-info-spacing: 14px;
 }
 
 .card-shape {
@@ -40,11 +42,49 @@
 .card .preview-frame {
     width: var(--card-preview-width);
     height: var(--card-preview-height);
-    margin: calc((var(--card-width) - var(--card-preview-width) - 4 * var(--card-border-width)) * 0.5);
+    margin: var(--card-preview-margin);
     border: var(--card-border-width) solid var(--card-color-border);
     border-radius: var(--card-border-radius);
     background: linear-gradient(var(--card-color-background-light), var(--card-color-background-dark));
     overflow: hidden;
+}
+
+.card .info {
+    width: calc(100% - 2 * var(--card-preview-margin));
+    margin: var(--card-preview-margin);
+}
+
+.card .info p {
+    margin-top: calc(var(--card-info-spacing) / 4);
+    margin-bottom: calc(var(--card-info-spacing) / 4);
+    padding: calc(var(--card-info-spacing) / 4);
+    font-size: 20px;
+    font-family: sans-serif;
+    background-color: lightgray;
+}
+
+.card .info p .label {
+    font-weight: bold;
+}
+
+.card .info p .label::after {
+    content: ":";
+}
+
+.card .info p .value {
+    float: right;
+}
+
+.card .info p .value::after {
+    font-style: italic;
+}
+
+.card .info p .value.weight::after {
+    content: " Kg";
+}
+
+.card .info p .value.length::after {
+    content: " cm";
 }
 
 @keyframes fish-preview-x {
