@@ -46,7 +46,6 @@ Cards.prototype.FISH_DROP_DIRECTION = new Vector2(1, 0);
 Cards.prototype.ID_BUTTON_BOOK = "button-book";
 Cards.prototype.ID_DROP_TARGET = "drop-target";
 Cards.prototype.CLASS_DROP_TARGET = "card-shape hidden";
-Cards.prototype.DROP_TARGET_THRESHOLD = .2;
 
 /**
  * Serialize the card collection
@@ -231,7 +230,7 @@ Cards.prototype.convertToFish = function(x, y) {
  */
 Cards.prototype.move = function(x, y) {
     if (this.grabbed) {
-        if (!this.bookVisible && this.grabbed.position.y < Card.prototype.HEIGHT) {
+        if (!this.bookVisible && this.hand.isOutside(this.grabbed.position.x, this.grabbed.position.y)) {
             if (this.convertToFish(x, y)) {
                 this.element.style.pointerEvents = "none";
                 this.grabbed = null;

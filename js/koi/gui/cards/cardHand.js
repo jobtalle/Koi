@@ -28,6 +28,8 @@ CardHand.prototype.HIDE_HEIGHT = 1;
 CardHand.prototype.CLASS_DROP_TARGET_HIDDEN = "hidden";
 CardHand.prototype.DROP_TARGET_TRIGGER_DISTANCE = Card.prototype.WIDTH;
 CardHand.prototype.CAPACITY = 16;
+CardHand.prototype.FAN_PORTION_MAX = 1;
+CardHand.prototype.OUTSIDE_HEIGHT_THRESHOLD = .75;
 
 /**
  * Deserialize the card hand
@@ -108,6 +110,17 @@ CardHand.prototype.contains = function(card) {
 };
 
 /**
+ * Calculate amount of radians for the card fan for a given number of cards
+ * @param {Number} count The number of cards in the hand
+ * @returns {Number}
+ */
+CardHand.prototype.calculateFanPortion = function(count) {
+    return Math.min(
+        this.FAN_PORTION_MAX,
+        (count - 1) / ((2 * this.fanAngle * this.fanRadius) / (Card.prototype.WIDTH * this.MAX_SPACING)));
+};
+
+/**
  * Make card position targets
  * @param {Number} count The card count
  * @returns {Vector3[]} The targets
@@ -115,9 +128,7 @@ CardHand.prototype.contains = function(card) {
 CardHand.prototype.makeTargets = function(count) {
     const extraAngle = count === 1 ? 0 : this.EXTRA_ANGLE;
     const targets = new Array(count);
-    const fanPortion = Math.min(
-        1,
-        (count - 1) / ((2 * this.fanAngle * this.fanRadius) / (Card.prototype.WIDTH * this.MAX_SPACING)));
+    const fanPortion = this.calculateFanPortion(count);
 
     for (let target = 0; target < count; ++target) {
         const factor = 1 - (count === 1 ? 0.5 : target / (count - 1));
@@ -245,6 +256,25 @@ CardHand.prototype.distanceToDropTarget = function(x, y) {
         Math.abs(y - rect.bottom));
 
     return Math.sqrt(dx * dx + dy * dy);
+};
+
+/**
+ * Check whether a position is outside the fan shape
+ * @param {Number} x The X position in pixels
+ * @param {Number} y The Y position in pixels
+ * @returns {Boolean} True if the given position is outside the card hand
+ */
+CardHand.prototype.isOutside = function(x, y) {
+    const dx = this.fanCenter.x - x;
+    const dy = this.fanCenter.y - y;
+    const d = Math.sqrt(dx * dx + dy * dy);
+
+    if (d > this.fanRadius + Card.prototype.HEIGHT * this.OUTSIDE_HEIGHT_THRESHOLD)
+        return true;
+
+    const fanPortion = this.calculateFanPortion(this.cards.length);
+
+    return Math.abs(Math.acos(dy / d)) > fanPortion * this.fanAngle + Card.prototype.WIDTH / this.fanRadius;
 };
 
 /**
