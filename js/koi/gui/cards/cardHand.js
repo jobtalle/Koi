@@ -6,13 +6,16 @@
  * @constructor
  */
 const CardHand = function(width, height, dropTarget) {
-    this.width = width;
-    this.height = height;
     this.dropTarget = dropTarget;
     this.cards = [];
     this.targets = null;
     this.visible = true;
     this.dropTargetVisible = false;
+    this.fanCenter = new Vector2();
+    this.fanAngle = 0;
+    this.fanRadius = 0;
+
+    this.calculateFan(width, height);
 };
 
 CardHand.prototype.WIDTH = .5;
@@ -62,6 +65,21 @@ CardHand.prototype.serialize = function(buffer) {
 };
 
 /**
+ * Calculate the fan shape
+ * @param {Number} width The view width in pixels
+ * @param {Number} height The view height in pixels
+ */
+CardHand.prototype.calculateFan = function(width, height) {
+    const handWidth = width * this.WIDTH;
+    const handHeight = Card.prototype.HEIGHT * this.HEIGHT;
+
+    this.fanAngle = Math.PI - Math.atan(.5 * handWidth / handHeight) - Math.atan(handHeight / .5 * handWidth);
+    this.fanRadius = 0.5 * handWidth / Math.sin(this.fanAngle);
+    this.fanCenter.x = width * .5;
+    this.fanCenter.y = height + (-.5 - this.RAISE) * Card.prototype.HEIGHT + this.fanRadius;
+};
+
+/**
  * Check if this hand is full
  * @returns {Boolean} True if the hand is full
  */
@@ -75,8 +93,8 @@ CardHand.prototype.isFull = function() {
  * @param {Number} height The screen height in pixels
  */
 CardHand.prototype.resize = function(width, height) {
-    this.width = width;
-    this.height = height;
+    this.calculateFan(width, height);
+
     this.targets = this.makeTargets(this.cards.length);
 };
 
@@ -95,25 +113,20 @@ CardHand.prototype.contains = function(card) {
  * @returns {Vector3[]} The targets
  */
 CardHand.prototype.makeTargets = function(count) {
-    const handWidth = this.width * this.WIDTH;
-    const handHeight = Card.prototype.HEIGHT * this.HEIGHT;
     const extraAngle = count === 1 ? 0 : this.EXTRA_ANGLE;
-    const fanAngle = Math.PI - Math.atan(0.5 * handWidth / handHeight) - Math.atan(handHeight / 0.5 * handWidth);
-    const fanRadius = 0.5 * handWidth / Math.sin(fanAngle);
+    const targets = new Array(count);
     const fanPortion = Math.min(
         1,
-        (count - 1) / ((2 * fanAngle * fanRadius) / (Card.prototype.WIDTH * this.MAX_SPACING)));
-
-    const targets = new Array(count);
+        (count - 1) / ((2 * this.fanAngle * this.fanRadius) / (Card.prototype.WIDTH * this.MAX_SPACING)));
 
     for (let target = 0; target < count; ++target) {
         const factor = 1 - (count === 1 ? 0.5 : target / (count - 1));
-        const angle = fanPortion * fanAngle * (1 - 2 * factor) - Math.PI * .5;
+        const angle = fanPortion * this.fanAngle * (1 - 2 * factor) - Math.PI * .5;
 
         targets[target] = new Vector3(
-            this.width * .5 + Math.cos(angle) * fanRadius,
-            this.height + (-.5 - this.RAISE) * Card.prototype.HEIGHT + fanRadius + Math.sin(angle) * fanRadius,
-            fanPortion * fanAngle * (1 - 2 * factor) + extraAngle);
+            this.fanCenter.x + Math.cos(angle) * this.fanRadius,
+            this.fanCenter.y + Math.sin(angle) * this.fanRadius,
+            fanPortion * this.fanAngle * (1 - 2 * factor) + extraAngle);
     }
 
     return targets;

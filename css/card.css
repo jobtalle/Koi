@@ -17,7 +17,7 @@
     --card-preview-fps: 60;
     --card-border-width: 2px;
     --card-border-radius: 12px;
-    --card-drop-target-raise: -0.5;
+    --card-drop-target-raise: -0.25;
     --card-info-spacing: 14px;
 }
 

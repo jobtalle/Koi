@@ -231,7 +231,7 @@ Cards.prototype.convertToFish = function(x, y) {
  */
 Cards.prototype.move = function(x, y) {
     if (this.grabbed) {
-        if (!this.bookVisible && y < 200) {
+        if (!this.bookVisible && this.grabbed.position.y < Card.prototype.HEIGHT) {
             if (this.convertToFish(x, y)) {
                 this.element.style.pointerEvents = "none";
                 this.grabbed = null;
@@ -252,6 +252,12 @@ Cards.prototype.move = function(x, y) {
  * @param {Number} y The mouse Y position in pixels
  */
 Cards.prototype.grabCard = function(card, x, y) {
+    this.grabbed = card;
+    this.grabOffset.x = x - card.position.x;
+    this.grabOffset.y = y - card.position.y;
+    this.snap = this.findSnap(x, y);
+    this.element.style.pointerEvents = "auto";
+
     if (this.hand.contains(card)) {
         this.hand.remove(card);
         this.moveToFront(card);
@@ -262,12 +268,6 @@ Cards.prototype.grabCard = function(card, x, y) {
 
         this.removeFromBook(card);
     }
-
-    this.grabbed = card;
-    this.grabOffset.x = x - card.position.x;
-    this.grabOffset.y = y - card.position.y;
-    this.snap = this.findSnap(x, y);
-    this.element.style.pointerEvents = "auto";
 };
 
 /**
