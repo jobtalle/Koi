@@ -136,6 +136,16 @@ FishBody.prototype.serialize = function(buffer) {
 };
 
 /**
+ * Get a hash byte of this fish
+ * @returns {Number} The byte value
+ */
+FishBody.prototype.hash = function() {
+    const ageHash = ((this.age & 0xFF) ^ ((this.age >> 8) & 0xFF));
+
+    return this.length ^ this.radius ^ this.growthSpeed ^ this.matingFrequency ^ this.offspringCount ^ ageHash;
+};
+
+/**
  * Get the age of this fish body
  * @returns {Number} The age in seconds
  */

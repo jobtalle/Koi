@@ -51,6 +51,7 @@ Preview.prototype.createCanvas = function() {
  * @returns {HTMLCanvasElement} The canvas containing the preview
  */
 Preview.prototype.render = function(body, atlas, bodies, randomSource = null) {
+    const phaseShift = body.hash() / 0xFF;
     const widthMeters = this.target.width / this.SCALE;
     const heightMeters = this.target.height / this.SCALE;
     const frames = this.PREVIEW_COLUMNS * this.PREVIEW_ROWS;
@@ -78,7 +79,7 @@ Preview.prototype.render = function(body, atlas, bodies, randomSource = null) {
             left / this.SCALE,
             bottom / this.SCALE,
             bodies,
-            (row * this.PREVIEW_COLUMNS + column) / frames);
+            (phaseShift + (row * this.PREVIEW_COLUMNS + column) / frames) % 1);
 
         bodies.render(atlas, widthMeters, -heightMeters, false);
     }
