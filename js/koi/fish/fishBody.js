@@ -47,8 +47,8 @@ const FishBody = function(
         this.SPRING_POWER);
     this.phase = 0;
     this.finPhase = 0;
-    this.spacing = this.RESOLUTION;
-    this.inverseSpacing = 1 / this.spacing;
+    this.spacing = 0;
+    this.inverseSpacing = 0;
 };
 
 FishBody.prototype.FIN_PAIRS_MIN = 0;
@@ -311,12 +311,15 @@ FishBody.prototype.atPosition = function(x, y) {
  * @param {Vector2} [direction] The initial body direction
  */
 FishBody.prototype.initializeSpine = function(head = new Vector2(), direction = new Vector2(1, 0)) {
+    this.calculateSpacing();
+
+    const step = direction.copy().multiply(this.spacing);
+
     this.spine[0] = head.copy();
     this.spinePrevious[0] = head.copy();
 
     for (let vertebra = 1; vertebra < this.spine.length; ++vertebra) {
-        this.spine[vertebra] = this.spine[vertebra - 1].copy().subtract(direction.copy().multiply(
-            this.spacing * this.size));
+        this.spine[vertebra] = this.spine[vertebra - 1].copy().subtract(step);
         this.spinePrevious[vertebra] = this.spine[vertebra].copy();
 
         if (this.finGroups[vertebra]) for (const fin of this.finGroups[vertebra])
@@ -324,7 +327,6 @@ FishBody.prototype.initializeSpine = function(head = new Vector2(), direction = 
     }
 
     this.tailOffset = this.tail.connect(this.spine, this.radiusSampled);
-    this.calculateSpacing();
 };
 
 /**
