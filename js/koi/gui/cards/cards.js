@@ -99,24 +99,6 @@ Cards.prototype.createButtonBook = function() {
 };
 
 /**
- * Check whether a card element is on the drop target
- * @param {Card} card A card
- * @returns {Boolean} True if a card is on the drop target
- */
-Cards.prototype.cardOnDropTarget = function(card) {
-    const rectCard = card.element.getBoundingClientRect();
-    const rectDropTarget = this.dropTarget.getBoundingClientRect();
-    const left = Math.max(rectCard.left, rectDropTarget.left);
-    const top = Math.max(rectCard.top, rectDropTarget.top);
-    const right = Math.min(rectCard.right, rectDropTarget.right);
-    const bottom = Math.min(rectCard.bottom, rectDropTarget.bottom);
-    const width = Math.max(0, right - left);
-    const height = Math.max(0, bottom - top);
-
-    return (width * height) / (Card.prototype.WIDTH * Card.prototype.HEIGHT) > this.DROP_TARGET_THRESHOLD;
-};
-
-/**
  * Check whether a point is inside the drop target
  * @param {Number} x The X coordinate
  * @param {Number} y The Y coordinate
@@ -212,15 +194,54 @@ Cards.prototype.render = function(time) {
 };
 
 /**
+ * Convert the currently dragged card to a fish
+ * @param {Number} x The mouse X position in pixels
+ * @param {Number} y The mouse Y position in pixels
+ * @returns {Boolean} True if conversion succeeded
+ */
+Cards.prototype.convertToFish = function(x, y) {
+    if (this.koi.constellation.getFishCount() < Koi.prototype.FISH_CAPACITY - 1) {
+        this.hand.hide();
+
+        this.remove(this.grabbed);
+
+        const worldX = this.koi.constellation.getWorldX(x, this.koi.scale);
+        const worldY = this.koi.constellation.getWorldY(y, this.koi.scale);
+        const fish = new Fish(
+            this.grabbed.body,
+            new Vector2(worldX, worldY),
+            this.FISH_DROP_DIRECTION);
+        const origin = fish.body.getOffspringPosition();
+
+        fish.moveTo(new Vector2(worldX * 2 - origin.x, worldY * 2 - origin.y));
+
+        this.koi.systems.atlas.write(this.grabbed.body.pattern, this.koi.randomSource);
+        this.koi.mover.pickUp(fish, worldX, worldY);
+
+        return true;
+    }
+
+    return false;
+};
+
+/**
  * Move the mouse to a new position
  * @param {Number} x The mouse X position in pixels
  * @param {Number} y The mouse Y position in pixels
  */
 Cards.prototype.move = function(x, y) {
     if (this.grabbed) {
-        this.snap = this.findSnap(x, y);
+        if (!this.bookVisible && y < 200) {
+            if (this.convertToFish(x, y)) {
+                this.element.style.pointerEvents = "none";
+                this.grabbed = null;
+            }
+        }
+        else {
+            this.snap = this.findSnap(x, y);
 
-        this.grabbed.moveTo(x - this.grabOffset.x, y - this.grabOffset.y);
+            this.grabbed.moveTo(x - this.grabOffset.x, y - this.grabOffset.y);
+        }
     }
 };
 
@@ -232,31 +253,8 @@ Cards.prototype.move = function(x, y) {
  */
 Cards.prototype.grabCard = function(card, x, y) {
     if (this.hand.contains(card)) {
-        if (!this.bookVisible) {
-            if (this.koi.constellation.getFishCount() < Koi.prototype.FISH_CAPACITY - 1) {
-                this.hand.remove(card);
-                this.hand.hide();
-
-                this.remove(card);
-
-                const worldX = this.koi.constellation.getWorldX(x, this.koi.scale);
-                const worldY = this.koi.constellation.getWorldY(y, this.koi.scale);
-                const fish = new Fish(
-                    card.body,
-                    new Vector2(worldX, worldY),
-                    this.FISH_DROP_DIRECTION);
-                const origin = fish.body.getOffspringPosition();
-
-                fish.moveTo(new Vector2(worldX * 2 - origin.x, worldY * 2 - origin.y));
-
-                this.koi.systems.atlas.write(card.body.pattern, this.koi.randomSource);
-                this.koi.mover.pickUp(fish, worldX, worldY);
-            }
-        }
-        else {
-            this.hand.remove(card);
-            this.moveToFront(card);
-        }
+        this.hand.remove(card);
+        this.moveToFront(card);
     }
     else {
         if (this.hand.isFull())
@@ -265,13 +263,11 @@ Cards.prototype.grabCard = function(card, x, y) {
         this.removeFromBook(card);
     }
 
-    if (this.bookVisible) {
-        this.grabbed = card;
-        this.grabOffset.x = x - card.position.x;
-        this.grabOffset.y = y - card.position.y;
-        this.snap = this.findSnap(x, y);
-        this.element.style.pointerEvents = "auto";
-    }
+    this.grabbed = card;
+    this.grabOffset.x = x - card.position.x;
+    this.grabOffset.y = y - card.position.y;
+    this.snap = this.findSnap(x, y);
+    this.element.style.pointerEvents = "auto";
 };
 
 /**
@@ -309,17 +305,10 @@ Cards.prototype.release = function() {
     if (this.grabbed) {
         this.element.style.pointerEvents = "none";
 
-        if (this.bookVisible) {
-            if (this.snap)
-                this.addToBook(this.grabbed, this.snap);
-            else
-                this.hand.addCardsAfter(this.element, this.hand.add(this.grabbed));
-        }
-        else if (this.cardOnDropTarget(this.grabbed)) {
-            this.toDropTarget(this.grabbed);
-
+        if (this.snap)
+            this.addToBook(this.grabbed, this.snap);
+        else
             this.hand.addCardsAfter(this.element, this.hand.add(this.grabbed));
-        }
 
         this.grabbed = null;
         this.hand.show();

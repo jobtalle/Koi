@@ -201,6 +201,8 @@ CardHand.prototype.addCardsAfter = function(parent, index) {
 CardHand.prototype.remove = function(card) {
     this.cards.splice(this.cards.indexOf(card), 1);
     this.targets = this.makeTargets(this.cards.length);
+
+    card.positionPrevious.set(card.position);
 };
 
 /**
