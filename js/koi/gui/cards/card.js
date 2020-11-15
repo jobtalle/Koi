@@ -246,7 +246,7 @@ Card.prototype.createInfo = function() {
 
     if (ageMinutes < 1)
         element.appendChild(this.createProperty("Age", "Fry"));
-    else if (ageMinutes < 2)
+    else if (Math.round(ageMinutes) < 2)
         element.appendChild(this.createProperty("Age", Math.round(ageMinutes).toString() + " minute"));
     else if (ageMinutes > 60)
         element.appendChild(this.createProperty("Age", "> 1 hour"));
