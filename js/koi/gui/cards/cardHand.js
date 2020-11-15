@@ -29,7 +29,6 @@ CardHand.prototype.CLASS_DROP_TARGET_HIDDEN = "hidden";
 CardHand.prototype.DROP_TARGET_TRIGGER_DISTANCE = Card.prototype.WIDTH;
 CardHand.prototype.CAPACITY = 16;
 CardHand.prototype.FAN_PORTION_MAX = 1;
-CardHand.prototype.OUTSIDE_HEIGHT_THRESHOLD = .75;
 
 /**
  * Deserialize the card hand
@@ -269,7 +268,7 @@ CardHand.prototype.isOutside = function(x, y) {
     const dy = this.fanCenter.y - y;
     const d = Math.sqrt(dx * dx + dy * dy);
 
-    if (d > this.fanRadius + Card.prototype.HEIGHT * this.OUTSIDE_HEIGHT_THRESHOLD)
+    if (d > this.fanRadius + Card.prototype.HEIGHT)
         return true;
 
     const fanPortion = this.calculateFanPortion(this.cards.length);

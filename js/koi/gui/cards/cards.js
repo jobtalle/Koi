@@ -251,12 +251,6 @@ Cards.prototype.move = function(x, y) {
  * @param {Number} y The mouse Y position in pixels
  */
 Cards.prototype.grabCard = function(card, x, y) {
-    this.grabbed = card;
-    this.grabOffset.x = x - card.position.x;
-    this.grabOffset.y = y - card.position.y;
-    this.snap = this.findSnap(x, y);
-    this.element.style.pointerEvents = "auto";
-
     if (this.hand.contains(card)) {
         this.hand.remove(card);
         this.moveToFront(card);
@@ -267,6 +261,12 @@ Cards.prototype.grabCard = function(card, x, y) {
 
         this.removeFromBook(card);
     }
+
+    this.grabbed = card;
+    this.grabOffset.x = x - card.position.x;
+    this.grabOffset.y = y - card.position.y;
+    this.snap = this.findSnap(x, y);
+    this.element.style.pointerEvents = "auto";
 };
 
 /**
