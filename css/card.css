@@ -19,7 +19,8 @@
     --card-border-radius: 12px;
     --card-drop-target-raise: -0.25;
     --card-info-spacing: 14px;
-    --card-name-padding: 2px;
+    --card-name-margin: 2px;
+    --card-name-margin-leading: 6px;
 }
 
 .card-shape {
@@ -66,8 +67,9 @@
     font-family: sans-serif;
     font-weight: normal;
     font-style: italic;
-    margin: var(--card-name-padding);
-    margin-left: calc(var(--card-name-padding) * 2);
+    font-size: 20px;
+    margin: var(--card-name-margin);
+    margin-left: var(--card-name-margin-leading);
 }
 
 .card .info {

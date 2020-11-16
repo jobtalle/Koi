@@ -34,5 +34,38 @@ const Palettes = function() {
  * @returns {String} A koi name
  */
 Palettes.prototype.makeName = function(base, layers) {
-    return "Asagi Magoi";
+    switch (base.paletteIndex) {
+        case 0:
+            switch (layers.length) {
+                case 1:
+                    switch (layers[0].paletteIndex) {
+                        case 0:
+                            return "Kohaku";
+                        case 1:
+                            return "Kigoi";
+                    }
+
+                    break;
+                default:
+                    return "Nezu Ogon";
+            }
+
+            break;
+        case 1:
+            switch (layers.length) {
+                case 1:
+                    switch (layers[0].paletteIndex) {
+                        case 0:
+                            return "Kumonryu";
+                    }
+
+                    break;
+                default:
+                    return "Magoi";
+            }
+
+            break;
+    }
+
+    return "Nishigikoi";
 };
