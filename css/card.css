@@ -102,14 +102,6 @@
     font-style: italic;
 }
 
-.card .info p .value.weight::after {
-    content: " Kg";
-}
-
-.card .info p .value.length::after {
-    content: " cm";
-}
-
 @keyframes fish-preview-x {
     from {background-position-x: 0}
     to {background-position-x: calc(-1 * var(--card-preview-width) * var(--card-preview-columns))}

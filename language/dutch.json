@@ -1,8 +1,13 @@
 {
   "INCLUDE": [
-    "names/western.json"
+    "names/western.json",
+    "units/metric.json"
   ],
   "INFO_WEIGHT": "Gewicht",
   "INFO_LENGTH": "Lengte",
-  "INFO_AGE": "Leeftijd"
+  "INFO_AGE": "Leeftijd",
+  "INFO_MINUTE": "minuut",
+  "INFO_MINUTES": "minuten",
+  "INFO_HOUR": "uur",
+  "INFO_FRY": "Baby"
 }

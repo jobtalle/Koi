@@ -9,6 +9,7 @@ const Language = function(file) {
 };
 
 Language.prototype.KEY_INCLUDE = "INCLUDE";
+Language.prototype.VALUE_NOT_FOUND = "unknown string";
 
 /**
  * Add language data to the language object
@@ -16,6 +17,14 @@ Language.prototype.KEY_INCLUDE = "INCLUDE";
  */
 Language.prototype.add = function(data) {
     Object.assign(this.data, data);
+};
+
+/**
+ * Get a language string
+ * @param {String} key The key
+ */
+Language.prototype.get = function(key) {
+    return this.data[key] || this.VALUE_NOT_FOUND;
 };
 
 /**

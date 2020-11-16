@@ -1,8 +1,13 @@
 {
   "INCLUDE": [
-    "names/western.json"
+    "names/western.json",
+    "units/imperial.json"
   ],
   "INFO_WEIGHT": "Weight",
   "INFO_LENGTH": "Length",
-  "INFO_AGE": "Age"
+  "INFO_AGE": "Age",
+  "INFO_MINUTE": "minute",
+  "INFO_MINUTES": "minutes",
+  "INFO_HOUR": "hour",
+  "INFO_FRY": "Fry"
 }

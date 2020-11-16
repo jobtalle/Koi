@@ -27,11 +27,18 @@ Card.prototype.CLASS_NAME = "name";
 Card.prototype.CLASS_INFO = "info";
 Card.prototype.CLASS_INFO_LABEL = "label";
 Card.prototype.CLASS_INFO_VALUE = "value";
-Card.prototype.CLASS_INFO_WEIGHT = "weight";
-Card.prototype.CLASS_INFO_LENGTH = "length";
 Card.prototype.WIDTH = StyleUtils.getInt("--card-width");
 Card.prototype.HEIGHT = StyleUtils.getInt("--card-height");
 Card.prototype.RATIO = Card.prototype.WIDTH / Card.prototype.HEIGHT;
+Card.prototype.LANG_WEIGHT = "INFO_WEIGHT";
+Card.prototype.LANG_LENGTH = "INFO_LENGTH";
+Card.prototype.LANG_AGE = "INFO_AGE";
+Card.prototype.LANG_MINUTE = "INFO_MINUTE";
+Card.prototype.LANG_MINUTES = "INFO_MINUTES";
+Card.prototype.LANG_HOUR = "INFO_HOUR";
+Card.prototype.LANG_FRY = "INFO_FRY";
+Card.prototype.LANG_UNIT_WEIGHT = "UNIT_WEIGHT";
+Card.prototype.LANG_UNIT_LENGTH = "UNIT_LENGTH";
 
 /**
  * Deserialize a card
@@ -237,10 +244,9 @@ Card.prototype.createPreviewFrame = function(previewAnimation) {
  * Create an element describing a fish property
  * @param {String} name The property name
  * @param {String} value The property value
- * @param {String} [valueClass] An optional class for the value span
  * @returns {HTMLParagraphElement} The property element
  */
-Card.prototype.createProperty = function(name, value, valueClass = null) {
+Card.prototype.createProperty = function(name, value) {
     const element = document.createElement("p");
     const spanLabel = document.createElement("span");
     const spanValue = document.createElement("span");
@@ -250,9 +256,6 @@ Card.prototype.createProperty = function(name, value, valueClass = null) {
 
     spanValue.className = this.CLASS_INFO_VALUE;
     spanValue.appendChild(document.createTextNode(value));
-
-    if (valueClass)
-        spanValue.classList.add(valueClass);
 
     element.appendChild(spanLabel);
     element.appendChild(spanValue);
@@ -270,22 +273,28 @@ Card.prototype.createInfo = function() {
 
     element.className = this.CLASS_INFO;
     element.appendChild(this.createProperty(
-        "Weight",
-        this.body.getWeight(this.body.size).toFixed(2),
-        this.CLASS_INFO_WEIGHT));
+        language.get(this.LANG_WEIGHT),
+        this.body.getWeight(this.body.size).toFixed(2) + " " + language.get(this.LANG_UNIT_WEIGHT)));
     element.appendChild(this.createProperty(
-        "Length",
-        (this.body.getLength() * 100).toFixed(1).toString(),
-        this.CLASS_INFO_LENGTH));
+        language.get(this.LANG_LENGTH),
+        (this.body.getLength() * 100).toFixed(1).toString() + " " + language.get(this.LANG_UNIT_LENGTH)));
 
     if (ageMinutes < 1)
-        element.appendChild(this.createProperty("Age", "Fry"));
+        element.appendChild(this.createProperty(
+            language.get(this.LANG_AGE),
+            language.get(this.LANG_FRY)));
     else if (Math.round(ageMinutes) < 2)
-        element.appendChild(this.createProperty("Age", Math.round(ageMinutes).toString() + " minute"));
+        element.appendChild(this.createProperty(
+            language.get(this.LANG_AGE),
+            Math.round(ageMinutes).toString() + " " + language.get(this.LANG_MINUTE)));
     else if (ageMinutes > 60)
-        element.appendChild(this.createProperty("Age", "> 1 hour"));
+        element.appendChild(this.createProperty(
+            language.get(this.LANG_AGE),
+            "> 1 " + language.get(this.LANG_HOUR)));
     else
-        element.appendChild(this.createProperty("Age", Math.round(ageMinutes).toString() + " minutes"));
+        element.appendChild(this.createProperty(
+            language.get(this.LANG_AGE),
+            Math.round(ageMinutes).toString() + " " + language.get(this.LANG_MINUTES)));
 
     return element;
 };
