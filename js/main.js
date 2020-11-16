@@ -27,8 +27,11 @@ const makeLanguage = locale => {
 
 const paramLang = searchParams.get("lang");
 const language = paramLang ? makeLanguage(paramLang) : makeLanguage(navigator.language.substring(0, 2));
+let imperial = false;
 
 language.load(() => {
+    imperial = language.get("UNIT_LENGTH") === "ft";
+
     if (gl) {
         // Enable VAO
         gl.vao = gl.getExtension("OES_vertex_array_object");

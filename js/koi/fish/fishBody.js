@@ -157,10 +157,13 @@ FishBody.prototype.getAge = function() {
 
 /**
  * Get the length of this fish body
- * @returns {Number} The length in meters
+ * @returns {Number} The length
  */
 FishBody.prototype.getLength = function() {
-    return (this.spine.length - 1) * this.spacing * this.size;
+    if (imperial)
+        return Units.toFeet((this.spine.length - 1) * this.spacing * this.size * 100);
+
+    return (this.spine.length - 1) * this.spacing * this.size * 100;
 };
 
 /**
@@ -182,11 +185,14 @@ FishBody.prototype.getOffspringCount = function() {
 /**
  * Get the weight of the fish
  * @param {Number} size The fish size in the range [0, 1]
- * @returns {Number} The weight in kilograms
+ * @returns {Number} The weight
  */
 FishBody.prototype.getWeight = function(size) {
     const axisLength = this.lengthSampled * .5 * size;
     const axisRadius = this.radiusSampled * size;
+
+    if (imperial)
+        return Units.toPounds(Math.PI * axisLength * axisRadius * this.KILOGRAMS_PER_AREA);
 
     return Math.PI * axisLength * axisRadius * this.KILOGRAMS_PER_AREA;
 };

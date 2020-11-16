@@ -277,7 +277,7 @@ Card.prototype.createInfo = function() {
         this.body.getWeight(this.body.size).toFixed(2) + " " + language.get(this.LANG_UNIT_WEIGHT)));
     element.appendChild(this.createProperty(
         language.get(this.LANG_LENGTH),
-        (this.body.getLength() * 100).toFixed(1).toString() + " " + language.get(this.LANG_UNIT_LENGTH)));
+        (this.body.getLength()).toFixed(1).toString() + " " + language.get(this.LANG_UNIT_LENGTH)));
 
     if (ageMinutes < 1)
         element.appendChild(this.createProperty(
