@@ -27,6 +27,13 @@ const Palettes = function() {
         new Palette.Color(colorBaseBlack, paletteDetailOnBlack)]);
 };
 
+Palettes.prototype.LANG_NAME_KOHAKU = "NAME_KOHAKU";
+Palettes.prototype.LANG_NAME_SHOWA = "NAME_SHOWA";
+Palettes.prototype.LANG_NAME_NEZU_OGON = "NAME_NEZU_OGON";
+Palettes.prototype.LANG_NAME_KUMONRYU = "NAME_KUMONRYU";
+Palettes.prototype.LANG_NAME_MAGOI = "NAME_MAGOI";
+Palettes.prototype.LANG_NAME_NISHIKIGOI = "NAME_NISHIKIGOI";
+
 /**
  * Name a combination of layers
  * @param {LayerBase} base The base layer
@@ -40,14 +47,14 @@ Palettes.prototype.makeName = function(base, layers) {
                 case 1:
                     switch (layers[0].paletteIndex) {
                         case 0:
-                            return "Kohaku";
+                            return language.get(this.LANG_NAME_KOHAKU);
                         case 1:
-                            return "Showa";
+                            return language.get(this.LANG_NAME_SHOWA);
                     }
 
                     break;
                 default:
-                    return "Nezu Ogon";
+                    return language.get(this.LANG_NAME_NEZU_OGON);
             }
 
             break;
@@ -56,16 +63,16 @@ Palettes.prototype.makeName = function(base, layers) {
                 case 1:
                     switch (layers[0].paletteIndex) {
                         case 0:
-                            return "Kumonryu";
+                            return language.get(this.LANG_NAME_KUMONRYU);
                     }
 
                     break;
                 default:
-                    return "Magoi";
+                    return language.get(this.LANG_NAME_MAGOI);
             }
 
             break;
     }
 
-    return "Nishigikoi";
+    return language.get(this.LANG_NAME_NISHIKIGOI);
 };

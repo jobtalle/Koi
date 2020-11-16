@@ -29,6 +29,7 @@ const paramLang = searchParams.get("lang");
 const language = paramLang ? makeLanguage(paramLang) : makeLanguage(navigator.language.substring(0, 2));
 
 language.load(() => {
+    console.log(language.data);
     if (gl) {
         // Enable VAO
         gl.vao = gl.getExtension("OES_vertex_array_object");
