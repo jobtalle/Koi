@@ -26,3 +26,13 @@ const Palettes = function() {
         new Palette.Color(colorBaseWhite, paletteDetailOnWhite),
         new Palette.Color(colorBaseBlack, paletteDetailOnBlack)]);
 };
+
+/**
+ * Name a combination of layers
+ * @param {LayerBase} base The base layer
+ * @param {Layer[]} layers All layers on top of the base layer
+ * @returns {String} A koi name
+ */
+Palettes.prototype.makeName = function(base, layers) {
+    return "Nishikigoi";
+};
