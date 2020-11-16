@@ -354,6 +354,7 @@ Cards.prototype.registerCard = function(card, addToGUI = true, initialize = fals
             this.koi.systems.preview,
             this.koi.systems.atlas,
             this.koi.systems.bodies,
+            this.koi.systems.patterns.palettes,
             this.koi.randomSource);
 };
 

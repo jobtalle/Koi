@@ -19,6 +19,7 @@
     --card-border-radius: 12px;
     --card-drop-target-raise: -0.25;
     --card-info-spacing: 14px;
+    --card-name-padding: 2px;
 }
 
 .card-shape {
@@ -44,9 +45,29 @@
     height: var(--card-preview-height);
     margin: var(--card-preview-margin);
     border: var(--card-border-width) solid var(--card-color-border);
-    border-radius: var(--card-border-radius);
+    border-top: none;
+    border-bottom-left-radius: var(--card-border-radius);
+    border-bottom-right-radius: var(--card-border-radius);
     background: linear-gradient(var(--card-color-background-light), var(--card-color-background-dark));
     overflow: hidden;
+}
+
+.card .name {
+    width: var(--card-preview-width);
+    margin: var(--card-preview-margin);
+    margin-bottom: calc(-1 * var(--card-preview-margin));
+    background-color: #ffffffaa;
+    border: var(--card-border-width) solid var(--card-color-border);
+    border-top-left-radius: var(--card-border-radius);
+    border-top-right-radius: var(--card-border-radius);
+}
+
+.card .name h2 {
+    font-family: sans-serif;
+    font-weight: normal;
+    font-style: italic;
+    margin: var(--card-name-padding);
+    margin-left: calc(var(--card-name-padding) * 2);
 }
 
 .card .info {

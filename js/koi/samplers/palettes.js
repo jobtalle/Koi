@@ -34,5 +34,5 @@ const Palettes = function() {
  * @returns {String} A koi name
  */
 Palettes.prototype.makeName = function(base, layers) {
-    return "Nishikigoi";
+    return "Asagi Magoi";
 };

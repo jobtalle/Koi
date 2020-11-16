@@ -49,6 +49,8 @@ const FishBody = function(
     this.finPhase = 0;
     this.spacing = 0;
     this.inverseSpacing = 0;
+
+    this.calculateSpacing();
 };
 
 FishBody.prototype.FIN_PAIRS_MIN = 0;
@@ -311,8 +313,6 @@ FishBody.prototype.atPosition = function(x, y) {
  * @param {Vector2} [direction] The initial body direction
  */
 FishBody.prototype.initializeSpine = function(head = new Vector2(), direction = new Vector2(1, 0)) {
-    this.calculateSpacing();
-
     const step = direction.copy().multiply(this.spacing);
 
     this.spine[0] = head.copy();

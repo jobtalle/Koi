@@ -69,14 +69,6 @@ Pattern.prototype.serialize = function(buffer) {
 };
 
 /**
- * Get a name for a fish with this pattern
- * @returns {String} The name of this fish
- */
-Pattern.prototype.getName = function() {
-
-};
-
-/**
  * Trim any layers from this pattern that will not be rendered because the palette track is not deep enough
  * @param {Palette} palette The start palette
  */

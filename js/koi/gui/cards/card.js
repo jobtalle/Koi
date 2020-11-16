@@ -10,10 +10,11 @@ const Card = function(body, position, angle = 0) {
     this.position = position;
     this.positionPrevious = position.copy();
     this.angle = this.anglePrevious = angle;
+    this.name = this.createName();
     this.previewAnimation = this.createPreviewAnimation();
     this.previewFrame = this.createPreviewFrame(this.previewAnimation);
     this.previewURL = null;
-    this.element = this.createElement(this.previewFrame);
+    this.element = this.createElement(this.name, this.previewFrame);
     this.initialized = false;
 
     this.updatePosition();
@@ -21,12 +22,13 @@ const Card = function(body, position, angle = 0) {
 
 Card.prototype.CLASS = "card-shape card";
 Card.prototype.CLASS_PREVIEW_FRAME = "preview-frame";
+Card.prototype.CLASS_PREVIEW_ANIMATION = "preview-animation";
+Card.prototype.CLASS_NAME = "name";
 Card.prototype.CLASS_INFO = "info";
 Card.prototype.CLASS_INFO_LABEL = "label";
 Card.prototype.CLASS_INFO_VALUE = "value";
 Card.prototype.CLASS_INFO_WEIGHT = "weight";
 Card.prototype.CLASS_INFO_LENGTH = "length";
-Card.prototype.CLASS_PREVIEW_ANIMATION = "preview-animation";
 Card.prototype.WIDTH = StyleUtils.getInt("--card-width");
 Card.prototype.HEIGHT = StyleUtils.getInt("--card-height");
 Card.prototype.RATIO = Card.prototype.WIDTH / Card.prototype.HEIGHT;
@@ -56,9 +58,15 @@ Card.prototype.serialize = function(buffer) {
  * @param {Preview} preview A preview renderer
  * @param {Atlas} atlas The atlas
  * @param {Bodies} bodies The bodies renderer
+ * @param {Palettes} palettes The palettes object for naming the koi
  * @param {RandomSource} [randomSource] The random source, required if the body may not be written to the atlas
  */
-Card.prototype.initialize = function(preview, atlas, bodies, randomSource = null) {
+Card.prototype.initialize = function(
+    preview,
+    atlas,
+    bodies,
+    palettes,
+    randomSource = null) {
     if (this.initialized)
         return;
 
@@ -87,6 +95,20 @@ Card.prototype.initialize = function(preview, atlas, bodies, randomSource = null
 
         this.body.pattern.region = null;
     }
+
+    this.setName(palettes.makeName(this.body.pattern.base, this.body.pattern.layers));
+};
+
+/**
+ * Set the name of the fish, should be executed only once
+ * @param {String} name The name of the fish
+ */
+Card.prototype.setName = function(name) {
+    const element = document.createElement("h2");
+
+    element.appendChild(document.createTextNode(name));
+
+    this.name.appendChild(element);
 };
 
 /**
@@ -170,6 +192,18 @@ Card.prototype.updatePosition = function(time = 0) {
  */
 Card.prototype.transformSlot = function(slotWidth) {
     this.element.style.transform = "scale(" + (slotWidth / this.WIDTH) + ")";
+};
+
+/**
+ * Create the name field
+ * @returns {HTMLDivElement} The name element
+ */
+Card.prototype.createName = function() {
+    const element = document.createElement("div");
+
+    element.className = this.CLASS_NAME;
+
+    return element;
 };
 
 /**
@@ -258,13 +292,15 @@ Card.prototype.createInfo = function() {
 
 /**
  * Create an HTML element for this card
+ * @param {HTMLElement} name The name element
  * @param {HTMLElement} previewFrame The preview frame element
  * @returns {HTMLElement} The card element
  */
-Card.prototype.createElement = function(previewFrame) {
+Card.prototype.createElement = function(name, previewFrame) {
     const element = document.createElement("div");
 
     element.className = this.CLASS;
+    element.appendChild(name);
     element.appendChild(previewFrame);
     element.appendChild(this.createInfo());
 
