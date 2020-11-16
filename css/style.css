@@ -1,6 +1,7 @@
 body {
     margin: 0;
     overscroll-behavior: contain;
+    background-color: black;
 }
 
 #wrapper {

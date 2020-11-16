@@ -1,3 +1,4 @@
+const searchParams = new URLSearchParams(window.location.search);
 const glParameters = {
     alpha: false,
     antialias: true,
@@ -8,20 +9,28 @@ const canvas = document.getElementById("renderer");
 const gl =
     canvas.getContext("webgl", glParameters) ||
     canvas.getContext("experimental-webgl", glParameters);
-let language = null;
 
-switch (navigator.language.substring(0, 2)) {
-    case "en":
-        language = new Language("language/english.json");
+/**
+ * Make a language object from a locale code
+ * @param {String} locale The locale code
+ * @returns {Language} The language object most suitable for this locale
+ */
+const makeLanguage = locale => {
+    switch (locale) {
+        default:
+        case "en":
+            return new Language("language/english.json");
+        case "nl":
+            return new Language("language/dutch.json");
+    }
+};
 
-        break;
-    case "nl":
-        language = new Language("language/dutch.json");
-
-        break;
-}
+const paramLang = searchParams.get("lang");
+const language = paramLang ? makeLanguage(paramLang) : makeLanguage(navigator.language.substring(0, 2));
 
 language.load(() => {
+    console.log(language.data);
+
     if (gl) {
         // Enable VAO
         gl.vao = gl.getExtension("OES_vertex_array_object");
