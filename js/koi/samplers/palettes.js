@@ -42,7 +42,7 @@ Palettes.prototype.makeName = function(base, layers) {
                         case 0:
                             return "Kohaku";
                         case 1:
-                            return "Kigoi";
+                            return "Showa";
                     }
 
                     break;

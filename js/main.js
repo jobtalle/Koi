@@ -8,6 +8,22 @@ const canvas = document.getElementById("renderer");
 const gl =
     canvas.getContext("webgl", glParameters) ||
     canvas.getContext("experimental-webgl", glParameters);
+let language = null;
+
+switch (navigator.language.substring(0, 2)) {
+    case "en":
+        language = new Language("language/english.json");
+
+        break;
+    case "nl":
+        language = new Language("language/dutch.json");
+
+        break;
+}
+
+language.load(() => {
+    console.log(language.data);
+});
 
 if (gl) {
     // Enable VAO
@@ -16,6 +32,7 @@ if (gl) {
     // Enable 32 bit element indices
     gl.getExtension("OES_element_index_uint");
 
+    let language = null;
     let session = new Session();
     const wrapper = document.getElementById("wrapper");
     const gui = new GUI(document.getElementById("gui"));
