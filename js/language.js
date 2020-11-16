@@ -21,9 +21,10 @@ Language.prototype.add = function(data) {
 /**
  * Load language data
  * @param {Function} onFinish A function to call when loading has finished
+ * @param {Function} onFailure A function to call when loading has failed
  * @param {String} [file] A file to load
  */
-Language.prototype.load = function(onFinish, file = this.file) {
+Language.prototype.load = function(onFinish, onFailure, file = this.file) {
     const request = new XMLHttpRequest();
 
     request.overrideMimeType("text/plain");
@@ -44,13 +45,13 @@ Language.prototype.load = function(onFinish, file = this.file) {
                         this.load(() => {
                             if (++included === includes.length)
                                 onFinish();
-                        }, path + include);
+                        }, onFailure,path + include);
                 }
                 else if (onFinish)
                     onFinish();
             }
             else
-                console.error("Failed to load language data");
+                onFailure();
         }
     };
 

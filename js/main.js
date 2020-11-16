@@ -170,4 +170,6 @@ language.load(() => {
             loaded = false;
         };
     }
+}, () => {
+    alert("Failed loading resources");
 });
