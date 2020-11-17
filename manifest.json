@@ -1,0 +1,11 @@
+{
+  "name": "Koi pond",
+  "short_name": "Koi",
+  "description": "A koi breeding game",
+  "start_url": "index.html",
+  "scope": "/",
+  "background_color": "#000000",
+  "theme_color": "#6cb4a9",
+  "display": "fullscreen",
+  "orientation": "landscape"
+}
