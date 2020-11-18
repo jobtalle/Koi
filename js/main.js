@@ -11,6 +11,13 @@ const gl =
     canvas.getContext("experimental-webgl", glParameters);
 
 /**
+ * Called when loading resources failed
+ */
+const onFailure = () => {
+    alert("Failed loading resources");
+};
+
+/**
  * Make a language object from a locale code
  * @param {String} locale The locale code
  * @returns {Language} The language object most suitable for this locale
@@ -29,17 +36,14 @@ const paramLang = searchParams.get("lang");
 const language = paramLang ? makeLanguage(paramLang) : makeLanguage(navigator.language.substring(0, 2));
 let imperial = false;
 
-language.load(() => {
-    imperial = language.get("UNIT_LENGTH") === "ft";
+if (gl &&
+    gl.getExtension("OES_element_index_uint") &&
+    gl.getExtension("OES_standard_derivatives") &&
+    (gl.vao = gl.getExtension("OES_vertex_array_object"))) {
 
-    if (gl) {
-        // Enable VAO
-        gl.vao = gl.getExtension("OES_vertex_array_object");
+    language.load(() => {
+        imperial = language.get("UNIT_LENGTH") === "ft";
 
-        // Enable 32 bit element indices
-        gl.getExtension("OES_element_index_uint");
-
-        let language = null;
         let session = new Session();
         const wrapper = document.getElementById("wrapper");
         const gui = new GUI(document.getElementById("gui"));
@@ -92,8 +96,7 @@ language.load(() => {
                 session.deserialize(new BinBuffer(sessionData));
 
                 koi = session.makeKoi(systems, audio, gui);
-            }
-            catch (error) {
+            } catch (error) {
                 gui.clear();
 
                 newSession();
@@ -179,7 +182,7 @@ language.load(() => {
 
             loaded = false;
         };
-    }
-}, () => {
-    alert("Failed loading resources");
-});
+    }, onFailure);
+}
+else
+    onFailure();
