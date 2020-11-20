@@ -1,0 +1,9 @@
+{
+  "name": "koi",
+  "version": "0.9.0",
+  "main": "window.js",
+  "devDependencies": {
+    "electron": "^9.0.2",
+    "electron-packager": "^15.0.0"
+  }
+}
