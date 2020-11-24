@@ -10,8 +10,6 @@ const MixerPattern = function(mother, father) {
 };
 
 MixerPattern.prototype = Object.create(Mixer.prototype);
-MixerPattern.prototype.LAYER_SKIP_CHANCE = .06;
-MixerPattern.prototype.LAYER_SKIP_CHANCE_FIRST = .02;
 
 /**
  * Mix two layers of the same type
@@ -32,64 +30,66 @@ MixerPattern.prototype.mixLayers = function(mother, father, random) {
 };
 
 /**
+ * Check if two patterns are of the same types and colors
+ * @param {Pattern} a The first pattern
+ * @param {Pattern} b The second pattern
+ * @returns {Boolean} True if both patterns contain the same types of layers in the same order
+ */
+MixerPattern.prototype.patternsEqual = function(a, b) {
+    if (a.layers.length !== b.layers.length)
+        return false;
+
+    if (a.base.id !== b.base.id || a.base.paletteIndex !== b.base.paletteIndex)
+        return false;
+
+    for (let layer = 0, layers = a.layers.length; layer < layers; ++layer)
+        if (a.layers[layer].id !== b.layers[layer].id || a.layers[layer].paletteIndex !== b.layers[layer].paletteIndex)
+            return false;
+
+    return true;
+};
+
+/**
  * Create a new pattern that combines properties from both parents
  * @param {Patterns} patterns The pattern renderer
  * @param {Random} random A randomizer
  * @returns {Pattern} The mixed pattern
  */
 MixerPattern.prototype.mix = function(patterns, random) {
+    const shapeBody = new MixerLayerShapeBody(this.mother.shapeBody, this.father.shapeBody).mix(random);
+    const shapeFins = new MixerLayerShapeFin(this.mother.shapeFin, this.father.shapeFin).mix(random);
     const layers = [];
-    const layersMother = this.mother.layers.length;
-    const layersFather = this.father.layers.length;
-    let layerMother = random.getFloat() < this.LAYER_SKIP_CHANCE_FIRST ? 1 : 0;
-    let layerFather = random.getFloat() < this.LAYER_SKIP_CHANCE_FIRST ? 1 : 0;
 
-    while (layerMother < layersMother || layerFather < layersFather) {
-        const mother = layerMother >= layersMother ? null : this.mother.layers[layerMother];
-        const father = layerFather >= layersFather ? null : this.father.layers[layerFather];
+    if (this.patternsEqual(this.mother, this.father)) {
+        for (let layer = 0, layers = this.mother.layers.length; layer < layers; ++layer)
+            layers.push(this.mixLayers(this.mother.layers[layer], this.father.layers[layer], random));
+    }
+    else {
+        for (const mutation of Mutations) if (mutation.mutates(this.mother, this.father, random))
+            return mutation.apply(
+                this.mother,
+                this.father,
+                shapeBody,
+                shapeFins,
+                this.mixLayers.bind(this),
+                random);
 
-        if (mother === null) {
-            if (random.getFloat() < .5)
-                layers.push(father.copy());
+        // TODO: Dominance
+        if (random.getFloat() < .5) {
+            for (const layer of this.mother.layers)
+                layers.push(layer.copy());
         }
-        else if (father === null) {
-            if (random.getFloat() < .5)
-                layers.push(mother.copy());
-        }
-        else if (mother.id === father.id)
-            layers.push(this.mixLayers(mother, father, random)); // TODO: Bias towards the same as previous iteration
         else {
-            if (mother.isRecessive() === father.isRecessive()) {
-                if (mother.sampleDominance(random) > father.sampleDominance(random))
-                    layers.push(mother.copy());
-                else
-                    layers.push(father.copy());
-            }
-            else if (mother.isRecessive())
-                layers.push(father.copy());
-            else
-                layers.push(mother.copy());
+            for (const layer of this.father.layers)
+                layers.push(layer.copy())
         }
-
-        // TODO: Pattern order swaps
-
-        // TODO: This may allow recessive patterns to win, probably not desirable
-        if (random.getFloat() < this.LAYER_SKIP_CHANCE)
-            layerMother += 2;
-        else
-            ++layerMother;
-
-        if (random.getFloat() < this.LAYER_SKIP_CHANCE)
-            layerFather += 2;
-        else
-            ++layerFather;
     }
 
     const pattern = new Pattern(
         new MixerLayerBase(this.mother.base, this.father.base).mix(random),
         layers,
-        new MixerLayerShapeBody(this.mother.shapeBody, this.father.shapeBody).mix(random),
-        new MixerLayerShapeFin(this.mother.shapeFin, this.father.shapeFin).mix(random));
+        shapeBody,
+        shapeFins);
 
     pattern.trim(patterns.palettes.base);
 

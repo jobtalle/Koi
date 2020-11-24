@@ -5,26 +5,29 @@
 const Palettes = function() {
     const colorBaseWhite = Color.fromCSS("--color-fish-base-white");
     const colorBaseBlack = Color.fromCSS("--color-fish-base-black");
+    const colorBaseGold = Color.fromCSS("--color-fish-base-gold");
 
-    const colorDetailRed = Color.fromCSS("--color-fish-detail-red");
-    const colorDetailOrange = Color.fromCSS("--color-fish-detail-orange");
     const colorDetailGold = Color.fromCSS("--color-fish-detail-gold");
-    const colorDetailWhite = Color.fromCSS("--color-fish-detail-white");
-
-    const paletteDetailOnRed = new Palette([
-        new Palette.Color(colorDetailGold)]);
 
     const paletteDetailOnWhite = new Palette([
-        new Palette.Color(colorDetailRed),
-        new Palette.Color(colorDetailGold),
-        new Palette.Color(colorDetailOrange, paletteDetailOnRed)]);
+        new Palette.Color(colorDetailGold)
+    ]);
 
-    const paletteDetailOnBlack = new Palette([
-        new Palette.Color(colorDetailWhite)]);
+    // const colorDetailOrange = Color.fromCSS("--color-fish-detail-orange");
+    // const colorDetailGold = Color.fromCSS("--color-fish-detail-gold");
+    // const colorDetailWhite = Color.fromCSS("--color-fish-detail-white");
+    //
+    // const paletteDetailOnRed = new Palette([
+    //     new Palette.Color(colorDetailGold)]);
+    //
+    //
+    // const paletteDetailOnBlack = new Palette([
+    //     new Palette.Color(colorDetailWhite)]);
 
     this.base = new Palette([
         new Palette.Color(colorBaseWhite, paletteDetailOnWhite),
-        new Palette.Color(colorBaseBlack, paletteDetailOnBlack)]);
+        new Palette.Color(colorBaseBlack),
+        new Palette.Color(colorBaseGold)]);
 };
 
 Palettes.prototype.LANG_NAME_KOHAKU = "NAME_KOHAKU";

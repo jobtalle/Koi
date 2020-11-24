@@ -27,12 +27,11 @@ const LayerSpots = function(
     this.yFocus = yFocus;
     this.power = power;
 
-    Layer.call(this, this.ID, paletteIndex, true, false, false, this.DOMINANCE);
+    Layer.call(this, this.ID, paletteIndex);
 };
 
 LayerSpots.prototype = Object.create(Layer.prototype);
 
-LayerSpots.prototype.DOMINANCE = .25;
 LayerSpots.prototype.SAMPLER_SCALE = new SamplerPlateau(.5, 1.8, 6, 11);
 LayerSpots.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(.25, .5, .75, 2);
 LayerSpots.prototype.SAMPLER_STRETCH = new SamplerPlateau(.37, 1, 2.5, 1);

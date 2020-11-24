@@ -26,9 +26,11 @@
     /* Fish colors */
     --color-fish-base-white: #E1E0C4;
     --color-fish-base-black: #414345;
+    --color-fish-base-gold: #d7933e;
 
-    --color-fish-detail-gold: #d09838;
-    --color-fish-detail-red: #C84B2F;
-    --color-fish-detail-orange: #BE6D42;
-    --color-fish-detail-white: var(--color-fish-base-white);
+    --color-fish-detail-gold: var(--color-fish-base-gold);
+
+    /*--color-fish-detail-red: #C84B2F;*/
+    /*--color-fish-detail-orange: #BE6D42;*/
+    /*--color-fish-detail-white: var(--color-fish-base-white);*/
 }

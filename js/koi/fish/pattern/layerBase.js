@@ -4,7 +4,7 @@
  * @constructor
  */
 const LayerBase = function(paletteIndex) {
-    Layer.call(this, -1, paletteIndex, false);
+    Layer.call(this, this.ID, paletteIndex);
 };
 
 LayerBase.prototype = Object.create(Layer.prototype);
