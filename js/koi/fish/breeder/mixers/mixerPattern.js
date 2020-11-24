@@ -61,7 +61,7 @@ MixerPattern.prototype.mix = function(patterns, random) {
     const layers = [];
 
     if (this.patternsEqual(this.mother, this.father)) {
-        for (let layer = 0, layers = this.mother.layers.length; layer < layers; ++layer)
+        for (let layer = 0, layerCount = this.mother.layers.length; layer < layerCount; ++layer)
             layers.push(this.mixLayers(this.mother.layers[layer], this.father.layers[layer], random));
     }
     else {
