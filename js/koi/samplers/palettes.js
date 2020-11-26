@@ -6,28 +6,38 @@ const Palettes = function() {
     const colorBaseWhite = Color.fromCSS("--color-fish-base-white");
     const colorBaseBlack = Color.fromCSS("--color-fish-base-black");
     const colorBaseGold = Color.fromCSS("--color-fish-base-gold");
+    const colorBaseRed = Color.fromCSS("--color-fish-base-red");
+    const colorBaseBrown = Color.fromCSS("--color-fish-base-brown");
 
-    const colorDetailGold = Color.fromCSS("--color-fish-detail-gold");
+    const colorDetailWhite = Color.fromCSS("--color-fish-detail-white");
+    const colorDetailBlack = Color.fromCSS("--color-fish-detail-black");
+    const colorDetailRed = Color.fromCSS("--color-fish-detail-red");
+    const colorDetailLightRed = Color.fromCSS("--color-fish-detail-light-red");
 
     const paletteDetailOnWhite = new Palette([
-        new Palette.Color(colorDetailGold)
+        new Palette.Color(colorDetailRed),
+        new Palette.Color(colorDetailBlack)
     ]);
 
-    // const colorDetailOrange = Color.fromCSS("--color-fish-detail-orange");
-    // const colorDetailGold = Color.fromCSS("--color-fish-detail-gold");
-    // const colorDetailWhite = Color.fromCSS("--color-fish-detail-white");
-    //
-    // const paletteDetailOnRed = new Palette([
-    //     new Palette.Color(colorDetailGold)]);
-    //
-    //
-    // const paletteDetailOnBlack = new Palette([
-    //     new Palette.Color(colorDetailWhite)]);
+    const paletteDetailOnBlack = new Palette([
+        new Palette.Color(colorDetailWhite),
+        new Palette.Color(colorDetailLightRed)
+    ]);
+
+    const paletteDetailOnGold = new Palette([
+        new Palette.Color(colorDetailBlack)
+    ]);
+
+    const paletteDetailOnRed = new Palette([
+        new Palette.Color(colorDetailWhite)
+    ]);
 
     this.base = new Palette([
         new Palette.Color(colorBaseWhite, paletteDetailOnWhite),
-        new Palette.Color(colorBaseBlack),
-        new Palette.Color(colorBaseGold)]);
+        new Palette.Color(colorBaseBlack, paletteDetailOnBlack),
+        new Palette.Color(colorBaseGold, paletteDetailOnGold),
+        new Palette.Color(colorBaseRed, paletteDetailOnRed),
+        new Palette.Color(colorBaseBrown)]);
 };
 
 Palettes.prototype.LANG_NAME_KOHAKU = "NAME_KOHAKU";

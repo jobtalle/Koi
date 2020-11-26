@@ -32,13 +32,92 @@ Mutations.prototype.createMutations = function() {
                 new Mutation.LayerFootprint(LayerBase.prototype.ID, 0)
             ],
             [
-                new Mutation.LayerFootprint(LayerBase.prototype.ID, 2)
+                new Mutation.LayerFootprint(LayerBase.prototype.ID, 3)
             ],
             [
                 Blueprints.baseWhite.blueprintBody.blueprintPattern.blueprintLayerBase,
-                Blueprints.mutationSpotsGold
+                Blueprints.mutationSpotsRedOnWhite
             ],
-            .1
+            .2
+        ),
+        new Mutation(
+            [
+                new Mutation.LayerFootprint(LayerBase.prototype.ID, 0)
+            ],
+            [
+                new Mutation.LayerFootprint(LayerBase.prototype.ID, 3)
+            ],
+            [
+                Blueprints.baseRed.blueprintBody.blueprintPattern.blueprintLayerBase,
+                Blueprints.mutationSpotsWhiteOnRed
+            ],
+            .2
+        ),
+        new Mutation(
+            [
+                new Mutation.LayerFootprint(LayerBase.prototype.ID, 0)
+            ],
+            [
+                new Mutation.LayerFootprint(LayerBase.prototype.ID, 1)
+            ],
+            [
+                Blueprints.baseBlack.blueprintBody.blueprintPattern.blueprintLayerBase,
+                Blueprints.mutationSpotsWhiteOnRed
+            ],
+            .2
+        ),
+        new Mutation(
+            [
+                new Mutation.LayerFootprint(LayerBase.prototype.ID, 0)
+            ],
+            [
+                new Mutation.LayerFootprint(LayerBase.prototype.ID, 1)
+            ],
+            [
+                Blueprints.baseWhite.blueprintBody.blueprintPattern.blueprintLayerBase,
+                Blueprints.mutationSpotsBlackOnWhite
+            ],
+            .2
+        ),
+        new Mutation(
+            [
+                new Mutation.LayerFootprint(LayerBase.prototype.ID, 1)
+            ],
+            [
+                new Mutation.LayerFootprint(LayerBase.prototype.ID, 3)
+            ],
+            [
+                Blueprints.baseBlack.blueprintBody.blueprintPattern.blueprintLayerBase,
+                Blueprints.mutationSpotsLightRedOnBlack
+            ],
+            .2
+        ),
+        new Mutation(
+            [
+                new Mutation.LayerFootprint(LayerBase.prototype.ID, 1)
+            ],
+            [
+                new Mutation.LayerFootprint(LayerBase.prototype.ID, 2)
+            ],
+            [
+                Blueprints.baseGold.blueprintBody.blueprintPattern.blueprintLayerBase,
+                Blueprints.mutationSpotsBlackOnGold
+            ],
+            .2
+        ),
+        new Mutation(
+            [
+                new Mutation.LayerFootprint(LayerBase.prototype.ID, 2),
+                new Mutation.LayerFootprint(LayerSpots.prototype.ID, 0)
+            ],
+            [
+                new Mutation.LayerFootprint(LayerBase.prototype.ID, 1),
+                new Mutation.LayerFootprint(LayerSpots.prototype.ID, 1)
+            ],
+            [
+                Blueprints.mutationBaseBrown
+            ],
+            .2
         )
     ];
 };

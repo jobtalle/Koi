@@ -15,7 +15,8 @@ SpawnerState.prototype.CHECK_FREQUENCY = 30;
 SpawnerState.prototype.BLUEPRINTS = [
     Blueprints.baseWhite,
     Blueprints.baseBlack,
-    Blueprints.baseGold
+    Blueprints.baseGold,
+    Blueprints.baseRed
 ];
 
 /**

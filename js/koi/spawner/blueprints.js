@@ -186,12 +186,110 @@ const Blueprints = {
             )
         )
     ),
-    mutationSpotsGold: new BlueprintLayerSpots(
+    mutationBaseBrown: new BlueprintLayerBase(4),
+    mutationSpotsRedOnWhite: new BlueprintLayerSpots(
+        // Palette index
         0,
+        // Scale
         new Sampler(50, 100),
+        // Stretch
         new Sampler(120, 136),
+        // Threshold
         new Sampler(80, 100),
+        // X focus
         new Sampler(120, 136),
+        // Y focus
         new Sampler(120, 136),
-        new Sampler(30, 50))
+        // Power
+        new Sampler(30, 50)),
+    mutationSpotsWhiteOnRed: new BlueprintLayerSpots(
+        // Palette index
+        0,
+        // Scale
+        new Sampler(200, 230),
+        // Stretch
+        new Sampler(120, 136),
+        // Threshold
+        new Sampler(180, 200),
+        // X focus
+        new Sampler(120, 136),
+        // Y focus
+        new Sampler(120, 136),
+        // Power
+        new Sampler(160, 170)),
+    mutationSpotsWhiteOnBlack: new BlueprintLayerSpots(
+        // Palette index
+        0,
+        // Scale
+        new Sampler(200, 230),
+        // Stretch
+        new Sampler(120, 136),
+        // Threshold
+        new Sampler(180, 200),
+        // X focus
+        new Sampler(120, 136),
+        // Y focus
+        new Sampler(120, 136),
+        // Power
+        new Sampler(160, 170)),
+    mutationSpotsBlackOnWhite: new BlueprintLayerSpots(
+        // Palette index
+        1,
+        // Scale
+        new Sampler(160, 200),
+        // Stretch
+        new Sampler(120, 136),
+        // Threshold
+        new Sampler(180, 200),
+        // X focus
+        new Sampler(170, 210),
+        // Y focus
+        new Sampler(120, 136),
+        // Power
+        new Sampler(160, 170)),
+    mutationSpotsBlackOnRed: new BlueprintLayerSpots(
+        // Palette index
+        1,
+        // Scale
+        new Sampler(200, 230),
+        // Stretch
+        new Sampler(120, 136),
+        // Threshold
+        new Sampler(180, 200),
+        // X focus
+        new Sampler(120, 136),
+        // Y focus
+        new Sampler(120, 136),
+        // Power
+        new Sampler(160, 170)),
+    mutationSpotsBlackOnGold: new BlueprintLayerSpots(
+        // Palette index
+        0,
+        // Scale
+        new Sampler(200, 230),
+        // Stretch
+        new Sampler(120, 136),
+        // Threshold
+        new Sampler(180, 200),
+        // X focus
+        new Sampler(120, 136),
+        // Y focus
+        new Sampler(120, 136),
+        // Power
+        new Sampler(160, 170)),
+    mutationSpotsLightRedOnBlack: new BlueprintLayerSpots(
+        // Palette index
+        1,
+        // Scale
+        new Sampler(200, 230),
+        // Stretch
+        new Sampler(120, 136),
+        // Threshold
+        new Sampler(180, 200),
+        // X focus
+        new Sampler(120, 136),
+        // Y focus
+        new Sampler(120, 136),
+        // Power
+        new Sampler(160, 170))
 };
