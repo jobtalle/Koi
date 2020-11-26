@@ -56,11 +56,14 @@ MixerPattern.prototype.patternsEqual = function(a, b) {
  * @returns {Pattern} The mixed pattern
  */
 MixerPattern.prototype.mix = function(patterns, random) {
+    let base = null;
     const shapeBody = new MixerLayerShapeBody(this.mother.shapeBody, this.father.shapeBody).mix(random);
     const shapeFins = new MixerLayerShapeFin(this.mother.shapeFin, this.father.shapeFin).mix(random);
     const layers = [];
 
     if (this.patternsEqual(this.mother, this.father)) {
+        base = new MixerLayerBase(this.mother.base, this.father.base).mix(random);
+
         for (let layer = 0, layerCount = this.mother.layers.length; layer < layerCount; ++layer)
             layers.push(this.mixLayers(this.mother.layers[layer], this.father.layers[layer], random));
     }
@@ -76,17 +79,21 @@ MixerPattern.prototype.mix = function(patterns, random) {
 
         // TODO: Dominance
         if (random.getFloat() < .5) {
+            base = this.mother.base.copy();
+
             for (const layer of this.mother.layers)
                 layers.push(layer.copy());
         }
         else {
+            base = this.father.base.copy();
+
             for (const layer of this.father.layers)
                 layers.push(layer.copy())
         }
     }
 
     const pattern = new Pattern(
-        new MixerLayerBase(this.mother.base, this.father.base).mix(random),
+        base,
         layers,
         shapeBody,
         shapeFins);

@@ -41,6 +41,14 @@ LayerBase.prototype.serialize = function(buffer) {
 };
 
 /**
+ * Copy this layer
+ * @returns {LayerBase} A copy of this layer
+ */
+LayerBase.prototype.copy = function() {
+    return new LayerBase(this.paletteIndex);
+};
+
+/**
  * Configure this pattern to a shader
  * @param {WebGLRenderingContext} gl A webGL context
  * @param {Shader} program A shader program created from this patterns' shaders

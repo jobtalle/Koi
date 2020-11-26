@@ -17,12 +17,10 @@ const PaletteTrack = function(palette) {
 PaletteTrack.prototype.next = function(layer) {
     if (this.lastLayer) {
         if (layer.paletteIndex !== -1) {
-            if (!(this.lastLayer.flags & this.lastLayer.FLAG_ALLOW_OVERLAP) || !(layer.flags & layer.FLAG_OVERLAPS)) {
-                if ((this.palette = this.sample.palette) === null || layer.paletteIndex >= this.palette.colors.length)
-                    return null;
+            if ((this.palette = this.sample.palette) === null || layer.paletteIndex >= this.palette.colors.length)
+                return null;
 
-                this.sample = this.palette.colors[layer.paletteIndex];
-            }
+            this.sample = this.palette.colors[layer.paletteIndex];
         }
     }
     else

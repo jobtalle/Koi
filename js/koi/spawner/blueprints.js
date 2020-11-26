@@ -1,5 +1,5 @@
 /**
- * Blueprints of fish that may spawn naturally
+ * Blueprints
  */
 const Blueprints = {
     baseWhite: new Blueprint(
