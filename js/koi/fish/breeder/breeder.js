@@ -16,14 +16,20 @@ const Breeder = function(mother, father) {
  * @param {Atlas} atlas The atlas to render newly spawned patterns on
  * @param {Patterns} patterns The pattern renderer
  * @param {RandomSource} randomSource A random source
+ * @param {Mutations} mutations The mutations object
  * @param {Random} random A randomizer
  * @returns {Fish[]} An array of offspring
  */
-Breeder.prototype.breed = function(atlas, patterns, randomSource, random) {
+Breeder.prototype.breed = function(
+    atlas,
+    patterns,
+    randomSource,
+    mutations,
+    random) {
     const offspring = new Array(this.mother.body.getOffspringCount());
 
     for (let fish = 0, fishCount = offspring.length; fish < fishCount; ++fish) {
-        const newFish = this.mixer.mix(patterns, random);
+        const newFish = this.mixer.mix(patterns, mutations, random);
 
         new MutatorFish(newFish).mutate(random);
 

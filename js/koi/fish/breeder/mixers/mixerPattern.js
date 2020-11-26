@@ -52,10 +52,11 @@ MixerPattern.prototype.patternsEqual = function(a, b) {
 /**
  * Create a new pattern that combines properties from both parents
  * @param {Patterns} patterns The pattern renderer
+ * @param {Mutations} mutations The mutations object
  * @param {Random} random A randomizer
  * @returns {Pattern} The mixed pattern
  */
-MixerPattern.prototype.mix = function(patterns, random) {
+MixerPattern.prototype.mix = function(patterns, mutations, random) {
     let base = null;
     const shapeBody = new MixerLayerShapeBody(this.mother.shapeBody, this.father.shapeBody).mix(random);
     const shapeFins = new MixerLayerShapeFin(this.mother.shapeFin, this.father.shapeFin).mix(random);
@@ -68,7 +69,7 @@ MixerPattern.prototype.mix = function(patterns, random) {
             layers.push(this.mixLayers(this.mother.layers[layer], this.father.layers[layer], random));
     }
     else {
-        for (const mutation of Mutations) if (mutation.mutates(this.mother, this.father, random))
+        for (const mutation of mutations.mutations) if (mutation.mutates(this.mother, this.father, random))
             return mutation.apply(
                 this.mother,
                 this.father,

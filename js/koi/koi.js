@@ -37,6 +37,7 @@ const Koi = function(
     this.weather = null;
     this.weatherFilterChanged = false;
     this.spawner = new Spawner(this.constellation);
+    this.mutations = new Mutations();
     this.time = this.UPDATE_RATE;
     this.phase = 0;
 
@@ -63,6 +64,7 @@ Koi.prototype.serialize = function(buffer) {
     this.constellation.serialize(buffer);
     this.spawner.getState().serialize(buffer);
     this.weather.getState().serialize(buffer);
+    this.mutations.serialize(buffer);
 };
 
 /**
@@ -75,6 +77,7 @@ Koi.prototype.deserialize = function(buffer) {
         this.constellation.deserialize(buffer, this.systems.atlas, this.randomSource);
         this.spawner.setState(SpawnerState.deserialize(buffer));
         this.weather.setState(WeatherState.deserialize(buffer));
+        this.mutations.deserialize(buffer);
         this.weatherFilterChanged = true;
     }
     catch (error) {
@@ -301,7 +304,13 @@ Koi.prototype.update = function() {
     this.gui.update();
 
     this.spawner.update(this.UPDATE_RATE, this.systems.atlas, this.systems.patterns, this.randomSource, this.random);
-    this.constellation.update(this.systems.atlas, this.systems.patterns, this.randomSource, this.water, this.random);
+    this.constellation.update(
+        this.systems.atlas,
+        this.systems.patterns,
+        this.randomSource,
+        this.mutations,
+        this.water,
+        this.random);
     this.weather.update(this.air, this.water, this.audio, this.foreground.plants.plantMap, this.random);
     this.mover.update(this.air, this.audio, this.foreground.plants.plantMap);
 
