@@ -26,8 +26,8 @@ body {
         position: absolute;
         left: 0;
         top: 0;
-        width: 100vw;
-        height: 100vh;
+        width: 100%;
+        height: 100%;
         background-color: #0008;
         display: flex;
         align-items: center;
@@ -52,16 +52,45 @@ body {
     position: absolute;
     left: 0;
     top: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     background-color: #8ea451;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#loader.finished {
+    display: none;
+}
+
+#loader-bar-outer {
+    height: 8px;
+    border: 1px solid black;
+    background-color: gray;
+    width: 35%;
+}
+
+#loader-bar-inner {
+    width: 0;
+    height: 100%;
+    background-color: white;
+    transition: 0.1s;
+}
+
+#loader-button {
+    width: 100%;
+    height: 15%;
+    padding-bottom: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-#loader.finished {
-    display: none;
+#loader-button button {
+    border: 1px solid black;
+    width: 15%;
 }
 
 #gui #cards {

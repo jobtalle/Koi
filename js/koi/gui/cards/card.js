@@ -39,6 +39,7 @@ Card.prototype.LANG_HOUR = "INFO_HOUR";
 Card.prototype.LANG_FRY = "INFO_FRY";
 Card.prototype.LANG_UNIT_WEIGHT = "UNIT_WEIGHT";
 Card.prototype.LANG_UNIT_LENGTH = "UNIT_LENGTH";
+Card.prototype.REQUIREMENT_WEIGHT = 5;
 
 /**
  * Deserialize a card
@@ -77,6 +78,8 @@ Card.prototype.initialize = function(
     if (this.initialized)
         return;
 
+    const requirement = loader.hasFinished() ? null : loader.createRequirement(this.REQUIREMENT_WEIGHT);
+
     this.initialized = true;
 
     let createdTexture = false;
@@ -95,6 +98,9 @@ Card.prototype.initialize = function(
 
         this.previewURL = URL.createObjectURL(blob);
         this.previewAnimation.style.backgroundImage = "url(" + this.previewURL + ")";
+
+        if (requirement)
+            requirement.satisfy();
     });
 
     if (createdTexture) {

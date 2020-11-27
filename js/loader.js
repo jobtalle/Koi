@@ -1,10 +1,14 @@
 /**
  * A load screen
- * @param {HTMLElement} element The element to build the loader in
+ * @param {HTMLElement} element The container element
+ * @param {HTMLElement} elementButton The element to build the start button in
+ * @param {HTMLElement} elementBar The loading bar element
  * @constructor
  */
-const Loader = function(element) {
+const Loader = function(element, elementButton, elementBar) {
     this.element = element;
+    this.elementButton = elementButton;
+    this.elementBar = elementBar;
     this.outstanding = 0;
     this.finished = 0;
     this.released = false;
@@ -35,6 +39,13 @@ Loader.prototype.LANG_START = "START";
 Loader.prototype.CLASS_FINISHED = "finished";
 
 /**
+ * Update the loading bar element after loaded content has changed
+ */
+Loader.prototype.updateBar = function() {
+    this.elementBar.style.width = (100 * this.finished / this.outstanding).toFixed(2) + "%";
+};
+
+/**
  * Create the start button
  * @returns {HTMLButtonElement} The start button
  */
@@ -55,20 +66,28 @@ Loader.prototype.createButton = function() {
  * Finish loading
  */
 Loader.prototype.complete = function() {
-    this.element.appendChild(this.createButton());
+    this.elementButton.appendChild(this.createButton());
+};
+
+/**
+ * Check whether the loader has finished loading
+ * @returns {Boolean} True if the loader has already finished
+ */
+Loader.prototype.hasFinished = function() {
+    return this.released;
 };
 
 /**
  * Indicate that the loader may now finish
  * @param {Function} onFinish A function to call when loading has finished
  */
-Loader.prototype.canFinish = function(onFinish) {
+Loader.prototype.setFinishCallback = function(onFinish) {
     this.onFinish = onFinish;
 
     if (this.outstanding === this.finished)
         this.complete();
-    else
-        this.released = true;
+
+    this.released = true;
 };
 
 /**
@@ -77,6 +96,8 @@ Loader.prototype.canFinish = function(onFinish) {
  */
 Loader.prototype.add = function(weight) {
     this.outstanding += weight;
+
+    this.updateBar();
 };
 
 /**
@@ -85,6 +106,8 @@ Loader.prototype.add = function(weight) {
  */
 Loader.prototype.finish = function(weight) {
     this.finished += weight;
+
+    this.updateBar();
 
     if (this.released && this.finished === this.outstanding)
         this.complete();

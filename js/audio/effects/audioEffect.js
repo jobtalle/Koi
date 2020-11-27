@@ -12,15 +12,14 @@ const AudioEffect = function(engine, sources) {
     this.playbackRate = 1;
 
     for (let source = 0; source < this.variations; ++source) {
+        const requirement = loader.createRequirement(this.REQUIREMENT_WEIGHT);
+
         this.elements[source] = new Audio(sources[source]);
 
         // TODO: Adapt to extension
         this.elements[source].type = "audio/ogg";
         this.elements[source].codecs = "vorbis";
-
-        this.elements[source].oncanplaythrough = () => {
-            console.log("oi");
-        };
+        this.elements[source].onloadedmetadata = requirement.satisfy.bind(requirement);
     }
 };
 
@@ -54,6 +53,8 @@ AudioEffect.Track.prototype.setPan = function(pan) {
 AudioEffect.Track.prototype.setVolume = function(volume) {
     this.nodeGain.gain.value = volume;
 };
+
+AudioEffect.prototype.REQUIREMENT_WEIGHT = 1;
 
 /**
  * Play this audio effect

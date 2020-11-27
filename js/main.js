@@ -5,7 +5,10 @@ const glParameters = {
     premultipliedAlpha: true,
     preserveDrawingBuffer: true
 };
-const loader = new Loader(document.getElementById("loader"));
+const loader = new Loader(
+    document.getElementById("loader"),
+    document.getElementById("loader-button"),
+    document.getElementById("loader-bar-inner"));
 const canvas = document.getElementById("renderer");
 const gl =
     canvas.getContext("webgl", glParameters) ||
@@ -178,7 +181,7 @@ if (gl &&
             loaded = false;
         };
 
-        loader.canFinish(() => {
+        loader.setFinishCallback(() => {
             requestAnimationFrame(loop);
 
             audioEngine.interact();
