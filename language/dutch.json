@@ -3,6 +3,7 @@
     "names/western.json",
     "units/metric.json"
   ],
+  "START": "Start",
   "INFO_WEIGHT": "Gewicht",
   "INFO_LENGTH": "Lengte",
   "INFO_AGE": "Leeftijd",

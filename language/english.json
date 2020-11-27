@@ -3,6 +3,7 @@
     "names/western.json",
     "units/imperial.json"
   ],
+  "START": "Start",
   "INFO_WEIGHT": "Weight",
   "INFO_LENGTH": "Length",
   "INFO_AGE": "Age",

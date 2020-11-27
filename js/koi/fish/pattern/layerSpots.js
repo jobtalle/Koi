@@ -32,7 +32,7 @@ const LayerSpots = function(
 
 LayerSpots.prototype = Object.create(Layer.prototype);
 
-LayerSpots.prototype.SAMPLER_SCALE = new SamplerPlateau(.5, 1.8, 6, 3);
+LayerSpots.prototype.SAMPLER_SCALE = new SamplerPlateau(.5, 1.8, 6, 1);
 LayerSpots.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(.25, .5, .75, 2);
 LayerSpots.prototype.SAMPLER_STRETCH = new SamplerPlateau(.37, 1, 2.5, 1);
 LayerSpots.prototype.SAMPLER_X_FOCUS = new SamplerPlateau(0, 0.4, 1, 1);

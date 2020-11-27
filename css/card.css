@@ -82,7 +82,7 @@
     padding: calc(var(--card-info-spacing) / 4);
     font-size: 20px;
     font-family: sans-serif;
-    background: linear-gradient(to right, white, transparent);
+    background: linear-gradient(to right, transparent, white);
 }
 
 .card .info p .label {

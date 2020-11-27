@@ -17,6 +17,10 @@ const AudioEffect = function(engine, sources) {
         // TODO: Adapt to extension
         this.elements[source].type = "audio/ogg";
         this.elements[source].codecs = "vorbis";
+
+        this.elements[source].oncanplaythrough = () => {
+            console.log("oi");
+        };
     }
 };
 

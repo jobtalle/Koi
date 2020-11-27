@@ -5,6 +5,7 @@ const glParameters = {
     premultipliedAlpha: true,
     preserveDrawingBuffer: true
 };
+const loader = new Loader(document.getElementById("loader"));
 const canvas = document.getElementById("renderer");
 const gl =
     canvas.getContext("webgl", glParameters) ||
@@ -122,8 +123,6 @@ if (gl &&
             }
         };
 
-        requestAnimationFrame(loop);
-
         // Auto save
         setInterval(() => {
             if (!document["hidden"])
@@ -131,16 +130,12 @@ if (gl &&
         }, 60000);
 
         canvas.addEventListener("mousedown", event => {
-            audioEngine.interact(); // TODO: Use earlier trigger, see #47
-
             event.preventDefault();
 
             koi.touchStart(event.clientX, event.clientY);
         });
 
         canvas.addEventListener("touchstart", event => {
-            audioEngine.interact(); // TODO: Use earlier trigger, see #47
-
             event.preventDefault();
 
             koi.touchStart(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
@@ -182,6 +177,12 @@ if (gl &&
 
             loaded = false;
         };
+
+        loader.canFinish(() => {
+            requestAnimationFrame(loop);
+
+            audioEngine.interact();
+        });
     }, onFailure);
 }
 else

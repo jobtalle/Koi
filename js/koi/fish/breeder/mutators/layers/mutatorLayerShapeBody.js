@@ -9,7 +9,7 @@ const MutatorLayerShapeBody = function(layer) {
 
 MutatorLayerShapeBody.prototype = Object.create(Mutator.prototype);
 MutatorLayerShapeBody.prototype.SAMPLER_CENTER_POWER = new SamplerPlateau(-10, 0, 10, .5);
-MutatorLayerShapeBody.prototype.SAMPLER_RADIUS_POWER = new SamplerPlateau(-15, 0, 15, .6);
+MutatorLayerShapeBody.prototype.SAMPLER_RADIUS_POWER = new SamplerPlateau(-10, 0, 10, .6);
 MutatorLayerShapeBody.prototype.SAMPLER_EYE_POSITION = new SamplerPlateau(-12, 0, 12, 1);
 
 /**
