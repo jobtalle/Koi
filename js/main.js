@@ -44,6 +44,8 @@ if (gl &&
     gl.getExtension("OES_element_index_uint") &&
     gl.getExtension("OES_standard_derivatives") &&
     (gl.vao = gl.getExtension("OES_vertex_array_object"))) {
+    const audioEngine = new AudioEngine(new Random());
+    const audio = new AudioBank(audioEngine);
 
     language.load(() => {
         imperial = language.get("UNIT_LENGTH") === "ft";
@@ -53,8 +55,6 @@ if (gl &&
         const gui = new GUI(document.getElementById("gui"));
         const sessionData = window["localStorage"].getItem("session");
         const systems = new Systems(gl, new Random(session.environmentSeed), wrapper.clientWidth, wrapper.clientHeight);
-        const audioEngine = new AudioEngine(new Random());
-        const audio = new AudioBank(audioEngine);
         let lastDate = null;
         let koi = null;
         let loaded = true;
