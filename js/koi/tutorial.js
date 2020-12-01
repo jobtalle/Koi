@@ -16,7 +16,7 @@ Tutorial.prototype.PHASE_MOVE_FISH = 0;
 Tutorial.prototype.PHASE_SELECT_FISH_1 = 1;
 Tutorial.prototype.PHASE_SELECT_FISH_2 = 2;
 Tutorial.prototype.LANG_MOVE_FISH = "TUTORIAL_MOVE_FISH";
-Tutorial.prototype.FISH_SELECT_THRESHOLD = 1.8;
+Tutorial.prototype.FISH_SELECT_THRESHOLD = 1.2;
 Tutorial.prototype.FISH_LOSE_THRESHOLD = 1;
 Tutorial.prototype.START_DELAY = 10;
 
@@ -53,9 +53,10 @@ Tutorial.prototype.targetRiverFish = function(constellation) {
 /**
  * Update the tutorial state
  * @param {Constellation} constellation The constellation
+ * @param {Mover} mover The mover
  * @returns {Boolean} True if the tutorial has finished
  */
-Tutorial.prototype.update = function(constellation) {
+Tutorial.prototype.update = function(constellation, mover) {
     switch (this.phase) {
         case this.PHASE_WAITING:
             if (++this.waited === this.START_DELAY) {
@@ -74,11 +75,19 @@ Tutorial.prototype.update = function(constellation) {
                 }
             }
             else {
-                if (this.targetedFish.position.x < this.FISH_LOSE_THRESHOLD ||
-                    this.targetedFish.position.y < this.FISH_LOSE_THRESHOLD ||
+                if (mover.move === this.targetedFish) {
+                    this.overlay.deletePointer();
+
+                    this.pointer = null;
+                    this.targetedFish = null;
+
+                    ++this.phase;
+                }
+                else if (this.targetedFish.position.x < this.FISH_LOSE_THRESHOLD ||
                     this.targetedFish.position.x > constellation.width - this.FISH_LOSE_THRESHOLD ||
                     this.targetedFish.position.y > constellation.height - this.FISH_LOSE_THRESHOLD) {
                     this.overlay.deletePointer();
+
                     this.pointer = null;
                     this.targetedFish = null;
                 }

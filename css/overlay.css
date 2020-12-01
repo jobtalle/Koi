@@ -2,5 +2,6 @@
     position: relative;
     width: 64px;
     height: 64px;
-    background-color: red;
+    border-radius: 0 32px 32px 32px;
+    background-color: #ff9900;
 }

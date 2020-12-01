@@ -306,7 +306,7 @@ Koi.prototype.update = function() {
     this.updateAudio();
     this.gui.update();
 
-    if (this.tutorial && this.tutorial.update(this.constellation))
+    if (this.tutorial && this.tutorial.update(this.constellation, this.mover))
         this.tutorial = null;
 
     this.spawner.update(this.UPDATE_RATE, this.systems.atlas, this.systems.patterns, this.randomSource, this.random);
