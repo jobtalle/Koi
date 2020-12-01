@@ -22,7 +22,6 @@ BinBuffer.prototype.toString = function() {
  * @returns {Number[]} The bytes stored in this string
  */
 BinBuffer.prototype.fromString = function(string) {
-
     return atob(string).split("").map(c => c.charCodeAt(0));
 };
 

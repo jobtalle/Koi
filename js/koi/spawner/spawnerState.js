@@ -97,14 +97,11 @@ SpawnerState.prototype.update = function(
                     random));
 
             --this.school;
-            console.log("Spawn");
         }
         else if (river.getFishCount() < limit && random.getFloat() < .1) {
             // TODO: Choose blueprint
             this.spawning = this.BLUEPRINTS[Math.floor(this.BLUEPRINTS.length * random.getFloat())];
             this.school = this.spawning.getSchoolSize(random);
-
-            console.log("Primed " + this.school);
         }
     }
 };

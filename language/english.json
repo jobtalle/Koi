@@ -10,5 +10,6 @@
   "INFO_MINUTE": "minute",
   "INFO_MINUTES": "minutes",
   "INFO_HOUR": "hour",
-  "INFO_FRY": "Fry"
+  "INFO_FRY": "Fry",
+  "TUTORIAL_MOVE_FISH": "Move a fish by pressing it and dragging it across the screen."
 }

@@ -4,6 +4,7 @@
  * @param {AudioBank} audio Game audio
  * @param {GUI} gui The GUI
  * @param {Number} environmentSeed The seed for all stable systems
+ * @param {Tutorial} tutorial The tutorial object, or null if no tutorial is active
  * @param {Random} random A randomizer
  * @constructor
  */
@@ -12,12 +13,14 @@ const Koi = function(
     audio,
     gui,
     environmentSeed,
+    tutorial,
     random) {
     this.systems = systems;
     this.audio = audio;
     this.gui = gui;
     this.random = random;
     this.environmentSeed = environmentSeed;
+    this.tutorial = tutorial;
     this.scale = this.getScale(systems.width, systems.height);
     this.constellation =  new Constellation(
         systems.width / this.scale,
@@ -303,6 +306,9 @@ Koi.prototype.update = function() {
     this.updateAudio();
     this.gui.update();
 
+    if (this.tutorial && this.tutorial.update(this.constellation))
+        this.tutorial = null;
+
     this.spawner.update(this.UPDATE_RATE, this.systems.atlas, this.systems.patterns, this.randomSource, this.random);
     this.constellation.update(
         this.systems.atlas,
@@ -334,10 +340,13 @@ Koi.prototype.render = function(deltaTime) {
         this.update();
     }
 
-    const timeFactor = this.time / this.UPDATE_RATE;
+    const time = this.time / this.UPDATE_RATE;
 
     // Update GUI animations
-    this.gui.render(timeFactor);
+    this.gui.render(time);
+
+    if (this.tutorial)
+        this.tutorial.render(this.constellation, this.scale, time);
 
     // Apply filter color
     if (this.weatherFilterChanged) {
@@ -348,7 +357,7 @@ Koi.prototype.render = function(deltaTime) {
 
     // Render shadows
     this.shadowBuffer.target();
-    this.constellation.render(this.systems.bodies, this.systems.atlas, timeFactor,true);
+    this.constellation.render(this.systems.bodies, this.systems.atlas, time,true);
     this.shadowBuffer.blur(this.systems.blur);
 
     // Target underwater buffer
@@ -367,7 +376,7 @@ Koi.prototype.render = function(deltaTime) {
     this.constellation.render(
         this.systems.bodies,
         this.systems.atlas,
-        timeFactor,
+        time,
         false,
         false);
 
@@ -390,7 +399,7 @@ Koi.prototype.render = function(deltaTime) {
         this.systems.vegetation,
         this.systems.stone,
         this.air,
-        timeFactor);
+        time);
 
     // Render shaded water
     this.systems.ponds.render(
@@ -400,13 +409,13 @@ Koi.prototype.render = function(deltaTime) {
         this.systems.width,
         this.systems.height,
         this.scale,
-        this.phase + timeFactor * this.PHASE_SPEED,
-        timeFactor);
+        this.phase + time * this.PHASE_SPEED,
+        time);
 
     // Render weather effects
     this.weatherFilterChanged = this.weather.render(
         this.systems.drops,
-        timeFactor);
+        time);
 
     // Disable Z buffer
     this.systems.gl.disable(this.systems.gl.DEPTH_TEST);
@@ -417,7 +426,7 @@ Koi.prototype.render = function(deltaTime) {
         this.systems.atlas,
         this.constellation.width,
         this.constellation.height,
-        timeFactor);
+        time);
 };
 
 /**

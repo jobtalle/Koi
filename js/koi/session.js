@@ -17,10 +17,11 @@ const Session = function(
  * @param {Systems} systems Render systems for this koi object
  * @param {AudioBank} audio Game audio
  * @param {GUI} gui The GUI
+ * @param {Tutorial} tutorial The tutorial object, or null if no tutorial is active
  * @returns {Koi} A koi object for this session
  */
-Session.prototype.makeKoi = function(systems, audio, gui) {
-    const koi = new Koi(systems, audio, gui, this.environmentSeed, this.random);
+Session.prototype.makeKoi = function(systems, audio, gui, tutorial = null) {
+    const koi = new Koi(systems, audio, gui, this.environmentSeed, tutorial, this.random);
 
     if (this.buffer) {
         koi.deserialize(this.buffer);
@@ -28,7 +29,7 @@ Session.prototype.makeKoi = function(systems, audio, gui) {
 
         this.buffer = null;
     }
-    else for (let i = 0; i < 1500; ++i)
+    else for (let i = 0; i < 1500; ++i) // TODO: Do not do this, place first fish manually instead
         koi.update();
 
     return koi;

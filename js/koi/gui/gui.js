@@ -5,13 +5,20 @@
  */
 const GUI = function(element) {
     const elementCards = document.createElement("div");
+    const elementOverlay = document.createElement("div");
 
     elementCards.id = this.ID_CARDS;
+    elementOverlay.id = this.ID_OVERLAY;
 
     element.appendChild(elementCards);
+    element.appendChild(elementOverlay);
 
     this.cards = new Cards(elementCards);
+    this.overlay = new Overlay(elementOverlay);
 };
+
+GUI.prototype.ID_CARDS = "cards";
+GUI.prototype.ID_OVERLAY = "overlay";
 
 /**
  * Serialize the GUI
@@ -79,6 +86,5 @@ GUI.prototype.update = function() {
  */
 GUI.prototype.render = function(time) {
     this.cards.render(time);
+    this.overlay.render();
 };
-
-GUI.prototype.ID_CARDS = "cards";

@@ -51,9 +51,10 @@ if (gl &&
         imperial = language.get("UNIT_LENGTH") === "ft";
 
         let session = new Session();
+        const tutorial = window["localStorage"].getItem("tutorial") !== null;
         const wrapper = document.getElementById("wrapper");
         const gui = new GUI(document.getElementById("gui"));
-        const sessionData = window["localStorage"].getItem("session");
+        const sessionData = tutorial ? window["localStorage"].getItem("session") : null;
         const systems = new Systems(gl, new Random(session.environmentSeed), wrapper.clientWidth, wrapper.clientHeight);
         let lastDate = null;
         let koi = null;
@@ -90,7 +91,7 @@ if (gl &&
         const newSession = () => {
             session = new Session();
 
-            koi = session.makeKoi(systems, audio, gui);
+            koi = session.makeKoi(systems, audio, gui, new Tutorial(gui.overlay));
         };
 
         // Retrieve last session if it exists
