@@ -14,9 +14,15 @@ const Tutorial = function(overlay) {
 Tutorial.prototype.PHASE_WAITING = -1;
 Tutorial.prototype.PHASE_MOVE_FISH = 0;
 Tutorial.prototype.PHASE_DROP_FISH = 1;
-Tutorial.prototype.PHASE_SELECT_FISH_1 = 2;
-Tutorial.prototype.PHASE_SELECT_FISH_2 = 3;
+Tutorial.prototype.PHASE_TO_POND_1 = 2;
+Tutorial.prototype.PHASE_TO_POND_2 = 3;
+Tutorial.prototype.PHASE_BREED_WAIT = 4;
+Tutorial.prototype.PHASE_BREED_TOO_MANY = 5;
 Tutorial.prototype.LANG_MOVE_FISH = "TUTORIAL_MOVE_FISH";
+Tutorial.prototype.LANG_TO_POND_1 = "TUTORIAL_MOVE_POND_1";
+Tutorial.prototype.LANG_TO_POND_2 = "TUTORIAL_MOVE_POND_2";
+Tutorial.prototype.LANG_BREED_WAIT = "TUTORIAL_BREED_WAIT";
+Tutorial.prototype.LANG_BREED_TOO_MANY = "TUTORIAL_BREED_TOO_MANY";
 Tutorial.prototype.FISH_SELECT_THRESHOLD = 1.2;
 Tutorial.prototype.FISH_LOSE_THRESHOLD = 1;
 Tutorial.prototype.START_DELAY = 10;
@@ -76,7 +82,7 @@ Tutorial.prototype.update = function(constellation, mover) {
                 }
             }
             else {
-                if (mover.move === this.targetedFish) {
+                if (mover.move) {
                     this.overlay.deletePointer();
 
                     this.pointer = null;
@@ -97,9 +103,50 @@ Tutorial.prototype.update = function(constellation, mover) {
             break;
         case this.PHASE_DROP_FISH:
             if (!mover.move) {
-                this.overlay.removeText();
+                if (constellation.small.fishes.length === 0) {
+                    this.overlay.setText(language.get(this.LANG_TO_POND_1));
+                    this.phase = this.PHASE_TO_POND_1;
+                }
+                else {
+                    this.overlay.setText(language.get(this.LANG_TO_POND_2));
+                    this.phase = this.PHASE_TO_POND_2;
+                }
+            }
 
-                ++this.phase;
+            break;
+        case this.PHASE_TO_POND_1:
+            if (constellation.small.fishes.length === 1) {
+                this.overlay.setText(language.get(this.LANG_TO_POND_2));
+                this.phase = this.PHASE_TO_POND_2;
+            }
+
+            break;
+        case this.PHASE_TO_POND_2:
+            if (constellation.small.fishes.length === 2) {
+                this.overlay.setText(language.get(this.LANG_BREED_WAIT));
+                this.phase = this.PHASE_BREED_WAIT;
+            }
+            else if (constellation.small.fishes.length === 0) {
+                this.overlay.setText(language.get(this.LANG_TO_POND_1));
+                this.phase = this.PHASE_TO_POND_1;
+            }
+
+            break;
+        case this.PHASE_BREED_WAIT:
+            if (constellation.small.fishes.length > 2) {
+                this.overlay.setText(language.get(this.LANG_BREED_TOO_MANY));
+                this.phase = this.PHASE_BREED_TOO_MANY;
+            }
+            else if (constellation.small.fishes.length < 2) {
+                this.overlay.setText(language.get(this.LANG_TO_POND_2));
+                this.phase = this.PHASE_TO_POND_2;
+            }
+
+            break;
+        case this.PHASE_BREED_TOO_MANY:
+            if (constellation.small.fishes.length === 2) {
+                this.overlay.setText(language.get(this.LANG_BREED_WAIT));
+                this.phase = this.PHASE_BREED_WAIT;
             }
 
             break;

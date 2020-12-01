@@ -11,5 +11,9 @@
   "INFO_MINUTES": "minutes",
   "INFO_HOUR": "hour",
   "INFO_FRY": "Fry",
-  "TUTORIAL_MOVE_FISH": "Move a fish by pressing it and dragging it across the screen."
+  "TUTORIAL_MOVE_FISH": "Move a fish by pressing it and dragging it across the screen.",
+  "TUTORIAL_MOVE_POND_1": "Put a fish into the small pond.",
+  "TUTORIAL_MOVE_POND_2": "Put another fish into the small pond to allow both fish to breed.",
+  "TUTORIAL_BREED_WAIT": "Two fish will reproduce after being together for a while without being disturbed.",
+  "TUTORIAL_BREED_TOO_MANY": "Remove fish from the small pond until only two fish remain."
 }

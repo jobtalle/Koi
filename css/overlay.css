@@ -9,7 +9,8 @@
     width: 64px;
     height: 64px;
     border-radius: 0 32px 32px 32px;
-    background-color: #ff9900;
+    background-color: #db9c37;
+    border: 2px solid black;
 }
 
 #overlay .text {
@@ -19,8 +20,9 @@
     margin-left: auto;
     margin-right: auto;
     text-align: center;
-    background-color: #ff9900;
+    background-color: #db9c37;
     color: black;
     font-size: 32px;
     border-radius: 16px;
+    border: 2px solid black;
 }

@@ -11,5 +11,9 @@
   "INFO_MINUTES": "minuten",
   "INFO_HOUR": "uur",
   "INFO_FRY": "Baby",
-  "TUTORIAL_MOVE_FISH": "Verplaats een vis door de vis aan te raken en te verslepen."
+  "TUTORIAL_MOVE_FISH": "Verplaats een vis door de vis aan te raken en te verslepen.",
+  "TUTORIAL_MOVE_POND_1": "Plaats een vis in de kleine vijver.",
+  "TUTORIAL_MOVE_POND_2": "Plaats nog een vis in de vijver zodat de vissen zich voort kunnen planten.",
+  "TUTORIAL_BREED_WAIT": "Vissen zullen zich voortplanten als ze enige tijd met z'n tweeën samen zijn.",
+  "TUTORIAL_BREED_TOO_MANY": "Haal vissen uit de kleine vijver zodat er slechts twee vissen over zijn."
 }
