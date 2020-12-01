@@ -9,6 +9,7 @@ const Tutorial = function(overlay) {
     this.pointer = null;
     this.targetedFish = null;
     this.waited = 0;
+    this.bred = false;
 };
 
 Tutorial.prototype.PHASE_WAITING = -1;
@@ -26,6 +27,16 @@ Tutorial.prototype.LANG_BREED_TOO_MANY = "TUTORIAL_BREED_TOO_MANY";
 Tutorial.prototype.FISH_SELECT_THRESHOLD = 1.2;
 Tutorial.prototype.FISH_LOSE_THRESHOLD = 1;
 Tutorial.prototype.START_DELAY = 10;
+
+/**
+ * A function that is called after breeding took place
+ * @param {Constellation} constellation The constellation
+ * @param {Pond} pond The pond where the breeding took place
+ */
+Tutorial.prototype.onBreed = function(constellation, pond) {
+    if (pond === constellation.small)
+        this.bred = true;
+};
 
 /**
  * Target a fish currently in the river
@@ -133,6 +144,12 @@ Tutorial.prototype.update = function(constellation, mover) {
 
             break;
         case this.PHASE_BREED_WAIT:
+            if (this.bred) {
+                this.overlay.removeText();
+
+                return true;
+            }
+
             if (constellation.small.fishes.length > 2) {
                 this.overlay.setText(language.get(this.LANG_BREED_TOO_MANY));
                 this.phase = this.PHASE_BREED_TOO_MANY;

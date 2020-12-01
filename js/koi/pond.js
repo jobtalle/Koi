@@ -1,11 +1,13 @@
 /**
  * A pond from which fish cannot escape
  * @param {Object} constraint The constraint defining this pond
+ * @param {Function} onBreed A function that is called after breeding takes place
  * @param {Boolean} [canBreed] A boolean indicating whether fish may breed in this pond
  * @constructor
  */
-const Pond = function(constraint, canBreed = true) {
+const Pond = function(constraint, onBreed, canBreed = true) {
     this.constraint = constraint;
+    this.onBreed = onBreed;
     this.canBreed = canBreed;
     this.fishes = [];
 };
@@ -191,6 +193,8 @@ Pond.prototype.update = function(
                         else
                             break;
                     }
+
+                    this.onBreed(this);
                 }
             }
             else

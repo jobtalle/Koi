@@ -24,7 +24,8 @@ const Koi = function(
     this.scale = this.getScale(systems.width, systems.height);
     this.constellation =  new Constellation(
         systems.width / this.scale,
-        systems.height / this.scale);
+        systems.height / this.scale,
+        this.onBreed.bind(this));
     this.mover = new Mover(this.constellation, audio, gui);
     this.shadowBuffer = null;
     this.rocks = null;
@@ -88,6 +89,15 @@ Koi.prototype.deserialize = function(buffer) {
 
         throw error;
     }
+};
+
+/**
+ * A function that is called after breeding takes place
+ * @param {Pond} pond The pond where the breeding took place
+ */
+Koi.prototype.onBreed = function(pond) {
+    if (this.tutorial)
+        this.tutorial.onBreed(this.constellation, pond);
 };
 
 /**
