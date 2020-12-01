@@ -7,9 +7,11 @@ const Overlay = function(element) {
     this.element = element;
     this.pointerPosition = null;
     this.pointerElement = null;
+    this.textElement = null;
 };
 
 Overlay.prototype.CLASS_POINTER = "pointer";
+Overlay.prototype.CLASS_TEXT = "text";
 
 /**
  * Render the overlay GUI
@@ -22,12 +24,27 @@ Overlay.prototype.render = function() {
 };
 
 /**
- * A pointer to indicate where the player should do something
+ * Create a pointer element to indicate where the player should do something
+ * @returns {HTMLDivElement} The element
  */
 Overlay.prototype.createPointerElement = function() {
     const element = document.createElement("div");
 
     element.className = this.CLASS_POINTER;
+
+    return element;
+};
+
+/**
+ * Create a text element
+ * @param {String} text The text to display
+ * @returns {HTMLDivElement} The element
+ */
+Overlay.prototype.createTextElement = function(text) {
+    const element = document.createElement("div");
+
+    element.className = this.CLASS_TEXT;
+    element.appendChild(document.createTextNode(text));
 
     return element;
 };
@@ -59,6 +76,18 @@ Overlay.prototype.deletePointer = function() {
  * Set the overlay message
  * @param {String} message The message, or null if no message should be shown
  */
-Overlay.prototype.setMessage = function(message) {
-    console.log(message);
+Overlay.prototype.setText = function(message) {
+    this.removeText();
+
+    this.textElement = this.createTextElement(message);
+
+    this.element.appendChild(this.textElement);
+};
+
+/**
+ * Remove any currently visible text
+ */
+Overlay.prototype.removeText = function() {
+    if (this.textElement)
+        this.element.removeChild(this.textElement);
 };

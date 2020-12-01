@@ -13,8 +13,9 @@ const Tutorial = function(overlay) {
 
 Tutorial.prototype.PHASE_WAITING = -1;
 Tutorial.prototype.PHASE_MOVE_FISH = 0;
-Tutorial.prototype.PHASE_SELECT_FISH_1 = 1;
-Tutorial.prototype.PHASE_SELECT_FISH_2 = 2;
+Tutorial.prototype.PHASE_DROP_FISH = 1;
+Tutorial.prototype.PHASE_SELECT_FISH_1 = 2;
+Tutorial.prototype.PHASE_SELECT_FISH_2 = 3;
 Tutorial.prototype.LANG_MOVE_FISH = "TUTORIAL_MOVE_FISH";
 Tutorial.prototype.FISH_SELECT_THRESHOLD = 1.2;
 Tutorial.prototype.FISH_LOSE_THRESHOLD = 1;
@@ -60,7 +61,7 @@ Tutorial.prototype.update = function(constellation, mover) {
     switch (this.phase) {
         case this.PHASE_WAITING:
             if (++this.waited === this.START_DELAY) {
-                this.overlay.setMessage(language.get(this.LANG_MOVE_FISH));
+                this.overlay.setText(language.get(this.LANG_MOVE_FISH));
 
                 ++this.phase;
             }
@@ -91,6 +92,14 @@ Tutorial.prototype.update = function(constellation, mover) {
                     this.pointer = null;
                     this.targetedFish = null;
                 }
+            }
+
+            break;
+        case this.PHASE_DROP_FISH:
+            if (!mover.move) {
+                this.overlay.removeText();
+
+                ++this.phase;
             }
 
             break;

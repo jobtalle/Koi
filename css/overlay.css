@@ -1,7 +1,26 @@
+:root {
+    --overlay-text-width: 80%;
+    --overlay-text-top: 32px;
+    --overlay-text-padding: 32px;
+}
+
 #overlay .pointer {
-    position: relative;
+    position: absolute;
     width: 64px;
     height: 64px;
     border-radius: 0 32px 32px 32px;
     background-color: #ff9900;
+}
+
+#overlay .text {
+    width: var(--overlay-text-width);
+    padding: var(--overlay-text-padding);
+    margin-top: var(--overlay-text-top);
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    background-color: #ff9900;
+    color: black;
+    font-size: 32px;
+    border-radius: 16px;
 }
