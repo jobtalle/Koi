@@ -66,10 +66,12 @@ Overlay.prototype.createPointer = function() {
  * Delete the pointer with a given position vector
  */
 Overlay.prototype.deletePointer = function() {
-    this.element.removeChild(this.pointerElement);
+    if (this.pointerPosition) {
+        this.element.removeChild(this.pointerElement);
 
-    this.pointerPosition = null;
-    this.pointerElement = null;
+        this.pointerPosition = null;
+        this.pointerElement = null;
+    }
 };
 
 /**

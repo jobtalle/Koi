@@ -1,6 +1,6 @@
 :root {
     --overlay-text-width: 80%;
-    --overlay-text-top: 32px;
+    --overlay-text-top: 16px;
     --overlay-text-padding: 32px;
 }
 
@@ -20,7 +20,7 @@
     margin-left: auto;
     margin-right: auto;
     text-align: center;
-    background-color: #db9c37;
+    background-color: #db9c37aa;
     color: black;
     font-size: 32px;
     border-radius: 16px;

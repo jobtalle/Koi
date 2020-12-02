@@ -86,11 +86,8 @@ Tutorial.prototype.update = function(constellation, mover) {
             break;
         case this.PHASE_MOVE_FISH:
             if (this.targetedFish === null) {
-                if ((this.targetedFish = this.targetRiverFish(constellation))) {
+                if ((this.targetedFish = this.targetRiverFish(constellation)))
                     this.pointer = this.overlay.createPointer();
-
-                    console.log("Found");
-                }
             }
             else {
                 if (mover.move) {
