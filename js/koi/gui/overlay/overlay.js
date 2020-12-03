@@ -45,9 +45,12 @@ Overlay.prototype.createPointerElement = function() {
  */
 Overlay.prototype.createTextElement = function(text) {
     const element = document.createElement("div");
+    const paragraph = document.createElement("p");
+
+    paragraph.appendChild(document.createTextNode(text));
 
     element.className = this.CLASS_TEXT;
-    element.appendChild(document.createTextNode(text));
+    element.appendChild(paragraph);
 
     return element;
 };

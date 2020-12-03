@@ -6,7 +6,6 @@
     --overlay-pointer-animation-scale: 1.2;
     --overlay-text-width: 80%;
     --overlay-text-top: 16px;
-    --overlay-text-padding: 32px;
 }
 
 @keyframes pointer-pulse {
@@ -27,7 +26,6 @@
 
 #overlay .text {
     width: var(--overlay-text-width);
-    padding: var(--overlay-text-padding);
     margin-top: var(--overlay-text-top);
     margin-left: auto;
     margin-right: auto;

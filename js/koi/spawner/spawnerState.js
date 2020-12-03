@@ -5,13 +5,14 @@
  * @param {Blueprint} [spawning] The fish blueprint that is currently spawning
  * @constructor
  */
-const SpawnerState = function(time = 0, school = 0, spawning = null) {
+const SpawnerState = function(time = this.CHECK_FREQUENCY - 1, school = 0, spawning = null) {
     this.time = time;
     this.school = school;
     this.spawning = spawning;
 };
 
 SpawnerState.prototype.CHECK_FREQUENCY = 30;
+SpawnerState.prototype.SPAWN_CHANCE = .1;
 SpawnerState.prototype.BLUEPRINTS = [
     Blueprints.baseWhite,
     Blueprints.baseBlack,
@@ -77,6 +78,13 @@ SpawnerState.prototype.spawnInitial = function(
     patterns,
     randomSource,
     random) {
+    constellation.big.addFish(this.BLUEPRINTS[0].spawn(
+        constellation.big.constraint.position.copy(),
+        new Vector2().fromAngle(random.getFloat() * Math.PI * 2),
+        atlas,
+        patterns,
+        randomSource,
+        random));
     constellation.river.addFish(this.BLUEPRINTS[0].spawn(
         constellation.initialSpawnPoint.copy(),
         constellation.initialSpawnDirection.copy(),
@@ -119,7 +127,7 @@ SpawnerState.prototype.update = function(
 
             --this.school;
         }
-        else if (constellation.river.getFishCount() < limit && random.getFloat() < .1) {
+        else if (random.getFloat() < this.SPAWN_CHANCE && constellation.river.getFishCount() < limit) {
             // TODO: Choose blueprint
             this.spawning = this.BLUEPRINTS[Math.floor(this.BLUEPRINTS.length * random.getFloat())];
             this.school = this.spawning.getSchoolSize(random);
