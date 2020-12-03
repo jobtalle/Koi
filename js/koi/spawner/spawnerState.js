@@ -64,9 +64,31 @@ SpawnerState.prototype.serialize = function(buffer) {
 };
 
 /**
+ * Spawn the initial fish
+ * @param {Constellation} constellation The constellation
+ * @param {Atlas} atlas The atlas to render newly spawned patterns on
+ * @param {Patterns} patterns The patterns
+ * @param {RandomSource} randomSource A random source
+ * @param {Random} random A randomizer
+ */
+SpawnerState.prototype.spawnInitial = function(
+    constellation,
+    atlas,
+    patterns,
+    randomSource,
+    random) {
+    constellation.river.addFish(this.BLUEPRINTS[0].spawn(
+        constellation.initialSpawnPoint.copy(),
+        constellation.initialSpawnDirection.copy(),
+        atlas,
+        patterns,
+        randomSource,
+        random));
+};
+
+/**
  * Update the spawner state
  * @param {Constellation} constellation The constellation
- * @param {Pond} river The river
  * @param {Atlas} atlas The atlas to render newly spawned patterns on
  * @param {Patterns} patterns The patterns
  * @param {RandomSource} randomSource A random source
@@ -76,7 +98,6 @@ SpawnerState.prototype.serialize = function(buffer) {
  */
 SpawnerState.prototype.update = function(
     constellation,
-    river,
     atlas,
     patterns,
     randomSource,
@@ -88,7 +109,7 @@ SpawnerState.prototype.update = function(
 
         if (this.school !== 0) {
             if (constellation.getFishCount() + overhead < Koi.prototype.FISH_CAPACITY)
-                river.addFish(this.spawning.spawn(
+                constellation.river.addFish(this.spawning.spawn(
                     constellation.spawnPoint.copy(),
                     constellation.spawnDirection.copy(),
                     atlas,
@@ -98,7 +119,7 @@ SpawnerState.prototype.update = function(
 
             --this.school;
         }
-        else if (river.getFishCount() < limit && random.getFloat() < .1) {
+        else if (constellation.river.getFishCount() < limit && random.getFloat() < .1) {
             // TODO: Choose blueprint
             this.spawning = this.BLUEPRINTS[Math.floor(this.BLUEPRINTS.length * random.getFloat())];
             this.school = this.spawning.getSchoolSize(random);

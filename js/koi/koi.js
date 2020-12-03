@@ -101,6 +101,13 @@ Koi.prototype.onBreed = function(pond) {
 };
 
 /**
+ * Perform first time initialization
+ */
+Koi.prototype.initialize = function() {
+    this.spawner.spawnInitial(this.systems.atlas, this.systems.patterns, this.randomSource, this.random);
+};
+
+/**
  * Create all renderable instances
  */
 Koi.prototype.createRenderables = function() {

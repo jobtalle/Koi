@@ -29,8 +29,8 @@ Session.prototype.makeKoi = function(systems, audio, gui, tutorial = null) {
 
         this.buffer = null;
     }
-    else for (let i = 0; i < 1500; ++i) // TODO: Do not do this, place first fish manually instead
-        koi.update();
+    else
+        koi.initialize();
 
     return koi;
 };

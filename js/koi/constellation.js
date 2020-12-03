@@ -14,6 +14,8 @@ const Constellation = function(width, height, onBreed) {
     this.river = null;
     this.spawnPoint = null;
     this.spawnDirection = null;
+    this.initialSpawnPoint = null;
+    this.initialSpawnDirection = null;
 
     this.fit();
 };
@@ -22,6 +24,7 @@ Constellation.prototype.FACTOR_PADDING = .14;
 Constellation.prototype.FACTOR_SMALL = .65;
 Constellation.prototype.FACTOR_RIVER = .55;
 Constellation.prototype.Y_SCALE = 1.1;
+Constellation.prototype.INITIAL_SPAWN_LAG = .5;
 
 /**
  * Serialize this constellation
@@ -163,6 +166,11 @@ Constellation.prototype.fit = function(atlas = null) {
             this.spawnPoint = new Vector2(radiusBig + .000001, this.height + riverWidth * .5);
             this.spawnDirection = new Vector2(1, 0);
         }
+
+        this.initialSpawnDirection = new Vector2().fromAngle(riverTurn - Math.PI * .5 + this.INITIAL_SPAWN_LAG);
+        this.initialSpawnPoint = new Vector2(
+            centerBig.x + Math.cos(riverTurn + this.INITIAL_SPAWN_LAG) * (radiusBig + riverWidth * .5),
+            centerBig.y + Math.sin(riverTurn + this.INITIAL_SPAWN_LAG) * (radiusBig + riverWidth * .5));
     }
     else {
         constraintRiver = new ConstraintArcPath(
@@ -188,6 +196,11 @@ Constellation.prototype.fit = function(atlas = null) {
             this.spawnPoint = new Vector2(this.width + riverWidth * .5, radiusBig + .000001);
             this.spawnDirection = new Vector2(0, 1);
         }
+
+        this.initialSpawnDirection = new Vector2().fromAngle(riverTurn + Math.PI * .5 - this.INITIAL_SPAWN_LAG);
+        this.initialSpawnPoint = new Vector2(
+            centerBig.x + Math.cos(riverTurn - this.INITIAL_SPAWN_LAG) * (radiusBig + riverWidth * .5),
+            centerBig.y + Math.sin(riverTurn - this.INITIAL_SPAWN_LAG) * (radiusBig + riverWidth * .5));
     }
 
     if (this.big) {

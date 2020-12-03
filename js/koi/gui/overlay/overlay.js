@@ -12,6 +12,9 @@ const Overlay = function(element) {
 
 Overlay.prototype.CLASS_POINTER = "pointer";
 Overlay.prototype.CLASS_TEXT = "text";
+Overlay.prototype.POINTER_RADIUS =
+    StyleUtils.getInt("--overlay-pointer-radius") +
+    StyleUtils.getInt("--overlay-pointer-border");
 
 /**
  * Render the overlay GUI
@@ -54,7 +57,7 @@ Overlay.prototype.createTextElement = function(text) {
  * @returns {Vector2} The pointer position which can be changed
  */
 Overlay.prototype.createPointer = function() {
-    this.pointerPosition = new Vector2();
+    this.pointerPosition = new Vector2(-this.POINTER_RADIUS, -this.POINTER_RADIUS);
     this.pointerElement = this.createPointerElement();
 
     this.element.appendChild(this.pointerElement);

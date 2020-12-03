@@ -30,6 +30,22 @@ Spawner.prototype.getState = function() {
 };
 
 /**
+ * Spawn the initial fish
+ * @param {Atlas} atlas The atlas to render newly spawned patterns on
+ * @param {Patterns} patterns The patterns
+ * @param {RandomSource} randomSource A random source
+ * @param {Random} random A randomizer
+ */
+Spawner.prototype.spawnInitial = function(atlas, patterns, randomSource, random) {
+    this.state.spawnInitial(
+        this.constellation,
+        atlas,
+        patterns,
+        randomSource,
+        random);
+};
+
+/**
  * Update the spawner
  * @param {Number} timeStep The amount of time passed since the last update
  * @param {Atlas} atlas The atlas to render newly spawned patterns on
@@ -45,7 +61,6 @@ Spawner.prototype.update = function(
     random) {
     this.state.update(
         this.constellation,
-        this.constellation.river,
         atlas,
         patterns,
         randomSource,
