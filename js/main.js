@@ -91,7 +91,7 @@ if (gl &&
         const newSession = () => {
             session = new Session();
 
-            koi = session.makeKoi(systems, audio, gui, new Tutorial(gui.overlay));
+            koi = session.makeKoi(systems, audio, gui, new TutorialBreeding(gui.overlay));
         };
 
         // Retrieve last session if it exists

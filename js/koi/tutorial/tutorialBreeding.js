@@ -1,39 +1,40 @@
 /**
- * The tutorial
+ * The breeding tutorial
  * @param {Overlay} overlay The overlay object to show hints on
  * @constructor
  */
-const Tutorial = function(overlay) {
+const TutorialBreeding = function(overlay) {
+    Tutorial.call(this);
+
     this.overlay = overlay;
-    this.phase = this.PHASE_WAITING;
     this.pointer = null;
     this.targetedFish = null;
-    this.waited = 0;
     this.bred = false;
+
+    overlay.setText(language.get(this.LANG_MOVE_FISH));
 };
 
-Tutorial.prototype.PHASE_WAITING = -1;
-Tutorial.prototype.PHASE_MOVE_FISH = 0;
-Tutorial.prototype.PHASE_DROP_FISH = 1;
-Tutorial.prototype.PHASE_TO_POND_1 = 2;
-Tutorial.prototype.PHASE_TO_POND_2 = 3;
-Tutorial.prototype.PHASE_BREED_WAIT = 4;
-Tutorial.prototype.PHASE_BREED_TOO_MANY = 5;
-Tutorial.prototype.LANG_MOVE_FISH = "TUTORIAL_MOVE_FISH";
-Tutorial.prototype.LANG_TO_POND_1 = "TUTORIAL_MOVE_POND_1";
-Tutorial.prototype.LANG_TO_POND_2 = "TUTORIAL_MOVE_POND_2";
-Tutorial.prototype.LANG_BREED_WAIT = "TUTORIAL_BREED_WAIT";
-Tutorial.prototype.LANG_BREED_TOO_MANY = "TUTORIAL_BREED_TOO_MANY";
-Tutorial.prototype.FISH_SELECT_THRESHOLD = 1.2;
-Tutorial.prototype.FISH_LOSE_THRESHOLD = 1;
-Tutorial.prototype.START_DELAY = 10;
+TutorialBreeding.prototype = Object.create(Tutorial.prototype);
+TutorialBreeding.prototype.PHASE_MOVE_FISH = 0;
+TutorialBreeding.prototype.PHASE_DROP_FISH = 1;
+TutorialBreeding.prototype.PHASE_TO_POND_1 = 2;
+TutorialBreeding.prototype.PHASE_TO_POND_2 = 3;
+TutorialBreeding.prototype.PHASE_BREED_WAIT = 4;
+TutorialBreeding.prototype.PHASE_BREED_TOO_MANY = 5;
+TutorialBreeding.prototype.LANG_MOVE_FISH = "TUTORIAL_MOVE_FISH";
+TutorialBreeding.prototype.LANG_TO_POND_1 = "TUTORIAL_MOVE_POND_1";
+TutorialBreeding.prototype.LANG_TO_POND_2 = "TUTORIAL_MOVE_POND_2";
+TutorialBreeding.prototype.LANG_BREED_WAIT = "TUTORIAL_BREED_WAIT";
+TutorialBreeding.prototype.LANG_BREED_TOO_MANY = "TUTORIAL_BREED_TOO_MANY";
+TutorialBreeding.prototype.FISH_SELECT_THRESHOLD = 1.2;
+TutorialBreeding.prototype.FISH_LOSE_THRESHOLD = 1;
 
 /**
  * A function that is called after breeding took place
  * @param {Constellation} constellation The constellation
  * @param {Pond} pond The pond where the breeding took place
  */
-Tutorial.prototype.onBreed = function(constellation, pond) {
+TutorialBreeding.prototype.onBreed = function(constellation, pond) {
     if (pond === constellation.small)
         this.bred = true;
 };
@@ -43,7 +44,7 @@ Tutorial.prototype.onBreed = function(constellation, pond) {
  * @param {Constellation} constellation The constellation
  * @returns {Fish} A fish, or null if no suitable fish was found
  */
-Tutorial.prototype.targetRiverFish = function(constellation) {
+TutorialBreeding.prototype.targetRiverFish = function(constellation) {
     let nearestSquaredDist = .25 *
         (constellation.width * constellation.width + constellation.height * constellation.height);
     let nearest = null;
@@ -76,16 +77,8 @@ Tutorial.prototype.targetRiverFish = function(constellation) {
  * @param {Mover} mover The mover
  * @returns {Boolean} True if the tutorial has finished
  */
-Tutorial.prototype.update = function(constellation, mover) {
+TutorialBreeding.prototype.update = function(constellation, mover) {
     switch (this.phase) {
-        case this.PHASE_WAITING:
-            if (++this.waited === this.START_DELAY) {
-                this.overlay.setText(language.get(this.LANG_MOVE_FISH));
-
-                ++this.phase;
-            }
-
-            break;
         case this.PHASE_MOVE_FISH:
             if (this.targetedFish === null) {
                 if ((this.targetedFish = this.targetRiverFish(constellation)))
@@ -182,7 +175,7 @@ Tutorial.prototype.update = function(constellation, mover) {
  * @param {Number} scale The scale
  * @param {Number} time The amount of time since the last update
  */
-Tutorial.prototype.render = function(constellation, scale, time) {
+TutorialBreeding.prototype.render = function(constellation, scale, time) {
     switch (this.phase) {
         case this.PHASE_MOVE_FISH:
             if (this.pointer) {
