@@ -4,9 +4,8 @@
  * @constructor
  */
 const TutorialBreeding = function(overlay) {
-    Tutorial.call(this);
+    Tutorial.call(this, overlay);
 
-    this.overlay = overlay;
     this.pointer = null;
     this.targetedFish = null;
     this.bred = false;
@@ -91,7 +90,7 @@ TutorialBreeding.prototype.update = function(constellation, mover) {
                     this.pointer = null;
                     this.targetedFish = null;
 
-                    ++this.phase;
+                    this.advance();
                 }
                 else {
                     const position = this.targetedFish.body.getOffspringPosition();
@@ -113,7 +112,8 @@ TutorialBreeding.prototype.update = function(constellation, mover) {
             if (!mover.move) {
                 if (constellation.small.fishes.length === 0) {
                     this.overlay.setText(language.get(this.LANG_TO_POND_1));
-                    this.phase = this.PHASE_TO_POND_1;
+
+                    this.advance();
                 }
                 else {
                     this.overlay.setText(language.get(this.LANG_TO_POND_2));
@@ -125,7 +125,8 @@ TutorialBreeding.prototype.update = function(constellation, mover) {
         case this.PHASE_TO_POND_1:
             if (constellation.small.fishes.length === 1) {
                 this.overlay.setText(language.get(this.LANG_TO_POND_2));
-                this.phase = this.PHASE_TO_POND_2;
+
+                this.advance();
             }
 
             break;

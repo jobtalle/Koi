@@ -1,9 +1,18 @@
 /**
  * The tutorial base class
+ * @param {Overlay} overlay The overlay object to show hints on
  * @constructor
  */
-const Tutorial = function() {
+const Tutorial = function(overlay) {
     this.phase = 0;
+    this.overlay = overlay;
+};
+
+/**
+ * Advance the tutorial phase
+ */
+Tutorial.prototype.advance = function() {
+    ++this.phase;
 };
 
 /**
