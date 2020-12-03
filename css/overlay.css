@@ -1,16 +1,28 @@
 :root {
+    --overlay-pointer-radius: 48px;
+    --overlay-pointer-border: 8px;
+    --overlay-pointer-color: #fffc;
+    --overlay-pointer-animation-time: 1s;
+    --overlay-pointer-animation-scale: 1.2;
     --overlay-text-width: 80%;
     --overlay-text-top: 16px;
     --overlay-text-padding: 32px;
 }
 
+@keyframes pointer-pulse {
+    0% {transform: translate(-50%, -50%) scale(1)}
+    25% {transform: translate(-50%, -50%) scale(var(--overlay-pointer-animation-scale))}
+    100% {transform: translate(-50%, -50%) scale(1)}
+}
+
 #overlay .pointer {
     position: absolute;
-    width: 64px;
-    height: 64px;
-    border-radius: 0 32px 32px 32px;
-    background-color: #db9c37;
-    border: 2px solid black;
+    width: calc(2 * var(--overlay-pointer-radius));
+    height: calc(2 * var(--overlay-pointer-radius));
+    border-radius: calc(var(--overlay-pointer-radius) + var(--overlay-pointer-border));
+    border: var(--overlay-pointer-border) solid var(--overlay-pointer-color);
+    animation: pointer-pulse var(--overlay-pointer-animation-time) infinite;
+    animation-timing-function: ease-in-out;
 }
 
 #overlay .text {

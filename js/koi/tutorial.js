@@ -49,14 +49,16 @@ Tutorial.prototype.targetRiverFish = function(constellation) {
     let nearest = null;
 
     for (const fish of constellation.river.fishes) {
-        if (fish.position.x < this.FISH_SELECT_THRESHOLD ||
-            fish.position.y < this.FISH_SELECT_THRESHOLD ||
-            fish.position.x > constellation.width - this.FISH_SELECT_THRESHOLD ||
-            fish.position.y > constellation.height - this.FISH_SELECT_THRESHOLD)
+        const position = fish.body.getOffspringPosition();
+
+        if (position.x < this.FISH_SELECT_THRESHOLD ||
+            position.y < this.FISH_SELECT_THRESHOLD ||
+            position.x > constellation.width - this.FISH_SELECT_THRESHOLD ||
+            position.y > constellation.height - this.FISH_SELECT_THRESHOLD)
             continue;
 
-        const dx = constellation.width * .5 - fish.position.x;
-        const dy = constellation.height * .5 - fish.position.y;
+        const dx = constellation.width * .5 - position.x;
+        const dy = constellation.height * .5 - position.y;
         const sd = dx * dx + dy * dy;
 
         if (sd < nearestSquaredDist) {
@@ -98,13 +100,18 @@ Tutorial.prototype.update = function(constellation, mover) {
 
                     ++this.phase;
                 }
-                else if (this.targetedFish.position.x < this.FISH_LOSE_THRESHOLD ||
-                    this.targetedFish.position.x > constellation.width - this.FISH_LOSE_THRESHOLD ||
-                    this.targetedFish.position.y > constellation.height - this.FISH_LOSE_THRESHOLD) {
-                    this.overlay.deletePointer();
+                else {
+                    const position = this.targetedFish.body.getOffspringPosition();
 
-                    this.pointer = null;
-                    this.targetedFish = null;
+                    if (position.x < this.FISH_LOSE_THRESHOLD ||
+                        position.y < this.FISH_LOSE_THRESHOLD ||
+                        position.x > constellation.width - this.FISH_LOSE_THRESHOLD ||
+                        position.y > constellation.height - this.FISH_LOSE_THRESHOLD) {
+                        this.overlay.deletePointer();
+
+                        this.pointer = null;
+                        this.targetedFish = null;
+                    }
                 }
             }
 
@@ -179,14 +186,12 @@ Tutorial.prototype.render = function(constellation, scale, time) {
     switch (this.phase) {
         case this.PHASE_MOVE_FISH:
             if (this.pointer) {
+                const positionPrevious = this.targetedFish.body.getOffspringPositionPrevious();
+                const position = this.targetedFish.body.getOffspringPosition();
                 this.pointer.x = constellation.getPixelX(
-                    this.targetedFish.positionPrevious.x +
-                    (this.targetedFish.position.x - this.targetedFish.positionPrevious.x) * time,
-                    scale);
+                    positionPrevious.x + (position.x - positionPrevious.x) * time, scale);
                 this.pointer.y = constellation.getPixelY(
-                    this.targetedFish.positionPrevious.y +
-                    (this.targetedFish.position.y - this.targetedFish.positionPrevious.y) * time,
-                    scale);
+                    positionPrevious.y + (position.y - positionPrevious.y) * time, scale);
             }
 
             break;

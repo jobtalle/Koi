@@ -23,6 +23,6 @@ MixerFish.prototype = Object.create(Mixer.prototype);
 MixerFish.prototype.mix = function(patterns, mutations, random) {
     return new Fish(
         this.mixerBody.mix(patterns, mutations, random),
-        this.mother.getOffspringPosition().copy(),
+        this.mother.body.getOffspringPosition().copy(),
         new Vector2().fromAngle(random.getFloat() * Math.PI * 2));
 };

@@ -78,7 +78,7 @@ FishBody.prototype.SPINE_LOOP_FLEXIBILITY = new SamplerPower(0, 2.3, .16);
 FishBody.prototype.SPINE_LOOP_ANGLE_AMPLITUDE = .07;
 FishBody.prototype.SPINE_LOOP_PHASE_AMPLITUDE = .6;
 FishBody.prototype.SPRING_POWER = 1.7;
-FishBody.prototype.OFFSPRING_VERTEBRA = .3;
+FishBody.prototype.OFFSPRING_VERTEBRA = .4;
 FishBody.prototype.KILOGRAMS_PER_AREA = 22;
 
 /**
@@ -203,6 +203,14 @@ FishBody.prototype.getWeight = function(size) {
  */
 FishBody.prototype.getOffspringPosition = function() {
     return this.spine[Math.round((this.spine.length - 1) * this.OFFSPRING_VERTEBRA)];
+};
+
+/**
+ * Get the previous position to spawn offspring at
+ * @returns {Vector2} A position
+ */
+FishBody.prototype.getOffspringPositionPrevious = function() {
+    return this.spinePrevious[Math.round((this.spine.length - 1) * this.OFFSPRING_VERTEBRA)];
 };
 
 /**

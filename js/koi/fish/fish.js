@@ -159,14 +159,6 @@ Fish.prototype.moveTo = function(position) {
 };
 
 /**
- * Get the position to spawn offspring at
- * @returns {Vector2} A position
- */
-Fish.prototype.getOffspringPosition = function() {
-    return this.body.getOffspringPosition();
-};
-
-/**
  * Drop the fish into a new pond, orient along its body rotation
  * @param {Vector2} position The position to drop the fish at
  */
