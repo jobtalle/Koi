@@ -1,11 +1,13 @@
 /**
  * The fish spawner
  * @param {Constellation} constellation A constellation to spawn fish in
+ * @param {SpawnerBehavior} behavior Spawner behavior
  * @param {SpawnerState} [state] The state of this spawner
  * @constructor
  */
-const Spawner = function(constellation, state = new SpawnerState()) {
+const Spawner = function(constellation, behavior, state = new SpawnerState()) {
     this.constellation = constellation;
+    this.behavior = behavior;
     this.state = state;
     this.time = 0;
 };
@@ -60,6 +62,7 @@ Spawner.prototype.update = function(
     randomSource,
     random) {
     this.state.update(
+        this.behavior,
         this.constellation,
         atlas,
         patterns,

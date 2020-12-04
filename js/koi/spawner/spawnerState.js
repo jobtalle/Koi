@@ -13,6 +13,7 @@ const SpawnerState = function(time = this.CHECK_FREQUENCY - 1, school = 0, spawn
 
 SpawnerState.prototype.CHECK_FREQUENCY = 30;
 SpawnerState.prototype.SPAWN_CHANCE = .1;
+SpawnerState.prototype.BLUEPRINT_INITIAL = Blueprints.baseWhite;
 SpawnerState.prototype.BLUEPRINTS = [
     Blueprints.baseWhite,
     Blueprints.baseBlack,
@@ -78,14 +79,14 @@ SpawnerState.prototype.spawnInitial = function(
     patterns,
     randomSource,
     random) {
-    constellation.big.addFish(this.BLUEPRINTS[0].spawn(
+    constellation.big.addFish(this.BLUEPRINT_INITIAL.spawn(
         constellation.big.constraint.position.copy(),
         new Vector2().fromAngle(random.getFloat() * Math.PI * 2),
         atlas,
         patterns,
         randomSource,
         random));
-    constellation.river.addFish(this.BLUEPRINTS[0].spawn(
+    constellation.river.addFish(this.BLUEPRINT_INITIAL.spawn(
         constellation.initialSpawnPoint.copy(),
         constellation.initialSpawnDirection.copy(),
         atlas,
@@ -96,6 +97,7 @@ SpawnerState.prototype.spawnInitial = function(
 
 /**
  * Update the spawner state
+ * @param {SpawnerBehavior} behavior The current behavior
  * @param {Constellation} constellation The constellation
  * @param {Atlas} atlas The atlas to render newly spawned patterns on
  * @param {Patterns} patterns The patterns
@@ -105,6 +107,7 @@ SpawnerState.prototype.spawnInitial = function(
  * @param {Random} random A randomizer
  */
 SpawnerState.prototype.update = function(
+    behavior,
     constellation,
     atlas,
     patterns,
@@ -127,10 +130,11 @@ SpawnerState.prototype.update = function(
 
             --this.school;
         }
-        else if (random.getFloat() < this.SPAWN_CHANCE && constellation.river.getFishCount() < limit) {
-            // TODO: Choose blueprint
-            this.spawning = this.BLUEPRINTS[Math.floor(this.BLUEPRINTS.length * random.getFloat())];
-            this.school = this.spawning.getSchoolSize(random);
+        else {
+            this.spawning = behavior.get(random);
+
+            if (this.spawning && constellation.river.getFishCount() < limit)
+                this.school = this.spawning.getSchoolSize(random);
         }
     }
 };
