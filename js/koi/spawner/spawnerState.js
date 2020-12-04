@@ -131,10 +131,10 @@ SpawnerState.prototype.update = function(
             --this.school;
         }
         else {
-            this.spawning = behavior.get(random);
+            this.spawning = behavior.getBlueprint(random);
 
             if (this.spawning && constellation.river.getFishCount() < limit)
-                this.school = this.spawning.getSchoolSize(random);
+                this.school = behavior.getSchoolSize(this.spawning, random);
         }
     }
 };

@@ -187,7 +187,7 @@ ConstraintArcPath.prototype.sample = function(position) {
 
 /**
  * Get the number of steps a mesh for this constraint should have
- * @param {Number} arc The index of the arc to get the number of steps for
+ * @param {Number} arc The index of the arc to getBlueprint the number of steps for
  */
 ConstraintArcPath.prototype.getMeshSteps = function(arc) {
     return Math.ceil((this.arcs[arc].end - this.arcs[arc].start) * this.arcs[arc].radius / this.rings[arc].MESH_RESOLUTION);

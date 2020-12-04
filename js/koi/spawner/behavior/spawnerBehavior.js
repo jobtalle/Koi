@@ -1,7 +1,7 @@
 /**
  * Spawner behavior
  * @param {Blueprint[]} blueprints A set of blueprints to choose from
- * @param {Number} chance The chance that a spawn operation is performed on get()
+ * @param {Number} chance The chance that a spawn operation is performed on getBlueprint()
  * @constructor
  */
 const SpawnerBehavior = function(blueprints, chance) {
@@ -22,9 +22,24 @@ SpawnerBehavior.prototype.getBlueprintIndex = function() {
  * @param {Random} random A randomizer
  * @returns {Blueprint} The blueprint of the fish to spawn, nor null if none should be spawned
  */
-SpawnerBehavior.prototype.get = function(random) {
+SpawnerBehavior.prototype.getBlueprint = function(random) {
     if (this.chance !== 1 && random.getFloat() > this.chance)
         return null;
 
-    return this.blueprints[this.getBlueprintIndex()];
+    const index = this.getBlueprintIndex();
+
+    if (index !== -1)
+        return this.blueprints[index];
+
+    return null;
+};
+
+/**
+ * Get the school size for a given blueprint
+ * @param {Blueprint} blueprint The blueprint
+ * @param {Random} random A randomizer
+ * @returns {Number} The school size
+ */
+SpawnerBehavior.prototype.getSchoolSize = function(blueprint, random) {
+    return blueprint.getSchoolSize(random);
 };

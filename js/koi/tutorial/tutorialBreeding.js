@@ -26,7 +26,7 @@ TutorialBreeding.prototype.LANG_TO_POND_2 = "TUTORIAL_MOVE_POND_2";
 TutorialBreeding.prototype.LANG_BREED_WAIT = "TUTORIAL_BREED_WAIT";
 TutorialBreeding.prototype.LANG_BREED_TOO_MANY = "TUTORIAL_BREED_TOO_MANY";
 TutorialBreeding.prototype.FISH_SELECT_THRESHOLD = 1.2;
-TutorialBreeding.prototype.FISH_LOSE_THRESHOLD = .7;
+TutorialBreeding.prototype.FISH_LOSE_THRESHOLD = .4;
 
 /**
  * A function that is called after breeding took place
