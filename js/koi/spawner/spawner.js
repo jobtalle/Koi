@@ -32,6 +32,14 @@ Spawner.prototype.getState = function() {
 };
 
 /**
+ * Set the spawning behavior
+ * @param {SpawnerBehavior} behavior Spawner behavior
+ */
+Spawner.prototype.setBehavior = function(behavior) {
+    this.behavior = behavior;
+};
+
+/**
  * Spawn the initial fish
  * @param {Atlas} atlas The atlas to render newly spawned patterns on
  * @param {Patterns} patterns The patterns

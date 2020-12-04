@@ -12,7 +12,6 @@ const SpawnerState = function(time = this.CHECK_FREQUENCY - 1, school = 0, spawn
 };
 
 SpawnerState.prototype.CHECK_FREQUENCY = 30;
-SpawnerState.prototype.SPAWN_CHANCE = .1;
 SpawnerState.prototype.BLUEPRINT_INITIAL = Blueprints.baseWhite;
 SpawnerState.prototype.BLUEPRINTS = [
     Blueprints.baseWhite,
@@ -34,8 +33,6 @@ SpawnerState.deserialize = function(buffer) {
 
     if (time > SpawnerState.prototype.CHECK_FREQUENCY)
         throw new RangeError();
-
-    // TODO: Validate school range
 
     if (spawningIndex > SpawnerState.prototype.BLUEPRINTS.length)
         throw new RangeError();

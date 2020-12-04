@@ -40,7 +40,9 @@ const Koi = function(
     this.reflections = null;
     this.weather = null;
     this.weatherFilterChanged = false;
-    this.spawner = new Spawner(this.constellation, new SpawnerBehaviorTutorial());
+    this.spawner = new Spawner(
+        this.constellation,
+        tutorial instanceof TutorialBreeding ? new SpawnerBehaviorTutorial() : new SpawnerBehaviorDefault());
     this.mutations = new Mutations();
     this.time = this.UPDATE_RATE;
     this.phase = 0;
@@ -324,6 +326,9 @@ Koi.prototype.update = function() {
     this.gui.update();
 
     if (this.tutorial && this.tutorial.update(this.constellation, this.mover)) {
+        if (this.tutorial instanceof TutorialBreeding)
+            this.spawner.setBehavior(new SpawnerBehaviorDefault());
+
         this.tutorial = null;
 
         // TODO: Set "tutorial" in localstorage to true

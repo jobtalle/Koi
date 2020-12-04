@@ -11,9 +11,10 @@ const SpawnerBehavior = function(blueprints, chance) {
 
 /**
  * Get the index of the blueprint to spawn
+ * @param {Random} random The randomizer
  * @returns {Number} The blueprint index
  */
-SpawnerBehavior.prototype.getBlueprintIndex = function() {
+SpawnerBehavior.prototype.getBlueprintIndex = function(random) {
     return 0;
 };
 
@@ -26,7 +27,7 @@ SpawnerBehavior.prototype.getBlueprint = function(random) {
     if (this.chance !== 1 && random.getFloat() > this.chance)
         return null;
 
-    const index = this.getBlueprintIndex();
+    const index = this.getBlueprintIndex(random);
 
     if (index !== -1)
         return this.blueprints[index];
