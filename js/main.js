@@ -99,7 +99,7 @@ if (gl &&
                 // throw new Error();
                 session.deserialize(new BinBuffer(sessionData));
 
-                koi = session.makeKoi(systems, audio, gui);
+                koi = session.makeKoi(systems, audio, gui, new TutorialCards(gui.overlay));
             } catch (error) {
                 gui.clear();
 

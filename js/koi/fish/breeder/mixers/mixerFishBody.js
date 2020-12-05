@@ -30,7 +30,7 @@ MixerFishBody.prototype.SAMPLER_OFFSPRING_COUNT = new SamplerPower(0, 1, 4);
  */
 MixerFishBody.prototype.mix = function(patterns, mutations, onMutate, random) {
     const interpolation = random.getFloat();
-    console.log(mutations);
+
     return new FishBody(
         this.mixerPattern.mix(patterns, mutations, onMutate, random),
         this.mixerFins.mix(random),

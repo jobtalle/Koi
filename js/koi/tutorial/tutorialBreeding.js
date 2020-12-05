@@ -145,6 +145,8 @@ TutorialBreeding.prototype.update = function(constellation, mover) {
             if (this.bred) {
                 this.overlay.removeText();
 
+                localStorage.setItem("tutorial", "0");
+
                 return true;
             }
 
