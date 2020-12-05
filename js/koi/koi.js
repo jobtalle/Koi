@@ -108,7 +108,8 @@ Koi.prototype.onBreed = function(pond) {
  * @param {Mutation} mutation The mutation that occurred
  */
 Koi.prototype.onMutate = function(mutation) {
-    console.log(mutation);
+    if (this.tutorial)
+        this.tutorial.onMutate();
 };
 
 /**

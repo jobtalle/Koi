@@ -45,3 +45,10 @@ Tutorial.prototype.render = function(constellation, scale, time) {
 Tutorial.prototype.onBreed = function(constellation, pond) {
 
 };
+
+/**
+ * A function that is called after a pattern mutation occurs
+ */
+Tutorial.prototype.onMutate = function() {
+
+};

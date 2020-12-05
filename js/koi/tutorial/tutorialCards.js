@@ -5,8 +5,9 @@
  */
 const TutorialCards = function(overlay) {
     Tutorial.call(this, overlay);
-    console.log("Start cards tutorial");
+
     this.mutations = Number.parseInt(localStorage.getItem("tutorial"));
 };
 
 TutorialCards.prototype = Object.create(Tutorial.prototype);
+TutorialCards.prototype.PHASE_START = 0;
