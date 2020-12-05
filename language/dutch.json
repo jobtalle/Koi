@@ -15,5 +15,6 @@
   "TUTORIAL_MOVE_POND_1": "Plaats een vis in de kleine vijver.",
   "TUTORIAL_MOVE_POND_2": "Plaats nog een vis in de kleine vijver zodat de vissen zich voort kunnen planten.",
   "TUTORIAL_BREED_WAIT": "Vissen zullen zich voortplanten als ze enige tijd met z'n tweeën samen zijn.",
-  "TUTORIAL_BREED_TOO_MANY": "Haal vissen uit de kleine vijver totdat er slechts twee vissen over zijn."
+  "TUTORIAL_BREED_TOO_MANY": "Haal vissen uit de kleine vijver totdat er slechts twee vissen over zijn.",
+  "TUTORIAL_CREATE_CARD": "Sleep een vis naar het kaart veld om er een bewaarbare kaart van te maken."
 }
