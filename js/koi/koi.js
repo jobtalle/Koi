@@ -349,7 +349,7 @@ Koi.prototype.update = function() {
         this.systems.atlas,
         this.systems.patterns,
         this.randomSource,
-        this.mutations,
+        !this.tutorial || this.tutorial.allowMutations ? this.mutations : null,
         this.water,
         this.random);
     this.weather.update(this.air, this.water, this.audio, this.foreground.plants.plantMap, this.random);

@@ -4,7 +4,7 @@
  * @constructor
  */
 const TutorialBreeding = function(overlay) {
-    Tutorial.call(this, overlay);
+    Tutorial.call(this, overlay, false);
 
     this.pointer = null;
     this.targetedFish = null;

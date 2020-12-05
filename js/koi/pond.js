@@ -156,7 +156,7 @@ Pond.prototype.pick = function(x, y) {
  * @param {Atlas} atlas The atlas to render newly spawned patterns on
  * @param {Patterns} patterns The pattern renderer
  * @param {RandomSource} randomSource A random source
- * @param {Mutations} mutations The mutations object
+ * @param {Mutations} mutations The mutations object, or null if mutation is disabled
  * @param {Water} water A water plane to disturb
  * @param {Constellation} constellation The constellation containing all ponds
  * @param {Random} random A randomizer

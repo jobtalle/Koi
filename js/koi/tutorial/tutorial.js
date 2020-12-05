@@ -1,11 +1,13 @@
 /**
  * The tutorial base class
  * @param {Overlay} overlay The overlay object to show hints on
+ * @param {Boolean} [allowMutations] Indicate whether mutations are allowed while this tutorial is active
  * @constructor
  */
-const Tutorial = function(overlay) {
+const Tutorial = function(overlay, allowMutations = true) {
     this.phase = 0;
     this.overlay = overlay;
+    this.allowMutations = allowMutations;
 };
 
 /**
