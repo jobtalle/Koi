@@ -17,12 +17,13 @@ MixerFish.prototype = Object.create(Mixer.prototype);
  * Create a new fish that combines properties from both parents
  * @param {Patterns} patterns The pattern renderer
  * @param {Mutations} mutations The mutations object
+ * @param {Function} onMutate A function that is called when a pattern mutation occurs
  * @param {Random} random A randomizer
  * @returns {Fish} The mixed fish
  */
-MixerFish.prototype.mix = function(patterns, mutations, random) {
+MixerFish.prototype.mix = function(patterns, mutations, onMutate, random) {
     return new Fish(
-        this.mixerBody.mix(patterns, mutations, random),
+        this.mixerBody.mix(patterns, mutations, onMutate, random),
         this.mother.body.getOffspringPosition().copy(),
         new Vector2().fromAngle(random.getFloat() * Math.PI * 2));
 };

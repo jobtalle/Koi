@@ -25,7 +25,8 @@ const Koi = function(
     this.constellation =  new Constellation(
         systems.width / this.scale,
         systems.height / this.scale,
-        this.onBreed.bind(this));
+        this.onBreed.bind(this),
+        this.onMutate.bind(this));
     this.mover = new Mover(this.constellation, audio, gui);
     this.shadowBuffer = null;
     this.rocks = null;
@@ -100,6 +101,14 @@ Koi.prototype.deserialize = function(buffer) {
 Koi.prototype.onBreed = function(pond) {
     if (this.tutorial)
         this.tutorial.onBreed(this.constellation, pond);
+};
+
+/**
+ * A function that is called when a pattern mutation occurs
+ * @param {Mutation} mutation The mutation that occurred
+ */
+Koi.prototype.onMutate = function(mutation) {
+    console.log(mutation);
 };
 
 /**
@@ -331,6 +340,7 @@ Koi.prototype.update = function() {
 
         this.tutorial = null;
 
+        // localStorage.setItem("tutorial", 0);
         // TODO: Set "tutorial" in localstorage to true
     }
 

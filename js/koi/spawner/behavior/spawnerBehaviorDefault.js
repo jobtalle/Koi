@@ -8,6 +8,7 @@ const SpawnerBehaviorDefault = function() {
 
 SpawnerBehaviorDefault.prototype = Object.create(SpawnerBehavior.prototype);
 SpawnerBehaviorDefault.prototype.SPAWN_CHANCE = .09;
+SpawnerBehaviorDefault.prototype.SPAWN_INDEX_POWER = 1.5;
 SpawnerBehaviorDefault.prototype.BLUEPRINTS = SpawnerState.prototype.BLUEPRINTS;
 
 /**
@@ -16,5 +17,5 @@ SpawnerBehaviorDefault.prototype.BLUEPRINTS = SpawnerState.prototype.BLUEPRINTS;
  * @returns {Number} The blueprint index
  */
 SpawnerBehaviorDefault.prototype.getBlueprintIndex = function(random) {
-    return Math.floor(this.BLUEPRINTS.length * random.getFloat());
+    return Math.floor(this.BLUEPRINTS.length * Math.pow(random.getFloat(), this.SPAWN_INDEX_POWER));
 };

@@ -3,12 +3,14 @@
  * @param {Number} width The scene width in meters
  * @param {Number} height The scene height in meters
  * @param {Function} onBreed A function that is called after breeding takes place
+ * @param {Function} onMutate A function that is called when a pattern mutation occurs
  * @constructor
  */
-const Constellation = function(width, height, onBreed) {
+const Constellation = function(width, height, onBreed, onMutate) {
     this.width = width;
     this.height = height * this.Y_SCALE;
     this.onBreed = onBreed;
+    this.onMutate = onMutate;
     this.big = null;
     this.small = null;
     this.river = null;
@@ -209,9 +211,9 @@ Constellation.prototype.fit = function(atlas = null) {
         this.river.replaceConstraint(constraintRiver, atlas);
     }
     else {
-        this.big = new Pond(constraintBig, this.onBreed.bind(this));
-        this.small = new Pond(constraintSmall, this.onBreed.bind(this));
-        this.river = new Pond(constraintRiver, this.onBreed.bind(this), false);
+        this.big = new Pond(constraintBig, this.onBreed, this.onMutate);
+        this.small = new Pond(constraintSmall, this.onBreed, this.onMutate);
+        this.river = new Pond(constraintRiver, this.onBreed, this.onMutate, false);
     }
 };
 

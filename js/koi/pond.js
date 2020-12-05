@@ -2,12 +2,14 @@
  * A pond from which fish cannot escape
  * @param {Object} constraint The constraint defining this pond
  * @param {Function} onBreed A function that is called after breeding takes place
+ * @param {Function} onMutate A function that is called when a pattern mutation occurs
  * @param {Boolean} [canBreed] A boolean indicating whether fish may breed in this pond
  * @constructor
  */
-const Pond = function(constraint, onBreed, canBreed = true) {
+const Pond = function(constraint, onBreed, onMutate, canBreed = true) {
     this.constraint = constraint;
     this.onBreed = onBreed;
+    this.onMutate = onMutate;
     this.canBreed = canBreed;
     this.fishes = [];
 };
@@ -185,7 +187,7 @@ Pond.prototype.update = function(
                     const breeder = random.getFloat() < .5 ?
                         new Breeder(fish, fish.lastInteraction) :
                         new Breeder(fish.lastInteraction, fish);
-                    const offspring = breeder.breed(atlas, patterns, randomSource, mutations, random);
+                    const offspring = breeder.breed(atlas, patterns, randomSource, mutations, this.onMutate, random);
 
                     for (const fish of offspring) {
                         if (constellation.getFishCount() < Koi.prototype.FISH_CAPACITY - 1)

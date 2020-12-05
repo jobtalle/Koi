@@ -10,7 +10,7 @@ const SpawnerBehaviorTutorial = function() {
 };
 
 SpawnerBehaviorTutorial.prototype = Object.create(SpawnerBehavior.prototype);
-SpawnerBehaviorTutorial.prototype.DELAY = 5;
+SpawnerBehaviorTutorial.prototype.DELAY = 3;
 
 /**
  * Get the index of the blueprint to spawn

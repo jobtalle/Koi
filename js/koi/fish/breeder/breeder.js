@@ -17,6 +17,7 @@ const Breeder = function(mother, father) {
  * @param {Patterns} patterns The pattern renderer
  * @param {RandomSource} randomSource A random source
  * @param {Mutations} mutations The mutations object
+ * @param {Function} onMutate A function that is called when a pattern mutation occurs
  * @param {Random} random A randomizer
  * @returns {Fish[]} An array of offspring
  */
@@ -25,11 +26,12 @@ Breeder.prototype.breed = function(
     patterns,
     randomSource,
     mutations,
+    onMutate,
     random) {
     const offspring = new Array(this.mother.body.getOffspringCount());
 
     for (let fish = 0, fishCount = offspring.length; fish < fishCount; ++fish) {
-        const newFish = this.mixer.mix(patterns, mutations, random);
+        const newFish = this.mixer.mix(patterns, mutations, onMutate, random);
 
         new MutatorFish(newFish).mutate(random);
 
