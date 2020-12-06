@@ -160,6 +160,7 @@ Pond.prototype.pick = function(x, y, whitelist) {
  * @param {Patterns} patterns The pattern renderer
  * @param {RandomSource} randomSource A random source
  * @param {Mutations} mutations The mutations object, or null if mutation is disabled
+ * @param {Boolean} forceMutation True if at least one mutation must occur when possible during breeding
  * @param {Water} water A water plane to disturb
  * @param {Constellation} constellation The constellation containing all ponds
  * @param {Random} random A randomizer
@@ -169,6 +170,7 @@ Pond.prototype.update = function(
     patterns,
     randomSource,
     mutations,
+    forceMutation,
     water,
     constellation,
     random) {
@@ -187,10 +189,24 @@ Pond.prototype.update = function(
                     fish.mate(random);
                     fish.lastInteraction.mate(random);
 
+                    let mutated = false;
+                    const onMutate = mutation => {
+                        mutated = true;
+
+                        this.onMutate(mutation);
+                    };
+
                     const breeder = random.getFloat() < .5 ?
                         new Breeder(fish, fish.lastInteraction) :
                         new Breeder(fish.lastInteraction, fish);
-                    const offspring = breeder.breed(atlas, patterns, randomSource, mutations, this.onMutate, random);
+                    const offspring = breeder.breed(
+                        atlas,
+                        patterns,
+                        randomSource,
+                        mutations,
+                        forceMutation,
+                        onMutate,
+                        random);
 
                     for (const fish of offspring) {
                         if (constellation.getFishCount() < Koi.prototype.FISH_CAPACITY - 1)
@@ -199,7 +215,7 @@ Pond.prototype.update = function(
                             break;
                     }
 
-                    this.onBreed(this);
+                    this.onBreed(this, mutated);
                 }
             }
             else

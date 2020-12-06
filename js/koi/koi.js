@@ -97,10 +97,11 @@ Koi.prototype.deserialize = function(buffer) {
 /**
  * A function that is called after breeding takes place
  * @param {Pond} pond The pond where the breeding took place
+ * @param {Boolean} mutated True if a mutation occurred
  */
-Koi.prototype.onBreed = function(pond) {
+Koi.prototype.onBreed = function(pond, mutated) {
     if (this.tutorial)
-        this.tutorial.onBreed(this.constellation, pond);
+        this.tutorial.onBreed(this.constellation, pond, mutated);
 };
 
 /**
@@ -369,7 +370,8 @@ Koi.prototype.update = function() {
         this.systems.atlas,
         this.systems.patterns,
         this.randomSource,
-        !this.tutorial || this.tutorial.allowMutations ? this.mutations : null,
+        !this.tutorial || this.tutorial.allowMutation ? this.mutations : null,
+        this.tutorial ? this.tutorial.forceMutation : false,
         this.water,
         this.random);
     this.weather.update(this.air, this.water, this.audio, this.foreground.plants.plantMap, this.random);

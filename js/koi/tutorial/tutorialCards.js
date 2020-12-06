@@ -23,6 +23,7 @@ TutorialCards.prototype.PHASE_UNLOCK = 5;
 TutorialCards.prototype.PHASE_CLOSE_BOOK = 6;
 TutorialCards.prototype.MUTATIONS_REQUIRED = 3;
 TutorialCards.prototype.LANG_CREATE_CARD = "TUTORIAL_CREATE_CARD";
+TutorialCards.prototype.LANG_OPEN_BOOK_STORE = "TUTORIAL_OPEN_BOOK_STORE";
 TutorialCards.prototype.LANG_OPEN_BOOK = "TUTORIAL_OPEN_BOOK";
 TutorialCards.prototype.LANG_STORE_CARD = "TUTORIAL_STORE_CARD";
 TutorialCards.prototype.LANG_UNLOCK = "TUTORIAL_UNLOCK";
@@ -35,6 +36,7 @@ TutorialCards.prototype.start = function() {
     this.overlay.setText(language.get(this.LANG_CREATE_CARD));
 
     this.phase = this.PHASE_CREATE_CARD;
+    this.forceMutation = false;
 };
 
 /**
@@ -113,7 +115,7 @@ TutorialCards.prototype.update = function(koi) {
             break;
         case this.PHASE_CREATE_CARD:
             if (koi.gui.cards.hand.cards.length > 0) {
-                this.overlay.setText(language.get(this.LANG_OPEN_BOOK));
+                this.overlay.setText(language.get(this.LANG_OPEN_BOOK_STORE));
 
                 this.pointToBookButton(koi);
                 this.advance();
@@ -162,7 +164,7 @@ TutorialCards.prototype.update = function(koi) {
             break;
         case this.PHASE_STORE_CARD:
             if (!koi.gui.cards.bookVisible) {
-                this.overlay.setText(language.get(this.LANG_OPEN_BOOK));
+                this.overlay.setText(language.get(this.LANG_OPEN_BOOK_STORE));
 
                 this.pointToBookButton(koi);
 

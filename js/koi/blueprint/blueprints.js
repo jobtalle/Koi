@@ -4,7 +4,7 @@
 const Blueprints = {
     baseWhite: new Blueprint(
         // School size
-        new SamplerPlateau(1, 2, 5, 1),
+        new SamplerPlateau(1, 1.5, 5, 1),
         // Body
         new BlueprintBody(
             // Length
@@ -50,7 +50,7 @@ const Blueprints = {
     ),
     baseBlack: new Blueprint(
         // School size
-        new SamplerPlateau(1, 2, 5, 1),
+        new SamplerPlateau(1, 1.5, 5, 1),
         // Body
         new BlueprintBody(
             // Length
@@ -96,7 +96,7 @@ const Blueprints = {
     ),
     baseGold: new Blueprint(
         // School size
-        new SamplerPlateau(1, 2, 5, 1),
+        new SamplerPlateau(1, 1.5, 5, 1),
         // Body
         new BlueprintBody(
             // Length
@@ -142,7 +142,7 @@ const Blueprints = {
     ),
     baseRed: new Blueprint(
         // School size
-        new SamplerPlateau(1, 2, 5, 1),
+        new SamplerPlateau(1, 1.5, 5, 1),
         // Body
         new BlueprintBody(
             // Length

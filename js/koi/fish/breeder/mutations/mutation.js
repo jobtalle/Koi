@@ -65,11 +65,12 @@ Mutation.prototype.applicable = function(a, b) {
  * Check whether this mutation should be applied to two given patterns
  * @param {Pattern} a A pattern
  * @param {Pattern} b A pattern
+ * @param {Boolean} force Set to true if mutation should occur whenever possible
  * @param {Random} random A randomizer
  * @returns {Boolean} True if this mutation is applicable to the given layer arrays
  */
-Mutation.prototype.mutates = function(a, b, random) {
-    if (random.getFloat() > this.probability)
+Mutation.prototype.mutates = function(a, b, force, random) {
+    if (!force && random.getFloat() > this.probability)
         return false;
 
     return this.applicable(a, b) || this.applicable(b, a);

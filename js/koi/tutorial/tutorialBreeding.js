@@ -9,6 +9,7 @@ const TutorialBreeding = function(overlay) {
     this.pointer = null;
     this.targetedFish = null;
     this.bred = false;
+    this.mutated = false;
 
     overlay.setText(language.get(this.LANG_MOVE_FISH));
 };
@@ -20,11 +21,13 @@ TutorialBreeding.prototype.PHASE_TO_POND_1 = 2;
 TutorialBreeding.prototype.PHASE_TO_POND_2 = 3;
 TutorialBreeding.prototype.PHASE_BREED_WAIT = 4;
 TutorialBreeding.prototype.PHASE_BREED_TOO_MANY = 5;
+TutorialBreeding.prototype.PHASE_CROSSBREED = 6;
 TutorialBreeding.prototype.LANG_MOVE_FISH = "TUTORIAL_MOVE_FISH";
 TutorialBreeding.prototype.LANG_TO_POND_1 = "TUTORIAL_MOVE_POND_1";
 TutorialBreeding.prototype.LANG_TO_POND_2 = "TUTORIAL_MOVE_POND_2";
 TutorialBreeding.prototype.LANG_BREED_WAIT = "TUTORIAL_BREED_WAIT";
 TutorialBreeding.prototype.LANG_BREED_TOO_MANY = "TUTORIAL_BREED_TOO_MANY";
+TutorialBreeding.prototype.LANG_CROSSBREED = "TUTORIAL_CROSSBREED";
 TutorialBreeding.prototype.FISH_SELECT_THRESHOLD = 1.2;
 TutorialBreeding.prototype.FISH_LOSE_THRESHOLD = .4;
 
@@ -32,10 +35,14 @@ TutorialBreeding.prototype.FISH_LOSE_THRESHOLD = .4;
  * A function that is called after breeding took place
  * @param {Constellation} constellation The constellation
  * @param {Pond} pond The pond where the breeding took place
+ * @param {Boolean} mutated True if a mutation occurred
  */
-TutorialBreeding.prototype.onBreed = function(constellation, pond) {
+TutorialBreeding.prototype.onBreed = function(constellation, pond, mutated) {
     if (pond === constellation.small)
         this.bred = true;
+
+    if (mutated)
+        this.mutated = true;
 };
 
 /**
@@ -172,11 +179,14 @@ TutorialBreeding.prototype.update = function(koi) {
             break;
         case this.PHASE_BREED_WAIT:
             if (this.bred) {
-                this.overlay.removeText();
+                this.overlay.setText(language.get(this.LANG_CROSSBREED));
 
                 window["localStorage"].setItem("tutorial", "0");
 
-                return true;
+                this.allowMutation = true;
+                this.phase = this.PHASE_CROSSBREED;
+
+                break;
             }
 
             if (koi.constellation.small.fishes.length > 2) {
@@ -193,6 +203,16 @@ TutorialBreeding.prototype.update = function(koi) {
             if (koi.constellation.small.fishes.length === 2) {
                 this.overlay.setText(language.get(this.LANG_BREED_WAIT));
                 this.phase = this.PHASE_BREED_WAIT;
+            }
+
+            break;
+        case this.PHASE_CROSSBREED:
+            if (this.mutated) {
+                this.overlay.removeText();
+
+                window["localStorage"].setItem("tutorial", "1");
+
+                return true;
             }
 
             break;

@@ -24,15 +24,21 @@ MixerFishBody.prototype.SAMPLER_OFFSPRING_COUNT = new SamplerPower(0, 1, 4);
  * Create a new body that combines properties from both parents
  * @param {Patterns} patterns The pattern renderer
  * @param {Mutations} mutations The mutations object
+ * @param {Boolean} forceMutation True if at least one mutation must occur when possible during breeding
  * @param {Function} onMutate A function that is called when a pattern mutation occurs
  * @param {Random} random A randomizer
  * @returns {FishBody} The mixed body
  */
-MixerFishBody.prototype.mix = function(patterns, mutations, onMutate, random) {
+MixerFishBody.prototype.mix = function(
+    patterns,
+    mutations,
+    forceMutation,
+    onMutate,
+    random) {
     const interpolation = random.getFloat();
 
     return new FishBody(
-        this.mixerPattern.mix(patterns, mutations, onMutate, random),
+        this.mixerPattern.mix(patterns, mutations, forceMutation, onMutate, random),
         this.mixerFins.mix(random),
         this.mixerTail.mix(random),
         this.mixUint8Ordered(

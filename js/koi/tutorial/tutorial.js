@@ -1,13 +1,15 @@
 /**
  * The tutorial base class
  * @param {Overlay} overlay The overlay object to show hints on
- * @param {Boolean} [allowMutations] Indicate whether mutations are allowed while this tutorial is active
+ * @param {Boolean} [allowMutation] Indicate whether mutations are allowed while this tutorial is active
+ * @param {Boolean} [forceMutation] True if at least one mutation must occur when possible during breeding
  * @constructor
  */
-const Tutorial = function(overlay, allowMutations = true) {
+const Tutorial = function(overlay, allowMutation = true, forceMutation = true) {
     this.phase = 0;
     this.overlay = overlay;
-    this.allowMutations = allowMutations;
+    this.allowMutation = allowMutation;
+    this.forceMutation = forceMutation;
 };
 
 /**
@@ -40,8 +42,9 @@ Tutorial.prototype.render = function(constellation, scale, time) {
  * A function that is called after breeding took place
  * @param {Constellation} constellation The constellation
  * @param {Pond} pond The pond where the breeding took place
+ * @param {Boolean} mutated True if a mutation occurred
  */
-Tutorial.prototype.onBreed = function(constellation, pond) {
+Tutorial.prototype.onBreed = function(constellation, pond, mutated) {
 
 };
 
