@@ -3,9 +3,10 @@
  * @param {Number} width The screen width in pixels
  * @param {Number} height The screen height in pixels
  * @param {Cards} cards The cards object
+ * @param {Function} onUnlock A function to call when a new page is unlocked
  * @constructor
  */
-const CardBook = function(width, height, cards) {
+const CardBook = function(width, height, cards, onUnlock) {
     this.spine = this.createSpine();
     this.element = this.createElement(this.spine);
     this.width = width;
@@ -17,6 +18,7 @@ const CardBook = function(width, height, cards) {
     this.buttonPageLeft = this.createButtonPage(this.CLASS_BUTTON_LEFT, this.flipRight.bind(this));
     this.buttonPageRight = this.createButtonPage(this.CLASS_BUTTON_RIGHT, this.flipLeft.bind(this));
     this.cards = cards;
+    this.onUnlock = onUnlock;
 
     this.populateSpine();
 
@@ -188,6 +190,8 @@ CardBook.prototype.flipLeft = function() {
 
     this.flips.push(new CardBook.Flip());
     this.flipDirection = -1;
+
+    this.onUnlock(); // TODO: Placeholder until locks are implemented
 };
 
 /**

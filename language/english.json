@@ -19,5 +19,6 @@
   "TUTORIAL_CREATE_CARD": "Move a fish to the drop target in the lower half of the screen to turn it into a storable card.",
   "TUTORIAL_OPEN_BOOK": "Open the card book to store the card.",
   "TUTORIAL_STORE_CARD": "Drag the card into one of the book slots to store it.",
+  "TUTORIAL_UNLOCK": "Unlock more pages by storing cards with these properties.",
   "TUTORIAL_CLOSE_BOOK": "Close the book by tapping anywhere outside it."
 }

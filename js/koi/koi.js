@@ -122,6 +122,14 @@ Koi.prototype.onStoreCard = function(card) {
 };
 
 /**
+ * A function that is called when the card book unlocks a page
+ */
+Koi.prototype.onUnlock = function() {
+    if (this.tutorial)
+        this.tutorial.onUnlock();
+};
+
+/**
  * Perform first time initialization
  */
 Koi.prototype.initialize = function() {

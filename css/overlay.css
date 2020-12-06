@@ -4,9 +4,10 @@
     --overlay-pointer-radius: 48px;
     --overlay-pointer-border: 8px;
     --overlay-pointer-animation-scale: 1.2;
-    --overlay-arrow-size: 80px;
+    --overlay-arrow-width: 70px;
     --overlay-arrow-spacing: 16px;
     --overlay-arrow-raise: 32px;
+    --overlay-arrow-scale: 0.7;
     --overlay-arrow-animation-time: 0.7s;
     --overlay-text-width: 65%;
     --overlay-text-top: 16px;
@@ -66,8 +67,8 @@
     position: absolute;
     width: 0;
     height: 0;
-    border-top: var(--overlay-arrow-size) solid var(--overlay-element-color);
-    border-right: var(--overlay-arrow-size) solid transparent;
+    border-top: var(--overlay-arrow-width) solid var(--overlay-element-color);
+    border-right: var(--overlay-arrow-width) solid transparent;
     transform-origin: left top;
 }
 
@@ -76,7 +77,7 @@
     top: 0;
     animation: arrow-bounce-down var(--overlay-arrow-animation-time) infinite;
     animation-timing-function: ease-in-out;
-    transform: rotate(-135deg);
+    transform: scale(var(--overlay-arrow-scale), 1) rotate(-135deg);
 }
 
 .overlay-arrow.left-up {
@@ -84,4 +85,5 @@
     top: 100%;
     animation: arrow-bounce-left-up var(--overlay-arrow-animation-time) infinite;
     animation-timing-function: ease-in-out;
+    transform: rotate(45deg) scale(1, var(--overlay-arrow-scale)) rotate(-45deg);
 }

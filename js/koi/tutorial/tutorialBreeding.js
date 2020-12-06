@@ -82,6 +82,17 @@ TutorialBreeding.prototype.targetRiverFish = function(constellation) {
 };
 
 /**
+ * Point towards the small pond
+ * @param {Koi} koi The koi object
+ */
+TutorialBreeding.prototype.pointToSmallPond = function(koi) {
+    this.overlay.createArrowAt(
+        "down",
+        koi.constellation.getPixelX(koi.constellation.small.constraint.position.x, koi.scale),
+        koi.constellation.getPixelY(koi.constellation.small.constraint.position.y, koi.scale));
+};
+
+/**
  * Update the tutorial state
  * @param {Koi} koi The koi object
  * @returns {Boolean} True if the tutorial has finished
@@ -123,6 +134,7 @@ TutorialBreeding.prototype.update = function(koi) {
                 if (koi.constellation.small.fishes.length === 0) {
                     this.overlay.setText(language.get(this.LANG_TO_POND_1));
 
+                    this.pointToSmallPond(koi);
                     this.advance();
                 }
                 else {
@@ -135,6 +147,7 @@ TutorialBreeding.prototype.update = function(koi) {
         case this.PHASE_TO_POND_1:
             if (koi.constellation.small.fishes.length === 1) {
                 this.overlay.setText(language.get(this.LANG_TO_POND_2));
+                this.overlay.deleteArrow();
 
                 this.advance();
             }
@@ -146,6 +159,8 @@ TutorialBreeding.prototype.update = function(koi) {
                 this.phase = this.PHASE_BREED_WAIT;
             }
             else if (koi.constellation.small.fishes.length === 0) {
+                this.pointToSmallPond(koi);
+
                 this.overlay.setText(language.get(this.LANG_TO_POND_1));
                 this.phase = this.PHASE_TO_POND_1;
             }

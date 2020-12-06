@@ -115,6 +115,23 @@ Overlay.prototype.createArrow = function(parent, direction) {
 };
 
 /**
+ * Create an arrow at a specific location
+ * @param {String} direction A valid arrow direction class
+ * @param {Number} x The X position in pixels
+ * @param {Number} y The Y position in pixels
+ */
+Overlay.prototype.createArrowAt = function(direction, x, y) {
+    this.deleteArrow();
+
+    this.arrowElement = this.createArrowElement(direction);
+    this.arrowElement.style.left = x.toString() + "px";
+    this.arrowElement.style.top = y.toString() + "px";
+    this.arrowParent = this.element;
+
+    this.element.appendChild(this.arrowElement);
+};
+
+/**
  * Delete the arrow
  */
 Overlay.prototype.deleteArrow = function() {

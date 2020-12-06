@@ -7,7 +7,9 @@ const Cards = function(element) {
     this.element = element;
     this.dropTarget = this.createDropTarget();
     this.buttonBook = this.createButtonBook();
-    this.book = new CardBook(element.clientWidth, element.clientHeight, this);
+    this.book = new CardBook(element.clientWidth, element.clientHeight, this, () => {
+        this.koi.onUnlock();
+    });
     this.hand = new CardHand(element.clientWidth, element.clientHeight, this.dropTarget);
     this.cards = [];
     this.grabbed = null;

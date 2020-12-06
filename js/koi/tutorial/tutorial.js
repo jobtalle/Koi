@@ -61,6 +61,13 @@ Tutorial.prototype.onStoreCard = function(card) {
 };
 
 /**
+ * A function that is called when the card book unlocks a page
+ */
+Tutorial.prototype.onUnlock = function() {
+
+};
+
+/**
  * Get the whitelist of fish that may be interacted with
  * @returns {Fish[]} The whitelist of fish, or null if there is no whitelist
  */
