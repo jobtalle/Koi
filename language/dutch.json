@@ -18,5 +18,6 @@
   "TUTORIAL_BREED_TOO_MANY": "Haal vissen uit de kleine vijver totdat er slechts twee vissen over zijn.",
   "TUTORIAL_CREATE_CARD": "Sleep een vis naar het kaart veld aan de onderkant van het scherm om er een bewaarbare kaart van te maken.",
   "TUTORIAL_OPEN_BOOK": "Open het kaartenboek om de kaart in te bewaren.",
-  "TUTORIAL_STORE_CARD": "Sleep de kaart naar een van de lege plekken in het boek om deze op te slaan."
+  "TUTORIAL_STORE_CARD": "Sleep de kaart naar een van de lege plekken in het boek om deze op te slaan.",
+  "TUTORIAL_CLOSE_BOOK": "Sluit het boek door een plek buiten het boek aan te raken."
 }
