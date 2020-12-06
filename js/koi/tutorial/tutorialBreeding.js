@@ -43,8 +43,12 @@ TutorialBreeding.prototype.onBreed = function(constellation, pond) {
  * @returns {Fish[]} The whitelist of fish, or null if there is no whitelist
  */
 TutorialBreeding.prototype.getInteractionWhitelist = function() {
-    if (this.phase === this.PHASE_MOVE_FISH && this.targetedFish)
-        return [this.targetedFish];
+    if (this.phase === this.PHASE_MOVE_FISH) {
+        if (this.targetedFish)
+            return [this.targetedFish];
+
+        return [];
+    }
 
     return null;
 };
