@@ -7,8 +7,8 @@
     --overlay-arrow-size: 80px;
     --overlay-arrow-spacing: 16px;
     --overlay-arrow-raise: 32px;
-    --overlay-arrow-animation-time: 0.6s;
-    --overlay-text-width: 80%;
+    --overlay-arrow-animation-time: 0.7s;
+    --overlay-text-width: 65%;
     --overlay-text-top: 16px;
 }
 
@@ -22,6 +22,21 @@
     0% {margin-top: calc(-1 * var(--overlay-arrow-spacing))}
     50% {margin-top: calc(-1 * (var(--overlay-arrow-spacing) + var(--overlay-arrow-raise)))}
     100% {margin-top: calc(-1 * var(--overlay-arrow-spacing))}
+}
+
+@keyframes arrow-bounce-left-up {
+    0% {
+        margin-left: calc(var(--overlay-arrow-spacing));
+        margin-top: calc(var(--overlay-arrow-spacing));
+    }
+    50% {
+        margin-left: calc((var(--overlay-arrow-spacing) + var(--overlay-arrow-raise)));
+        margin-top: calc((var(--overlay-arrow-spacing) + var(--overlay-arrow-raise)));
+    }
+    100% {
+        margin-left: calc(var(--overlay-arrow-spacing));
+        margin-top: calc(var(--overlay-arrow-spacing));
+    }
 }
 
 #overlay .pointer {
@@ -48,17 +63,25 @@
 }
 
 .overlay-arrow {
-    position: relative;
-    left: 50%;
-    top: 0;
+    position: absolute;
     width: 0;
+    height: 0;
     border-top: var(--overlay-arrow-size) solid var(--overlay-element-color);
     border-right: var(--overlay-arrow-size) solid transparent;
     transform-origin: left top;
 }
 
 .overlay-arrow.down {
+    left: 50%;
+    top: 0;
     animation: arrow-bounce-down var(--overlay-arrow-animation-time) infinite;
     animation-timing-function: ease-in-out;
     transform: rotate(-135deg);
+}
+
+.overlay-arrow.left-up {
+    left: 100%;
+    top: 100%;
+    animation: arrow-bounce-left-up var(--overlay-arrow-animation-time) infinite;
+    animation-timing-function: ease-in-out;
 }

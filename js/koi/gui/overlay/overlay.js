@@ -44,16 +44,14 @@ Overlay.prototype.createPointerElement = function() {
 
 /**
  * Create an arrow element pointing at a GUI element
- * @param {Boolean} down True if the arrow points down, false if it points up
+ * @param {String} direction A valid arrow direction class
  * @returns {HTMLDivElement} The element
  */
-Overlay.prototype.createArrowElement = function(down) {
+Overlay.prototype.createArrowElement = function(direction) {
     const element = document.createElement("div");
 
     element.className = this.CLASS_ARROW;
-
-    if (down)
-        element.classList.add(this.CLASS_ARROW_DOWN);
+    element.classList.add(direction);
 
     return element;
 };
@@ -105,12 +103,12 @@ Overlay.prototype.deletePointer = function() {
 /**
  * Create an arrow
  * @param {HTMLElement} parent The parent element
- * @param {Boolean} down True if the arrow points down, false if it points up
+ * @param {String} direction A valid arrow direction class
  */
-Overlay.prototype.createArrow = function(parent, down) {
+Overlay.prototype.createArrow = function(parent, direction) {
     this.deleteArrow();
 
-    this.arrowElement = this.createArrowElement(down);
+    this.arrowElement = this.createArrowElement(direction);
     this.arrowParent = parent;
 
     parent.appendChild(this.arrowElement);

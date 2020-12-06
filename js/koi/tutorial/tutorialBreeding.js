@@ -83,19 +83,18 @@ TutorialBreeding.prototype.targetRiverFish = function(constellation) {
 
 /**
  * Update the tutorial state
- * @param {Constellation} constellation The constellation
- * @param {Mover} mover The mover
+ * @param {Koi} koi The koi object
  * @returns {Boolean} True if the tutorial has finished
  */
-TutorialBreeding.prototype.update = function(constellation, mover) {
+TutorialBreeding.prototype.update = function(koi) {
     switch (this.phase) {
         case this.PHASE_MOVE_FISH:
             if (this.targetedFish === null) {
-                if ((this.targetedFish = this.targetRiverFish(constellation)))
+                if ((this.targetedFish = this.targetRiverFish(koi.constellation)))
                     this.pointer = this.overlay.createPointer();
             }
             else {
-                if (mover.move) {
+                if (koi.mover.move) {
                     this.overlay.deletePointer();
 
                     this.pointer = null;
@@ -108,8 +107,8 @@ TutorialBreeding.prototype.update = function(constellation, mover) {
 
                     if (position.x < this.FISH_LOSE_THRESHOLD ||
                         position.y < this.FISH_LOSE_THRESHOLD ||
-                        position.x > constellation.width - this.FISH_LOSE_THRESHOLD ||
-                        position.y > constellation.height - this.FISH_LOSE_THRESHOLD) {
+                        position.x > koi.constellation.width - this.FISH_LOSE_THRESHOLD ||
+                        position.y > koi.constellation.height - this.FISH_LOSE_THRESHOLD) {
                         this.overlay.deletePointer();
 
                         this.pointer = null;
@@ -120,8 +119,8 @@ TutorialBreeding.prototype.update = function(constellation, mover) {
 
             break;
         case this.PHASE_DROP_FISH:
-            if (!mover.move) {
-                if (constellation.small.fishes.length === 0) {
+            if (!koi.mover.move) {
+                if (koi.constellation.small.fishes.length === 0) {
                     this.overlay.setText(language.get(this.LANG_TO_POND_1));
 
                     this.advance();
@@ -134,7 +133,7 @@ TutorialBreeding.prototype.update = function(constellation, mover) {
 
             break;
         case this.PHASE_TO_POND_1:
-            if (constellation.small.fishes.length === 1) {
+            if (koi.constellation.small.fishes.length === 1) {
                 this.overlay.setText(language.get(this.LANG_TO_POND_2));
 
                 this.advance();
@@ -142,11 +141,11 @@ TutorialBreeding.prototype.update = function(constellation, mover) {
 
             break;
         case this.PHASE_TO_POND_2:
-            if (constellation.small.fishes.length === 2) {
+            if (koi.constellation.small.fishes.length === 2) {
                 this.overlay.setText(language.get(this.LANG_BREED_WAIT));
                 this.phase = this.PHASE_BREED_WAIT;
             }
-            else if (constellation.small.fishes.length === 0) {
+            else if (koi.constellation.small.fishes.length === 0) {
                 this.overlay.setText(language.get(this.LANG_TO_POND_1));
                 this.phase = this.PHASE_TO_POND_1;
             }
@@ -161,18 +160,18 @@ TutorialBreeding.prototype.update = function(constellation, mover) {
                 return true;
             }
 
-            if (constellation.small.fishes.length > 2) {
+            if (koi.constellation.small.fishes.length > 2) {
                 this.overlay.setText(language.get(this.LANG_BREED_TOO_MANY));
                 this.phase = this.PHASE_BREED_TOO_MANY;
             }
-            else if (constellation.small.fishes.length < 2) {
+            else if (koi.constellation.small.fishes.length < 2) {
                 this.overlay.setText(language.get(this.LANG_TO_POND_2));
                 this.phase = this.PHASE_TO_POND_2;
             }
 
             break;
         case this.PHASE_BREED_TOO_MANY:
-            if (constellation.small.fishes.length === 2) {
+            if (koi.constellation.small.fishes.length === 2) {
                 this.overlay.setText(language.get(this.LANG_BREED_WAIT));
                 this.phase = this.PHASE_BREED_WAIT;
             }

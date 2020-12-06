@@ -15,10 +15,12 @@ button {
     width: calc(var(--button-width) - 2 * var(--button-border-width));
     height: calc(var(--button-height) - 2 * var(--button-border-width));
     border: var(--button-border-width) solid var(--button-border-color);
+    box-sizing: border-box;
     cursor: pointer;
     pointer-events: auto;
     outline: none;
     background-color: var(--button-color);
+    padding: 0;
 }
 
 #button-book {

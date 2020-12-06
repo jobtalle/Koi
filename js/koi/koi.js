@@ -113,6 +113,15 @@ Koi.prototype.onMutate = function(mutation) {
 };
 
 /**
+ * A function that is called when a card is stored in the card book
+ * @param {Card} card The card that was stored
+ */
+Koi.prototype.onStoreCard = function(card) {
+    if (this.tutorial)
+        this.tutorial.onStoreCard(card);
+};
+
+/**
  * Perform first time initialization
  */
 Koi.prototype.initialize = function() {
@@ -338,7 +347,7 @@ Koi.prototype.update = function() {
     this.updateAudio();
     this.gui.update();
 
-    if (this.tutorial && this.tutorial.update(this.constellation, this.mover)) {
+    if (this.tutorial && this.tutorial.update(this)) {
         if (this.tutorial instanceof TutorialBreeding) {
             this.spawner.setBehavior(new SpawnerBehaviorDefault());
             this.tutorial = new TutorialCards(this.gui.overlay);

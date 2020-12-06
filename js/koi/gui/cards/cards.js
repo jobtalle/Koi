@@ -6,6 +6,7 @@
 const Cards = function(element) {
     this.element = element;
     this.dropTarget = this.createDropTarget();
+    this.buttonBook = this.createButtonBook();
     this.book = new CardBook(element.clientWidth, element.clientHeight, this);
     this.hand = new CardHand(element.clientWidth, element.clientHeight, this.dropTarget);
     this.cards = [];
@@ -17,7 +18,7 @@ const Cards = function(element) {
     this.hideTimer = 0;
     this.koi = null;
 
-    element.appendChild(this.createButtonBook());
+    element.appendChild(this.buttonBook);
     element.appendChild(this.book.element);
     element.appendChild(this.dropTarget);
 
@@ -295,6 +296,7 @@ Cards.prototype.removeFromBook = function(card) {
 Cards.prototype.addToBook = function(card, snap) {
     this.element.removeChild(card.element);
     this.book.addToBook(card, snap);
+    this.koi.onStoreCard(card);
 };
 
 /**

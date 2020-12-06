@@ -19,11 +19,10 @@ Tutorial.prototype.advance = function() {
 
 /**
  * Update the tutorial state
- * @param {Constellation} constellation The constellation
- * @param {Mover} mover The mover
+ * @param {Koi} koi The koi object
  * @returns {Boolean} True if the tutorial has finished
  */
-Tutorial.prototype.update = function(constellation, mover) {
+Tutorial.prototype.update = function(koi) {
     return true;
 };
 
@@ -50,6 +49,14 @@ Tutorial.prototype.onBreed = function(constellation, pond) {
  * A function that is called after a pattern mutation occurs
  */
 Tutorial.prototype.onMutate = function() {
+
+};
+
+/**
+ * A function that is called when a card is stored in the card book
+ * @param {Card} card The card that was stored
+ */
+Tutorial.prototype.onStoreCard = function(card) {
 
 };
 
