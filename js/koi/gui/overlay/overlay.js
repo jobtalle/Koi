@@ -7,10 +7,14 @@ const Overlay = function(element) {
     this.element = element;
     this.pointerPosition = null;
     this.pointerElement = null;
+    this.arrowElement = null;
+    this.arrowParent = null;
     this.textElement = null;
 };
 
 Overlay.prototype.CLASS_POINTER = "pointer";
+Overlay.prototype.CLASS_ARROW = "overlay-arrow";
+Overlay.prototype.CLASS_ARROW_DOWN = "down";
 Overlay.prototype.CLASS_TEXT = "text";
 Overlay.prototype.POINTER_RADIUS =
     StyleUtils.getInt("--overlay-pointer-radius") +
@@ -39,6 +43,22 @@ Overlay.prototype.createPointerElement = function() {
 };
 
 /**
+ * Create an arrow element pointing at a GUI element
+ * @param {Boolean} down True if the arrow points down, false if it points up
+ * @returns {HTMLDivElement} The element
+ */
+Overlay.prototype.createArrowElement = function(down) {
+    const element = document.createElement("div");
+
+    element.className = this.CLASS_ARROW;
+
+    if (down)
+        element.classList.add(this.CLASS_ARROW_DOWN);
+
+    return element;
+};
+
+/**
  * Create a text element
  * @param {String} text The text to display
  * @returns {HTMLDivElement} The element
@@ -60,6 +80,8 @@ Overlay.prototype.createTextElement = function(text) {
  * @returns {Vector2} The pointer position which can be changed
  */
 Overlay.prototype.createPointer = function() {
+    this.deletePointer();
+
     this.pointerPosition = new Vector2(-this.POINTER_RADIUS, -this.POINTER_RADIUS);
     this.pointerElement = this.createPointerElement();
 
@@ -69,7 +91,7 @@ Overlay.prototype.createPointer = function() {
 };
 
 /**
- * Delete the pointer with a given position vector
+ * Delete the pointer
  */
 Overlay.prototype.deletePointer = function() {
     if (this.pointerPosition) {
@@ -77,6 +99,31 @@ Overlay.prototype.deletePointer = function() {
 
         this.pointerPosition = null;
         this.pointerElement = null;
+    }
+};
+
+/**
+ * Create an arrow
+ * @param {HTMLElement} parent The parent element
+ * @param {Boolean} down True if the arrow points down, false if it points up
+ */
+Overlay.prototype.createArrow = function(parent, down) {
+    this.deleteArrow();
+
+    this.arrowElement = this.createArrowElement(down);
+    this.arrowParent = parent;
+
+    parent.appendChild(this.arrowElement);
+};
+
+/**
+ * Delete the arrow
+ */
+Overlay.prototype.deleteArrow = function() {
+    if (this.arrowElement) {
+        this.arrowParent.removeChild(this.arrowElement);
+
+        this.arrowElement = null;
     }
 };
 

@@ -7,6 +7,7 @@ const TutorialCards = function(overlay) {
     Tutorial.call(this, overlay);
 
     this.mutations = Number.parseInt(window["localStorage"].getItem("tutorial"));
+    this.pointingToDropTarget = false;
 };
 
 TutorialCards.prototype = Object.create(Tutorial.prototype);
@@ -55,6 +56,20 @@ TutorialCards.prototype.update = function(constellation, mover) {
 
             break;
         case this.PHASE_CREATE_CARD:
+            if (this.pointingToDropTarget) {
+                if (!mover.move) {
+                    this.overlay.deleteArrow();
+
+                    this.pointingToDropTarget = false;
+                }
+            }
+            else {
+                if (mover.move) {
+                    this.overlay.createArrow(mover.gui.cards.hand.dropTarget, true);
+
+                    this.pointingToDropTarget = true;
+                }
+            }
 
             break;
     }

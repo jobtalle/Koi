@@ -1,9 +1,13 @@
 :root {
+    --overlay-element-color: #fffc;
+    --overlay-pointer-animation-time: 1s;
     --overlay-pointer-radius: 48px;
     --overlay-pointer-border: 8px;
-    --overlay-pointer-color: #fffc;
-    --overlay-pointer-animation-time: 1s;
     --overlay-pointer-animation-scale: 1.2;
+    --overlay-arrow-size: 80px;
+    --overlay-arrow-spacing: 16px;
+    --overlay-arrow-raise: 32px;
+    --overlay-arrow-animation-time: 0.6s;
     --overlay-text-width: 80%;
     --overlay-text-top: 16px;
 }
@@ -14,12 +18,18 @@
     100% {transform: translate(-50%, -50%) scale(1)}
 }
 
+@keyframes arrow-bounce-down {
+    0% {margin-top: calc(-1 * var(--overlay-arrow-spacing))}
+    50% {margin-top: calc(-1 * (var(--overlay-arrow-spacing) + var(--overlay-arrow-raise)))}
+    100% {margin-top: calc(-1 * var(--overlay-arrow-spacing))}
+}
+
 #overlay .pointer {
     position: absolute;
     width: calc(2 * var(--overlay-pointer-radius));
     height: calc(2 * var(--overlay-pointer-radius));
     border-radius: calc(var(--overlay-pointer-radius) + var(--overlay-pointer-border));
-    border: var(--overlay-pointer-border) solid var(--overlay-pointer-color);
+    border: var(--overlay-pointer-border) solid var(--overlay-element-color);
     animation: pointer-pulse var(--overlay-pointer-animation-time) infinite;
     animation-timing-function: ease-in-out;
 }
@@ -35,4 +45,20 @@
     font-size: 32px;
     border-radius: 16px;
     border: 2px solid black;
+}
+
+.overlay-arrow {
+    position: relative;
+    left: 50%;
+    top: 0;
+    width: 0;
+    border-top: var(--overlay-arrow-size) solid var(--overlay-element-color);
+    border-right: var(--overlay-arrow-size) solid transparent;
+    transform-origin: left top;
+}
+
+.overlay-arrow.down {
+    animation: arrow-bounce-down var(--overlay-arrow-animation-time) infinite;
+    animation-timing-function: ease-in-out;
+    transform: rotate(-135deg);
 }
