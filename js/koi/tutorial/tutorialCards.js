@@ -37,6 +37,7 @@ TutorialCards.prototype.start = function() {
 
     this.phase = this.PHASE_CREATE_CARD;
     this.forceMutation = false;
+    this.handEnabled = true;
 };
 
 /**
@@ -116,6 +117,8 @@ TutorialCards.prototype.update = function(koi) {
         case this.PHASE_CREATE_CARD:
             if (koi.gui.cards.hand.cards.length > 0) {
                 this.overlay.setText(language.get(this.LANG_OPEN_BOOK_STORE));
+
+                koi.gui.cards.enableBookButton();
 
                 this.pointToBookButton(koi);
                 this.advance();

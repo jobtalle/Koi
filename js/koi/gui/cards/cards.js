@@ -20,7 +20,6 @@ const Cards = function(element) {
     this.hideTimer = 0;
     this.koi = null;
 
-    element.appendChild(this.buttonBook);
     element.appendChild(this.book.element);
     element.appendChild(this.dropTarget);
 
@@ -67,6 +66,21 @@ Cards.prototype.deserialize = function(buffer) {
 Cards.prototype.serialize = function(buffer) {
     this.hand.serialize(buffer);
     this.book.serialize(buffer);
+};
+
+/**
+ * Enable the book button
+ */
+Cards.prototype.enableBookButton = function() {
+    this.element.appendChild(this.buttonBook);
+};
+
+/**
+ * Check whether the book is enabled
+ * @returns {Boolean} True if the book is enabled
+ */
+Cards.prototype.bookEnabled = function() {
+    return this.buttonBook.parentNode === this.element;
 };
 
 /**

@@ -3,13 +3,19 @@
  * @param {Overlay} overlay The overlay object to show hints on
  * @param {Boolean} [allowMutation] Indicate whether mutations are allowed while this tutorial is active
  * @param {Boolean} [forceMutation] True if at least one mutation must occur when possible during breeding
+ * @param {Boolean} [handEnabled] True if the card hand is enabled
  * @constructor
  */
-const Tutorial = function(overlay, allowMutation = true, forceMutation = true) {
+const Tutorial = function(
+    overlay,
+    allowMutation = true,
+    forceMutation = true,
+    handEnabled = false) {
     this.phase = 0;
     this.overlay = overlay;
     this.allowMutation = allowMutation;
     this.forceMutation = forceMutation;
+    this.handEnabled = handEnabled;
 };
 
 /**

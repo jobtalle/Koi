@@ -157,8 +157,15 @@ Mover.prototype.render = function(
  * @param {Number} xPixel The X position in pixels
  * @param {Number} yPixel The Y position in pixels
  * @param {Boolean} entered True if the cursor just entered the view
+ * @param {Boolean} handEnabled True if the card hand is enabled
  */
-Mover.prototype.touchMove = function(x, y, xPixel, yPixel, entered) {
+Mover.prototype.touchMove = function(
+    x,
+    y,
+    xPixel,
+    yPixel,
+    entered,
+    handEnabled) {
     if (this.touch) {
         this.cursorPrevious.set(this.cursor);
         this.cursor.x = x;
@@ -170,7 +177,9 @@ Mover.prototype.touchMove = function(x, y, xPixel, yPixel, entered) {
         if (this.move) {
             this.cursorOffset.set(this.cursor).add(this.offset);
             this.move.moveTo(this.cursorOffset);
-            this.gui.cards.hand.moveDraggable(xPixel, yPixel);
+
+            if (handEnabled)
+                this.gui.cards.hand.moveDraggable(xPixel, yPixel);
         }
     }
 };
