@@ -96,6 +96,8 @@ Overlay.prototype.setText = function(message) {
  * Remove any currently visible text
  */
 Overlay.prototype.removeText = function() {
-    if (this.textElement)
+    if (this.textElement) {
         this.element.removeChild(this.textElement);
+        this.textElement = null;
+    }
 };
