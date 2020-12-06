@@ -6,7 +6,7 @@
 const TutorialCards = function(overlay) {
     Tutorial.call(this, overlay);
 
-    this.mutations = Number.parseInt(localStorage.getItem("tutorial"));
+    this.mutations = Number.parseInt(window["localStorage"].getItem("tutorial"));
 };
 
 TutorialCards.prototype = Object.create(Tutorial.prototype);
@@ -30,7 +30,7 @@ TutorialCards.prototype.start = function() {
  */
 TutorialCards.prototype.onMutate = function() {
     if (this.mutations < this.MUTATIONS_REQUIRED) {
-        localStorage.setItem("tutorial", (++this.mutations).toString());
+        window["localStorage"].setItem("tutorial", (++this.mutations).toString());
 
         if (this.mutations === this.MUTATIONS_REQUIRED)
             this.start();

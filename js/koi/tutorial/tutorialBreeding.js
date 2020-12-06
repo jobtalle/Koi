@@ -39,6 +39,17 @@ TutorialBreeding.prototype.onBreed = function(constellation, pond) {
 };
 
 /**
+ * Get the whitelist of fish that may be interacted with
+ * @returns {Fish[]} The whitelist of fish, or null if there is no whitelist
+ */
+TutorialBreeding.prototype.getInteractionWhitelist = function() {
+    if (this.phase === this.PHASE_MOVE_FISH && this.targetedFish)
+        return [this.targetedFish];
+
+    return null;
+};
+
+/**
  * Target a fish currently in the river
  * @param {Constellation} constellation The constellation
  * @returns {Fish} A fish, or null if no suitable fish was found
@@ -145,7 +156,7 @@ TutorialBreeding.prototype.update = function(constellation, mover) {
             if (this.bred) {
                 this.overlay.removeText();
 
-                localStorage.setItem("tutorial", "0");
+                window["localStorage"].setItem("tutorial", "0");
 
                 return true;
             }

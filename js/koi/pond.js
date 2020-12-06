@@ -134,18 +134,21 @@ Pond.prototype.removeFish = function(index, atlas) {
  * Pick up a fish from the pond
  * @param {Number} x The X position
  * @param {Number} y The Y position
+ * @param {Fish[]} whitelist The whitelist of fish that may be interacted with
  * @returns {Fish} The fish at the given position, or null if no fish exists there
  */
-Pond.prototype.pick = function(x, y) {
+Pond.prototype.pick = function(x, y, whitelist) {
     if (!this.constraint.contains(x, y))
         return null;
 
     for (let fish = this.fishes.length; fish-- > 0;) if (this.fishes[fish].body.atPosition(x, y)) {
-        const picked = this.fishes[fish];
+        if (!whitelist || whitelist.indexOf(this.fishes[fish]) !== -1) {
+            const picked = this.fishes[fish];
 
-        this.fishes.splice(fish, 1);
+            this.fishes.splice(fish, 1);
 
-        return picked;
+            return picked;
+        }
     }
 
     return null;

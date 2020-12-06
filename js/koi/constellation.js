@@ -221,10 +221,14 @@ Constellation.prototype.fit = function(atlas = null) {
  * Pick up a fish at given coordinates
  * @param {Number} x The X position
  * @param {Number} y The Y position
+ * @param {Fish[]} whitelist The whitelist of fish that may be interacted with
  * @returns {Fish} The fish at the given position, or null if no fish exists there
  */
-Constellation.prototype.pick = function(x, y) {
-    return this.big.pick(x, y) || this.small.pick(x, y) || this.river.pick(x, y) || null;
+Constellation.prototype.pick = function(x, y, whitelist) {
+    return this.big.pick(x, y, whitelist) ||
+        this.small.pick(x, y, whitelist) ||
+        this.river.pick(x, y, whitelist) ||
+        null;
 };
 
 /**

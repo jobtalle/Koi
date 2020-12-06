@@ -52,3 +52,11 @@ Tutorial.prototype.onBreed = function(constellation, pond) {
 Tutorial.prototype.onMutate = function() {
 
 };
+
+/**
+ * Get the whitelist of fish that may be interacted with
+ * @returns {Fish[]} The whitelist of fish, or null if there is no whitelist
+ */
+Tutorial.prototype.getInteractionWhitelist = function() {
+    return null;
+};
