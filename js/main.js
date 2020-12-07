@@ -88,6 +88,8 @@ if (gl &&
          * A function that creates a new game session
          */
         const newSession = () => {
+            window["localStorage"].removeItem("tutorial");
+
             session = new Session();
 
             koi = session.makeKoi(systems, audio, gui, new TutorialBreeding(gui.overlay));
