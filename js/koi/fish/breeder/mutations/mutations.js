@@ -27,6 +27,18 @@ Mutations.prototype.deserialize = function(buffer) {
  */
 Mutations.prototype.createMutations = function() {
     return [
+        // new Mutation(
+        //     [
+        //         new Mutation.LayerFootprint(LayerBase.prototype.ID, Mutation.PALETTE_ANY)
+        //     ],
+        //     [
+        //         new Mutation.LayerFootprint(LayerBase.prototype.ID, Mutation.PALETTE_ANY)
+        //     ],
+        //     [
+        //         null, // Copy either of the original base layers
+        //     ],
+        //     .2
+        // ),
         new Mutation(
             [
                 new Mutation.LayerFootprint(LayerBase.prototype.ID, 0)

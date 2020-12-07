@@ -23,6 +23,8 @@ const BlueprintLayerRidge = function(
     this.samplerFocusPower = samplerFocusPower;
 };
 
+BlueprintLayerRidge.prototype = Object.create(BlueprintLayer.prototype);
+
 /**
  * Spawn a ridge layer
  * @param {Random} random A randomizer

@@ -32,6 +32,8 @@ const BlueprintLayerStripes = function(
     this.samplerPower = samplerPower;
 };
 
+BlueprintLayerStripes.prototype = Object.create(BlueprintLayer.prototype);
+
 /**
  * Spawn a stripes layer
  * @param {Random} random A randomizer

@@ -7,6 +7,8 @@ const BlueprintLayerBase = function(paletteIndex) {
     this.paletteIndex = paletteIndex;
 };
 
+BlueprintLayerBase.prototype = Object.create(BlueprintLayer.prototype);
+
 /**
  * Spawn a base layer
  * @param {Random} random A randomizer

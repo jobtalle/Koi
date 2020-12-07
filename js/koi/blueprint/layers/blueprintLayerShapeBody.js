@@ -14,6 +14,8 @@ const BlueprintLayerShapeBody = function(
     this.samplerEyePosition = samplerEyePosition;
 };
 
+BlueprintLayerShapeBody.prototype = Object.create(BlueprintLayer.prototype);
+
 /**
  * Spawn a body shape layer
  * @param {Random} random A randomizer

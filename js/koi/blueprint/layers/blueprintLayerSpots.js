@@ -26,6 +26,8 @@ const BlueprintLayerSpots = function(
     this.samplerPower = samplerPower
 };
 
+BlueprintLayerSpots.prototype = Object.create(BlueprintLayer.prototype);
+
 /**
  * Spawn a spots layer
  * @param {Random} random A randomizer

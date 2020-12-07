@@ -7,6 +7,8 @@ const BlueprintLayerShapeFin = function(samplerRoundness) {
     this.samplerRoundness = samplerRoundness;
 };
 
+BlueprintLayerShapeFin.prototype = Object.create(BlueprintLayer.prototype);
+
 /**
  * Spawn a fin shape layer
  * @param {Random} random A randomizer

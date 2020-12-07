@@ -3,7 +3,7 @@
  * @param {BlueprintLayerBase} blueprintLayerBase A base layer blueprint
  * @param {BlueprintLayerShapeBody} blueprintLayerShapeBody A body shape layer blueprint
  * @param {BlueprintLayerShapeFin} blueprintLayerShapeFin A fin shape layer blueprint
- * @param {Object[]} layerBlueprints An array of layer blueprints
+ * @param {BlueprintLayer[]} layerBlueprints An array of layer blueprints
  * @constructor
  */
 const BlueprintPattern = function(

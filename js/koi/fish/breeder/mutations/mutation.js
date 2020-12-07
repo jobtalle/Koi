@@ -17,6 +17,8 @@ const Mutation = function(
     this.probability = probability;
 };
 
+Mutation.PALETTE_ANY = -1;
+
 /**
  * A layer footprint to match a layer to
  * @param {Number} id The layer ID
