@@ -18,6 +18,7 @@ const CardBook = function(width, height, cards, onUnlock) {
     this.buttonPageLeft = this.createButtonPage(this.CLASS_BUTTON_LEFT, this.flipRight.bind(this));
     this.buttonPageRight = this.createButtonPage(this.CLASS_BUTTON_RIGHT, this.flipLeft.bind(this));
     this.cards = cards;
+    this.locks = this.makeLocks();
     this.onUnlock = onUnlock;
 
     this.populateSpine();
@@ -34,11 +35,11 @@ CardBook.prototype.CLASS_HIDDEN = "hidden";
 CardBook.prototype.CLASS_BUTTON = "button-page";
 CardBook.prototype.CLASS_BUTTON_LEFT = "left";
 CardBook.prototype.CLASS_BUTTON_RIGHT = "right";
-CardBook.prototype.PAGE_COUNT = 8;
 CardBook.prototype.PADDING_TOP = .07;
 CardBook.prototype.PADDING_PAGE = .07;
 CardBook.prototype.PADDING_CARD = .05;
 CardBook.prototype.HEIGHT = .65;
+CardBook.prototype.PAGE_COUNT = 8;
 
 /**
  * A page flip action
@@ -92,6 +93,8 @@ CardBook.Flip.prototype.getScale = function(time) {
  * @throws {RangeError} A range error if deserialized values are not valid
  */
 CardBook.prototype.deserialize = function(buffer, cards) {
+    this.deserializeLocks(buffer.readUint32());
+
     for (const page of this.pages)
         page.deserialize(buffer, cards);
 };
@@ -101,8 +104,48 @@ CardBook.prototype.deserialize = function(buffer, cards) {
  * @param {BinBuffer} buffer The buffer to serialize to
  */
 CardBook.prototype.serialize = function(buffer) {
+    buffer.writeUint32(this.serializeLocks());
+
     for (const page of this.pages)
         page.serialize(buffer);
+};
+
+/**
+ * Serialize the lock states
+ * @returns {Number} A 32 bit integer containing the lock states
+ */
+CardBook.prototype.serializeLocks = function() {
+    let serialized = 0;
+
+    for (let lock = 0, lockCount = this.locks.length; lock < lockCount; ++lock)
+        if (this.locks[lock].locked)
+            serialized |= 1 << lock;
+
+    return serialized;
+};
+
+/**
+ * Deserialize the locks
+ * @param {Number} flags A 32 bit integer containing the lock states
+ */
+CardBook.prototype.deserializeLocks = function(flags) {
+    for (let lock = 0, lockCount = this.locks.length; lock < lockCount; ++lock)
+        if (!(flags & (1 << lock)))
+            this.locks[lock].unlock();
+};
+
+/**
+ * Make the page locks
+ * @returns {CardPageLock[]} The page locks
+ */
+CardBook.prototype.makeLocks = function() {
+    // TODO: Make requirements constant elsewhere
+
+    return [
+        new CardPageLock(),
+        new CardPageLock(),
+        new CardPageLock(),
+    ];
 };
 
 /**
