@@ -41,12 +41,12 @@ MixerFishBody.prototype.mix = function(
         this.mixerPattern.mix(patterns, mutations, forceMutation, onMutate, random),
         this.mixerFins.mix(random),
         this.mixerTail.mix(random),
-        this.mixUint8Ordered(
+        this.mixUint8(
             this.mother.length,
             this.father.length,
             this.SAMPLER_LENGTH,
             interpolation),
-        this.mixUint8Ordered(
+        this.mixUint8(
             this.mother.radius,
             this.father.radius,
             this.SAMPLER_RADIUS,

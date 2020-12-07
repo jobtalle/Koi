@@ -93,8 +93,12 @@ Card.prototype.initialize = function(
     }
 
     preview.render(this.body, atlas, bodies).toBlob(blob => {
-        if (!this.initialized)
+        if (!this.initialized) {
+            if (requirement)
+                requirement.satisfy();
+
             return;
+        }
 
         this.previewURL = URL.createObjectURL(blob);
         this.previewAnimation.style.backgroundImage = "url(" + this.previewURL + ")";

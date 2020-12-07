@@ -12,8 +12,8 @@ const MutatorFishBody = function(body) {
 };
 
 MutatorFishBody.prototype = Object.create(Mutator.prototype);
-MutatorFishBody.prototype.SAMPLER_LENGTH = new SamplerPlateau(-40, 0, 40, 1.5);
-MutatorFishBody.prototype.SAMPLER_RADIUS = new SamplerPlateau(-40, 0, 40, 1);
+MutatorFishBody.prototype.SAMPLER_LENGTH = new SamplerPlateau(-15, 0, 15, 1.5);
+MutatorFishBody.prototype.SAMPLER_RADIUS = new SamplerPlateau(-15, 0, 15, 1);
 MutatorFishBody.prototype.SAMPLER_GROWTH_SPEED = new SamplerPlateau(-3, 0, 3, 1.5);
 MutatorFishBody.prototype.SAMPLER_MATING_FREQUENCY = new SamplerPlateau(-5, 0, 5, .5);
 MutatorFishBody.prototype.SAMPLER_OFFSPRING_COUNT = new SamplerPlateau(-15, 0, 15, 1);
