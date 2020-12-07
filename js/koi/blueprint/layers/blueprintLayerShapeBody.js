@@ -9,6 +9,8 @@ const BlueprintLayerShapeBody = function(
     samplerCenterPower,
     samplerRadiusPower,
     samplerEyePosition) {
+    BlueprintLayer.call(this);
+
     this.samplerCenterPower = samplerCenterPower;
     this.samplerRadiusPower = samplerRadiusPower;
     this.samplerEyePosition = samplerEyePosition;

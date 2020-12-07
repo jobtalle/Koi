@@ -17,7 +17,8 @@ const BlueprintLayerSpots = function(
     samplerXFocus,
     samplerYFocus,
     samplerPower) {
-    this.paletteIndex = paletteIndex
+    BlueprintLayer.call(this, paletteIndex);
+
     this.samplerScale = samplerScale
     this.samplerStretch = samplerStretch
     this.samplerThreshold = samplerThreshold

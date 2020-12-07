@@ -21,7 +21,8 @@ const BlueprintLayerStripes = function(
     samplerSuppression,
     samplerFocus,
     samplerPower) {
-    this.paletteIndex = paletteIndex;
+    BlueprintLayer.call(this, paletteIndex);
+
     this.samplerScale = samplerScale;
     this.samplerDistortion = samplerDistortion;
     this.samplerRoughness = samplerRoughness;

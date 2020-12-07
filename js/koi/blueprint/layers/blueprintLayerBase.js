@@ -4,7 +4,7 @@
  * @constructor
  */
 const BlueprintLayerBase = function(paletteIndex) {
-    this.paletteIndex = paletteIndex;
+    BlueprintLayer.call(this, paletteIndex);
 };
 
 BlueprintLayerBase.prototype = Object.create(BlueprintLayer.prototype);

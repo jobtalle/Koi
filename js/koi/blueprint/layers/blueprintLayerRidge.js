@@ -15,7 +15,8 @@ const BlueprintLayerRidge = function(
     samplerThreshold,
     samplerFocus,
     samplerFocusPower) {
-    this.paletteIndex = paletteIndex;
+    BlueprintLayer.call(this, paletteIndex);
+
     this.samplerScale = samplerScale;
     this.samplerPower = samplerPower;
     this.samplerThreshold = samplerThreshold;

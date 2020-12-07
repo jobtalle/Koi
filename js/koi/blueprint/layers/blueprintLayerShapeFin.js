@@ -4,6 +4,8 @@
  * @constructor
  */
 const BlueprintLayerShapeFin = function(samplerRoundness) {
+    BlueprintLayer.call(this);
+
     this.samplerRoundness = samplerRoundness;
 };
 
