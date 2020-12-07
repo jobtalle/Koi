@@ -93,7 +93,7 @@ CardBook.Flip.prototype.getScale = function(time) {
  * @throws {RangeError} A range error if deserialized values are not valid
  */
 CardBook.prototype.deserialize = function(buffer, cards) {
-    this.deserializeLocks(buffer.readUint32());
+    this.deserializeLocks(buffer);
 
     for (const page of this.pages)
         page.deserialize(buffer, cards);
@@ -104,7 +104,7 @@ CardBook.prototype.deserialize = function(buffer, cards) {
  * @param {BinBuffer} buffer The buffer to serialize to
  */
 CardBook.prototype.serialize = function(buffer) {
-    buffer.writeUint32(this.serializeLocks());
+    this.serializeLocks(buffer);
 
     for (const page of this.pages)
         page.serialize(buffer);
@@ -112,26 +112,34 @@ CardBook.prototype.serialize = function(buffer) {
 
 /**
  * Serialize the lock states
- * @returns {Number} A 32 bit integer containing the lock states
+ * @param {BinBuffer} buffer The buffer to deserialize from
  */
-CardBook.prototype.serializeLocks = function() {
-    let serialized = 0;
+CardBook.prototype.serializeLocks = function(buffer) {
+    let unlocked = 0;
 
-    for (let lock = 0, lockCount = this.locks.length; lock < lockCount; ++lock)
-        if (this.locks[lock].locked)
-            serialized |= 1 << lock;
+    for (const lock of this.locks) {
+        if (lock.locked)
+            break;
 
-    return serialized;
+        ++unlocked;
+    }
+
+    buffer.writeUint8(unlocked);
 };
 
 /**
  * Deserialize the locks
- * @param {Number} flags A 32 bit integer containing the lock states
+ * @param {BinBuffer} buffer The buffer to deserialize from
+ * @throws {RangeError} A range error if deserialized values are not valid
  */
-CardBook.prototype.deserializeLocks = function(flags) {
-    for (let lock = 0, lockCount = this.locks.length; lock < lockCount; ++lock)
-        if (!(flags & (1 << lock)))
-            this.locks[lock].unlock();
+CardBook.prototype.deserializeLocks = function(buffer) {
+    const unlocked = buffer.readUint8();
+
+    if (unlocked > (this.PAGE_COUNT >> 1) - 1)
+        throw new RangeError();
+
+    for (let lock = 0; lock < unlocked; ++lock)
+        this.locks[lock].unlock();
 };
 
 /**
