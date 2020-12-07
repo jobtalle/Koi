@@ -51,9 +51,6 @@ const Koi = function(
     this.createRenderables();
 
     gui.setKoi(this);
-
-    if (!tutorial)
-        gui.cards.enableBookButton();
 };
 
 Koi.prototype.FRAME_TIME_MAX = 1;

@@ -110,8 +110,11 @@ TutorialCards.prototype.update = function(koi) {
                 this.phase = this.PHASE_WAITING;
             else if (this.mutations === this.MUTATIONS_REQUIRED)
                 this.start();
-            else
+            else {
+                koi.gui.cards.enableBookButton();
+
                 return true;
+            }
 
             break;
         case this.PHASE_CREATE_CARD:
@@ -145,6 +148,8 @@ TutorialCards.prototype.update = function(koi) {
         case this.PHASE_OPEN_BOOK:
             if (!this.stored && koi.gui.cards.hand.cards.length === 0 && !koi.gui.cards.grabbed) {
                 this.overlay.setText(language.get(this.LANG_CREATE_CARD));
+
+                this.pointToDropTarget(koi);
 
                 this.phase = this.PHASE_CREATE_CARD;
             }

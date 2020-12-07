@@ -76,14 +76,6 @@ Cards.prototype.enableBookButton = function() {
 };
 
 /**
- * Check whether the book is enabled
- * @returns {Boolean} True if the book is enabled
- */
-Cards.prototype.bookEnabled = function() {
-    return this.buttonBook.parentNode === this.element;
-};
-
-/**
  * Create the card drop target element
  * @returns {HTMLDivElement} The drop target element
  */
