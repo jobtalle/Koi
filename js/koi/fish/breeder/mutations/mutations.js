@@ -53,7 +53,7 @@ Mutations.prototype.createMutations = function() {
                     new Sampler(160, 170)
                 )
             ],
-            1
+            .2
         )
     ];
 };

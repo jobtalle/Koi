@@ -227,7 +227,7 @@ Mutation.prototype.apply = function(
 
     const base = this.makeLayer(a, b, 0, mixLayers, random);
     const layers = [];
-    console.log("Applying mutation!");
+
     for (let layer = 1; layer < this.mutations.length; ++layer)
         layers.push(this.makeLayer(a, b, layer, mixLayers, random));
 

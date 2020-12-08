@@ -14,12 +14,13 @@ const AudioEffect = function(engine, sources) {
     for (let source = 0; source < this.variations; ++source) {
         const requirement = loader.createRequirement(this.REQUIREMENT_WEIGHT);
 
-        this.elements[source] = new Audio(sources[source]);
+        this.elements[source] = new Audio();
 
         // TODO: Adapt to extension
         this.elements[source].type = "audio/ogg";
         this.elements[source].codecs = "vorbis";
-        this.elements[source].onloadedmetadata = requirement.satisfy.bind(requirement);
+        this.elements[source].onloadeddata = requirement.satisfy.bind(requirement);
+        this.elements[source].src = sources[source];
     }
 };
 
