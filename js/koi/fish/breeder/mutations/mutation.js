@@ -33,9 +33,9 @@ Mutation.BLUEPRINT_PALETTE_FLAG_MOTHER = 0x100;
 /**
  * Create a non absolute palette reference
  * @param {Boolean} mother True if referring to the mother palette, false if referring to the father palette
- * @param {Number} delta The layer delta to read a palette from
+ * @param {Number} [delta] The layer delta to read a palette from
  */
-Mutation.createPaletteReference = function(mother, delta) {
+Mutation.createPaletteReference = function(mother, delta= 0) {
     let flag = Mutation.BLUEPRINT_PALETTE_FLAG_RELATIVE;
 
     if (delta < 0)

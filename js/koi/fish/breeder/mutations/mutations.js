@@ -40,7 +40,7 @@ Mutations.prototype.createMutations = function() {
                     // Palette index
                     Mutation.createPaletteReference(false, -1),
                     // Scale
-                    new Sampler(200, 230),
+                    new Sampler(100, 130),
                     // Stretch
                     new Sampler(120, 136),
                     // Threshold
