@@ -29,10 +29,10 @@ Mutations.prototype.createMutations = function() {
     return [
         new Mutation(
             [
-                new Mutation.LayerFootprint(LayerBase.prototype.ID, Mutation.FOOTPRINT_PALETTE_UNIQUE)
+                new Mutation.LayerFootprint(LayerBase.prototype.ID, Mutation.FOOTPRINT_PALETTE_UNIQUE_LAYER)
             ],
             [
-                new Mutation.LayerFootprint(LayerBase.prototype.ID, Mutation.FOOTPRINT_PALETTE_UNIQUE)
+                new Mutation.LayerFootprint(LayerBase.prototype.ID, Mutation.FOOTPRINT_PALETTE_UNIQUE_LAYER)
             ],
             [
                 Mutation.BLUEPRINT_LAYER_MOTHER,
@@ -41,6 +41,36 @@ Mutations.prototype.createMutations = function() {
                     Mutation.createPaletteReference(false, -1),
                     // Scale
                     new Sampler(200, 230),
+                    // Stretch
+                    new Sampler(120, 136),
+                    // Threshold
+                    new Sampler(180, 200),
+                    // X focus
+                    new Sampler(120, 136),
+                    // Y focus
+                    new Sampler(120, 136),
+                    // Power
+                    new Sampler(160, 170)
+                )
+            ],
+            .2
+        ),
+        new Mutation(
+            [
+                new Mutation.LayerFootprint(LayerBase.prototype.ID, Mutation.FOOTPRINT_PALETTE_UNIQUE_LAYER),
+                new Mutation.LayerFootprint(LayerSpots.prototype.ID, Mutation.FOOTPRINT_PALETTE_UNIQUE)
+            ],
+            [
+                new Mutation.LayerFootprint(LayerBase.prototype.ID, Mutation.FOOTPRINT_PALETTE_UNIQUE_LAYER)
+            ],
+            [
+                Mutation.BLUEPRINT_LAYER_MOTHER,
+                Mutation.BLUEPRINT_LAYER_MOTHER,
+                new BlueprintLayerSpots(
+                    // Palette index
+                    Mutation.createPaletteReference(false, -2),
+                    // Scale
+                    new Sampler(220, 250),
                     // Stretch
                     new Sampler(120, 136),
                     // Threshold

@@ -22,6 +22,7 @@ const Mutation = function(
 
 Mutation.FOOTPRINT_PALETTE_ANY = -1;
 Mutation.FOOTPRINT_PALETTE_UNIQUE = -2;
+Mutation.FOOTPRINT_PALETTE_UNIQUE_LAYER = -3;
 Mutation.BLUEPRINT_LAYER_MIX = {};
 Mutation.BLUEPRINT_LAYER_MOTHER = {};
 Mutation.BLUEPRINT_LAYER_FATHER = {};
@@ -60,21 +61,41 @@ Mutation.LayerFootprint = function(id, paletteIndex) {
 };
 
 /**
+ * Count the number of occurrences of a given value in an array
+ * @param {Number} value The value to look for
+ * @param {Number[]} array The array
+ * @returns {Number} The number of occurrences of value in array
+ */
+Mutation.LayerFootprint.prototype.occurrences = function(value, array) {
+    let count = 0;
+
+    for (const number of array)
+        if (number === value)
+            ++count;
+
+    return count;
+};
+
+/**
  * Check if a layer matches this footprint
  * @param {Layer} layer A layer
  * @param {Layer} other The other layer
+ * @param {Number[]} colors All palette indices occurring in both parents
  * @returns {Boolean} True if the given layer matches the footprint
  */
-Mutation.LayerFootprint.prototype.matches = function(layer, other) {
+Mutation.LayerFootprint.prototype.matches = function(layer, other, colors) {
     if (this.id !== layer.id)
         return false;
 
-    if (this.paletteIndex === Mutation.FOOTPRINT_PALETTE_UNIQUE) {
+    if (this.paletteIndex === Mutation.FOOTPRINT_PALETTE_UNIQUE_LAYER) {
         if (!other)
             return true;
 
         return this.paletteIndex !== other.paletteIndex;
     }
+
+    if (this.paletteIndex === Mutation.FOOTPRINT_PALETTE_UNIQUE)
+        return this.occurrences(layer.paletteIndex, colors) === 1;
 
     return this.paletteIndex === Mutation.FOOTPRINT_PALETTE_ANY || layer.paletteIndex === this.paletteIndex;
 };
@@ -113,15 +134,23 @@ Mutation.prototype.applicable = function(a, b) {
     if (a.layers.length !== this.a.length - 1 || b.layers.length !== this.b.length - 1)
         return false;
 
-    if (!this.a[0].matches(a.base, b.base) || !this.b[0].matches(b.base, a.base))
+    const colors = [a.base.paletteIndex, b.base.paletteIndex];
+
+    for (const layer of a.layers)
+        colors.push(layer.paletteIndex);
+
+    for (const layer of b.layers)
+        colors.push(layer.paletteIndex);
+
+    if (!this.a[0].matches(a.base, b.base, colors) || !this.b[0].matches(b.base, a.base, colors))
         return false;
 
     for (let layer = 0, layers = this.a.length - 1; layer < layers; ++layer)
-        if (!this.a[layer + 1].matches(a.layers[layer], b.layers[layer]))
+        if (!this.a[layer + 1].matches(a.layers[layer], b.layers[layer], colors))
             return false;
 
     for (let layer = 0, layers = this.b.length - 1; layer < layers; ++layer)
-        if (!this.b[layer + 1].matches(b.layers[layer], a.layers[layer]))
+        if (!this.b[layer + 1].matches(b.layers[layer], a.layers[layer], colors))
             return false;
 
     return true;
@@ -218,7 +247,7 @@ Mutation.prototype.apply = function(
     shapeFin,
     mixLayers,
     random) {
-    if (this.symmetrical) {
+    if (this.symmetrical || !this.applicable(a, b)) {
         const temp = a;
 
         a = b;
