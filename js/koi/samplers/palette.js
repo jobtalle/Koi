@@ -13,12 +13,12 @@ const Palette = function() {
     ];
 };
 
-Palette.prototype.INDEX_WHITE = 0;
-Palette.prototype.INDEX_BLACK = 1;
-Palette.prototype.INDEX_GOLD = 2;
-Palette.prototype.INDEX_ORANGE = 3;
-Palette.prototype.INDEX_RED = 4;
-Palette.prototype.INDEX_BROWN = 5;
+Palette.INDEX_WHITE = 0;
+Palette.INDEX_BLACK = 1;
+Palette.INDEX_GOLD = 2;
+Palette.INDEX_ORANGE = 3;
+Palette.INDEX_RED = 4;
+Palette.INDEX_BROWN = 5;
 Palette.prototype.LANG_NAME_KOHAKU = "NAME_KOHAKU";
 Palette.prototype.LANG_NAME_SHOWA = "NAME_SHOWA";
 Palette.prototype.LANG_NAME_NEZU_OGON = "NAME_NEZU_OGON";

@@ -27,109 +27,33 @@ Mutations.prototype.deserialize = function(buffer) {
  */
 Mutations.prototype.createMutations = function() {
     return [
-        // new Mutation(
-        //     [
-        //         new Mutation.LayerFootprint(LayerBase.prototype.ID, Mutation.PALETTE_ANY)
-        //     ],
-        //     [
-        //         new Mutation.LayerFootprint(LayerBase.prototype.ID, Mutation.PALETTE_ANY)
-        //     ],
-        //     [
-        //         null, // Copy either of the original base layers
-        //     ],
-        //     .2
-        // ),
         new Mutation(
             [
-                new Mutation.LayerFootprint(LayerBase.prototype.ID, 0)
+                new Mutation.LayerFootprint(LayerBase.prototype.ID, Mutation.FOOTPRINT_PALETTE_UNIQUE)
             ],
             [
-                new Mutation.LayerFootprint(LayerBase.prototype.ID, 3)
+                new Mutation.LayerFootprint(LayerBase.prototype.ID, Mutation.FOOTPRINT_PALETTE_UNIQUE)
             ],
             [
-                Blueprints.baseWhite.blueprintBody.blueprintPattern.blueprintLayerBase,
-                Blueprints.mutationSpotsRedOnWhite
+                Mutation.BLUEPRINT_LAYER_MOTHER,
+                new BlueprintLayerSpots(
+                    // Palette index
+                    Mutation.createPaletteReference(false, -1),
+                    // Scale
+                    new Sampler(200, 230),
+                    // Stretch
+                    new Sampler(120, 136),
+                    // Threshold
+                    new Sampler(180, 200),
+                    // X focus
+                    new Sampler(120, 136),
+                    // Y focus
+                    new Sampler(120, 136),
+                    // Power
+                    new Sampler(160, 170)
+                )
             ],
-            .2
-        ),
-        new Mutation(
-            [
-                new Mutation.LayerFootprint(LayerBase.prototype.ID, 0)
-            ],
-            [
-                new Mutation.LayerFootprint(LayerBase.prototype.ID, 3)
-            ],
-            [
-                Blueprints.baseRed.blueprintBody.blueprintPattern.blueprintLayerBase,
-                Blueprints.mutationSpotsWhiteOnRed
-            ],
-            .2
-        ),
-        new Mutation(
-            [
-                new Mutation.LayerFootprint(LayerBase.prototype.ID, 0)
-            ],
-            [
-                new Mutation.LayerFootprint(LayerBase.prototype.ID, 1)
-            ],
-            [
-                Blueprints.baseBlack.blueprintBody.blueprintPattern.blueprintLayerBase,
-                Blueprints.mutationSpotsWhiteOnRed
-            ],
-            .2
-        ),
-        new Mutation(
-            [
-                new Mutation.LayerFootprint(LayerBase.prototype.ID, 0)
-            ],
-            [
-                new Mutation.LayerFootprint(LayerBase.prototype.ID, 1)
-            ],
-            [
-                Blueprints.baseWhite.blueprintBody.blueprintPattern.blueprintLayerBase,
-                Blueprints.mutationSpotsBlackOnWhite
-            ],
-            .2
-        ),
-        new Mutation(
-            [
-                new Mutation.LayerFootprint(LayerBase.prototype.ID, 1)
-            ],
-            [
-                new Mutation.LayerFootprint(LayerBase.prototype.ID, 3)
-            ],
-            [
-                Blueprints.baseBlack.blueprintBody.blueprintPattern.blueprintLayerBase,
-                Blueprints.mutationSpotsLightRedOnBlack
-            ],
-            .2
-        ),
-        new Mutation(
-            [
-                new Mutation.LayerFootprint(LayerBase.prototype.ID, 1)
-            ],
-            [
-                new Mutation.LayerFootprint(LayerBase.prototype.ID, 2)
-            ],
-            [
-                Blueprints.baseGold.blueprintBody.blueprintPattern.blueprintLayerBase,
-                Blueprints.mutationSpotsBlackOnGold
-            ],
-            .2
-        ),
-        new Mutation(
-            [
-                new Mutation.LayerFootprint(LayerBase.prototype.ID, 2),
-                new Mutation.LayerFootprint(LayerSpots.prototype.ID, 0)
-            ],
-            [
-                new Mutation.LayerFootprint(LayerBase.prototype.ID, 1),
-                new Mutation.LayerFootprint(LayerSpots.prototype.ID, 1)
-            ],
-            [
-                Blueprints.mutationBaseBrown
-            ],
-            .2
+            1
         )
     ];
 };

@@ -2,22 +2,51 @@
  * A mutation that may occur
  * @param {Mutation.LayerFootprint[]} a A layer footprint
  * @param {Mutation.LayerFootprint[]} b A layer footprint
- * @param {Object[]} mutations An array of mutated layer blueprints, or null when layers should mix
+ * @param {(BlueprintLayer|{})[]} mutations An array of mutated layer blueprints, or one of the valid layer constants
  * @param {Number} probability The probability of this mutation occurring in the range [0, 1]
+ * @param {Boolean} [symmetrical] True if the order of inputs does not matter
  * @constructor
  */
 const Mutation = function(
     a,
     b,
     mutations,
-    probability) {
+    probability,
+    symmetrical = null) {
     this.a = a;
     this.b = b;
     this.mutations = mutations;
     this.probability = probability;
+    this.symmetrical = symmetrical === null ? this.isSymmetrical() : symmetrical;
 };
 
-Mutation.PALETTE_ANY = -1;
+Mutation.FOOTPRINT_PALETTE_ANY = -1;
+Mutation.FOOTPRINT_PALETTE_UNIQUE = -2;
+Mutation.BLUEPRINT_LAYER_MIX = {};
+Mutation.BLUEPRINT_LAYER_MOTHER = {};
+Mutation.BLUEPRINT_LAYER_FATHER = {};
+Mutation.BLUEPRINT_PALETTE_FLAG_RELATIVE = 0x400;
+Mutation.BLUEPRINT_PALETTE_FLAG_NEGATIVE = 0x200;
+Mutation.BLUEPRINT_PALETTE_FLAG_MOTHER = 0x100;
+
+/**
+ * Create a non absolute palette reference
+ * @param {Boolean} mother True if referring to the mother palette, false if referring to the father palette
+ * @param {Number} delta The layer delta to read a palette from
+ */
+Mutation.createPaletteReference = function(mother, delta) {
+    let flag = Mutation.BLUEPRINT_PALETTE_FLAG_RELATIVE;
+
+    if (delta < 0)
+        flag |= Mutation.BLUEPRINT_PALETTE_FLAG_NEGATIVE;
+
+    if (mother)
+        flag |= Mutation.BLUEPRINT_PALETTE_FLAG_MOTHER;
+
+    flag |= Math.abs(delta);
+
+    return flag;
+};
 
 /**
  * A layer footprint to match a layer to
@@ -33,10 +62,45 @@ Mutation.LayerFootprint = function(id, paletteIndex) {
 /**
  * Check if a layer matches this footprint
  * @param {Layer} layer A layer
+ * @param {Layer} other The other layer
  * @returns {Boolean} True if the given layer matches the footprint
  */
-Mutation.LayerFootprint.prototype.matches = function(layer) {
-    return layer.id === this.id && layer.paletteIndex === this.paletteIndex;
+Mutation.LayerFootprint.prototype.matches = function(layer, other) {
+    if (this.id !== layer.id)
+        return false;
+
+    if (this.paletteIndex === Mutation.FOOTPRINT_PALETTE_UNIQUE) {
+        if (!other)
+            return true;
+
+        return this.paletteIndex !== other.paletteIndex;
+    }
+
+    return this.paletteIndex === Mutation.FOOTPRINT_PALETTE_ANY || layer.paletteIndex === this.paletteIndex;
+};
+
+/**
+ * Check whether this footprint is equal to another given footprint
+ * @param {Mutation.LayerFootprint} other The other footprint
+ * @returns {Boolean} True if the footprints are equal
+ */
+Mutation.LayerFootprint.prototype.equals = function(other) {
+    return this.id === other.id && this.paletteIndex === other.paletteIndex;
+};
+
+/**
+ * Evaluate whether this mutation is symmetrical, or whether the order of inputs must be respected
+ * @returns {Boolean} True if this mutation is symmetrical
+ */
+Mutation.prototype.isSymmetrical = function() {
+    if (this.a.length !== this.b.length)
+        return false;
+
+    for (let footprint = 0, footprints = this.a.length; footprint < footprints; ++footprint)
+        if (!this.a[footprint].equals(this.b[footprint]))
+            return false;
+
+    return true;
 };
 
 /**
@@ -49,15 +113,15 @@ Mutation.prototype.applicable = function(a, b) {
     if (a.layers.length !== this.a.length - 1 || b.layers.length !== this.b.length - 1)
         return false;
 
-    if (!this.a[0].matches(a.base) || !this.b[0].matches(b.base))
+    if (!this.a[0].matches(a.base, b.base) || !this.b[0].matches(b.base, a.base))
         return false;
 
     for (let layer = 0, layers = this.a.length - 1; layer < layers; ++layer)
-        if (!this.a[layer + 1].matches(a.layers[layer]))
+        if (!this.a[layer + 1].matches(a.layers[layer], b.layers[layer]))
             return false;
 
     for (let layer = 0, layers = this.b.length - 1; layer < layers; ++layer)
-        if (!this.b[layer + 1].matches(b.layers[layer]))
+        if (!this.b[layer + 1].matches(b.layers[layer], a.layers[layer]))
             return false;
 
     return true;
@@ -79,6 +143,65 @@ Mutation.prototype.mutates = function(a, b, force, random) {
 };
 
 /**
+ * Extract a layer from an input pattern
+ * @param {Pattern} pattern The input pattern
+ * @param {Number} index The index, with 0 as the base layer
+ * @returns {Layer} The extracted layer
+ */
+Mutation.prototype.getInputLayer = function(pattern, index) {
+    if (index === 0)
+        return pattern.base;
+
+    return pattern.layers[index - 1];
+};
+
+/**
+ * Get the parsed palette index
+ * @param {Pattern} a The A pattern
+ * @param {Pattern} b The B pattern
+ * @param {Number} index The index of the layer to mutate
+ * @param {Number} paletteIndex The palette index to parse
+ * @returns {Number} The parsed palette index
+ */
+Mutation.prototype.parsePaletteIndex = function(a, b, index, paletteIndex) {
+    if (paletteIndex & Mutation.BLUEPRINT_PALETTE_FLAG_RELATIVE) {
+        const extractedIndex = paletteIndex & 0xFF;
+        const delta = paletteIndex & Mutation.BLUEPRINT_PALETTE_FLAG_NEGATIVE ? -extractedIndex : extractedIndex;
+
+        if (paletteIndex & Mutation.BLUEPRINT_PALETTE_FLAG_MOTHER)
+            return this.getInputLayer(a, index + delta).paletteIndex;
+        else
+            return this.getInputLayer(b, index + delta).paletteIndex;
+    }
+
+    return paletteIndex;
+};
+
+/**
+ * Make a layer according to the mutation
+ * @param {Pattern} a The A pattern
+ * @param {Pattern} b The B pattern
+ * @param {Number} index The index of the layer to mutate
+ * @param {Function} mixLayers A function that mixes two layers with an equal ID
+ * @param {Random} random A randomizer
+ * @returns {Layer} The mutated layer
+ */
+Mutation.prototype.makeLayer = function(a, b, index, mixLayers, random) {
+    const mutation = this.mutations[index];
+
+    switch (mutation) {
+        case Mutation.BLUEPRINT_LAYER_MOTHER:
+            return this.getInputLayer(a, index).copy();
+        case Mutation.BLUEPRINT_LAYER_FATHER:
+            return this.getInputLayer(b, index).copy();
+        case Mutation.BLUEPRINT_LAYER_MIX:
+            return mixLayers(this.getInputLayer(a, index), this.getInputLayer(b, index), random);
+        default:
+            return mutation.spawn(random, this.parsePaletteIndex(a, b, index, mutation.paletteIndex));
+    }
+};
+
+/**
  * Apply the mutation
  * @param {Pattern} a A pattern
  * @param {Pattern} b A pattern
@@ -95,15 +218,18 @@ Mutation.prototype.apply = function(
     shapeFin,
     mixLayers,
     random) {
-    const base = this.mutations[0] ? this.mutations[0].spawn(random) : mixLayers(a.base, b.base, random);
-    const layers = [];
+    if (this.symmetrical) {
+        const temp = a;
 
-    for (let layer = 0, layerCount = this.mutations.length - 1; layer < layerCount; ++layer) {
-        if (this.mutations[layer + 1])
-            layers.push(this.mutations[layer + 1].spawn(random));
-        else
-            layers.push(mixLayers(a.layers[layer], b.layers[layer], random));
+        a = b;
+        b = temp;
     }
+
+    const base = this.makeLayer(a, b, 0, mixLayers, random);
+    const layers = [];
+    console.log("Applying mutation!");
+    for (let layer = 1; layer < this.mutations.length; ++layer)
+        layers.push(this.makeLayer(a, b, layer, mixLayers, random));
 
     return new Pattern(
         base,

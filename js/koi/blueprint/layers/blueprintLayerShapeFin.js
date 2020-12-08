@@ -14,9 +14,10 @@ BlueprintLayerShapeFin.prototype = Object.create(BlueprintLayer.prototype);
 /**
  * Spawn a fin shape layer
  * @param {Random} random A randomizer
+ * @param {Number} [paletteIndex] The palette index
  * @returns {LayerShapeFin} A fin shape layer
  */
-BlueprintLayerShapeFin.prototype.spawn = function(random) {
+BlueprintLayerShapeFin.prototype.spawn = function(random, paletteIndex = this.paletteIndex) {
     return new LayerShapeFin(
         Math.round(this.samplerRoundness.sample(random.getFloat())));
 };

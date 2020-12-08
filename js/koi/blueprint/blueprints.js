@@ -30,7 +30,7 @@ const Blueprints = {
             // Pattern
             new BlueprintPattern(
                 // Base
-                new BlueprintLayerBase(Palette.prototype.INDEX_WHITE),
+                new BlueprintLayerBase(Palette.INDEX_WHITE),
                 // Body shape
                 new BlueprintLayerShapeBody(
                     // Center power
@@ -76,7 +76,7 @@ const Blueprints = {
             // Pattern
             new BlueprintPattern(
                 // Base
-                new BlueprintLayerBase(Palette.prototype.INDEX_BLACK),
+                new BlueprintLayerBase(Palette.INDEX_BLACK),
                 // Body shape
                 new BlueprintLayerShapeBody(
                     // Center power
@@ -122,7 +122,7 @@ const Blueprints = {
             // Pattern
             new BlueprintPattern(
                 // Base
-                new BlueprintLayerBase(Palette.prototype.INDEX_GOLD),
+                new BlueprintLayerBase(Palette.INDEX_GOLD),
                 // Body shape
                 new BlueprintLayerShapeBody(
                     // Center power
@@ -168,7 +168,7 @@ const Blueprints = {
             // Pattern
             new BlueprintPattern(
                 // Base
-                new BlueprintLayerBase(Palette.prototype.INDEX_ORANGE),
+                new BlueprintLayerBase(Palette.INDEX_ORANGE),
                 // Body shape
                 new BlueprintLayerShapeBody(
                     // Center power

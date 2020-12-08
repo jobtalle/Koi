@@ -21,9 +21,10 @@ BlueprintLayerShapeBody.prototype = Object.create(BlueprintLayer.prototype);
 /**
  * Spawn a body shape layer
  * @param {Random} random A randomizer
+ * @param {Number} [paletteIndex] The palette index
  * @returns {LayerShapeBody} A body shape layer
  */
-BlueprintLayerShapeBody.prototype.spawn = function(random) {
+BlueprintLayerShapeBody.prototype.spawn = function(random, paletteIndex = this.paletteIndex) {
     return new LayerShapeBody(
         this.samplerCenterPower.sample(random.getFloat()),
         this.samplerRadiusPower.sample(random.getFloat()),
