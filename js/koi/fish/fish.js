@@ -20,8 +20,8 @@ const Fish = function(
     this.turnForce = 0;
     this.nibbleTime = this.NIBBLE_TIME_MIN;
     this.mateTimeout = body.getMateTimeout();
+    this.mated = this.mateTimeout;
     this.mateTime = 0;
-    this.mated = 0;
     this.interactions = 0;
     this.lastInteraction = null;
 
