@@ -24,14 +24,10 @@
     --color-cattail-capsule: #eceaac;
 
     /* Fish colors */
-    --color-fish-base-white: #E1E0C4;
-    --color-fish-base-black: #414345;
-    --color-fish-base-gold: #d7933e;
-    --color-fish-base-red: #cd6142;
-    --color-fish-base-brown: var(--color-rock-top);
-
-    --color-fish-detail-white: var(--color-fish-base-white);
-    --color-fish-detail-black: var(--color-fish-base-black);
-    --color-fish-detail-red: var(--color-fish-base-red);
-    --color-fish-detail-light-red: #db3030;
+    --color-fish-white: #E1E0C4;
+    --color-fish-black: #414345;
+    --color-fish-gold: #d7933e;
+    --color-fish-orange: #cd6142;
+    --color-fish-red: #db3030;
+    --color-fish-brown: var(--color-rock-top);
 }

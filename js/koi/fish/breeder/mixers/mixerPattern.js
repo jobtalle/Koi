@@ -94,7 +94,7 @@ MixerPattern.prototype.mix = function(
             }
         }
 
-        // TODO: Dominance
+        // TODO: Dominance?
         if (random.getFloat() < .5) {
             base = this.mother.base.copy();
 
@@ -109,13 +109,9 @@ MixerPattern.prototype.mix = function(
         }
     }
 
-    const pattern = new Pattern(
+    return new Pattern(
         base,
         layers,
         shapeBody,
         shapeFins);
-
-    pattern.trim(patterns.palettes.base);
-
-    return pattern;
 };

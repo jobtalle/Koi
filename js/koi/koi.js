@@ -134,7 +134,7 @@ Koi.prototype.onUnlock = function() {
  * Perform first time initialization
  */
 Koi.prototype.initialize = function() {
-    this.spawner.spawnInitial(this.systems.atlas, this.systems.patterns, this.randomSource, this.random);
+    this.spawner.spawnInitial(this.systems.atlas, this.randomSource, this.random);
 };
 
 /**
@@ -366,7 +366,7 @@ Koi.prototype.update = function() {
             this.tutorial = null;
     }
 
-    this.spawner.update(this.UPDATE_RATE, this.systems.atlas, this.systems.patterns, this.randomSource, this.random);
+    this.spawner.update(this.UPDATE_RATE, this.systems.atlas, this.randomSource, this.random);
     this.constellation.update(
         this.systems.atlas,
         this.systems.patterns,

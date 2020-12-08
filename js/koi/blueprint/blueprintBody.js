@@ -35,18 +35,16 @@ const BlueprintBody = function(
 /**
  * Spawn a fish body based on this blueprint
  * @param {Atlas} atlas The atlas to render newly spawned patterns on
- * @param {Patterns} patterns The patterns
  * @param {RandomSource} randomSource A random source
  * @param {Random} random A randomizer
  * @returns {FishBody} A fish body
  */
 BlueprintBody.prototype.spawn = function(
     atlas,
-    patterns,
     randomSource,
     random) {
     return new FishBody(
-        this.blueprintPattern.spawn(atlas, patterns, randomSource, random),
+        this.blueprintPattern.spawn(atlas, randomSource, random),
         this.blueprintFins.spawn(random),
         this.blueprintTail.spawn(random),
         Math.round(this.samplerLength.sample(random.getFloat())),

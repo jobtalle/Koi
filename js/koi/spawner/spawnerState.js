@@ -66,28 +66,24 @@ SpawnerState.prototype.serialize = function(buffer) {
  * Spawn the initial fish
  * @param {Constellation} constellation The constellation
  * @param {Atlas} atlas The atlas to render newly spawned patterns on
- * @param {Patterns} patterns The patterns
  * @param {RandomSource} randomSource A random source
  * @param {Random} random A randomizer
  */
 SpawnerState.prototype.spawnInitial = function(
     constellation,
     atlas,
-    patterns,
     randomSource,
     random) {
     constellation.big.addFish(this.BLUEPRINT_INITIAL.spawn(
         constellation.big.constraint.position.copy(),
         new Vector2().fromAngle(random.getFloat() * Math.PI * 2),
         atlas,
-        patterns,
         randomSource,
         random));
     constellation.river.addFish(this.BLUEPRINT_INITIAL.spawn(
         constellation.initialSpawnPoint.copy(),
         constellation.initialSpawnDirection.copy(),
         atlas,
-        patterns,
         randomSource,
         random));
 };
@@ -97,7 +93,6 @@ SpawnerState.prototype.spawnInitial = function(
  * @param {SpawnerBehavior} behavior The current behavior
  * @param {Constellation} constellation The constellation
  * @param {Atlas} atlas The atlas to render newly spawned patterns on
- * @param {Patterns} patterns The patterns
  * @param {RandomSource} randomSource A random source
  * @param {Number} limit The maximum number of fish that may exist in the river
  * @param {Number} overhead The overhead to the maximum number of fish in the constellation
@@ -107,7 +102,6 @@ SpawnerState.prototype.update = function(
     behavior,
     constellation,
     atlas,
-    patterns,
     randomSource,
     limit,
     overhead,
@@ -121,7 +115,6 @@ SpawnerState.prototype.update = function(
                     constellation.spawnPoint.copy(),
                     constellation.spawnDirection.copy(),
                     atlas,
-                    patterns,
                     randomSource,
                     random));
 

@@ -69,25 +69,6 @@ Pattern.prototype.serialize = function(buffer) {
 };
 
 /**
- * Trim any layers from this pattern that will not be rendered because the palette track is not deep enough
- * @param {Palette} palette The start palette
- */
-Pattern.prototype.trim = function(palette) {
-    const track = new PaletteTrack(palette);
-    let color = track.next(this.base);
-    let level = 0;
-
-    for (const layer of this.layers) {
-        if ((color = track.next(layer)) === null)
-            break;
-
-        ++level;
-    }
-
-    this.layers = this.layers.slice(0, level);
-};
-
-/**
  * Free all resources maintained by this pattern
  * @param {Atlas} atlas The texture atlas
  */

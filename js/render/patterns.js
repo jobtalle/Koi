@@ -18,7 +18,7 @@ const Patterns = function(gl) {
     this.vaoShapeBody = this.createVAO(gl, this.programShapeBody);
     this.programShapeFin = LayerShapeFin.prototype.createShader(gl);
     this.vaoShapeFin = this.createVAO(gl, this.programShapeFin);
-    this.palettes = new Palettes();
+    this.palette = new Palette();
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
     gl.bufferData(gl.ARRAY_BUFFER, 64, gl.DYNAMIC_DRAW);
@@ -78,7 +78,7 @@ Patterns.prototype.writeLayer = function(
  * @param {Number} pixelSize The pixel size
  */
 Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
-    const paletteTrack = new PaletteTrack(this.palettes.base);
+    let colorPrevious = this.palette.colors[pattern.base.paletteIndex];
 
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, randomSource.texture); // TODO: Don't use variable random source for this
@@ -101,7 +101,7 @@ Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
         1, 0
     ]));
 
-    this.writeLayer(pattern.base, this.programBase, this.vaoBase, paletteTrack.next(pattern.base));
+    this.writeLayer(pattern.base, this.programBase, this.vaoBase, colorPrevious);
 
     this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array([
         2 * (region.uBodyStart + pixelSize) - 1,
@@ -122,9 +122,9 @@ Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
 
     for (const layer of pattern.layers) {
-        const color = paletteTrack.next(layer);
+        const color = this.palette.colors[layer.paletteIndex];
 
-        if (!color)
+        if (color === colorPrevious)
             break;
 
         switch (layer.id) {

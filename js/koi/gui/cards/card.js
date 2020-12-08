@@ -66,7 +66,7 @@ Card.prototype.serialize = function(buffer) {
  * @param {Preview} preview A preview renderer
  * @param {Atlas} atlas The atlas
  * @param {Bodies} bodies The bodies renderer
- * @param {Palettes} palettes The palettes object for naming the koi
+ * @param {Palettes} palettes The palette object for naming the koi
  * @param {RandomSource} [randomSource] The random source, required if the body may not be written to the atlas
  */
 Card.prototype.initialize = function(

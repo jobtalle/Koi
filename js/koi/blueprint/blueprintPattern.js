@@ -20,14 +20,12 @@ const BlueprintPattern = function(
 /**
  * Spawn a pattern based on this blueprint
  * @param {Atlas} atlas The atlas to render newly spawned patterns on
- * @param {Patterns} patterns The patterns
  * @param {RandomSource} randomSource A random source
  * @param {Random} random A randomizer
  * @returns {Pattern} A pattern
  */
 BlueprintPattern.prototype.spawn = function(
     atlas,
-    patterns,
     randomSource,
     random) {
     const layers = [];
@@ -41,7 +39,6 @@ BlueprintPattern.prototype.spawn = function(
         this.blueprintLayerShapeBody.spawn(random),
         this.blueprintLayerShapeFin.spawn(random));
 
-    pattern.trim(patterns.palettes.base);
     atlas.write(pattern, randomSource);
 
     return pattern;

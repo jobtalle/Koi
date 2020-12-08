@@ -42,15 +42,13 @@ Spawner.prototype.setBehavior = function(behavior) {
 /**
  * Spawn the initial fish
  * @param {Atlas} atlas The atlas to render newly spawned patterns on
- * @param {Patterns} patterns The patterns
  * @param {RandomSource} randomSource A random source
  * @param {Random} random A randomizer
  */
-Spawner.prototype.spawnInitial = function(atlas, patterns, randomSource, random) {
+Spawner.prototype.spawnInitial = function(atlas, randomSource, random) {
     this.state.spawnInitial(
         this.constellation,
         atlas,
-        patterns,
         randomSource,
         random);
 };
@@ -59,21 +57,18 @@ Spawner.prototype.spawnInitial = function(atlas, patterns, randomSource, random)
  * Update the spawner
  * @param {Number} timeStep The amount of time passed since the last update
  * @param {Atlas} atlas The atlas to render newly spawned patterns on
- * @param {Patterns} patterns The patterns
  * @param {RandomSource} randomSource A random source
  * @param {Random} random A randomizer
  */
 Spawner.prototype.update = function(
     timeStep,
     atlas,
-    patterns,
     randomSource,
     random) {
     this.state.update(
         this.behavior,
         this.constellation,
         atlas,
-        patterns,
         randomSource,
         this.SPAWN_LIMIT,
         this.SPAWN_OVERHEAD,

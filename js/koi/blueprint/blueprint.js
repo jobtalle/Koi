@@ -25,7 +25,6 @@ Blueprint.prototype.getSchoolSize = function(random) {
  * @param {Vector2} position The fish position
  * @param {Vector2} direction The fish direction vector, which must be normalized
  * @param {Atlas} atlas The atlas to render newly spawned patterns on
- * @param {Patterns} patterns The patterns
  * @param {RandomSource} randomSource A random source
  * @param {Random} random A randomizer
  */
@@ -33,11 +32,10 @@ Blueprint.prototype.spawn = function(
     position,
     direction,
     atlas,
-    patterns,
     randomSource,
     random) {
     return new Fish(
-        this.blueprintBody.spawn(atlas, patterns, randomSource, random),
+        this.blueprintBody.spawn(atlas, randomSource, random),
         position,
         direction);
 };
