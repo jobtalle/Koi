@@ -125,7 +125,8 @@ CardBook.prototype.serializeLocks = function(buffer) {
         ++unlocked;
     }
 
-    buffer.writeUint8(unlocked);
+    // buffer.writeUint8(unlocked);
+    buffer.writeUint8(0); // TODO: Debugging only
 };
 
 /**
@@ -241,6 +242,10 @@ CardBook.prototype.flipLeft = function() {
 
         return;
     }
+
+    if ((this.page >> 1) + this.flips.length < this.locks.length &&
+        this.locks[(this.page >> 1) + this.flips.length].locked)
+        return;
 
     if (this.page + 2 === this.PAGE_COUNT - this.flips.length * 2)
         return;
