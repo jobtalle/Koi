@@ -4,6 +4,8 @@
  */
 const PageLockRequirements = [
     [
-        new PageLockRequirementCount(2)
+        new PageLockRequirementLayers(Palette.INDEX_WHITE),
+        new PageLockRequirementLayers(Palette.INDEX_ORANGE),
+        new PageLockRequirementLayers(Palette.INDEX_BLACK)
     ]
 ];

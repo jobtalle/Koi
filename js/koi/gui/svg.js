@@ -70,6 +70,14 @@ const SVG = {
         element.setAttribute("transform", transform);
     },
     /**
+     * Set the fill of an element
+     * @param {SVGElement} element The element
+     * @param {String} fill The fill
+     */
+    setFill: function(element, fill) {
+        element.setAttribute("fill", fill);
+    },
+    /**
      * Create a group
      * @param [className] The class name for this group
      * @returns {SVGGElement} The group element
@@ -81,21 +89,6 @@ const SVG = {
             element.setAttribute("class", className);
 
         return element;
-    },
-    /**
-     * Create a line
-     * @param {Number} x1 The X start position
-     * @param {Number} y1 The Y start position
-     * @param {Number} x2 The X end position
-     * @param {Number} y2 The Y end position
-     * @param {String} [className] The class name for this line
-     * @returns {SVGPathElement} The line element
-     */
-    createLine: function(x1, y1, x2, y2, className) {
-        return SVG.createPath([
-            "M", x1, y1,
-            "L", x2, y2
-        ], className);
     },
     /**
      * Create a path

@@ -85,7 +85,7 @@
 }
 
 #book #spine .page .page-lock .requirements .requirement .check.checked {
-    background-color: red;
+    background-color: lime;
 }
 
 #book #spine .page .overlay.left {

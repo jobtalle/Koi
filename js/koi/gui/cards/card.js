@@ -66,14 +66,12 @@ Card.prototype.serialize = function(buffer) {
  * @param {Preview} preview A preview renderer
  * @param {Atlas} atlas The atlas
  * @param {Bodies} bodies The bodies renderer
- * @param {Palette} palettes The palette object for naming the koi
  * @param {RandomSource} [randomSource] The random source, required if the body may not be written to the atlas
  */
 Card.prototype.initialize = function(
     preview,
     atlas,
     bodies,
-    palettes,
     randomSource = null) {
     if (this.initialized)
         return;
@@ -113,7 +111,7 @@ Card.prototype.initialize = function(
         this.body.pattern.region = null;
     }
 
-    this.setName(palettes.makeName(this.body.pattern.base, this.body.pattern.layers));
+    this.setName(Palette.makeName(this.body.pattern.base, this.body.pattern.layers));
 };
 
 /**
