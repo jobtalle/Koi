@@ -347,12 +347,40 @@ CardBook.prototype.findSnap = function(x, y) {
 };
 
 /**
+ * Enumerate all fish bodies stored in the book
+ * @returns {FishBody[]} All fish bodies stored in the book
+ */
+CardBook.prototype.enumerateCards = function() {
+    const bodies = [];
+
+    for (const page of this.pages)
+        for (const card of page.cards)
+            if (card)
+                bodies.push(card.body);
+
+    return bodies;
+};
+
+/**
+ * Validate the last page lock, if any
+ */
+CardBook.prototype.validateLock = function() {
+    for (const lock of this.locks) if (!lock.unlocked) {
+        lock.validate(this.enumerateCards());
+
+        break;
+    }
+};
+
+/**
  * Add a card to the book
  * @param {Card} card The card
  * @param {Vector2} snap A valid snap position obtained from one of the pages
  */
 CardBook.prototype.addToBook = function(card, snap) {
     this.pages[this.page].addCard(card, snap) || this.pages[this.page + 1].addCard(card, snap);
+
+    this.validateLock();
 };
 
 /**
@@ -361,6 +389,8 @@ CardBook.prototype.addToBook = function(card, snap) {
  */
 CardBook.prototype.removeFromBook = function(card) {
     this.pages[this.page].removeCard(card) || this.pages[this.page + 1].removeCard(card);
+
+    this.validateLock();
 };
 
 /**

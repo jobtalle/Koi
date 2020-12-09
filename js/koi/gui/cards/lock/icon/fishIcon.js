@@ -20,5 +20,5 @@ const FishIcon = function(layers = []) {
 };
 
 FishIcon.prototype.CLASS = "fish-icon";
-FishIcon.prototype.WIDTH = 160;
+FishIcon.prototype.WIDTH = 130;
 FishIcon.prototype.HEIGHT = 55;

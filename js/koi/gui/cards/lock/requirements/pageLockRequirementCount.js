@@ -4,12 +4,13 @@
  * @constructor
  */
 const PageLockRequirementCount = function(count) {
-    PageLockRequirement.call(this);
-
     this.count = count;
+
+    PageLockRequirement.call(this);
 };
 
 PageLockRequirementCount.prototype = Object.create(PageLockRequirement.prototype);
+PageLockRequirementCount.prototype.SYMBOL_MULTIPLY = "✕";
 
 /**
  * Create the icon for this requirement
@@ -19,6 +20,18 @@ PageLockRequirementCount.prototype.createIcon = function() {
     return new FishIcon([
         new FishIconLayerOutline()
     ]);
+};
+
+/**
+ * Create a text element for this requirement
+ * @returns {HTMLParagraphElement} The text element, or null if no text is needed
+ */
+PageLockRequirementCount.prototype.createText = function() {
+    const element = document.createElement("p");
+
+    element.appendChild(document.createTextNode(this.SYMBOL_MULTIPLY + " " + this.count.toString()));
+
+    return element;
 };
 
 /**

@@ -46,3 +46,21 @@ PageLock.prototype.createElement = function() {
 
     return element;
 };
+
+/**
+ * Validate whether this locks requirements are satisfied
+ * @param {FishBody[]} bodies All fish bodies in the book
+ * @returns {Boolean} True if all requirements are met
+ */
+PageLock.prototype.validate = function(bodies) {
+    let validated = true;
+
+    for (const requirement of this.requirements) {
+        if (requirement.validate(bodies))
+            requirement.check();
+
+        validated = validated && requirement.checked;
+    }
+
+    return validated;
+};

@@ -4,8 +4,6 @@
  */
 const PageLockRequirements = [
     [
-        new PageLockRequirementCount(2),
-        new PageLockRequirementCount(3),
-        new PageLockRequirementCount(4)
+        new PageLockRequirementCount(2)
     ]
 ];

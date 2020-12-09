@@ -9,5 +9,5 @@
 }
 
 .fish-icon .fill {
-    fill: white;
+    fill: var(--book-page-color-lock-border);
 }
