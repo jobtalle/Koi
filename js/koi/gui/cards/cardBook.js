@@ -22,6 +22,7 @@ const CardBook = function(width, height, cards, onUnlock) {
     this.onUnlock = onUnlock;
 
     this.populateSpine();
+    this.addLocks();
 
     this.element.appendChild(this.buttonPageLeft);
     this.element.appendChild(this.buttonPageRight);
@@ -39,7 +40,7 @@ CardBook.prototype.PADDING_TOP = .07;
 CardBook.prototype.PADDING_PAGE = .07;
 CardBook.prototype.PADDING_CARD = .05;
 CardBook.prototype.HEIGHT = .65;
-CardBook.prototype.PAGE_COUNT = 8;
+CardBook.prototype.PAGE_COUNT = PageLockRequirements.length + 1 << 1;
 
 /**
  * A page flip action
@@ -144,16 +145,15 @@ CardBook.prototype.deserializeLocks = function(buffer) {
 
 /**
  * Make the page locks
- * @returns {CardPageLock[]} The page locks
+ * @returns {PageLock[]} The page locks
  */
 CardBook.prototype.makeLocks = function() {
-    // TODO: Make requirements constant elsewhere
+    const locks = new Array(PageLockRequirements.length);
 
-    return [
-        new CardPageLock(),
-        new CardPageLock(),
-        new CardPageLock(),
-    ];
+    for (let lock = 0, lockCount = locks.length; lock < lockCount; ++lock)
+        locks[lock] = new PageLock(PageLockRequirements[lock]);
+
+    return locks;
 };
 
 /**
@@ -176,6 +176,14 @@ CardBook.prototype.populateSpine = function() {
 
     for (--page; page >= 0; page -= 2)
         this.spine.appendChild(this.pages[page].element);
+};
+
+/**
+ * Add locks to the pages
+ */
+CardBook.prototype.addLocks = function() {
+    for (let lock = 0, lockCount = this.locks.length; lock < lockCount; ++lock)
+        this.pages[(lock << 1) + 1].element.appendChild(this.locks[lock].element);
 };
 
 /**

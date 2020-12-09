@@ -14,7 +14,6 @@ const Overlay = function(element) {
 
 Overlay.prototype.CLASS_POINTER = "pointer";
 Overlay.prototype.CLASS_ARROW = "overlay-arrow";
-Overlay.prototype.CLASS_ARROW_DOWN = "down";
 Overlay.prototype.CLASS_TEXT = "text";
 Overlay.prototype.POINTER_RADIUS =
     StyleUtils.getInt("--overlay-pointer-radius") +

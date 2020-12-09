@@ -33,6 +33,7 @@ Palette.prototype.LANG_NAME_NISHIKIGOI = "NAME_NISHIKIGOI";
  * @returns {String} A koi name
  */
 Palette.prototype.makeName = function(base, layers) {
+    // TODO: Implement using rules
     switch (base.paletteIndex) {
         case 0:
             switch (layers.length) {

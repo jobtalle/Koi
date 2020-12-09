@@ -1,18 +1,20 @@
 /**
  * A lock for a card page
+ * @param {PageLockRequirement[]} requirements The requirements to unlock this lock
  * @constructor
  */
-const CardPageLock = function() {
+const PageLock = function(requirements) {
+    this.requirements = requirements;
     this.element = this.createElement();
     this.locked = true;
 };
 
-CardPageLock.prototype.CLASS = "page-lock";
+PageLock.prototype.CLASS = "page-lock";
 
 /**
  * Unlock this lock
  */
-CardPageLock.prototype.unlock = function() {
+PageLock.prototype.unlock = function() {
     this.locked = false;
 };
 
@@ -20,7 +22,7 @@ CardPageLock.prototype.unlock = function() {
  * Create the page lock element
  * @returns {HTMLDivElement} The element
  */
-CardPageLock.prototype.createElement = function() {
+PageLock.prototype.createElement = function() {
     const element = document.createElement("div");
 
     element.className = this.CLASS;
