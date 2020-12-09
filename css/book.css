@@ -4,7 +4,7 @@
     --book-page-color: #bca994;
     --book-page-color-shade: #92806b;
     --book-page-color-highlight: #ded1bf;
-    --book-page-color-lock: #00000066;
+    --book-page-color-lock: rgba(52, 52, 52, 0.5);
     --book-page-shade-opacity: 0.5;
 
     /* dimensions */

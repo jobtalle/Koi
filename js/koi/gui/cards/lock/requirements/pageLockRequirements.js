@@ -4,7 +4,7 @@
  */
 const PageLockRequirements = [
     [
-        new PageLockRequirement()
+        new PageLockRequirementCount(2)
     ],
     [
         new PageLockRequirement()
