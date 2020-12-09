@@ -16,6 +16,7 @@ PageLock.prototype.CLASS = "page-lock";
  */
 PageLock.prototype.unlock = function() {
     this.locked = false;
+    this.element.parentElement.removeChild(this.element);
 };
 
 /**

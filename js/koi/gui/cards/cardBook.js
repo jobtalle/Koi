@@ -330,7 +330,13 @@ CardBook.prototype.createButtonPage = function(classSide, onClick) {
  */
 CardBook.prototype.findSnap = function(x, y) {
     if (this.flips.length === 0)
-        return this.pages[this.page].findSnap(x, y) || this.pages[this.page + 1].findSnap(x, y);
+        return this.pages[this.page].findSnap(x, y) || (
+            (
+                this.page >> 1 === this.locks.length ||
+                this.locks[this.page >> 1].unlocked
+            ) &&
+            this.pages[this.page + 1].findSnap(x, y)
+        );
 
     return null;
 };
