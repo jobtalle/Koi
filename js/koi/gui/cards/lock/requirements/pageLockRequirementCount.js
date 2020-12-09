@@ -4,6 +4,8 @@
  * @constructor
  */
 const PageLockRequirementCount = function(count) {
+    PageLockRequirement.call(this);
+
     this.count = count;
 };
 
@@ -14,7 +16,9 @@ PageLockRequirementCount.prototype = Object.create(PageLockRequirement.prototype
  * @returns {FishIcon} A fish icon
  */
 PageLockRequirementCount.prototype.createIcon = function() {
-    return new FishIcon();
+    return new FishIcon([
+        new FishIconLayerOutline()
+    ]);
 };
 
 /**
