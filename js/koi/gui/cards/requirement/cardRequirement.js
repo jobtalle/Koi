@@ -1,6 +1,6 @@
 /**
  * A card requirement
- * @param {LayerFootprint[]} footprint The footprint
+ * @param {PatternFootprint} footprint The footprint to require
  * @constructor
  */
 const CardRequirement = function(footprint) {

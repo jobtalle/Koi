@@ -1,9 +1,11 @@
 /**
  * A single sided page with cards
  * @param {Number} direction The direction of the page from the book center, -1 or 1
+ * @param {CardRequirement[]} requirements The requirements for the slots
  * @constructor
  */
-const CardPage = function(direction) {
+const CardPage = function(direction, requirements) {
+    this.requirements = requirements;
     this.cards = new Array(4).fill(null);
     this.element = this.createElement(direction);
     this.slots = this.createSlots(this.element);

@@ -323,7 +323,7 @@ CardBook.prototype.createPages = function(first) {
     const pages = new Array(this.PAGE_COUNT);
 
     for (let page = 0; page < this.PAGE_COUNT; ++page) {
-        pages[page] = new CardPage(((page & 1) << 1) - 1);
+        pages[page] = new CardPage(((page & 1) << 1) - 1, CardRequirement[page]);
 
         if (page === first || page === first + 1)
             pages[page].show();

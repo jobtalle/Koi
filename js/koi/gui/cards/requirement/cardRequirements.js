@@ -4,8 +4,20 @@
  */
 const CardRequirements = [
     [
-        new CardRequirement([
+        null, null, null, null
+    ],
+    [
+        new CardRequirement(new PatternFootprint([
             new LayerFootprint(LayerBase.prototype.id, Palette.INDEX_ORANGE)
-        ])
+        ])),
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.id, Palette.INDEX_GOLD)
+        ])),
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.id, Palette.INDEX_WHITE)
+        ])),
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.id, Palette.INDEX_BLACK)
+        ]))
     ]
 ];
