@@ -18,11 +18,9 @@ const CardBook = function(width, height, cards, onUnlock) {
     this.buttonPageLeft = this.createButtonPage(this.CLASS_BUTTON_LEFT, this.flipRight.bind(this));
     this.buttonPageRight = this.createButtonPage(this.CLASS_BUTTON_RIGHT, this.flipLeft.bind(this));
     this.cards = cards;
-    this.locks = this.makeLocks();
     this.onUnlock = onUnlock;
 
     this.populateSpine();
-    this.addLocks();
 
     this.element.appendChild(this.buttonPageLeft);
     this.element.appendChild(this.buttonPageRight);
@@ -40,7 +38,7 @@ CardBook.prototype.PADDING_TOP = .07;
 CardBook.prototype.PADDING_PAGE = .07;
 CardBook.prototype.PADDING_CARD = .05;
 CardBook.prototype.HEIGHT = .65;
-CardBook.prototype.PAGE_COUNT = PageLockRequirements.length + 1 << 1;
+CardBook.prototype.PAGE_COUNT = 8;
 
 /**
  * A page flip action
@@ -94,8 +92,6 @@ CardBook.Flip.prototype.getScale = function(time) {
  * @throws {RangeError} A range error if deserialized values are not valid
  */
 CardBook.prototype.deserialize = function(buffer, cards) {
-    this.deserializeLocks(buffer);
-
     for (const page of this.pages)
         page.deserialize(buffer, cards);
 };
@@ -105,56 +101,8 @@ CardBook.prototype.deserialize = function(buffer, cards) {
  * @param {BinBuffer} buffer The buffer to serialize to
  */
 CardBook.prototype.serialize = function(buffer) {
-    this.serializeLocks(buffer);
-
     for (const page of this.pages)
         page.serialize(buffer);
-};
-
-/**
- * Serialize the lock states
- * @param {BinBuffer} buffer The buffer to deserialize from
- */
-CardBook.prototype.serializeLocks = function(buffer) {
-    let unlocked = 0;
-
-    for (const lock of this.locks) {
-        if (lock.locked)
-            break;
-
-        ++unlocked;
-    }
-
-    // buffer.writeUint8(unlocked);
-    buffer.writeUint8(0); // TODO: Debugging only
-};
-
-/**
- * Deserialize the locks
- * @param {BinBuffer} buffer The buffer to deserialize from
- * @throws {RangeError} A range error if deserialized values are not valid
- */
-CardBook.prototype.deserializeLocks = function(buffer) {
-    const unlocked = buffer.readUint8();
-
-    if (unlocked > (this.PAGE_COUNT >> 1) - 1)
-        throw new RangeError();
-
-    for (let lock = 0; lock < unlocked; ++lock)
-        this.locks[lock].unlock();
-};
-
-/**
- * Make the page locks
- * @returns {PageLock[]} The page locks
- */
-CardBook.prototype.makeLocks = function() {
-    const locks = new Array(PageLockRequirements.length);
-
-    for (let lock = 0, lockCount = locks.length; lock < lockCount; ++lock)
-        locks[lock] = new PageLock(PageLockRequirements[lock]);
-
-    return locks;
 };
 
 /**
@@ -177,14 +125,6 @@ CardBook.prototype.populateSpine = function() {
 
     for (--page; page >= 0; page -= 2)
         this.spine.appendChild(this.pages[page].element);
-};
-
-/**
- * Add locks to the pages
- */
-CardBook.prototype.addLocks = function() {
-    for (let lock = 0, lockCount = this.locks.length; lock < lockCount; ++lock)
-        this.pages[(lock << 1) + 1].element.appendChild(this.locks[lock].element);
 };
 
 /**
@@ -242,10 +182,6 @@ CardBook.prototype.flipLeft = function() {
 
         return;
     }
-
-    if ((this.page >> 1) + this.flips.length < this.locks.length &&
-        this.locks[(this.page >> 1) + this.flips.length].locked)
-        return;
 
     if (this.page + 2 === this.PAGE_COUNT - this.flips.length * 2)
         return;
@@ -335,41 +271,9 @@ CardBook.prototype.createButtonPage = function(classSide, onClick) {
  */
 CardBook.prototype.findSnap = function(x, y) {
     if (this.flips.length === 0)
-        return this.pages[this.page].findSnap(x, y) || (
-            (
-                this.page >> 1 === this.locks.length ||
-                this.locks[this.page >> 1].unlocked
-            ) &&
-            this.pages[this.page + 1].findSnap(x, y)
-        );
+        return this.pages[this.page].findSnap(x, y) || this.pages[this.page + 1].findSnap(x, y);
 
     return null;
-};
-
-/**
- * Enumerate all fish bodies stored in the book
- * @returns {FishBody[]} All fish bodies stored in the book
- */
-CardBook.prototype.enumerateCards = function() {
-    const bodies = [];
-
-    for (const page of this.pages)
-        for (const card of page.cards)
-            if (card)
-                bodies.push(card.body);
-
-    return bodies;
-};
-
-/**
- * Validate the last page lock, if any
- */
-CardBook.prototype.validateLock = function() {
-    for (const lock of this.locks) if (!lock.unlocked) {
-        lock.validate(this.enumerateCards());
-
-        break;
-    }
 };
 
 /**
@@ -379,8 +283,6 @@ CardBook.prototype.validateLock = function() {
  */
 CardBook.prototype.addToBook = function(card, snap) {
     this.pages[this.page].addCard(card, snap) || this.pages[this.page + 1].addCard(card, snap);
-
-    this.validateLock();
 };
 
 /**
@@ -389,8 +291,6 @@ CardBook.prototype.addToBook = function(card, snap) {
  */
 CardBook.prototype.removeFromBook = function(card) {
     this.pages[this.page].removeCard(card) || this.pages[this.page + 1].removeCard(card);
-
-    this.validateLock();
 };
 
 /**

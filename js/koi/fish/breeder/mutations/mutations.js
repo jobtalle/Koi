@@ -29,10 +29,10 @@ Mutations.prototype.createMutations = function() {
     return [
         new Mutation(
             [
-                new Mutation.LayerFootprint(LayerBase.prototype.ID, Mutation.FOOTPRINT_PALETTE_UNIQUE_LAYER)
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_UNIQUE_LAYER)
             ],
             [
-                new Mutation.LayerFootprint(LayerBase.prototype.ID, Mutation.FOOTPRINT_PALETTE_UNIQUE_LAYER)
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_UNIQUE_LAYER)
             ],
             [
                 Mutation.BLUEPRINT_LAYER_MOTHER,
@@ -57,11 +57,11 @@ Mutations.prototype.createMutations = function() {
         ),
         new Mutation(
             [
-                new Mutation.LayerFootprint(LayerBase.prototype.ID, Mutation.FOOTPRINT_PALETTE_UNIQUE_LAYER),
-                new Mutation.LayerFootprint(LayerSpots.prototype.ID, Mutation.FOOTPRINT_PALETTE_UNIQUE)
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_UNIQUE_LAYER),
+                new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_UNIQUE)
             ],
             [
-                new Mutation.LayerFootprint(LayerBase.prototype.ID, Mutation.FOOTPRINT_PALETTE_UNIQUE_LAYER)
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_UNIQUE_LAYER)
             ],
             [
                 Mutation.BLUEPRINT_LAYER_MOTHER,

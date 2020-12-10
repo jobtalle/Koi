@@ -72,7 +72,6 @@ CardPage.prototype.show = function(cards = null) {
             cards.koi.systems.preview,
             cards.koi.systems.atlas,
             cards.koi.systems.bodies,
-            cards.koi.systems.patterns.palette,
             cards.koi.randomSource);
 };
 

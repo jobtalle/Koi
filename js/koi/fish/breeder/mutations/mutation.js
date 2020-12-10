@@ -1,7 +1,7 @@
 /**
  * A mutation that may occur
- * @param {Mutation.LayerFootprint[]} a A layer footprint
- * @param {Mutation.LayerFootprint[]} b A layer footprint
+ * @param {LayerFootprint[]} a A layer footprint
+ * @param {LayerFootprint[]} b A layer footprint
  * @param {(BlueprintLayer|{})[]} mutations An array of mutated layer blueprints, or one of the valid layer constants
  * @param {Number} probability The probability of this mutation occurring in the range [0, 1]
  * @param {Boolean} [symmetrical] True if the order of inputs does not matter
@@ -20,9 +20,6 @@ const Mutation = function(
     this.symmetrical = symmetrical === null ? this.isSymmetrical() : symmetrical;
 };
 
-Mutation.FOOTPRINT_PALETTE_ANY = -1;
-Mutation.FOOTPRINT_PALETTE_UNIQUE = -2;
-Mutation.FOOTPRINT_PALETTE_UNIQUE_LAYER = -3;
 Mutation.BLUEPRINT_LAYER_MIX = {};
 Mutation.BLUEPRINT_LAYER_MOTHER = {};
 Mutation.BLUEPRINT_LAYER_FATHER = {};
@@ -47,66 +44,6 @@ Mutation.createPaletteReference = function(mother, delta= 0) {
     flag |= Math.abs(delta);
 
     return flag;
-};
-
-/**
- * A layer footprint to match a layer to
- * @param {Number} id The layer ID
- * @param {Number} paletteIndex The layer palette index
- * @constructor
- */
-Mutation.LayerFootprint = function(id, paletteIndex) {
-    this.id = id;
-    this.paletteIndex = paletteIndex;
-};
-
-/**
- * Count the number of occurrences of a given value in an array
- * @param {Number} value The value to look for
- * @param {Number[]} array The array
- * @returns {Number} The number of occurrences of value in array
- */
-Mutation.LayerFootprint.prototype.occurrences = function(value, array) {
-    let count = 0;
-
-    for (const number of array)
-        if (number === value)
-            ++count;
-
-    return count;
-};
-
-/**
- * Check if a layer matches this footprint
- * @param {Layer} layer A layer
- * @param {Layer} other The other layer
- * @param {Number[]} colors All palette indices occurring in both parents
- * @returns {Boolean} True if the given layer matches the footprint
- */
-Mutation.LayerFootprint.prototype.matches = function(layer, other, colors) {
-    if (this.id !== layer.id)
-        return false;
-
-    if (this.paletteIndex === Mutation.FOOTPRINT_PALETTE_UNIQUE_LAYER) {
-        if (!other)
-            return true;
-
-        return this.paletteIndex !== other.paletteIndex;
-    }
-
-    if (this.paletteIndex === Mutation.FOOTPRINT_PALETTE_UNIQUE)
-        return this.occurrences(layer.paletteIndex, colors) === 1;
-
-    return this.paletteIndex === Mutation.FOOTPRINT_PALETTE_ANY || layer.paletteIndex === this.paletteIndex;
-};
-
-/**
- * Check whether this footprint is equal to another given footprint
- * @param {Mutation.LayerFootprint} other The other footprint
- * @returns {Boolean} True if the footprints are equal
- */
-Mutation.LayerFootprint.prototype.equals = function(other) {
-    return this.id === other.id && this.paletteIndex === other.paletteIndex;
 };
 
 /**
