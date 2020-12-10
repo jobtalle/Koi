@@ -154,9 +154,10 @@ CardPage.prototype.updateRect = function() {
  * Find a point to snap to
  * @param {Number} x The X position in pixels
  * @param {Number} y The Y position in pixels
+ * @param {FishBody} body The body to find a snap for
  * @returns {Vector2} A snap position if applicable, null otherwise
  */
-CardPage.prototype.findSnap = function(x, y) {
+CardPage.prototype.findSnap = function(x, y, body) {
     if (this.rect === null)
         this.updateRect();
 
@@ -168,7 +169,9 @@ CardPage.prototype.findSnap = function(x, y) {
         const vertical = y > (this.rect.bottom + this.rect.top) * .5;
         const index = horizontal + (vertical << 1);
 
-        if (this.cards[index])
+        if (this.cards[index] || (
+            this.requirements[index] &&
+            !this.requirements[index].matches(body)))
             return null;
 
         return this.targets[index];

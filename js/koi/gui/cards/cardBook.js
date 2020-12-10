@@ -38,7 +38,7 @@ CardBook.prototype.PADDING_TOP = .07;
 CardBook.prototype.PADDING_PAGE = .07;
 CardBook.prototype.PADDING_CARD = .05;
 CardBook.prototype.HEIGHT = .65;
-CardBook.prototype.PAGE_COUNT = 8;
+CardBook.prototype.PAGE_COUNT = CardRequirements.length;
 
 /**
  * A page flip action
@@ -267,11 +267,12 @@ CardBook.prototype.createButtonPage = function(classSide, onClick) {
  * Find a point to snap to
  * @param {Number} x The X position in pixels
  * @param {Number} y The Y position in pixels
+ * @param {FishBody} body The body to find a snap for
  * @returns {Vector2} A snap position if applicable, null otherwise
  */
-CardBook.prototype.findSnap = function(x, y) {
+CardBook.prototype.findSnap = function(x, y, body) {
     if (this.flips.length === 0)
-        return this.pages[this.page].findSnap(x, y) || this.pages[this.page + 1].findSnap(x, y);
+        return this.pages[this.page].findSnap(x, y, body) || this.pages[this.page + 1].findSnap(x, y, body);
 
     return null;
 };
@@ -323,7 +324,7 @@ CardBook.prototype.createPages = function(first) {
     const pages = new Array(this.PAGE_COUNT);
 
     for (let page = 0; page < this.PAGE_COUNT; ++page) {
-        pages[page] = new CardPage(((page & 1) << 1) - 1, CardRequirement[page]);
+        pages[page] = new CardPage(((page & 1) << 1) - 1, CardRequirements[page]);
 
         if (page === first || page === first + 1)
             pages[page].show();

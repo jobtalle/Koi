@@ -142,13 +142,14 @@ Cards.prototype.setKoi = function(koi) {
  * Find a point to snap to
  * @param {Number} x The X position in pixels
  * @param {Number} y The Y position in pixels
+ * @param {FishBody} body The body to find a snap for
  * @returns {Vector2} A snap position if applicable, null otherwise
  */
-Cards.prototype.findSnap = function(x, y) {
+Cards.prototype.findSnap = function(x, y, body) {
     if (!this.bookVisible)
         return null;
 
-    return this.book.findSnap(x, y);
+    return this.book.findSnap(x, y, body);
 };
 
 /**
@@ -246,7 +247,7 @@ Cards.prototype.move = function(x, y) {
             }
         }
         else {
-            this.snap = this.findSnap(x, y);
+            this.snap = this.findSnap(x, y, this.grabbed.body);
 
             this.grabbed.moveTo(x - this.grabOffset.x, y - this.grabOffset.y);
         }
@@ -274,7 +275,7 @@ Cards.prototype.grabCard = function(card, x, y) {
     this.grabbed = card;
     this.grabOffset.x = x - card.position.x;
     this.grabOffset.y = y - card.position.y;
-    this.snap = this.findSnap(x, y);
+    this.snap = this.findSnap(x, y, card.body);
     this.element.style.pointerEvents = "auto";
 };
 
