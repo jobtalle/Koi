@@ -32,7 +32,7 @@ LayerFootprint.prototype.occurrences = function(value, array) {
 /**
  * Check if a layer matches this footprint
  * @param {Layer} layer A layer
- * @param {Layer} [other] The other layer, if any
+ * @param {Layer} [other] The other layer, required if PALETTE_UNIQUE_LAYER is used
  * @param {Number[]} [colors] All palette indices occurring in both parents, required if PALETTE_UNIQUE is used
  * @returns {Boolean} True if the given layer matches the footprint
  */

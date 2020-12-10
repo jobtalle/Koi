@@ -1,7 +1,7 @@
 /**
  * A mutation that may occur
- * @param {LayerFootprint[]} a A layer footprint
- * @param {LayerFootprint[]} b A layer footprint
+ * @param {PatternFootprint} a A pattern footprint
+ * @param {PatternFootprint} b A pattern footprint
  * @param {(BlueprintLayer|{})[]} mutations An array of mutated layer blueprints, or one of the valid layer constants
  * @param {Number} probability The probability of this mutation occurring in the range [0, 1]
  * @param {Boolean} [symmetrical] True if the order of inputs does not matter
@@ -51,14 +51,7 @@ Mutation.createPaletteReference = function(mother, delta= 0) {
  * @returns {Boolean} True if this mutation is symmetrical
  */
 Mutation.prototype.isSymmetrical = function() {
-    if (this.a.length !== this.b.length)
-        return false;
-
-    for (let footprint = 0, footprints = this.a.length; footprint < footprints; ++footprint)
-        if (!this.a[footprint].equals(this.b[footprint]))
-            return false;
-
-    return true;
+    return this.a.equals(this.b);
 };
 
 /**
@@ -68,7 +61,7 @@ Mutation.prototype.isSymmetrical = function() {
  * @returns {Boolean} True if the patterns match the footprint
  */
 Mutation.prototype.applicable = function(a, b) {
-    if (a.layers.length !== this.a.length - 1 || b.layers.length !== this.b.length - 1)
+    if (a.layers.length !== this.a.layers.length - 1 || b.layers.length !== this.b.layers.length - 1)
         return false;
 
     const colors = [a.base.paletteIndex, b.base.paletteIndex];
@@ -79,18 +72,7 @@ Mutation.prototype.applicable = function(a, b) {
     for (const layer of b.layers)
         colors.push(layer.paletteIndex);
 
-    if (!this.a[0].matches(a.base, b.base, colors) || !this.b[0].matches(b.base, a.base, colors))
-        return false;
-
-    for (let layer = 0, layers = this.a.length - 1; layer < layers; ++layer)
-        if (!this.a[layer + 1].matches(a.layers[layer], b.layers[layer], colors))
-            return false;
-
-    for (let layer = 0, layers = this.b.length - 1; layer < layers; ++layer)
-        if (!this.b[layer + 1].matches(b.layers[layer], a.layers[layer], colors))
-            return false;
-
-    return true;
+    return this.a.matches(a, b, colors);
 };
 
 /**

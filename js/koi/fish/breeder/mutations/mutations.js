@@ -28,12 +28,12 @@ Mutations.prototype.deserialize = function(buffer) {
 Mutations.prototype.createMutations = function() {
     return [
         new Mutation(
-            [
+            new PatternFootprint([
                 new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_UNIQUE_LAYER)
-            ],
-            [
+            ]),
+            new PatternFootprint([
                 new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_UNIQUE_LAYER)
-            ],
+            ]),
             [
                 Mutation.BLUEPRINT_LAYER_MOTHER,
                 new BlueprintLayerSpots(
@@ -56,13 +56,13 @@ Mutations.prototype.createMutations = function() {
             .2
         ),
         new Mutation(
-            [
+            new PatternFootprint([
                 new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_UNIQUE_LAYER),
                 new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_UNIQUE)
-            ],
-            [
+            ]),
+            new PatternFootprint([
                 new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_UNIQUE_LAYER)
-            ],
+            ]),
             [
                 Mutation.BLUEPRINT_LAYER_MOTHER,
                 Mutation.BLUEPRINT_LAYER_MOTHER,
