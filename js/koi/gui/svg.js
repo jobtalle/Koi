@@ -6,19 +6,11 @@ const SVG = {
     DEFS: document.getElementsByTagName("defs")[0],
     /**
      * Create an SVG element
-     * @param {Number} [width] The element width in pixels
-     * @param {Number} [height] The element height in pixels
      * @param {String} [className] The class name
      * @returns {SVGSVGElement} An SVG element
      */
-    createElement: function(width, height, className) {
+    createElement: function(className) {
         const element = document.createElementNS(SVG.URI, "svg");
-
-        if (width !== undefined)
-            element.setAttribute("width", width.toString());
-
-        if (height !== undefined)
-            element.setAttribute("height", height.toString());
 
         if (className)
             element.setAttribute("class", className);
@@ -51,8 +43,24 @@ const SVG = {
 
         return element;
     },
+    /**
+     * Set the mask for an SVG element
+     * @param {SVGElement} element The SVG element
+     * @param {String} id The ID name of the mask
+     */
     setMask: function(element, id) {
         element.setAttribute("mask", "url(#" + id + ")");
+    },
+    /**
+     * Set the view box of an existing SVG element
+     * @param {SVGSVGElement} element An SVG element
+     * @param {Number} left The left position of the view box
+     * @param {Number} top The top position of the view box
+     * @param {Number} width The width of the view box
+     * @param {Number} height The height of the view box
+     */
+    setViewBox: function(element, left, top, width, height) {
+        element.setAttribute("viewBox", left + " " + top + " " + width + " " + height);
     },
     /**
      * Set the transform of an element

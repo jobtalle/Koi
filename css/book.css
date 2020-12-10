@@ -13,10 +13,6 @@
     --book-page-skew: 30;
     --book-button-radius: 64px;
     --book-shadow-radius: 12px;
-    --book-page-lock-border: 2px;
-    --book-page-lock-border-radius: 4px;
-    --book-page-lock-check-size: 32px;
-    --book-page-lock-margin-right: var(--book-page-lock-check-size);
 }
 
 #book {
@@ -58,25 +54,6 @@
     opacity: 0;
 }
 
-#book #spine .page .page-lock {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: var(--book-page-color-lock);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#book #spine .page .page-lock .requirement {
-    color: white;
-    font-family: sans-serif;
-    font-size: 24px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
 #book #spine .page .overlay.left {
     background-color: white;
 }
@@ -111,6 +88,11 @@
     position: relative;
     background-color: #9d9d9d;
     border-radius: var(--card-border-radius);
+}
+
+#book #spine .page .slot svg {
+    width: 100%;
+    height: 100%;
 }
 
 #book #spine .page .slot .card {

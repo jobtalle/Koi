@@ -1,15 +1,17 @@
 /**
  * A fish icon
- * @param {FishIconLayer[]} [layers] Decoration layers for this fish icon
+ * @param {PatternFootprint} footprint The footprint to create an icon for
  * @constructor
  */
-const FishIcon = function(layers = []) {
-    this.element = SVG.createElement(this.WIDTH, this.HEIGHT, this.CLASS);
+const FishIcon = function(footprint) {
+    this.element = SVG.createElement(this.CLASS);
+
+    SVG.setViewBox(this.element, 0, 0, this.WIDTH, this.HEIGHT);
 
     const group = SVG.createGroup();
 
-    for (const layer of layers)
-        group.appendChild(layer.group);
+    // TODO: Parse footprint here
+    group.appendChild(new FishIconLayerColor(Palette.COLORS[2]).group);
 
     SVG.setTransform(
         group,

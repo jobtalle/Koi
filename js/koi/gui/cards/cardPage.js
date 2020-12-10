@@ -268,6 +268,10 @@ CardPage.prototype.createSlots = function(element) {
 
         slotElement.className = this.CLASS_SLOT;
 
+        // TODO: Only create icons when page becomes visible to spread out processing power
+        if (this.requirements[slot])
+            slotElement.appendChild(new FishIcon(this.requirements[slot].footprint).element);
+
         slots[slot] = slotElement;
 
         element.appendChild(slotElement);
