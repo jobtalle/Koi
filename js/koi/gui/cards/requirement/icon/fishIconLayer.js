@@ -3,15 +3,15 @@
  * @constructor
  */
 const FishIconLayer = function() {
-    this.group = SVG.createGroup(this.CLASS);
+    this.group = SVG.createGroup();
 
     this.draw(this.group);
+
+    SVG.setMask(this.group, FishIconLayer.prototype.ID_MASK);
 };
 
-FishIconLayer.prototype.CLASS = "layer";
-FishIconLayer.prototype.CLASS_FILL = "fill";
-FishIconLayer.prototype.CLASS_OUTLINE = "outline";
 FishIconLayer.prototype.ID_MASK = "fish-icon-layer-mask";
+FishIconLayer.prototype.ID_BASE = "fish-icon-layer-pattern-base-";
 FishIconLayer.prototype.EYE_RADIUS = 3;
 FishIconLayer.prototype.EYE_X = 10;
 FishIconLayer.prototype.EYE_Y = 10;
@@ -33,29 +33,55 @@ FishIconLayer.makeMask = function() {
 }
 
 /**
+ * Make all pattern definitions
+ */
+FishIconLayer.makeDefsPatterns = function() {
+    for (let paletteIndex = 0, colors = Palette.COLORS.length; paletteIndex < colors; ++paletteIndex) {
+        const id = FishIconLayer.prototype.ID_BASE + paletteIndex.toString();
+        const pattern = SVG.createPattern(id);
+        const element = SVG.createRect(0, 0, FishIconLayer.prototype.WIDTH, FishIconLayer.prototype.HEIGHT);
+
+        SVG.setFill(element, Palette.COLORS[paletteIndex].toHex());
+
+        pattern.appendChild(element);
+
+        SVG.DEFS.appendChild(pattern);
+    }
+};
+
+/**
  * Make all defs used by icon layers
  */
 FishIconLayer.makeDefs = function() {
     SVG.DEFS.appendChild(FishIconLayer.makeMask());
+
+    FishIconLayer.makeDefsPatterns();
 };
 
 /**
  * Create a path representing the fish body
- * @param {Number} width The body width
- * @param {Number} height The body height
  * @param {String} [className] The class name
  * @returns {SVGPathElement} The path element
  */
-FishIconLayer.prototype.createBodyPath = function(width, height, className) {
+FishIconLayer.prototype.createBodyPath = function(className) {
     return SVG.createPath([
-        "M", width * .5, 0,
-        "C", width, 0, width, height - width * .5, width * .5, height,
-        "C", 0, height - width * .5, 0, 0, width * .5, 0
-
-        // "M", 0, height * .5,
-        // "C", 0, height, width - height * .5, height, width, height * .5,
-        // "C", width - height * .5, 0, 0, 0, 0, height * .5
+        "M", this.WIDTH * .5, 0,
+        "C", this.WIDTH, 0, this.WIDTH, this.HEIGHT - this.WIDTH * .5, this.WIDTH * .5, this.HEIGHT,
+        "C", 0, this.HEIGHT - this.WIDTH * .5, 0, 0, this.WIDTH * .5, 0
     ], className);
+};
+
+/**
+ * Create a filled fish shape
+ * @param {String} id The fill ID
+ * @returns {HTMLElement} The SVG element
+ */
+FishIconLayer.prototype.createFilledLayer = function(id) {
+    const element = SVG.createRect(0, 0, this.WIDTH, this.HEIGHT);
+
+    SVG.setPattern(element, id);
+
+    return element;
 };
 
 /**

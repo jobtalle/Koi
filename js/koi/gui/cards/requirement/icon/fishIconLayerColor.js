@@ -1,10 +1,10 @@
 /**
  * A fish icon color layer
- * @param {Color} color The color
+ * @param {Number} paletteIndex The palette index
  * @constructor
  */
-const FishIconLayerColor = function(color) {
-    this.color = color;
+const FishIconLayerColor = function(paletteIndex) {
+    this.paletteIndex = paletteIndex;
 
     FishIconLayer.call(this);
 };
@@ -16,9 +16,5 @@ FishIconLayerColor.prototype = Object.create(FishIconLayer.prototype);
  * @param {SVGGElement} group The group to draw in
  */
 FishIconLayerColor.prototype.draw = function(group) {
-    const body = this.createBodyPath(this.WIDTH, this.HEIGHT);
-
-    SVG.setFill(body, this.color.toHex());
-
-    group.appendChild(body);
+    group.appendChild(this.createFilledLayer(this.ID_BASE + this.paletteIndex.toString()));
 };

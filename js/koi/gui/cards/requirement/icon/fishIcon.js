@@ -13,7 +13,7 @@ const FishIcon = function(footprint) {
     for (const layer of footprint.layers) {
         switch (layer.id) {
             case LayerBase.prototype.ID:
-                group.appendChild(new FishIconLayerColor(Palette.COLORS[layer.paletteIndex]).group);
+                group.appendChild(new FishIconLayerColor(layer.paletteIndex).group);
 
                 break;
         }

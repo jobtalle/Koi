@@ -27,7 +27,7 @@ const SVG = {
 
         element.id = id;
         element.setAttribute("width", "100%");
-        element.setAttribute("height", "45");
+        element.setAttribute("height", "100%");
 
         return element;
     },
@@ -60,7 +60,11 @@ const SVG = {
      * @param {Number} height The height of the view box
      */
     setViewBox: function(element, left, top, width, height) {
-        element.setAttribute("viewBox", left + " " + top + " " + width + " " + height);
+        element.setAttribute("viewBox",
+            left.toString() + " " +
+            top.toString() + " " +
+            width.toString() + " " +
+            height.toString());
     },
     /**
      * Set the transform of an element
@@ -70,20 +74,36 @@ const SVG = {
      * @param {Number} [angle] The angle in degrees
      */
     setTransform: function(element, x, y, angle) {
-        let transform = "translate(" + x + " " + y + ")";
+        let transform = "translate(" + x.toString() + " " + y.toString() + ")";
 
         if (angle !== undefined)
-            transform += "rotate(" + angle + ")";
+            transform += "rotate(" + angle.toString() + ")";
 
         element.setAttribute("transform", transform);
     },
     /**
      * Set the fill of an element
      * @param {SVGElement} element The element
-     * @param {String} fill The fill
+     * @param {String} fill The fill ID
      */
     setFill: function(element, fill) {
         element.setAttribute("fill", fill);
+    },
+    /**
+     * Set the pattern of an element
+     * @param {SVGElement} element The element
+     * @param {String} pattern The pattern ID
+     */
+    setPattern: function(element, pattern) {
+        element.setAttribute("fill", "url(#" + pattern + ")");
+    },
+    /**
+     * Set the ID of a SVG element
+     * @param {SVGElement} element The SVG element
+     * @param {String} id The ID
+     */
+    setId: function(element, id) {
+        element.setAttribute("id", id);
     },
     /**
      * Create a group
@@ -101,10 +121,9 @@ const SVG = {
     /**
      * Create a path
      * @param {(Number|String)[]}commands An array of commands, which may be strings or numbers
-     * @param {String} [className] The class name
      * @returns {SVGPathElement} The path element
      */
-    createPath: function(commands, className) {
+    createPath: function(commands) {
         const element = document.createElementNS(this.URI, "path");
         let pathString = "";
 
@@ -116,9 +135,6 @@ const SVG = {
 
         element.setAttributeNS(null, "d", pathString);
 
-        if (className)
-            element.setAttribute("class", className);
-
         return element;
     },
     /**
@@ -126,18 +142,32 @@ const SVG = {
      * @param {Number} x The X position
      * @param {Number} y The Y position
      * @param {Number} radius The radius
-     * @param {String} [className] The class name
      * @returns {SVGCircleElement} The circle element
      */
-    createCircle: function (x, y, radius, className) {
+    createCircle: function (x, y, radius) {
         const element = document.createElementNS(this.URI, "circle");
 
         element.setAttribute("cx", x.toString());
         element.setAttribute("cy", y.toString());
         element.setAttribute("r", radius.toString());
 
-        if (className)
-            element.setAttribute("class", className);
+        return element;
+    },
+    /**
+     * Create a rectangle
+     * @param {Number} x The X position
+     * @param {Number} y The Y position
+     * @param {Number} width The width
+     * @param {Number} height The height
+     * @returns {SVGRectElement} The rectangle
+     */
+    createRect: function(x, y, width, height) {
+        const element = document.createElementNS(this.URI, "rect");
+
+        element.setAttribute("x", x.toString());
+        element.setAttribute("y", y.toString());
+        element.setAttribute("width", width.toString());
+        element.setAttribute("height", height.toString());
 
         return element;
     }
