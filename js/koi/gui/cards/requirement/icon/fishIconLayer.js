@@ -17,11 +17,8 @@ FishIconLayer.prototype.HEIGHT = 70;
 FishIconLayer.prototype.EYE_RADIUS = 3;
 FishIconLayer.prototype.EYE_X = 10;
 FishIconLayer.prototype.EYE_Y = 10;
-FishIconLayer.FIN_CENTER_X = FishIconLayer.prototype.WIDTH * .5;
-FishIconLayer.FIN_CENTER_Y = FishIconLayer.prototype.HEIGHT * .3;
-FishIconLayer.FIN_RADIUS = FishIconLayer.prototype.WIDTH * .5;
-FishIconLayer.FIN_ANGLE_START = 0;
-FishIconLayer.FIN_ANGLE_STOP = Math.PI * .35;
+FishIconLayer.FIN_X = 6;
+FishIconLayer.FIN_Y = 22;
 
 /**
  * Make the fish icon layer mask
@@ -31,34 +28,14 @@ FishIconLayer.makeMask = function() {
     const mask = SVG.createMask(FishIconLayer.prototype.ID_MASK);
 
     mask.appendChild(FishIconLayer.prototype.createBodyPath());
-    mask.appendChild(SVG.createPath([
-        "M",
-        FishIconLayer.FIN_CENTER_X,
-        FishIconLayer.FIN_CENTER_Y,
-        "L",
-        FishIconLayer.FIN_CENTER_X + Math.cos(FishIconLayer.FIN_ANGLE_START) * FishIconLayer.FIN_RADIUS,
-        FishIconLayer.FIN_CENTER_Y + Math.sin(FishIconLayer.FIN_ANGLE_START) * FishIconLayer.FIN_RADIUS,
-        "A",
-        FishIconLayer.FIN_CENTER_X,
-        FishIconLayer.FIN_CENTER_Y,
-        0, 0, 1,
-        FishIconLayer.FIN_CENTER_X + Math.cos(FishIconLayer.FIN_ANGLE_STOP) * FishIconLayer.FIN_RADIUS,
-        FishIconLayer.FIN_CENTER_Y + Math.sin(FishIconLayer.FIN_ANGLE_STOP) * FishIconLayer.FIN_RADIUS,
-    ]));
-    mask.appendChild(SVG.createPath([
-        "M",
-        FishIconLayer.FIN_CENTER_X,
-        FishIconLayer.FIN_CENTER_Y,
-        "L",
-        FishIconLayer.FIN_CENTER_X - Math.cos(FishIconLayer.FIN_ANGLE_START) * FishIconLayer.FIN_RADIUS,
-        FishIconLayer.FIN_CENTER_Y + Math.sin(FishIconLayer.FIN_ANGLE_START) * FishIconLayer.FIN_RADIUS,
-        "A",
-        FishIconLayer.FIN_CENTER_X,
-        FishIconLayer.FIN_CENTER_Y,
-        0, 0, 0,
-        FishIconLayer.FIN_CENTER_X - Math.cos(FishIconLayer.FIN_ANGLE_STOP) * FishIconLayer.FIN_RADIUS,
-        FishIconLayer.FIN_CENTER_Y + Math.sin(FishIconLayer.FIN_ANGLE_STOP) * FishIconLayer.FIN_RADIUS,
-    ]));
+    mask.appendChild(SVG.createCircle(
+        FishIconLayer.FIN_X,
+        FishIconLayer.FIN_Y,
+        FishIconLayer.FIN_X));
+    mask.appendChild(SVG.createCircle(
+        FishIconLayer.prototype.WIDTH - FishIconLayer.FIN_X,
+        FishIconLayer.FIN_Y,
+        FishIconLayer.FIN_X));
 
     return mask;
 }
