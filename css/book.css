@@ -4,8 +4,6 @@
     --book-page-color: #bca994;
     --book-page-color-shade: #92806b;
     --book-page-color-highlight: #ded1bf;
-    --book-page-color-lock: #34343488;
-    --book-page-color-lock-border: white;
     --book-page-shade-opacity: 0.5;
 
     /* dimensions */
@@ -91,6 +89,7 @@
 }
 
 #book #spine .page .slot svg {
+    position: absolute;
     width: 100%;
     height: 100%;
 }

@@ -3,11 +3,10 @@
 }
 
 .fish-icon .outline {
-    stroke-width: var(--book-page-lock-border);
-    stroke: var(--book-page-color-lock-border);
+
     fill: none;
 }
 
 .fish-icon .fill {
-    fill: var(--book-page-color-lock-border);
+
 }

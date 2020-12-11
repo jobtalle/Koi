@@ -1,14 +1,12 @@
 body {
     margin: 0;
-    overscroll-behavior: contain;
-    background-color: black;
 }
 
 #wrapper {
-    position: fixed;
+    position: absolute;
+    overflow: hidden;
     width: 100%;
     height: 100%;
-    overflow: hidden;
 }
 
 #gui {
@@ -16,8 +14,8 @@ body {
     position: absolute;
     left: 0;
     top: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
 }
 
 @media screen and (orientation: portrait) {

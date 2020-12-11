@@ -10,7 +10,7 @@ const SVG = {
      * @returns {SVGSVGElement} An SVG element
      */
     createElement: function(className) {
-        const element = document.createElementNS(SVG.URI, "svg");
+        const element = document.createElementNS(this.URI, "svg");
 
         if (className)
             element.setAttribute("class", className);
@@ -23,7 +23,7 @@ const SVG = {
      * @returns {SVGPatternElement} The pattern element
      */
     createPattern: function(id) {
-        const element = document.createElementNS(SVG.URI, "pattern");
+        const element = document.createElementNS(this.URI, "pattern");
 
         element.id = id;
         element.setAttribute("width", "100%");
@@ -37,7 +37,7 @@ const SVG = {
      * @returns {SVGMaskElement} The mask element
      */
     createMask: function(id) {
-        const element = document.createElementNS(SVG.URI, "mask");
+        const element = document.createElementNS(this.URI, "mask");
 
         element.id = id;
 
@@ -91,7 +91,7 @@ const SVG = {
      * @returns {SVGGElement} The group element
      */
     createGroup: function(className) {
-        const element = document.createElementNS(SVG.URI, "g");
+        const element = document.createElementNS(this.URI, "g");
 
         if (className)
             element.setAttribute("class", className);
@@ -105,7 +105,7 @@ const SVG = {
      * @returns {SVGPathElement} The path element
      */
     createPath: function(commands, className) {
-        const element = document.createElementNS(SVG.URI, "path");
+        const element = document.createElementNS(this.URI, "path");
         let pathString = "";
 
         for (const command of commands)
@@ -130,7 +130,7 @@ const SVG = {
      * @returns {SVGCircleElement} The circle element
      */
     createCircle: function (x, y, radius, className) {
-        const element = document.createElementNS(SVG.URI, "circle");
+        const element = document.createElementNS(this.URI, "circle");
 
         element.setAttribute("cx", x.toString());
         element.setAttribute("cy", y.toString());

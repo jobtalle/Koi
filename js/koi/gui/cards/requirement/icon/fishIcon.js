@@ -10,8 +10,14 @@ const FishIcon = function(footprint) {
 
     const group = SVG.createGroup();
 
-    // TODO: Parse footprint here
-    group.appendChild(new FishIconLayerColor(Palette.COLORS[2]).group);
+    for (const layer of footprint.layers) {
+        switch (layer.id) {
+            case LayerBase.prototype.ID:
+                group.appendChild(new FishIconLayerColor(Palette.COLORS[layer.paletteIndex]).group);
+
+                break;
+        }
+    }
 
     SVG.setTransform(
         group,
@@ -22,5 +28,5 @@ const FishIcon = function(footprint) {
 };
 
 FishIcon.prototype.CLASS = "fish-icon";
-FishIcon.prototype.WIDTH = 130;
-FishIcon.prototype.HEIGHT = 55;
+FishIcon.prototype.WIDTH = 50;
+FishIcon.prototype.HEIGHT = 150;

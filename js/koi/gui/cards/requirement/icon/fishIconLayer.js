@@ -15,15 +15,15 @@ FishIconLayer.prototype.ID_MASK = "fish-icon-layer-mask";
 FishIconLayer.prototype.EYE_RADIUS = 3;
 FishIconLayer.prototype.EYE_X = 10;
 FishIconLayer.prototype.EYE_Y = 10;
-FishIconLayer.prototype.WIDTH = 100;
-FishIconLayer.prototype.HEIGHT = 40;
+FishIconLayer.prototype.WIDTH = 30;
+FishIconLayer.prototype.HEIGHT = 70;
 
 /**
  * Make the fish icon layer mask
  * @returns {SVGMaskElement} The mask element
  */
 FishIconLayer.makeMask = function() {
-    const mask = SVG.createMask(this.prototype.ID_MASK);
+    const mask = SVG.createMask(FishIconLayer.prototype.ID_MASK);
 
     mask.appendChild(FishIconLayer.prototype.createBodyPath(
         FishIconLayer.prototype.WIDTH,
@@ -48,9 +48,13 @@ FishIconLayer.makeDefs = function() {
  */
 FishIconLayer.prototype.createBodyPath = function(width, height, className) {
     return SVG.createPath([
-        "M", 0, height * .5,
-        "C", 0, height, width - height * .5, height, width, height * .5,
-        "C", width - height * .5, 0, 0, 0, 0, height * .5
+        "M", width * .5, 0,
+        "C", width, 0, width, height - width * .5, width * .5, height,
+        "C", 0, height - width * .5, 0, 0, width * .5, 0
+
+        // "M", 0, height * .5,
+        // "C", 0, height, width - height * .5, height, width, height * .5,
+        // "C", width - height * .5, 0, 0, 0, 0, height * .5
     ], className);
 };
 
