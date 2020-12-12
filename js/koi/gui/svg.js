@@ -5,27 +5,19 @@ const SVG = {
     URI: document.getElementsByTagName("svg")[0].getAttribute("xmlns"),
     DEFS: document.getElementsByTagName("defs")[0],
     /**
-     * Create an SVG element
-     * @param {String} [className] The class name
+     * Create a SVG element
      * @returns {SVGSVGElement} An SVG element
      */
-    createElement: function(className) {
-        const element = document.createElementNS(this.URI, "svg");
-
-        if (className)
-            element.setAttribute("class", className);
-
-        return element;
+    createElement: function() {
+        return document.createElementNS(this.URI, "svg");
     },
     /**
      * Create a pattern element
-     * @param {String} id The id for this pattern
      * @returns {SVGPatternElement} The pattern element
      */
-    createPattern: function(id) {
+    createPattern: function() {
         const element = document.createElementNS(this.URI, "pattern");
 
-        element.id = id;
         element.setAttribute("width", "100%");
         element.setAttribute("height", "100%");
 
@@ -33,15 +25,10 @@ const SVG = {
     },
     /**
      * Create a mask
-     * @param {String} id The id for this mask
      * @returns {SVGMaskElement} The mask element
      */
-    createMask: function(id) {
-        const element = document.createElementNS(this.URI, "mask");
-
-        element.id = id;
-
-        return element;
+    createMask: function() {
+        return document.createElementNS(this.URI, "mask");
     },
     /**
      * Set the mask for an SVG element
@@ -71,15 +58,9 @@ const SVG = {
      * @param {SVGElement} element An SVG element
      * @param {Number} x The X position
      * @param {Number} y The Y position
-     * @param {Number} [angle] The angle in degrees
      */
-    setTransform: function(element, x, y, angle) {
-        let transform = "translate(" + x.toString() + " " + y.toString() + ")";
-
-        if (angle !== undefined)
-            transform += "rotate(" + angle.toString() + ")";
-
-        element.setAttribute("transform", transform);
+    setTransform: function(element, x, y) {
+        element.setAttribute("transform", "translate(" + x.toString() + " " + y.toString() + ")");
     },
     /**
      * Set the fill of an element
@@ -106,17 +87,19 @@ const SVG = {
         element.setAttribute("id", id);
     },
     /**
+     * Set the class name of a SVG element
+     * @param {SVGElement} element The SVG element
+     * @param {String} className The class name
+     */
+    setClass: function(element, className) {
+        element.setAttribute("class", className);
+    },
+    /**
      * Create a group
-     * @param [className] The class name for this group
      * @returns {SVGGElement} The group element
      */
-    createGroup: function(className) {
-        const element = document.createElementNS(this.URI, "g");
-
-        if (className)
-            element.setAttribute("class", className);
-
-        return element;
+    createGroup: function() {
+        return document.createElementNS(this.URI, "g");
     },
     /**
      * Create a path

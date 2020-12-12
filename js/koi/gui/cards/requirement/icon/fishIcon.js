@@ -4,9 +4,10 @@
  * @constructor
  */
 const FishIcon = function(footprint) {
-    this.element = SVG.createElement(this.CLASS);
+    this.element = SVG.createElement();
 
     SVG.setViewBox(this.element, 0, 0, this.WIDTH, this.HEIGHT);
+    SVG.setClass(this.element, this.CLASS);
 
     const group = SVG.createGroup();
 

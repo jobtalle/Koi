@@ -25,7 +25,9 @@ FishIconLayer.FIN_Y = 22;
  * @returns {SVGMaskElement} The mask element
  */
 FishIconLayer.makeMask = function() {
-    const mask = SVG.createMask(FishIconLayer.prototype.ID_MASK);
+    const mask = SVG.createMask();
+
+    SVG.setId(mask, FishIconLayer.prototype.ID_MASK);
 
     mask.appendChild(FishIconLayer.prototype.createBodyPath());
     mask.appendChild(SVG.createCircle(
@@ -45,11 +47,11 @@ FishIconLayer.makeMask = function() {
  */
 FishIconLayer.makeDefsPatternsBase = function() {
     for (let paletteIndex = 0, colors = Palette.COLORS.length; paletteIndex < colors; ++paletteIndex) {
-        const id = FishIconLayer.prototype.ID_BASE + paletteIndex.toString();
-        const pattern = SVG.createPattern(id);
+        const pattern = SVG.createPattern();
         const element = SVG.createRect(0, 0, FishIconLayer.prototype.WIDTH, FishIconLayer.prototype.HEIGHT);
 
         SVG.setFill(element, Palette.COLORS[paletteIndex].toHex());
+        SVG.setId(pattern, FishIconLayer.prototype.ID_BASE + paletteIndex.toString());
 
         pattern.appendChild(element);
 
