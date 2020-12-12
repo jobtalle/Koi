@@ -101,7 +101,7 @@ CardPage.prototype.setFlip = function(flip) {
  */
 CardPage.prototype.setNoFlip = function() {
     this.element.style.removeProperty("transform");
-    this.element.style.removeProperty("opacity");
+    this.overlay.style.removeProperty("opacity");
 };
 
 /**
