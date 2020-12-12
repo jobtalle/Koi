@@ -8,14 +8,14 @@ const SVG = {
      * @returns {SVGSVGElement} An SVG element
      */
     createElement: function() {
-        return document.createElementNS(this.URI, "svg");
+        return document.createElementNS(SVG.URI, "svg");
     },
     /**
      * Create a pattern element
      * @returns {SVGPatternElement} The pattern element
      */
     createPattern: function() {
-        const element = document.createElementNS(this.URI, "pattern");
+        const element = document.createElementNS(SVG.URI, "pattern");
 
         element.setAttribute("width", "100%");
         element.setAttribute("height", "100%");
@@ -27,7 +27,7 @@ const SVG = {
      * @returns {SVGMaskElement} The mask element
      */
     createMask: function() {
-        return document.createElementNS(this.URI, "mask");
+        return document.createElementNS(SVG.URI, "mask");
     },
     /**
      * Set the mask for an SVG element
@@ -90,7 +90,7 @@ const SVG = {
      * @returns {SVGGElement} The group element
      */
     createGroup: function() {
-        return document.createElementNS(this.URI, "g");
+        return document.createElementNS(SVG.URI, "g");
     },
     /**
      * Create a path
@@ -98,7 +98,7 @@ const SVG = {
      * @returns {SVGPathElement} The path element
      */
     createPath: function(commands) {
-        const element = document.createElementNS(this.URI, "path");
+        const element = document.createElementNS(SVG.URI, "path");
         let pathString = "";
 
         for (const command of commands)
@@ -119,7 +119,7 @@ const SVG = {
      * @returns {SVGCircleElement} The circle element
      */
     createCircle: function (x, y, radius) {
-        const element = document.createElementNS(this.URI, "circle");
+        const element = document.createElementNS(SVG.URI, "circle");
 
         element.setAttribute("cx", x.toString());
         element.setAttribute("cy", y.toString());
@@ -136,7 +136,7 @@ const SVG = {
      * @returns {SVGRectElement} The rectangle
      */
     createRect: function(x, y, width, height) {
-        const element = document.createElementNS(this.URI, "rect");
+        const element = document.createElementNS(SVG.URI, "rect");
 
         element.setAttribute("x", x.toString());
         element.setAttribute("y", y.toString());
