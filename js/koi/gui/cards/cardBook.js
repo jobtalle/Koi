@@ -199,7 +199,16 @@ CardBook.prototype.flipLeft = function() {
  */
 CardBook.prototype.update = function() {
     for (let flip = this.flips.length; flip-- > 0;) if (this.flips[flip].update()) {
-        this.flips.splice(flip, 1);
+        if (!this.flips[flip].halfway) {
+            if (this.flipDirection === 1) {
+                this.pages[this.page].hide();
+                this.pages[this.page - 1].show(this.cards);
+            }
+            else {
+                this.pages[this.page + 1 + 2 * flip].hide();
+                this.pages[this.page + 2 + 2 * flip].show(this.cards);
+            }
+        }
 
         if (this.flipDirection === 1) {
             this.pages[this.page + 2 * flip + 1].hide();
@@ -210,6 +219,7 @@ CardBook.prototype.update = function() {
             this.pages[this.page + 2].setNoFlip();
         }
 
+        this.flips.splice(flip, 1);
         this.page -= this.flipDirection * 2;
     }
 };
