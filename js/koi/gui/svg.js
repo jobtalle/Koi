@@ -3,7 +3,6 @@
  */
 const SVG = {
     URI: document.getElementsByTagName("svg")[0].getAttribute("xmlns"),
-    DEFS: document.getElementsByTagName("defs")[0],
     /**
      * Create a SVG element
      * @returns {SVGSVGElement} An SVG element

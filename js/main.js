@@ -47,7 +47,7 @@ if (gl &&
     const audio = new AudioBank(audioEngine);
 
     // Create globally available SVG defs
-    FishIconLayer.makeDefs();
+    new FishIconDefs(document.getElementById("fish-icon-defs"));
 
     language.load(() => {
         imperial = language.get("UNIT_LENGTH") === "ft";
