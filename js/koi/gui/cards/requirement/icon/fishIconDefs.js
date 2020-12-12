@@ -7,6 +7,7 @@ const FishIconDefs = function(defs) {
     this.makeMask(defs);
     this.makeWildcard(defs);
     this.makePatternsBase(defs);
+    this.makePatternsSpots(defs);
 };
 
 FishIconDefs.prototype = Object.create(FishIconConstants.prototype);
@@ -20,6 +21,34 @@ FishIconDefs.prototype.CLASSES_COLOR = [
     "red",
     "brown"
 ];
+
+/**
+ * Create a cubic bezier path
+ * @param {Vector2[]} points The points on the path
+ */
+FishIconDefs.prototype.createCubicBezierPath = function(points) {
+    const pointCount = points.length;
+    const halfway = new Array(points.length);
+    const commands = [];
+
+    for (let point = 0; point < pointCount; ++point) {
+        const next = point + 1 === pointCount ? 0 : point + 1;
+
+        halfway[point] = new Vector2(
+            (points[point].x + points[next].x) * .5,
+            (points[point].y + points[next].y) * .5);
+    }
+
+    commands.push("M", halfway[0].x, halfway[0].y);
+
+    for (let point = 0; point < pointCount; ++point) {
+        const next = point + 1 === pointCount ? 0 : point + 1;
+
+        commands.push("Q", points[next].x, points[next].y, halfway[next].x, halfway[next].y);
+    }
+
+    return SVG.createPath(commands);
+};
 
 /**
  * Create a path representing the fish body
@@ -78,4 +107,43 @@ FishIconDefs.prototype.makePatternsBase = function(defs) {
         pattern.appendChild(element);
         defs.appendChild(pattern);
     }
+};
+
+/**
+ * Make the first spots layer patterns
+ * @param {HTMLElement} defs The defs element to populate
+ */
+FishIconDefs.prototype.makePatternsSpotsA = function(defs) {
+    for (let paletteIndex = 0, colors = Palette.COLORS.length; paletteIndex < colors; ++paletteIndex) {
+        const pattern = SVG.createPattern();
+        const element = this.createCubicBezierPath([
+            new Vector2(4, 4),
+            new Vector2(30, 6),
+            new Vector2(14, 16),
+            new Vector2(5, 12)
+        ]);
+
+        SVG.setId(pattern, this.ID_SPOTS_A + paletteIndex.toString());
+        SVG.setClass(pattern, this.CLASSES_COLOR[paletteIndex]);
+
+        pattern.appendChild(element);
+        defs.appendChild(pattern);
+    }
+};
+
+/**
+ * Make the second spots layer patterns
+ * @param {HTMLElement} defs The defs element to populate
+ */
+FishIconDefs.prototype.makePatternsSpotsB = function(defs) {
+    // TODO
+};
+
+/**
+ * Make the spots patterns
+ * @param {HTMLElement} defs The defs element to populate
+ */
+FishIconDefs.prototype.makePatternsSpots = function(defs) {
+    this.makePatternsSpotsA(defs);
+    this.makePatternsSpotsB(defs);
 };

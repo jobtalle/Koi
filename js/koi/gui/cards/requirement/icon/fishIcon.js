@@ -33,7 +33,11 @@ FishIcon.prototype.createLayers = function(footprint) {
         for (const layer of footprint.layers) {
             switch (layer.id) {
                 case LayerBase.prototype.ID:
-                    group.appendChild(new FishIconLayerColor(layer.paletteIndex).group);
+                    group.appendChild(new FishIconLayerBase(layer.paletteIndex).group);
+
+                    break;
+                case LayerSpots.prototype.ID:
+                    group.appendChild(new FishIconLayerSpots(layer.paletteIndex).group);
 
                     break;
             }
