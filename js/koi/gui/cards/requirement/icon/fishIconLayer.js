@@ -6,8 +6,6 @@ const FishIconLayer = function() {
     this.group = SVG.createGroup();
 
     this.draw(this.group);
-
-    SVG.setMask(this.group, FishIconLayer.prototype.ID_MASK);
 };
 
 FishIconLayer.prototype = Object.create(FishIconConstants.prototype);

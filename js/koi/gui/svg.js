@@ -62,14 +62,6 @@ const SVG = {
         element.setAttribute("transform", "translate(" + x.toString() + " " + y.toString() + ")");
     },
     /**
-     * Set the fill of an element
-     * @param {SVGElement} element The element
-     * @param {String} fill The fill ID
-     */
-    setFill: function(element, fill) {
-        element.setAttribute("fill", fill);
-    },
-    /**
      * Set the pattern of an element
      * @param {SVGElement} element The element
      * @param {String} pattern The pattern ID

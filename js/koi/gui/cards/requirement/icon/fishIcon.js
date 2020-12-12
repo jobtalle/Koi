@@ -7,7 +7,6 @@ const FishIcon = function(footprint = null) {
     this.element = SVG.createElement();
 
     SVG.setViewBox(this.element, 0, 0, this.WIDTH, this.HEIGHT);
-    SVG.setClass(this.element, this.CLASS);
 
     const group = this.createLayers(footprint);
 
@@ -15,11 +14,11 @@ const FishIcon = function(footprint = null) {
         group,
         (this.WIDTH - FishIconLayer.prototype.WIDTH) * .5,
         (this.HEIGHT - FishIconLayer.prototype.HEIGHT) * .5);
+    SVG.setMask(group, FishIconLayer.prototype.ID_MASK);
 
     this.element.appendChild(group);
 };
 
-FishIcon.prototype.CLASS = "fish-icon";
 FishIcon.prototype.WIDTH = 50;
 FishIcon.prototype.HEIGHT = 150;
 
