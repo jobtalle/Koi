@@ -30,3 +30,19 @@ const FishIcon = function(footprint) {
 FishIcon.prototype.CLASS = "fish-icon";
 FishIcon.prototype.WIDTH = 50;
 FishIcon.prototype.HEIGHT = 150;
+
+/**
+ *
+ * @param group
+ * @param footprint
+ */
+FishIcon.prototype.createLayers = function(group, footprint) {
+    for (const layer of footprint.layers) {
+        switch (layer.id) {
+            case LayerBase.prototype.ID:
+                group.appendChild(new FishIconLayerColor(layer.paletteIndex).group);
+
+                break;
+        }
+    }
+};

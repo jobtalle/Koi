@@ -14,6 +14,9 @@ const PatternFootprint = function(layers) {
  * @param {Number[]} [colors] All palette indices occurring in both parents, required if PALETTE_UNIQUE is used
  */
 PatternFootprint.prototype.matches = function(pattern, other = null, colors = null) {
+    if (pattern.layers.length !== this.layers.length - 1)
+        return false;
+
     if (!this.layers[0].matches(pattern.base, other ? other.base : null, colors))
         return false;
 
