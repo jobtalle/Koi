@@ -11,12 +11,11 @@ const FishIconLayer = function() {
 };
 
 FishIconLayer.prototype.ID_MASK = "fish-icon-layer-mask";
+FishIconLayer.prototype.ID_WILDCARD = "fish-icon-layer-wildcard";
 FishIconLayer.prototype.ID_BASE = "fish-icon-layer-pattern-base-";
+FishIconLayer.prototype.COLOR_WILDCARD = Color.fromCSS("--book-page-slot-color-icon-neutral");
 FishIconLayer.prototype.WIDTH = 30;
 FishIconLayer.prototype.HEIGHT = 70;
-FishIconLayer.prototype.EYE_RADIUS = 3;
-FishIconLayer.prototype.EYE_X = 10;
-FishIconLayer.prototype.EYE_Y = 10;
 FishIconLayer.FIN_X = 6;
 FishIconLayer.FIN_Y = 22;
 
@@ -43,6 +42,21 @@ FishIconLayer.makeMask = function() {
 }
 
 /**
+ * Make all wildcard definitions
+ */
+FishIconLayer.makeDefsWildcard = function() {
+    const pattern = SVG.createPattern();
+    const element = SVG.createRect(0, 0, FishIconLayer.prototype.WIDTH, FishIconLayer.prototype.HEIGHT);
+
+    SVG.setFill(element, FishIconLayer.prototype.COLOR_WILDCARD.toHex());
+    SVG.setId(pattern, FishIconLayer.prototype.ID_WILDCARD);
+
+    pattern.appendChild(element);
+
+    SVG.DEFS.appendChild(pattern);
+};
+
+/**
  * Make all base pattern definitions
  */
 FishIconLayer.makeDefsPatternsBase = function() {
@@ -63,6 +77,7 @@ FishIconLayer.makeDefsPatternsBase = function() {
  * Make all pattern definitions
  */
 FishIconLayer.makeDefsPatterns = function() {
+    FishIconLayer.makeDefsWildcard();
     FishIconLayer.makeDefsPatternsBase();
 };
 
