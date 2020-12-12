@@ -55,15 +55,12 @@ Mutation.prototype.isSymmetrical = function() {
 };
 
 /**
- * Check whether two given patterns match the footprint
+ * Make an array of all palette indices found in two patterns
  * @param {Pattern} a A pattern
  * @param {Pattern} b A pattern
- * @returns {Boolean} True if the patterns match the footprint
+ * @returns {Number[]} An array containing all palette indices
  */
-Mutation.prototype.applicable = function(a, b) {
-    if (a.layers.length !== this.a.layers.length - 1 || b.layers.length !== this.b.layers.length - 1)
-        return false;
-
+Mutation.prototype.collectColors = function(a, b) {
     const colors = [a.base.paletteIndex, b.base.paletteIndex];
 
     for (const layer of a.layers)
@@ -72,6 +69,17 @@ Mutation.prototype.applicable = function(a, b) {
     for (const layer of b.layers)
         colors.push(layer.paletteIndex);
 
+    return colors;
+};
+
+/**
+ * Check whether two given patterns match the footprint
+ * @param {Pattern} a A pattern
+ * @param {Pattern} b A pattern
+ * @param {Number[]} colors All palette indices contained by both patterns
+ * @returns {Boolean} True if the patterns match the footprint
+ */
+Mutation.prototype.applicable = function(a, b, colors) {
     return this.a.matches(a, b, colors);
 };
 
@@ -87,7 +95,9 @@ Mutation.prototype.mutates = function(a, b, force, random) {
     if (!force && random.getFloat() > this.probability)
         return false;
 
-    return this.applicable(a, b) || this.applicable(b, a);
+    const colors = this.collectColors(a, b);
+
+    return this.applicable(a, b, colors) || this.applicable(b, a, colors);
 };
 
 /**
@@ -166,7 +176,7 @@ Mutation.prototype.apply = function(
     shapeFin,
     mixLayers,
     random) {
-    if (this.symmetrical || !this.applicable(a, b)) {
+    if (this.symmetrical || !this.applicable(a, b, this.collectColors(a, b))) {
         const temp = a;
 
         a = b;
