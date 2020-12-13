@@ -3,9 +3,7 @@
  * @constructor
  */
 const FishIconLayer = function() {
-    this.group = SVG.createGroup();
 
-    this.draw(this.group);
 };
 
 FishIconLayer.prototype = Object.create(FishIconConstants.prototype);
@@ -26,7 +24,21 @@ FishIconLayer.prototype.createFilledLayer = function(id) {
 /**
  * Draw this icons parts inside its group
  * @param {SVGGElement} group The group to draw in
+ * @param {Number} index The layer index
  */
-FishIconLayer.prototype.draw = function(group) {
+FishIconLayer.prototype.draw = function(group, index) {
 
+};
+
+/**
+ * Make the SVG group containing this layer
+ * @param {Number} [index] The layer index
+ * @returns {SVGGElement} The SVG group containing this layer
+ */
+FishIconLayer.prototype.makeGroup = function(index = 0) {
+    const group = SVG.createGroup();
+
+    this.draw(group, index);
+
+    return group;
 };

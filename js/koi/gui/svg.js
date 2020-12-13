@@ -103,7 +103,7 @@ const SVG = {
 
         for (const command of commands)
             if (typeof command === "number")
-                pathString += command.toString() + " ";
+                pathString += command.toFixed(2) + " ";
             else
                 pathString += command;
 

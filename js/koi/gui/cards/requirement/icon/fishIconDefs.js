@@ -14,6 +14,16 @@ const FishIconDefs = function(defs, random) {
 FishIconDefs.prototype = Object.create(FishIconConstants.prototype);
 FishIconDefs.prototype.FIN_X = 6;
 FishIconDefs.prototype.FIN_Y = 22;
+FishIconDefs.prototype.SPOT_CIRCUMFERENCE = 15;
+FishIconDefs.prototype.SPOTS_A = [
+    new Vector3(.5, .3, .3),
+    new Vector3(.7, .7, .25)
+];
+FishIconDefs.prototype.SPOTS_B = [
+    new Vector3(.66, .18, .24),
+    new Vector3(.48, .6, .32),
+    new Vector3(.5, .95, .2)
+];
 FishIconDefs.prototype.CLASSES_COLOR = [
     "white",
     "black",
@@ -55,11 +65,11 @@ FishIconDefs.prototype.createCubicBezierPath = function(points) {
  * Create a blob shaped path
  * @param {Vector2} center The blob center
  * @param {Number} radius The blob radius
- * @param {Number} points The number of blob points
  * @param {Random} random A randomizer
  * @returns {SVGPathElement} The blob path element
  */
-FishIconDefs.prototype.createBlob = function(center, radius, points, random) {
+FishIconDefs.prototype.createBlob = function(center, radius, random) {
+    const points = Math.max(Math.round(Math.PI * 2 * radius / this.SPOT_CIRCUMFERENCE), 2);
     const angleOffset = random.getFloat() * 2 * Math.PI / points;
     const radiusInner = radius * Math.cos(Math.PI / points);
     const pathPoints = [];
@@ -139,27 +149,26 @@ FishIconDefs.prototype.makePatternsBase = function(defs) {
 /**
  * Make the first spots layer patterns
  * @param {HTMLElement} defs The defs element to populate
+ * @param {String} id The ID for this layer
+ * @param {Vector3[]} spots An array of spots definitions
  * @param {Random} random A randomizer
  */
-FishIconDefs.prototype.makePatternsSpotsA = function(defs, random) {
+FishIconDefs.prototype.makePatternsSpotsLayer = function(defs, id, spots, random) {
     for (let paletteIndex = 0, colors = Palette.COLORS.length; paletteIndex < colors; ++paletteIndex) {
         const pattern = SVG.createPattern();
 
-        SVG.setId(pattern, this.ID_SPOTS_A + paletteIndex.toString());
+        SVG.setId(pattern, id + paletteIndex.toString());
         SVG.setClass(pattern, this.CLASSES_COLOR[paletteIndex]);
 
-        pattern.appendChild(
-            this.createBlob(new Vector2(this.WIDTH, this.HEIGHT).multiply(.5), 12, random.getFloat() < .5 ? 3 : 4, random));
+        for (const spot of spots)
+            pattern.appendChild(
+                this.createBlob(
+                    spot.vector2().multiplyVector(new Vector2(this.WIDTH, this.HEIGHT)),
+                    spot.z * this.WIDTH,
+                    random));
+
         defs.appendChild(pattern);
     }
-};
-
-/**
- * Make the second spots layer patterns
- * @param {HTMLElement} defs The defs element to populate
- */
-FishIconDefs.prototype.makePatternsSpotsB = function(defs) {
-    // TODO
 };
 
 /**
@@ -168,6 +177,6 @@ FishIconDefs.prototype.makePatternsSpotsB = function(defs) {
  * @param {Random} random A randomizer
  */
 FishIconDefs.prototype.makePatternsSpots = function(defs, random) {
-    this.makePatternsSpotsA(defs, random);
-    this.makePatternsSpotsB(defs);
+    this.makePatternsSpotsLayer(defs, this.ID_SPOTS_A, this.SPOTS_A, random);
+    this.makePatternsSpotsLayer(defs, this.ID_SPOTS_B, this.SPOTS_B, random);
 };

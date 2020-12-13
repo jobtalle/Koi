@@ -106,6 +106,18 @@ Vector2.prototype.multiply = function(scalar) {
 };
 
 /**
+ * Multiply this vector by a vector
+ * @param {Vector2} other A vector
+ * @returns {Vector2} The modified vector
+ */
+Vector2.prototype.multiplyVector = function(other) {
+    this.x *= other.x;
+    this.y *= other.y;
+
+    return this;
+};
+
+/**
  * Divide this vector by a scalar
  * @param {Number} scalar A number
  * @returns {Vector2} The modified vector

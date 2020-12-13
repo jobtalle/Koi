@@ -30,21 +30,21 @@ FishIcon.prototype.createLayers = function(footprint) {
     const group = SVG.createGroup();
 
     if (footprint) {
-        for (const layer of footprint.layers) {
-            switch (layer.id) {
+        for (let layer = 0, layerCount = footprint.layers.length; layer < layerCount; ++layer) {
+            switch (footprint.layers[layer].id) {
                 case LayerBase.prototype.ID:
-                    group.appendChild(new FishIconLayerBase(layer.paletteIndex).group);
+                    group.appendChild(new FishIconLayerBase(footprint.layers[layer].paletteIndex).makeGroup(layer));
 
                     break;
                 case LayerSpots.prototype.ID:
-                    group.appendChild(new FishIconLayerSpots(layer.paletteIndex).group);
+                    group.appendChild(new FishIconLayerSpots(footprint.layers[layer].paletteIndex).makeGroup(layer));
 
                     break;
             }
         }
     }
     else
-        group.appendChild(new FishIconLayerWildcard().group);
+        group.appendChild(new FishIconLayerWildcard().makeGroup());
 
     return group;
 };

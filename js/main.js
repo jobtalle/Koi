@@ -193,7 +193,7 @@ if (gl &&
     // Create globally available SVG defs
     new FishIconDefs(
         document.getElementById("fish-icon-defs"),
-        new Random(Random.prototype.makeSeed(Koi.prototype.COLOR_BACKGROUND.g)));
+        new Random(Random.prototype.makeSeed(Koi.prototype.COLOR_BACKGROUND.r)));
 }
 else
     onFailure();
