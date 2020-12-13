@@ -57,9 +57,24 @@ FishIconDefs.prototype.createCubicBezierPath = function(points) {
  * @param {Number} radius The blob radius
  * @param {Number} points The number of blob points
  * @param {Random} random A randomizer
+ * @returns {SVGPathElement} The blob path element
  */
 FishIconDefs.prototype.createBlob = function(center, radius, points, random) {
+    const angleOffset = random.getFloat() * 2 * Math.PI / points;
+    const radiusInner = radius * Math.cos(Math.PI / points);
+    const pathPoints = [];
 
+    for (let point = 0; point < points; ++point) {
+        const angleOuter = angleOffset + Math.PI * 2 * (point + .25 * random.getFloat()) / points;
+        const angleInner = angleOffset + Math.PI * 2 * (point + .5 + .25 * random.getFloat()) / points;
+        const multipliedInner = radiusInner + (radius - radiusInner) * Math.sqrt(random.getFloat());
+
+        pathPoints.push(
+            new Vector2().fromAngle(angleOuter).multiply(radius).add(center),
+            new Vector2().fromAngle(angleInner).multiply(multipliedInner).add(center));
+    }
+
+    return this.createCubicBezierPath(pathPoints);
 };
 
 /**
@@ -129,17 +144,12 @@ FishIconDefs.prototype.makePatternsBase = function(defs) {
 FishIconDefs.prototype.makePatternsSpotsA = function(defs, random) {
     for (let paletteIndex = 0, colors = Palette.COLORS.length; paletteIndex < colors; ++paletteIndex) {
         const pattern = SVG.createPattern();
-        const element = this.createCubicBezierPath([
-            new Vector2(4, 4),
-            new Vector2(30, 6),
-            new Vector2(14, 32),
-            new Vector2(5, 22)
-        ]);
 
         SVG.setId(pattern, this.ID_SPOTS_A + paletteIndex.toString());
         SVG.setClass(pattern, this.CLASSES_COLOR[paletteIndex]);
 
-        pattern.appendChild(element);
+        pattern.appendChild(
+            this.createBlob(new Vector2(this.WIDTH, this.HEIGHT).multiply(.5), 12, random.getFloat() < .5 ? 3 : 4, random));
         defs.appendChild(pattern);
     }
 };
