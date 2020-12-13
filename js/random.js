@@ -13,10 +13,11 @@ Random.prototype.INCREMENT = 1;
 
 /**
  * Make a 32 bit seed using the default randomizer
+ * @param {Number} [value] A random value in the range [0, 1]
  * @returns A random 32 bit seed
  */
-Random.prototype.makeSeed = function() {
-    return Math.floor(Math.random() * this.MODULUS);
+Random.prototype.makeSeed = function(value = -1) {
+    return Math.floor((value === -1 ? Math.random() : value) * this.MODULUS);
 };
 
 /**

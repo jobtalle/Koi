@@ -80,7 +80,7 @@ Mutation.prototype.collectColors = function(mother, father) {
  * @returns {Boolean} True if the patterns match the footprint
  */
 Mutation.prototype.applicable = function(mother, father, colors) {
-    return this.mother.matches(mother, father, colors);
+    return this.mother.matches(mother, father, colors) && this.father.matches(father, mother, colors);
 };
 
 /**

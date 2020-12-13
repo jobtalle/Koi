@@ -46,9 +46,6 @@ if (gl &&
     const audioEngine = new AudioEngine(new Random());
     const audio = new AudioBank(audioEngine);
 
-    // Create globally available SVG defs
-    new FishIconDefs(document.getElementById("fish-icon-defs"));
-
     language.load(() => {
         imperial = language.get("UNIT_LENGTH") === "ft";
 
@@ -192,6 +189,11 @@ if (gl &&
             audioEngine.interact();
         });
     }, onFailure);
+
+    // Create globally available SVG defs
+    new FishIconDefs(
+        document.getElementById("fish-icon-defs"),
+        new Random(Random.prototype.makeSeed(Koi.prototype.COLOR_BACKGROUND.g)));
 }
 else
     onFailure();

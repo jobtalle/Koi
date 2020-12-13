@@ -1,13 +1,14 @@
 /**
  * Fish icon SVG definitions
  * @param {HTMLElement} defs The defs element to populate
+ * @param {Random} random A randomizer
  * @constructor
  */
-const FishIconDefs = function(defs) {
+const FishIconDefs = function(defs, random) {
     this.makeMask(defs);
     this.makeWildcard(defs);
     this.makePatternsBase(defs);
-    this.makePatternsSpots(defs);
+    this.makePatternsSpots(defs, random);
 };
 
 FishIconDefs.prototype = Object.create(FishIconConstants.prototype);
@@ -48,6 +49,17 @@ FishIconDefs.prototype.createCubicBezierPath = function(points) {
     }
 
     return SVG.createPath(commands);
+};
+
+/**
+ * Create a blob shaped path
+ * @param {Vector2} center The blob center
+ * @param {Number} radius The blob radius
+ * @param {Number} points The number of blob points
+ * @param {Random} random A randomizer
+ */
+FishIconDefs.prototype.createBlob = function(center, radius, points, random) {
+
 };
 
 /**
@@ -112,15 +124,16 @@ FishIconDefs.prototype.makePatternsBase = function(defs) {
 /**
  * Make the first spots layer patterns
  * @param {HTMLElement} defs The defs element to populate
+ * @param {Random} random A randomizer
  */
-FishIconDefs.prototype.makePatternsSpotsA = function(defs) {
+FishIconDefs.prototype.makePatternsSpotsA = function(defs, random) {
     for (let paletteIndex = 0, colors = Palette.COLORS.length; paletteIndex < colors; ++paletteIndex) {
         const pattern = SVG.createPattern();
         const element = this.createCubicBezierPath([
             new Vector2(4, 4),
             new Vector2(30, 6),
-            new Vector2(14, 16),
-            new Vector2(5, 12)
+            new Vector2(14, 32),
+            new Vector2(5, 22)
         ]);
 
         SVG.setId(pattern, this.ID_SPOTS_A + paletteIndex.toString());
@@ -142,8 +155,9 @@ FishIconDefs.prototype.makePatternsSpotsB = function(defs) {
 /**
  * Make the spots patterns
  * @param {HTMLElement} defs The defs element to populate
+ * @param {Random} random A randomizer
  */
-FishIconDefs.prototype.makePatternsSpots = function(defs) {
-    this.makePatternsSpotsA(defs);
+FishIconDefs.prototype.makePatternsSpots = function(defs, random) {
+    this.makePatternsSpotsA(defs, random);
     this.makePatternsSpotsB(defs);
 };

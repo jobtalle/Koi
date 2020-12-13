@@ -20,7 +20,7 @@ PatternFootprint.prototype.matches = function(pattern, other = null, colors = nu
     if (!this.layers[0].matches(pattern.base, other ? other.base : null, colors))
         return false;
 
-    for (let layer = 0, layerCount = this.layers - 1; layer < layerCount; ++layer)
+    for (let layer = 0, layerCount = pattern.layers.length; layer < layerCount; ++layer)
         if (!this.layers[layer + 1].matches(pattern.layers[layer], other ? other.layers[layer] : null, colors))
             return false;
 
