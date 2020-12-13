@@ -87,7 +87,7 @@
 #book #spine .page .slot {
     position: relative;
     background-color: var(--book-page-slot-color);
-    border-radius: calc(var(--card-border-radius) - 2 * var(--card-border-width));
+    border-radius: var(--card-border-radius);
     overflow: hidden;
 }
 
@@ -100,4 +100,5 @@
 #book #spine .page .slot .card {
     margin: 0;
     transform-origin: left top;
+    box-shadow: none;
 }

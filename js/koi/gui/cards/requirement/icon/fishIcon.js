@@ -11,7 +11,7 @@ const FishIcon = function(element, footprint = null) {
 
 FishIcon.prototype = Object.create(FishIconConstants.prototype);
 FishIcon.prototype.WIDTH = 50;
-FishIcon.prototype.HEIGHT = 150;
+FishIcon.prototype.HEIGHT = 130;
 
 /**
  * Create the background image

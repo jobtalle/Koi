@@ -11,21 +11,21 @@
     --card-height: 350px;
     --card-preview-width: 200px;
     --card-preview-height: 120px;
-    --card-preview-margin: calc((var(--card-width) - var(--card-preview-width) - 4 * var(--card-border-width)) * 0.5);
+    --card-preview-margin: calc((var(--card-width) - var(--card-preview-width)) * 0.5);
     --card-preview-columns: 6;
     --card-preview-rows: 10;
     --card-preview-fps: 60;
-    --card-border-width: 2px;
     --card-border-radius: 12px;
     --card-drop-target-raise: -0.26;
     --card-info-spacing: 14px;
     --card-name-margin: 2px;
+    --card-name-padding: 3px;
     --card-name-margin-leading: 6px;
 }
 
 .card-shape {
-    width: calc(var(--card-width) - 2 * var(--card-border-width));
-    height: calc(var(--card-height) - 2 * var(--card-border-width));
+    width: var(--card-width);
+    height: var(--card-height);
     margin-left: calc(var(--card-width) * -0.5);
     margin-top: calc(var(--card-height) * -0.5);
     border-radius: var(--card-border-radius);
@@ -37,7 +37,8 @@
     position: absolute;
     background-color: var(--card-color-background);
     user-select: none;
-    border: var(--card-border-width) solid var(--card-color-border);
+    box-shadow: 0 0 var(--book-shadow-radius) var(--book-shadow-color);
+    /* TODO: Give card its own shadow variables */
     -webkit-tap-highlight-color: transparent;
 }
 
@@ -45,7 +46,6 @@
     width: var(--card-preview-width);
     height: var(--card-preview-height);
     margin: var(--card-preview-margin);
-    border: var(--card-border-width) solid var(--card-color-border);
     border-top: none;
     border-bottom-left-radius: var(--card-border-radius);
     border-bottom-right-radius: var(--card-border-radius);
@@ -54,11 +54,11 @@
 }
 
 .card .name {
-    width: var(--card-preview-width);
+    width: calc(var(--card-preview-width) - 2 * var(--card-name-padding));
     margin: var(--card-preview-margin);
     margin-bottom: calc(-1 * var(--card-preview-margin));
+    padding: var(--card-name-padding);
     background-color: #ffffffaa;
-    border: var(--card-border-width) solid var(--card-color-border);
     border-top-left-radius: var(--card-border-radius);
     border-top-right-radius: var(--card-border-radius);
 }
