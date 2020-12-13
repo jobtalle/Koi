@@ -5,6 +5,7 @@
  * @constructor
  */
 const FishIconDefs = function(defs, random) {
+    this.makeBackground(defs);
     this.makeMask(defs);
     this.makeWildcard(defs);
     this.makePatternsBase(defs);
@@ -12,6 +13,7 @@ const FishIconDefs = function(defs, random) {
 };
 
 FishIconDefs.prototype = Object.create(FishIconConstants.prototype);
+FishIconDefs.prototype.BACKGROUND_BEAMS = 6;
 FishIconDefs.prototype.FIN_X = 6;
 FishIconDefs.prototype.FIN_Y = 22;
 FishIconDefs.prototype.SPOT_CIRCUMFERENCE = 15;
@@ -97,6 +99,37 @@ FishIconDefs.prototype.createBodyPath = function() {
         "C", this.WIDTH, 0, this.WIDTH, this.HEIGHT - this.WIDTH * .5, this.WIDTH * .5, this.HEIGHT,
         "C", 0, this.HEIGHT - this.WIDTH * .5, 0, 0, this.WIDTH * .5, 0
     ]);
+};
+
+/**
+ * Make the background image for card slots
+ * @param {HTMLElement} defs The defs element to populate
+ */
+FishIconDefs.prototype.makeBackground = function(defs) {
+    const background = SVG.createPattern();
+    const radius = this.BACKGROUND_RADIUS * 2;
+    const beamWidth = Math.PI / this.BACKGROUND_BEAMS;
+
+    for (let beam = 0; beam < this.BACKGROUND_BEAMS; ++beam) {
+        const angle = Math.PI * 2 * beam / this.BACKGROUND_BEAMS;
+
+        background.appendChild(SVG.createPath([
+            "M",
+            this.BACKGROUND_RADIUS,
+            this.BACKGROUND_RADIUS,
+            "L",
+            this.BACKGROUND_RADIUS + Math.cos(angle + beamWidth * .5) * radius,
+            this.BACKGROUND_RADIUS + Math.sin(angle + beamWidth * .5) * radius,
+            "L",
+            this.BACKGROUND_RADIUS + Math.cos(angle - beamWidth * .5) * radius,
+            this.BACKGROUND_RADIUS + Math.sin(angle - beamWidth * .5) * radius,
+            "Z"
+        ]))
+    }
+
+    SVG.setId(background, this.ID_BACKGROUND);
+
+    defs.appendChild(background);
 };
 
 /**

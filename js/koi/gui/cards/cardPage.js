@@ -270,9 +270,9 @@ CardPage.prototype.createSlots = function(element) {
 
         // TODO: Only create icons when page becomes visible to spread out processing power
         if (this.requirements[slot])
-            slotElement.appendChild(new FishIcon(this.requirements[slot].footprint).element);
+            new FishIcon(slotElement, this.requirements[slot].footprint);
         else
-            slotElement.appendChild(new FishIcon().element);
+            new FishIcon(slotElement);
 
         slots[slot] = slotElement;
 

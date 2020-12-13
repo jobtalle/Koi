@@ -2,6 +2,10 @@
     fill: white;
 }
 
+#fish-icon-defs #fish-icon-background {
+    fill: var(--book-page-slot-color-icon-neutral);
+}
+
 #fish-icon-defs #fish-icon-layer-wildcard {
     fill: var(--book-page-slot-color-icon-neutral);
 }

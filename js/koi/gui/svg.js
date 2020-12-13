@@ -70,6 +70,14 @@ const SVG = {
         element.setAttribute("fill", "url(#" + pattern + ")");
     },
     /**
+     * Set the preserve aspect ratio value
+     * @param {SVGElement} element The element to set the aspect ratio behavior for
+     * @param {String} value The value
+     */
+    setPreserveAspectRatio: function(element, value) {
+        element.setAttribute("preserveAspectRatio", value);
+    },
+    /**
      * Set the ID of a SVG element
      * @param {SVGElement} element The SVG element
      * @param {String} id The ID
