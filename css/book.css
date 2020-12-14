@@ -18,7 +18,7 @@
 #book {
     pointer-events: auto;
     position: absolute;
-    background-color: #8EA451;
+    background-color: var(--card-color-background);
     display: flex;
     align-items: center;
     transition: 0.5s ease;
