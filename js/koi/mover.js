@@ -178,6 +178,9 @@ Mover.prototype.touchMove = function(
             this.cursorOffset.set(this.cursor).add(this.offset);
             this.move.moveTo(this.cursorOffset);
 
+            if (!this.gui.cards.hand.isOutside(xPixel, yPixel))
+                this.gui.cards.hand.hide();
+
             if (handEnabled)
                 this.gui.cards.hand.moveDraggable(xPixel, yPixel);
         }
@@ -258,11 +261,9 @@ Mover.prototype.pickUp = function(fish, x, y, waterPlane = null, random = null) 
 
         this.playInteractionSound(fish, pan);
 
-        console.log(fish.getWeight().toFixed(2) + "kg");
         console.log(fish); // TODO: For debugging only
-        this.createBodySplash(fish.body, waterPlane, random);
 
-        this.gui.cards.hand.hide();
+        this.createBodySplash(fish.body, waterPlane, random);
     }
 
     this.startTouch(x, y);

@@ -130,7 +130,6 @@
     position: absolute;
     left: 50%;
     bottom: calc(var(--card-drop-target-raise) * var(--card-height));
-    border: var(--card-border-width) dashed var(--card-color-border);
     background-color: var(--card-color-drop-target);
     transition: 0.1s;
     transition-property: bottom;

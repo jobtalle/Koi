@@ -16,6 +16,7 @@ const Card = function(body, position, angle = 0) {
     this.previewURL = null;
     this.element = this.createElement(this.name, this.previewFrame);
     this.initialized = false;
+    this.onHide = null;
 
     this.updatePosition();
 };
@@ -320,6 +321,9 @@ Card.prototype.createElement = function(name, previewFrame) {
     element.appendChild(name);
     element.appendChild(previewFrame);
     element.appendChild(this.createInfo());
+    element.addEventListener("mouseenter", () => {
+        console.log("enter");
+    });
 
     return element;
 };

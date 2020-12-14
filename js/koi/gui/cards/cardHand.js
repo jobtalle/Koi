@@ -298,9 +298,11 @@ CardHand.prototype.moveDraggable = function(x, y) {
  * Show the card hand GUI
  */
 CardHand.prototype.show = function() {
-    this.visible = true;
-    this.dropTarget.classList.add(this.CLASS_DROP_TARGET_HIDDEN);
-    this.dropTargetVisible = false;
+    if (!this.visible) {
+        this.visible = true;
+        this.dropTarget.classList.add(this.CLASS_DROP_TARGET_HIDDEN);
+        this.dropTargetVisible = false;
+    }
 };
 
 /**
