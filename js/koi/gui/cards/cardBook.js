@@ -19,6 +19,7 @@ const CardBook = function(width, height, cards, onUnlock) {
     this.buttonPageRight = this.createButtonPage(this.CLASS_BUTTON_RIGHT, this.flipLeft.bind(this));
     this.cards = cards;
     this.onUnlock = onUnlock;
+    this.invisibleTimeout = null;
 
     this.populateSpine();
 
@@ -31,9 +32,11 @@ const CardBook = function(width, height, cards, onUnlock) {
 CardBook.prototype.ID = "book";
 CardBook.prototype.ID_SPINE = "spine";
 CardBook.prototype.CLASS_HIDDEN = "hidden";
+CardBook.prototype.CLASS_INVISIBLE = "invisible";
 CardBook.prototype.CLASS_BUTTON = "button-page";
 CardBook.prototype.CLASS_BUTTON_LEFT = "left";
 CardBook.prototype.CLASS_BUTTON_RIGHT = "right";
+CardBook.prototype.HIDE_TIME = StyleUtils.getFloat("--book-hide-time");
 CardBook.prototype.PADDING_TOP = .07;
 CardBook.prototype.PADDING_PAGE = .02;
 CardBook.prototype.PADDING_CARD = .05;
@@ -132,12 +135,25 @@ CardBook.prototype.populateSpine = function() {
  */
 CardBook.prototype.hide = function() {
     this.element.classList.add(this.CLASS_HIDDEN);
+    this.invisibleTimeout = setTimeout(() => {
+        if (this.element.classList.contains(this.CLASS_HIDDEN))
+            this.element.classList.add(this.CLASS_INVISIBLE);
+
+        this.invisibleTimeout = null;
+    }, this.HIDE_TIME * 1000);
 };
 
 /**
  * Show the book
  */
 CardBook.prototype.show = function() {
+    if (this.invisibleTimeout) {
+        clearTimeout(this.invisibleTimeout);
+
+        this.invisibleTimeout = null;
+    }
+
+    this.element.classList.remove(this.CLASS_INVISIBLE);
     this.element.classList.remove(this.CLASS_HIDDEN);
 };
 
@@ -365,6 +381,7 @@ CardBook.prototype.createElement = function(spine) {
 
     element.id = this.ID;
     element.className = this.CLASS_HIDDEN;
+    element.classList.add(this.CLASS_INVISIBLE);
 
     element.appendChild(spine);
 

@@ -321,9 +321,6 @@ Card.prototype.createElement = function(name, previewFrame) {
     element.appendChild(name);
     element.appendChild(previewFrame);
     element.appendChild(this.createInfo());
-    element.addEventListener("mouseenter", () => {
-        console.log("enter");
-    });
 
     return element;
 };
