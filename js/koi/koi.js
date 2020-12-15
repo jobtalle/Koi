@@ -456,6 +456,7 @@ Koi.prototype.render = function(deltaTime) {
     this.foreground.render(
         this.systems.vegetation,
         this.systems.stone,
+        this.systems.flying,
         this.air,
         time);
 

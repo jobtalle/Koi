@@ -15,6 +15,7 @@ const Foreground = function(
     this.gl = gl;
     this.rocks = new Rocks(gl, constellation, slots, this.Y_SCALE, biome, random);
     this.plants = new Plants(gl, constellation, slots, biome, random);
+    this.bugs = new Bugs(gl, constellation);
 };
 
 Foreground.prototype.Y_SCALE = .74;
@@ -24,16 +25,20 @@ Foreground.prototype.Y_OVERFLOW = .3;
  * Render foreground graphics
  * @param {Vegetation} vegetation The vegetation renderer
  * @param {Stone} stone The stone renderer
+ * @param {Flying} flying The flying animal renderer
  * @param {Air} air An air object
  * @param {Number} time The time interpolation factor
  */
 Foreground.prototype.render = function(
     vegetation,
     stone,
+    flying,
     air,
     time) {
     stone.render();
     vegetation.render(air, time);
+
+    this.bugs.render(flying, air, time);
 };
 
 /**
@@ -42,4 +47,5 @@ Foreground.prototype.render = function(
 Foreground.prototype.free = function() {
     this.plants.free();
     this.rocks.free();
+    this.bugs.free();
 };
