@@ -32,13 +32,9 @@ FishIconLayer.prototype.draw = function(group, index) {
 
 /**
  * Make the SVG group containing this layer
+ * @param {SVGGElement} group The group to draw in
  * @param {Number} [index] The layer index
- * @returns {SVGGElement} The SVG group containing this layer
  */
-FishIconLayer.prototype.makeGroup = function(index = 0) {
-    const group = SVG.createGroup();
-
+FishIconLayer.prototype.addToGroup = function(group, index = 0) {
     this.draw(group, index);
-
-    return group;
 };

@@ -63,18 +63,18 @@ FishIcon.prototype.createLayers = function(footprint) {
         for (let layer = 0, layerCount = footprint.layers.length; layer < layerCount; ++layer) {
             switch (footprint.layers[layer].id) {
                 case LayerBase.prototype.ID:
-                    group.appendChild(new FishIconLayerBase(footprint.layers[layer].paletteIndex).makeGroup(layer));
+                    new FishIconLayerBase(footprint.layers[layer].paletteIndex).addToGroup(group, layer);
 
                     break;
                 case LayerSpots.prototype.ID:
-                    group.appendChild(new FishIconLayerSpots(footprint.layers[layer].paletteIndex).makeGroup(layer));
+                    new FishIconLayerSpots(footprint.layers[layer].paletteIndex).addToGroup(group, layer);
 
                     break;
             }
         }
     }
     else
-        group.appendChild(new FishIconLayerWildcard().makeGroup());
+        new FishIconLayerWildcard().addToGroup(group);
 
     return group;
 };
