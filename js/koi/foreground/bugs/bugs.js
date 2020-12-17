@@ -23,6 +23,13 @@ const Bugs = function(gl, constellation, bugSpots) {
 };
 
 /**
+ * Update the bugs
+ */
+Bugs.prototype.update = function() {
+
+};
+
+/**
  * Render the bugs
  * @param {Flying} flying The flying objects renderer
  * @param {Air} air The air

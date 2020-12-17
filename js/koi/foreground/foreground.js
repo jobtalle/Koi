@@ -22,6 +22,13 @@ Foreground.prototype.Y_SCALE = .74;
 Foreground.prototype.Y_OVERFLOW = .3;
 
 /**
+ * Update the foreground
+ */
+Foreground.prototype.update = function() {
+    this.bugs.update();
+};
+
+/**
  * Render foreground graphics
  * @param {Vegetation} vegetation The vegetation renderer
  * @param {Stone} stone The stone renderer
