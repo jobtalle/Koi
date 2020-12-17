@@ -4,16 +4,19 @@
  * @param {Number} zOrigin The Z origin
  * @param {Number|Sampler} amount The amount of flex, or a sampler
  * @param {Number} [length] The maximum distance from the origin, required if amount is a sampler
+ * @param {Vector2} [baseFlex] The flex vector to add to
  * @constructor
  */
 FlexSampler = function(
     xOrigin,
     zOrigin,
     amount,
-    length = 1) {
+    length = 0,
+    baseFlex = new Vector2()) {
     this.xOrigin = xOrigin;
     this.zOrigin = zOrigin;
     this.amount = amount;
+    this.baseFlex = baseFlex;
     this.length = length;
 }
 
@@ -29,7 +32,7 @@ FlexSampler.prototype.sample = function(x, z) {
     const dist = Math.sqrt(dx * dx + dz * dz);
     const flex = this.amount instanceof Sampler ? this.amount.sample(dist / this.length) : this.amount;
 
-    return new Vector2(dz, dx).multiply(flex);
+    return new Vector2(dz, dx).multiply(flex).add(this.baseFlex);
 };
 
 /**
@@ -43,7 +46,7 @@ FlexSampler.prototype.applyToRange = function(vertices, start, end) {
         const index = i * Plants.prototype.STRIDE;
         const flexVector = this.sample(vertices[index + 3], vertices[index + 5]);
 
-        vertices[index + 6] += flexVector.x;
-        vertices[index + 7] += flexVector.y;
+        vertices[index + 6] = flexVector.x;
+        vertices[index + 7] = flexVector.y;
     }
 };

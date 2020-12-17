@@ -32,8 +32,16 @@ Plants.prototype.CATTAIL_CAPSULE_SHADE = .65;
  * @param {Random} random A randomizer
  * @param {Number[]} vertices The vertex array
  * @param {Number[]} indices The index array
+ * @returns {BugSpot[]} Spots for bugs to land on
  */
-Plants.prototype.modelCattail = function(x, y, size, random, vertices, indices) {
+Plants.prototype.modelCattail = function(
+    x,
+    y,
+    size,
+    random,
+    vertices,
+    indices) {
+    const bugSpots = [];
     const uv = this.makeUV(x, y, random);
     const height = this.CATTAIL_HEIGHT_MIN + (this.CATTAIL_HEIGHT_MAX - this.CATTAIL_HEIGHT_MIN) *
         Math.pow(size * random.getFloat(), this.CATTAIL_HEIGHT_POWER);
@@ -99,4 +107,6 @@ Plants.prototype.modelCattail = function(x, y, size, random, vertices, indices) 
         random,
         vertices,
         indices);
+
+    return bugSpots;
 };

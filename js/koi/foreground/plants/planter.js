@@ -39,19 +39,21 @@ Planter.prototype.getCattailFactor = function(waterDistance, beachFactor) {
  * @param {Plants} plants The plants object
  * @param {Number[]} vertices The vertex array
  * @param {Number[]} indices The index array
+ * @returns {BugSpot[]} Spots for bugs to land on
  */
 Planter.prototype.plant = function(plants, vertices, indices) {
+    const bugSpots = [];
+
     for (const slot of this.slots.slots) if (slot) {
         const waterDistance = this.biome.sampleSDF(slot.x, slot.y);
         const minRocks = Math.min(
             this.biome.sampleRocksPonds(slot.x, slot.y),
             this.biome.sampleRocksRiver(slot.x, slot.y));
         const beachFactor = Math.max(0, Math.min(1, -minRocks / this.BEACH_MAX));
-
         const cattailFactor = this.getCattailFactor(waterDistance, beachFactor);
 
         if (this.random.getFloat() < cattailFactor * this.CATTAIL_CHANCE)
-            plants.modelCattail(slot.x, slot.y, cattailFactor, this.random, vertices, indices);
+            bugSpots.push(...plants.modelCattail(slot.x, slot.y, cattailFactor, this.random, vertices, indices));
         else
             plants.modelGrass(
                 slot.x,
@@ -65,4 +67,6 @@ Planter.prototype.plant = function(plants, vertices, indices) {
     }
 
     this.plantMap.toDensity();
+
+    return bugSpots;
 };

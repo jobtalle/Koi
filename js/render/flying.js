@@ -4,6 +4,7 @@
  * @constructor
  */
 const Flying = function(gl) {
+    // TODO: Add ambient uniform
     this.gl = gl;
     this.program = new Shader(
         gl,

@@ -152,8 +152,8 @@ Plants.prototype.modelLeaf = function(
         x2,
         y,
         z2,
-        flexVector.x,
-        flexVector.y,
+        0,
+        0,
         uv.x,
         uv.y,
         color.r * shadeRight,
@@ -162,12 +162,12 @@ Plants.prototype.modelLeaf = function(
         x2,
         y,
         z2,
-        flexVector.x,
-        flexVector.y,
+        0,
+        0,
         uv.x,
         uv.y);
 
-    new FlexSampler(x1, z1, flex).applyToRange(
+    new FlexSampler(x1, z1, flex, 0, flexVector).applyToRange(
         vertices,
         firstIndex,
         firstIndex + ((segments - 1) << 2) - 1);
