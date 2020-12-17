@@ -2,16 +2,18 @@
  * A flex vector sampler
  * @param {Number} xOrigin The X origin
  * @param {Number} zOrigin The Z origin
- * @param {Number} flex The maximum amount of flex
- * @param {Number} power The flex amount power
- * @param {Number} length The maximum distance from the origin
+ * @param {Number|Sampler} amount The amount of flex, or a sampler
+ * @param {Number} [length] The maximum distance from the origin, required if amount is a sampler
  * @constructor
  */
-FlexSampler = function(xOrigin, zOrigin, flex, power, length) {
+FlexSampler = function(
+    xOrigin,
+    zOrigin,
+    amount,
+    length = 1) {
     this.xOrigin = xOrigin;
     this.zOrigin = zOrigin;
-    this.flex = flex;
-    this.power = power;
+    this.amount = amount;
     this.length = length;
 }
 
@@ -25,11 +27,9 @@ FlexSampler.prototype.sample = function(x, z) {
     const dx = x - this.xOrigin;
     const dz = z - this.zOrigin;
     const dist = Math.sqrt(dx * dx + dz * dz);
-    const f = dist / this.length;
+    const flex = this.amount instanceof Sampler ? this.amount.sample(dist / this.length) : this.amount;
 
-    return new Vector2(
-        dz * this.flex * Math.pow(f, this.power),
-        dx * this.flex * Math.pow(f, this.power));
+    return new Vector2(dz, dx).multiply(flex);
 };
 
 /**

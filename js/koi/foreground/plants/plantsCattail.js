@@ -2,8 +2,7 @@ Plants.prototype.CATTAIL_COLOR_STALK = Color.fromCSS("--color-cattail-stalk");
 Plants.prototype.CATTAIL_COLOR_CAPSULE = Color.fromCSS("--color-cattail-capsule");
 Plants.prototype.CATTAIL_COLOR_LEAF = Color.fromCSS("--color-cattail-leaf");
 Plants.prototype.CATTAIL_ANGLE_RADIUS = .05;
-Plants.prototype.CATTAIL_FLEX = .15;
-Plants.prototype.CATTAIL_FLEX_POWER = 1.5;
+Plants.prototype.CATTAIL_FLEX = new SamplerPower(0, .15, 1.5);
 Plants.prototype.CATTAIL_HEIGHT_MIN = 1.5;
 Plants.prototype.CATTAIL_HEIGHT_MAX = 2.1;
 Plants.prototype.CATTAIL_HEIGHT_POWER = 1.5;
@@ -46,7 +45,7 @@ Plants.prototype.modelCattail = function(x, y, size, random, vertices, indices) 
     const direction = Math.PI * .5 + (random.getFloat() * 2 - 1) * this.CATTAIL_ANGLE_RADIUS;
     const directionCos = Math.cos(direction);
     const directionSin = Math.sin(direction);
-    const flexSampler = new FlexSampler(x, 0, this.CATTAIL_FLEX, this.CATTAIL_FLEX_POWER, height);
+    const flexSampler = new FlexSampler(x, 0, this.CATTAIL_FLEX, height);
     const leafSet = new LeafSet(
         x + directionCos * leafStart,
         directionSin * leafStart,

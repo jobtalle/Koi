@@ -167,11 +167,8 @@ Plants.prototype.modelLeaf = function(
         uv.x,
         uv.y);
 
-    this.makeFlexVectors(
-        flex,
+    new FlexSampler(x1, z1, flex).applyToRange(
+        vertices,
         firstIndex,
-        firstIndex + ((segments - 1) << 2) - 1,
-        x1,
-        z1,
-        vertices);
+        firstIndex + ((segments - 1) << 2) - 1);
 };

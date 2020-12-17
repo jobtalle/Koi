@@ -75,60 +75,6 @@ Plants.prototype.makeUV = function(x, y, random) {
 };
 
 /**
- * Make a flex vector that determines the direction in which a vegetation vertex bends
- * @param {Number} flex The amount of flex
- * @param {Number} x The X position of the vertex
- * @param {Number} z The Z position of the vertex
- * @param {Number} xOrigin The plant X origin
- * @param {Number} zOrigin The plant Z origin
- * @returns {Vector2} The flex vector
- */
-Plants.prototype.makeFlexVector = function(
-    flex,
-    x,
-    z,
-    xOrigin,
-    zOrigin) {
-    const dx = x - xOrigin;
-    const dz = z - zOrigin;
-
-    if (dx === 0 && dz === 0)
-        return new Vector2();
-
-    return new Vector2(dz * flex, dx * flex);
-};
-
-/**
- * Make flex vectors for a range of vertices
- * @param {Number} flex The amount of flex
- * @param {Number} start The start index
- * @param {Number} end The end index
- * @param {Number} xOrigin The plant X origin
- * @param {Number} zOrigin The plant Z origin
- * @param {Number[]} vertices The vertex array
- */
-Plants.prototype.makeFlexVectors = function(
-    flex,
-    start,
-    end,
-    xOrigin,
-    zOrigin,
-    vertices) {
-    for (let i = start; i <= end; ++i) {
-        const index = i * this.STRIDE;
-        const flexVector = this.makeFlexVector(
-            flex,
-            vertices[index + 3],
-            vertices[index + 5],
-            xOrigin,
-            zOrigin);
-
-        vertices[index + 6] += flexVector.x;
-        vertices[index + 7] += flexVector.y;
-    }
-};
-
-/**
  * Free all resources maintained by plants
  */
 Plants.prototype.free = function() {
