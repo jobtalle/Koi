@@ -90,7 +90,7 @@ MeshNormalizer.prototype.apply = function(vertices) {
 
                 break;
             case this.INDEX_FLAG_UV_Y:
-                vertices[vertex + offset] *= sv;
+                vertices[vertex + offset] = 1 - vertices[vertex + offset] * sv;
 
                 break;
         }

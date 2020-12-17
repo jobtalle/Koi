@@ -68,7 +68,7 @@ varying vec3 iColor;
 void main() {
   iColor = color;
   
-  vec2 states = texture2D(air, vec2(windPosition.x, 1.0 - windPosition.y)).ar;
+  vec2 states = texture2D(air, vec2(windPosition.x, windPosition.y)).ar;
   float displacement = mix(states.x, states.y, time) * 2.0 - 1.0;
   
   gl_Position = vec4(

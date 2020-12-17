@@ -22,5 +22,5 @@ BugSpot.prototype.Y_SHIFT = .0001;
  */
 BugSpot.prototype.normalize = function(width, height) {
     this.windPosition.x /= width;
-    this.windPosition.y /= height;
+    this.windPosition.y = 1 - this.windPosition.y / height;
 };
