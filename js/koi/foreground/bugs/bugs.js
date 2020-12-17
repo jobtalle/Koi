@@ -12,15 +12,19 @@ const Bugs = function(gl, constellation, bugSpots) {
         gl,
         new MeshData(
             [
-                0, 0, 1, 0, 0,
-                .3, .5, 1, 1, 0,
-                -.3, .5, 1, 0, 1
+                0, 0, 0, 0, 1, 0, 0, 1,
+                .3, -.3, .1, -.3, 1, 1, 0, .2,
+                .3, .3, .1, .3, 1, 0, 1, .2,
+                -.3, -.3, -.1, -.3, 1, 1, 0, 1.8,
+                -.3, .3, -.1, .3, 1, 0, 1, 1.8
             ],
             [
-                0, 1, 2
+                0, 1, 2,
+                0, 3, 4
             ]
         ));
     this.vao = null;
+    this.flap = 0;
 
     for (const spot of this.bugSpots)
         spot.normalize(constellation.width, constellation.height);
@@ -45,12 +49,15 @@ Bugs.prototype.render = function(flying, air, time) {
 
     const spot = this.bugSpots[10];
 
+    this.flap += .2;
+
     flying.render(
         this.vao,
         this.testMesh,
         spot.position,
         spot.windPosition,
         spot.flex,
+        .5 * Math.sin(this.flap) + .5,
         this.constellation.width,
         this.constellation.height,
         air,

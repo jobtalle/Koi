@@ -10,8 +10,8 @@ const Flying = function(gl) {
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
-        ["position", "color"],
-        ["scale", "center", "windCenter", "flex", "time"]);
+        ["position", "positionFlap", "color", "flapShade"],
+        ["scale", "center", "windCenter", "flex", "flap", "time"]);
     this.vao = gl.vao.createVertexArrayOES();
 };
 
@@ -21,23 +21,27 @@ uniform vec2 scale;
 uniform vec3 center;
 uniform vec2 windCenter;
 uniform vec2 flex;
+uniform float flap;
 uniform float time;
 
 attribute vec2 position;
+attribute vec2 positionFlap;
 attribute vec3 color;
+attribute float flapShade;
 
 varying vec3 iColor;
 
 void main() {
-  iColor = color;
+  iColor = mix(color, color * flapShade, flap);
   
-  vec2 states = texture2D(air, vec2(windCenter.x, windCenter.y)).ar;
+  vec2 flappedPosition = mix(position, positionFlap, flap);
+  vec2 states = texture2D(air, windCenter).ar;
   float displacement = mix(states.x, states.y, time) * 2.0 - 1.0;
   
   gl_Position = vec4(
     (vec2(
-      center.x + position.x,
-      center.y - position.y - center.z) + flex * displacement) * scale + vec2(-1.0, 1.0),
+      center.x + flappedPosition.x,
+      center.y - flappedPosition.y - center.z) + flex * displacement) * scale + vec2(-1.0, 1.0),
     0.5 * center.y * scale.y + 1.0,
     1.0);
 }
@@ -64,9 +68,13 @@ Flying.prototype.register = function(mesh) {
     mesh.bindBuffers();
 
     this.gl.enableVertexAttribArray(this.program["aPosition"]);
-    this.gl.vertexAttribPointer(this.program["aPosition"], 2, this.gl.FLOAT, false, 20, 0);
+    this.gl.vertexAttribPointer(this.program["aPosition"], 2, this.gl.FLOAT, false, 32, 0);
+    this.gl.enableVertexAttribArray(this.program["aPositionFlap"]);
+    this.gl.vertexAttribPointer(this.program["aPositionFlap"], 2, this.gl.FLOAT, false, 32, 8);
     this.gl.enableVertexAttribArray(this.program["aColor"]);
-    this.gl.vertexAttribPointer(this.program["aColor"], 3, this.gl.FLOAT, false, 20, 8);
+    this.gl.vertexAttribPointer(this.program["aColor"], 3, this.gl.FLOAT, false, 32, 16);
+    this.gl.enableVertexAttribArray(this.program["aFlapShade"]);
+    this.gl.vertexAttribPointer(this.program["aFlapShade"], 1, this.gl.FLOAT, false, 32, 28);
 
     return vao;
 };
@@ -78,6 +86,7 @@ Flying.prototype.register = function(mesh) {
  * @param {Vector3} position The position
  * @param {Vector2} windPosition The wind position
  * @param {Vector2} flex The flex vector at the target position
+ * @param {Number} flap The flap amount at the current time
  * @param {Number} width The scene width
  * @param {Number} height The scene height
  * @param {Air} air The air
@@ -89,6 +98,7 @@ Flying.prototype.render = function(
     position,
     windPosition,
     flex,
+    flap,
     width,
     height,
     air,
@@ -103,6 +113,7 @@ Flying.prototype.render = function(
     this.gl.uniform3f(this.program["uCenter"], position.x, position.y, position.z);
     this.gl.uniform2f(this.program["uWindCenter"], windPosition.x, windPosition.y);
     this.gl.uniform2f(this.program["uFlex"], flex.x, flex.y);
+    this.gl.uniform1f(this.program["uFlap"], flap);
     this.gl.uniform1f(this.program["uTime"], time);
     this.gl.drawElements(this.gl.TRIANGLES, mesh.elementCount, this.gl.UNSIGNED_SHORT, 0);
 };
