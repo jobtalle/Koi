@@ -83,6 +83,13 @@ Plants.prototype.modelCattail = function(
         vertices,
         indices);
 
+    bugSpots.push(new BugSpot(
+        new Vector3(
+            x + directionCos * (capsuleStart + capsuleEnd) * .5,
+            y,
+            directionSin * (capsuleStart + capsuleEnd) * .5),
+        flexSampler));
+
     this.modelStalk(
         x,
         0,

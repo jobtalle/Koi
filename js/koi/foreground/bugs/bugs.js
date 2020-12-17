@@ -2,9 +2,10 @@
  * Bugs
  * @param {WebGLRenderingContext} gl A WebGL rendering context
  * @param {Constellation} constellation The constellation
+ * @param {BugSpot[]} bugSpots Bug spots
  * @constructor
  */
-const Bugs = function(gl, constellation) {
+const Bugs = function(gl, constellation, bugSpots) {
     this.constellation = constellation;
     this.testMesh = new Mesh(
         gl,

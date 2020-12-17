@@ -13,8 +13,15 @@ const Plants = function(
     slots,
     biome,
     random) {
+    const vertices = [];
+    const indices = [];
+
     this.plantMap = new PlantMap(constellation.width, constellation.height, Slots.prototype.RESOLUTION);
-    this.mesh = this.makeMesh(gl, constellation, new Planter(slots, biome, this.plantMap, random));
+
+    const planter = new Planter(slots, biome, this.plantMap, random)
+
+    this.bugSpots = planter.plant(this, vertices, indices);
+    this.mesh = this.makeMesh(gl, vertices, indices, constellation);
 };
 
 Plants.prototype.STRIDE = 10;
@@ -23,18 +30,16 @@ Plants.prototype.WIND_UV_RADIUS = .6;
 /**
  * Make the vegetation mesh
  * @param {WebGLRenderingContext} gl A WebGL rendering context
+ * @param {Number[]} vertices All plant vertices
+ * @param {Number[]} indices All plant indices
  * @param {Constellation} constellation The constellation
- * @param {Planter} planter A planter
+ * @returns {Mesh} The plant mesh
  */
 Plants.prototype.makeMesh = function(
     gl,
-    constellation,
-    planter) {
-    const vertices = [];
-    const indices = [];
-
-    planter.plant(this, vertices, indices);
-
+    vertices,
+    indices,
+    constellation) {
     new MeshNormalizer(
         constellation.width,
         constellation.height,
