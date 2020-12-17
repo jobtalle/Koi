@@ -88,6 +88,7 @@ Plants.prototype.modelCattail = function(
             x + directionCos * (capsuleStart + capsuleEnd) * .5,
             y,
             directionSin * (capsuleStart + capsuleEnd) * .5),
+        uv,
         flexSampler));
 
     this.modelStalk(

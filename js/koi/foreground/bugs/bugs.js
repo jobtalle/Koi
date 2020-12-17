@@ -7,19 +7,23 @@
  */
 const Bugs = function(gl, constellation, bugSpots) {
     this.constellation = constellation;
+    this.bugSpots = bugSpots;
     this.testMesh = new Mesh(
         gl,
         new MeshData(
             [
-                0, 0, 0, 1, 0, 0,
-                .3, -.5, 0, 1, 1, 0,
-                -.3, -.5, 0, 1, 0, 1
+                0, 0, 1, 0, 0,
+                .3, .5, 1, 1, 0,
+                -.3, .5, 1, 0, 1
             ],
             [
                 0, 1, 2
             ]
         ));
     this.vao = null;
+
+    for (const spot of this.bugSpots)
+        spot.normalize(constellation.width, constellation.height);
 };
 
 /**
@@ -39,13 +43,18 @@ Bugs.prototype.render = function(flying, air, time) {
     if (!this.vao)
         this.vao = flying.register(this.testMesh);
 
+    const spot = this.bugSpots[10];
+
     flying.render(
         this.vao,
         this.testMesh,
-        new Vector3(4, 4, 0),
+        spot.position,
+        spot.windPosition,
+        spot.flex,
         this.constellation.width,
         this.constellation.height,
-        air);
+        air,
+        time);
 };
 
 /**
