@@ -58,6 +58,7 @@ Bugs.prototype.render = function(flying, air, time) {
         spot.windPosition,
         spot.flex,
         .5 * Math.sin(this.flap) + .5,
+        spot.angle,
         this.constellation.width,
         this.constellation.height,
         air,

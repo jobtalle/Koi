@@ -18,7 +18,9 @@ FlexSampler = function(
     this.amount = amount;
     this.baseFlex = baseFlex;
     this.length = length;
-}
+};
+
+FlexSampler.prototype.EPSILON = .001;
 
 /**
  * Sample a flex vector
@@ -33,6 +35,24 @@ FlexSampler.prototype.sample = function(x, z) {
     const flex = this.amount instanceof Sampler ? this.amount.sample(dist / this.length) : this.amount;
 
     return new Vector2(dz, dx).multiply(flex).add(this.baseFlex);
+};
+
+/**
+ * Sample the angle of a flex point on this sampler
+ * @param {Number} x The vertex X position
+ * @param {Number} z The vertex Z position
+ * @returns {Number} The angle of the flex rotation at this point at maximum flex
+ */
+FlexSampler.prototype.sampleAngle = function(x, z) {
+    const sa = new Vector2(x, z - this.EPSILON);
+    const sb = new Vector2(x, z + this.EPSILON);
+
+    sa.add(this.sample(sa.x, sa.y));
+    sb.add(this.sample(sb.x, sb.y));
+
+    return -Math.atan2(
+        sb.x - sa.x,
+        sb.y - sa.y);
 };
 
 /**

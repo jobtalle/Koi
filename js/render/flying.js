@@ -11,7 +11,7 @@ const Flying = function(gl) {
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
         ["position", "positionFlap", "color", "flapShade"],
-        ["scale", "center", "windCenter", "flex", "flap", "time"]);
+        ["scale", "center", "windCenter", "flex", "flap", "angle", "time"]);
     this.vao = gl.vao.createVertexArrayOES();
 };
 
@@ -22,6 +22,7 @@ uniform vec3 center;
 uniform vec2 windCenter;
 uniform vec2 flex;
 uniform float flap;
+uniform float angle;
 uniform float time;
 
 attribute vec2 position;
@@ -34,9 +35,11 @@ varying vec3 iColor;
 void main() {
   iColor = mix(color, color * flapShade, flap);
   
-  vec2 flappedPosition = mix(position, positionFlap, flap);
   vec2 states = texture2D(air, windCenter).ar;
   float displacement = mix(states.x, states.y, time) * 2.0 - 1.0;
+  float rCos = cos(angle * displacement);
+  float rSin = sin(angle * displacement);
+  vec2 flappedPosition = mix(position, positionFlap, flap) * mat2(rCos, -rSin, rSin, rCos);
   
   gl_Position = vec4(
     (vec2(
@@ -86,7 +89,8 @@ Flying.prototype.register = function(mesh) {
  * @param {Vector3} position The position
  * @param {Vector2} windPosition The wind position
  * @param {Vector2} flex The flex vector at the target position
- * @param {Number} flap The flap amount at the current time
+ * @param {Number} flap The flap amount at the current time in the range [0, 1]
+ * @param {Number} angle The angle
  * @param {Number} width The scene width
  * @param {Number} height The scene height
  * @param {Air} air The air
@@ -99,6 +103,7 @@ Flying.prototype.render = function(
     windPosition,
     flex,
     flap,
+    angle,
     width,
     height,
     air,
@@ -114,6 +119,7 @@ Flying.prototype.render = function(
     this.gl.uniform2f(this.program["uWindCenter"], windPosition.x, windPosition.y);
     this.gl.uniform2f(this.program["uFlex"], flex.x, flex.y);
     this.gl.uniform1f(this.program["uFlap"], flap);
+    this.gl.uniform1f(this.program["uAngle"], angle);
     this.gl.uniform1f(this.program["uTime"], time);
     this.gl.drawElements(this.gl.TRIANGLES, mesh.elementCount, this.gl.UNSIGNED_SHORT, 0);
 };

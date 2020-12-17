@@ -9,6 +9,7 @@ const BugSpot = function(position, windPosition, flex) {
     this.position = position;
     this.windPosition = windPosition;
     this.flex = flex.sample(position.x, position.z);
+    this.angle = flex.sampleAngle(position.x, position.z);
 
     this.position.y += this.Y_SHIFT;
 };
