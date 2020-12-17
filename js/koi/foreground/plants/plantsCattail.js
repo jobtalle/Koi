@@ -47,7 +47,7 @@ Plants.prototype.modelCattail = function(x, y, size, random, vertices, indices) 
     const directionCos = Math.cos(direction);
     const directionSin = Math.sin(direction);
     const flexSampler = new FlexSampler(x, 0, this.CATTAIL_FLEX, this.CATTAIL_FLEX_POWER, height);
-    const leafSet = new Plants.LeafSet(
+    const leafSet = new LeafSet(
         x + directionCos * leafStart,
         directionSin * leafStart,
         x + directionCos * leafEnd,

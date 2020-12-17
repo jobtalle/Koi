@@ -14,7 +14,7 @@ FlexSampler = function(xOrigin, zOrigin, flex, power, length) {
     this.power = power;
     this.length = length;
 }
-// TODO: Separate flex sampler
+
 /**
  * Sample a flex vector
  * @param {Number} x The vertex X position
