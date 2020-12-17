@@ -12,7 +12,7 @@ Plants.prototype.STALK_RESOLUTION = .3;
  * @param {Vector2} uv The air UV
  * @param {Color} color The color
  * @param {Number} shade The dark side shade
- * @param {Plants.FlexSampler} flexSampler A flex sampler
+ * @param {FlexSampler} flexSampler A flex sampler
  * @param {Number[]} vertices The vertex array
  * @param {Number[]} indices The index array
  */

@@ -26,7 +26,7 @@ Plants.prototype.modelGrass = function(x, y, brightness, random, vertices, indic
     const color = this.GRASS_COLOR.copy().multiply(1 -
         this.GRASS_COLOR_DARKEN_RANDOM * random.getFloat() -
         this.GRASS_COLOR_DARKEN_BIOME * brightness);
-    const flexSampler = new Plants.FlexSampler(
+    const flexSampler = new FlexSampler(
         x,
         0,
         this.GRASS_FLEX_MIN + (this.GRASS_FLEX_MAX - this.GRASS_FLEX_MIN) * random.getFloat(),

@@ -13,7 +13,7 @@ Plants.prototype.CAPSULE_RADIUS_POWER = .25;
  * @param {Vector2} uv The air UV
  * @param {Color} color The capsule color
  * @param {Number} shade The shade multiplier
- * @param {Plants.FlexSampler} flexSampler A flex sampler
+ * @param {FlexSampler} flexSampler A flex sampler
  * @param {Number[]} vertices The vertex array
  * @param {Number[]} indices The index array
  */

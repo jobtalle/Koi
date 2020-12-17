@@ -58,7 +58,7 @@ Plants.LeafSet = function(
  * @param {Vector2} uv The air UV
  * @param {Color} color The leaf color
  * @param {Plants} plants The plants object
- * @param {Plants.FlexSampler} flexSampler A flex sampler
+ * @param {FlexSampler} flexSampler A flex sampler
  * @param {Random} random A randomizer
  * @param {Number[]} vertices The vertex array
  * @param {Number[]} indices The index array
