@@ -23,9 +23,10 @@ Foreground.prototype.Y_OVERFLOW = .3;
 
 /**
  * Update the foreground
+ * @param {Random} random A randomizer
  */
-Foreground.prototype.update = function() {
-    this.bugs.update();
+Foreground.prototype.update = function(random) {
+    this.bugs.update(random);
 };
 
 /**

@@ -6,35 +6,50 @@
  * @constructor
  */
 const Bugs = function(gl, constellation, bugSpots) {
+    this.gl = gl;
     this.constellation = constellation;
     this.bugSpots = bugSpots;
-    this.testMesh = new Mesh(
-        gl,
-        new MeshData(
-            [
-                0, 0, 0, 0, 1, 0, 0, 1,
-                .3, -.3, .1, -.3, 1, 1, 0, .2,
-                .3, .3, .1, .3, 1, 0, 1, .2,
-                -.3, -.3, -.1, -.3, 1, 1, 0, 1.8,
-                -.3, .3, -.1, .3, 1, 0, 1, 1.8
-            ],
-            [
-                0, 1, 2,
-                0, 3, 4
-            ]
-        ));
-    this.vao = null;
-    this.flap = 0;
+    this.bugs = [];
 
     for (const spot of this.bugSpots)
         spot.normalize(constellation.width, constellation.height);
 };
 
+Bugs.prototype.PATH_EDGE_PADDING = 1;
+
+/**
+ * Make a bug path
+ * @param {Random} random A randomizer
+ * @returns {BugPath} A bug path
+ */
+Bugs.prototype.makePath = function(random) {
+    return new BugPath();
+};
+
+/**
+ * Make a bug
+ * @param {Random} random A randomizer
+ * @returns {Bug} A bug
+ */
+Bugs.prototype.makeBug = function(random) {
+    return new Bug(
+        new BugBodyButterfly(this.gl),
+        this.makePath(random));
+};
+
 /**
  * Update the bugs
+ * @param {Random} random A randomizer
  */
-Bugs.prototype.update = function() {
+Bugs.prototype.update = function(random) {
+    if (this.bugs.length < 2)
+        this.bugs.push(this.makeBug(random));
 
+    for (let bug = this.bugs.length; bug-- > 0;) if (bug.update()) {
+        bug.free();
+
+        this.bugs.splice(bug, 1);
+    }
 };
 
 /**
@@ -44,30 +59,14 @@ Bugs.prototype.update = function() {
  * @param {Number} time The time interpolation factor
  */
 Bugs.prototype.render = function(flying, air, time) {
-    if (!this.vao)
-        this.vao = flying.register(this.testMesh);
-
-    const spot = this.bugSpots[10];
-
-    this.flap += .2;
-
-    flying.render(
-        this.vao,
-        this.testMesh,
-        spot.position,
-        spot.windPosition,
-        spot.flex,
-        .5 * Math.sin(this.flap) + .5,
-        spot.angle,
-        this.constellation.width,
-        this.constellation.height,
-        air,
-        time);
+    for (const bug of this.bugs)
+        bug.render(this.constellation.width, this.constellation.height, flying, air, time);
 };
 
 /**
  * Free the bugs
  */
 Bugs.prototype.free = function() {
-
+    for (const bug of this.bugs)
+        bug.free();
 };
