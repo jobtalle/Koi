@@ -9,6 +9,8 @@ const Bug = function(body, path) {
     this.path = path;
     this.position = new Vector3(this.path.getStart().x, this.path.getStart().y, .65);
     this.positionPrevious = this.position.copy();
+    this.positionRender = this.position.copy();
+    this.wind = new Vector2();
 };
 
 /**
@@ -34,11 +36,15 @@ Bug.prototype.update = function() {
  * @param {Number} time The time interpolation factor
  */
 Bug.prototype.render = function(width, height, flying, air, time) {
+    this.positionRender.set(this.position).subtract(this.positionPrevious).multiply(time).add(this.positionPrevious);
+    this.wind.x = this.positionRender.x / width;
+    this.wind.y = 1 - this.positionRender.y / height;
+
     this.body.render(
-        this.position,
-        new Vector2(0, 0),
-        new Vector2(0, 0),
-        0,
+        this.positionRender,
+        this.wind,
+        this.body.flex,
+        this.body.flexAngle,
         width,
         height,
         flying,

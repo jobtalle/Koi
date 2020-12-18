@@ -114,6 +114,19 @@ Vector3.prototype.add = function(other) {
 };
 
 /**
+ * Subtract a vector from this vector
+ * @param {Vector3} other A vector
+ * @returns {Vector3} The modified vector
+ */
+Vector3.prototype.subtract = function(other) {
+    this.x -= other.x;
+    this.y -= other.y;
+    this.z -= other.z;
+
+    return this;
+};
+
+/**
  * Multiply this vector by a scalar
  * @param {Number} scalar A number
  * @returns {Vector3} The modified vector

@@ -1,12 +1,16 @@
 /**
  * A bug body
  * @param {WebGLRenderingContext} gl A WebGL rendering context
+ * @param {Vector2} flex The flex vector during flight
+ * @param {Number} flexAngle The maximum amount of rotation caused by wind gusts
  * @param {Number[]} vertices The vertices
  * @param {Number[]} indices The indices
  * @constructor
  */
-const BugBody = function(gl, vertices, indices) {
+const BugBody = function(gl, flex, flexAngle, vertices, indices) {
     this.gl = gl;
+    this.flex = flex;
+    this.flexAngle = flexAngle;
     this.vao = null;
     this.mesh = new Mesh(gl, new MeshData(vertices, indices));
     this.flap = 0;
@@ -37,7 +41,7 @@ BugBody.prototype.render = function(
     if (!this.vao)
         this.vao = flying.register(this.mesh);
 
-    this.flap += .2;
+    this.flap += .5;
 
     flying.render(
         this.vao,
