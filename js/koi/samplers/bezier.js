@@ -19,8 +19,8 @@ const Bezier = function(a, b, control) {
  */
 Bezier.prototype.sample = function(vector, t) {
     vector.set(this.a).multiply((1 - t) * (1 - t));
-    vector.x = t * (2 * (1 - t) * this.control.x + t * this.b.x);
-    vector.y = t * (2 * (1 - t) * this.control.y + t * this.b.y);
+    vector.x += t * (2 * (1 - t) * this.control.x + t * this.b.x);
+    vector.y += t * (2 * (1 - t) * this.control.y + t * this.b.y);
 
     return vector;
 };

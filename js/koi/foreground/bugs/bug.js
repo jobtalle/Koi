@@ -7,6 +7,8 @@
 const Bug = function(body, path) {
     this.body = body;
     this.path = path;
+    this.position = new Vector3(this.path.getStart().x, this.path.getStart().y, .65);
+    this.positionPrevious = this.position.copy();
 };
 
 /**
@@ -14,7 +16,13 @@ const Bug = function(body, path) {
  * @returns {Boolean} True if the bug may be deleted
  */
 Bug.prototype.update = function() {
+    const pathPosition = this.path.getPosition();
 
+    this.positionPrevious.set(this.position);
+    this.position.x = pathPosition.x;
+    this.position.y = pathPosition.y;
+
+    return this.path.move(.05);
 };
 
 /**
@@ -26,9 +34,16 @@ Bug.prototype.update = function() {
  * @param {Number} time The time interpolation factor
  */
 Bug.prototype.render = function(width, height, flying, air, time) {
-    this.body.render(width, height, flying, air, time);
-
-    const spot = this.bugSpots[10];
+    this.body.render(
+        this.position,
+        new Vector2(0, 0),
+        new Vector2(0, 0),
+        0,
+        width,
+        height,
+        flying,
+        air,
+        time);
 };
 
 /**

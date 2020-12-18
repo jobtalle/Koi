@@ -38,6 +38,19 @@ Vector3.prototype.deserialize = function(buffer) {
 };
 
 /**
+ * Set this vector to another vector
+ * @param {Vector3} other The vector to copy from
+ * @returns {Vector3} The modified vector
+ */
+Vector3.prototype.set = function(other) {
+    this.x = other.x;
+    this.y = other.y;
+    this.z = other.z;
+
+    return this;
+};
+
+/**
  * Copy this vector
  * @returns {Vector3} A copy of this vector
  */

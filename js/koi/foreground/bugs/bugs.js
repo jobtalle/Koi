@@ -23,7 +23,11 @@ Bugs.prototype.PATH_EDGE_PADDING = 1;
  * @returns {BugPath} A bug path
  */
 Bugs.prototype.makePath = function(random) {
-    return new BugPath();
+    return new BugPath([
+        new BugPathNodeAir(new Vector3(0, 0, 1)),
+        new BugPathNodeAir(new Vector3(10, 0, 1)),
+        new BugPathNodeAir(new Vector3(10, 10, 1))
+    ]);
 };
 
 /**
@@ -42,11 +46,11 @@ Bugs.prototype.makeBug = function(random) {
  * @param {Random} random A randomizer
  */
 Bugs.prototype.update = function(random) {
-    if (this.bugs.length < 2)
+    if (this.bugs.length < 1)
         this.bugs.push(this.makeBug(random));
 
-    for (let bug = this.bugs.length; bug-- > 0;) if (bug.update()) {
-        bug.free();
+    for (let bug = this.bugs.length; bug-- > 0;) if (this.bugs[bug].update()) {
+        this.bugs[bug].free();
 
         this.bugs.splice(bug, 1);
     }

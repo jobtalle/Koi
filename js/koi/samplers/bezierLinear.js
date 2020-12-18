@@ -27,6 +27,13 @@ const BezierLinear = function(bezier, precision) {
 };
 
 /**
+ * Get the start position of this curve
+ */
+BezierLinear.prototype.getStart = function() {
+    return this.points[0];
+};
+
+/**
  * Sample the path at a certain length
  * @param {Vector2} vector The vector to store the sample in
  * @param {Number} at The distance from the starting point, no higher than the path length
