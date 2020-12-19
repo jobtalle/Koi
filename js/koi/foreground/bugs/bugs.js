@@ -24,9 +24,13 @@ Bugs.prototype.PATH_EDGE_PADDING = 1;
  */
 Bugs.prototype.makePath = function(random) {
     return new BugPath([
-        new BugPathNodeAir(new Vector3(0, 0, 1)),
-        new BugPathNodeAir(new Vector3(10, 0, 1)),
-        new BugPathNodeAir(new Vector3(10, 10, 1))
+        new BugPathNodeAir(new Vector3(-this.PATH_EDGE_PADDING, 5, 1)),
+        new BugPathNodeAir(new Vector3(4, 4, 1)),
+        new BugPathNodeAir(new Vector3(5, 6, 1)),
+        new BugPathNodeAir(new Vector3(3, 5, 1)),
+        new BugPathNodeSpot(this.bugSpots[5]),
+        new BugPathNodeAir(new Vector3(8, 7, 1)),
+        new BugPathNodeAir(new Vector3(8, this.constellation.height + this.PATH_EDGE_PADDING, 1))
     ]);
 };
 
