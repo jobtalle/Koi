@@ -15,23 +15,6 @@ const Bugs = function(gl, constellation, bugSpots) {
         spot.normalize(constellation.width, constellation.height);
 };
 
-// /**
-//  * Make a bug path
-//  * @param {Random} random A randomizer
-//  * @returns {BugPath} A bug path
-//  */
-// Bugs.prototype.makePath = function(random) {
-//     return new BugPath([
-//         new BugPathNodeAir(new Vector3(-this.PATH_EDGE_PADDING, 5, 1)),
-//         new BugPathNodeAir(new Vector3(4, 4, 1)),
-//         new BugPathNodeAir(new Vector3(5, 6, 1)),
-//         new BugPathNodeAir(new Vector3(3, 8, 1)),
-//         new BugPathNodeSpot(this.bugSpots[5]),
-//         new BugPathNodeAir(new Vector3(8, 7, 1)),
-//         new BugPathNodeAir(new Vector3(8, this.constellation.height + this.PATH_EDGE_PADDING, 1))
-//     ]);
-// };
-
 /**
  * Make a bug
  * @param {Random} random A randomizer
@@ -60,9 +43,8 @@ Bugs.prototype.update = function(random) {
             this.bugs.push(bug);
     }
 
-    for (let bug = this.bugs.length; bug-- > 0;) if (this.bugs[bug].update()) {
+    for (let bug = this.bugs.length; bug-- > 0;) if (this.bugs[bug].update(this.pathMaker)) {
         this.bugs[bug].free();
-
         this.bugs.splice(bug, 1);
     }
 };

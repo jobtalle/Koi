@@ -15,16 +15,25 @@ const Bug = function(body, path) {
 
 /**
  * Update a bug
+ * @param {BugPathMaker} pathMaker A path maker
  * @returns {Boolean} True if the bug may be deleted
  */
-Bug.prototype.update = function() {
+Bug.prototype.update = function(pathMaker) {
     const pathPosition = this.path.getPosition();
 
     this.positionPrevious.set(this.position);
     this.position.x = pathPosition.x;
     this.position.y = pathPosition.y;
 
-    return this.path.move(.05);
+    const finishedPath = this.path.move(.05);
+
+    // TODO: Rest or cue new path
+
+    if (finishedPath) {
+        pathMaker.recycle(this.path);
+
+        return true;
+    }
 };
 
 /**

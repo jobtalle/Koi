@@ -29,6 +29,7 @@ BugPathMaker.prototype.getSpot = function(random) {
  */
 BugPathMaker.prototype.returnSpot = function(spot) {
     this.bugSpots.push(spot);
+    console.log("Recycle!");
 };
 
 /**
