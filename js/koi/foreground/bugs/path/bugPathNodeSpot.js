@@ -5,6 +5,8 @@
  */
 const BugPathNodeSpot = function(spot) {
     BugPathNode.call(this, spot.position);
+
+    this.spot = spot;
 };
 
 BugPathNodeSpot.prototype = Object.create(BugPathNode.prototype);

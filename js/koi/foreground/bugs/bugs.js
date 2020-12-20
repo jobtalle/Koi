@@ -8,31 +8,29 @@
 const Bugs = function(gl, constellation, bugSpots) {
     this.gl = gl;
     this.constellation = constellation;
-    this.bugSpots = bugSpots;
+    this.pathMaker = new BugPathMaker(constellation, bugSpots);
     this.bugs = [];
 
-    for (const spot of this.bugSpots)
+    for (const spot of bugSpots)
         spot.normalize(constellation.width, constellation.height);
 };
 
-Bugs.prototype.PATH_EDGE_PADDING = 1;
-
-/**
- * Make a bug path
- * @param {Random} random A randomizer
- * @returns {BugPath} A bug path
- */
-Bugs.prototype.makePath = function(random) {
-    return new BugPath([
-        new BugPathNodeAir(new Vector3(-this.PATH_EDGE_PADDING, 5, 1)),
-        new BugPathNodeAir(new Vector3(4, 4, 1)),
-        new BugPathNodeAir(new Vector3(5, 6, 1)),
-        new BugPathNodeAir(new Vector3(3, 5, 1)),
-        new BugPathNodeSpot(this.bugSpots[5]),
-        new BugPathNodeAir(new Vector3(8, 7, 1)),
-        new BugPathNodeAir(new Vector3(8, this.constellation.height + this.PATH_EDGE_PADDING, 1))
-    ]);
-};
+// /**
+//  * Make a bug path
+//  * @param {Random} random A randomizer
+//  * @returns {BugPath} A bug path
+//  */
+// Bugs.prototype.makePath = function(random) {
+//     return new BugPath([
+//         new BugPathNodeAir(new Vector3(-this.PATH_EDGE_PADDING, 5, 1)),
+//         new BugPathNodeAir(new Vector3(4, 4, 1)),
+//         new BugPathNodeAir(new Vector3(5, 6, 1)),
+//         new BugPathNodeAir(new Vector3(3, 8, 1)),
+//         new BugPathNodeSpot(this.bugSpots[5]),
+//         new BugPathNodeAir(new Vector3(8, 7, 1)),
+//         new BugPathNodeAir(new Vector3(8, this.constellation.height + this.PATH_EDGE_PADDING, 1))
+//     ]);
+// };
 
 /**
  * Make a bug
@@ -40,9 +38,14 @@ Bugs.prototype.makePath = function(random) {
  * @returns {Bug} A bug
  */
 Bugs.prototype.makeBug = function(random) {
-    return new Bug(
-        new BugBodyButterfly(this.gl),
-        this.makePath(random));
+    const path = this.pathMaker.makeEntrance(random);
+
+    if (path)
+        return new Bug(
+            new BugBodyButterfly(this.gl),
+            this.pathMaker.makeEntrance(random));
+
+    return null;
 };
 
 /**
@@ -50,8 +53,12 @@ Bugs.prototype.makeBug = function(random) {
  * @param {Random} random A randomizer
  */
 Bugs.prototype.update = function(random) {
-    if (this.bugs.length < 1)
-        this.bugs.push(this.makeBug(random));
+    if (this.bugs.length < 1) {
+        const bug = this.makeBug(random);
+
+        if (bug)
+            this.bugs.push(bug);
+    }
 
     for (let bug = this.bugs.length; bug-- > 0;) if (this.bugs[bug].update()) {
         this.bugs[bug].free();
