@@ -37,16 +37,18 @@ Bugs.prototype.makeBug = function(random) {
  * @param {Random} random A randomizer
  */
 Bugs.prototype.update = function(random) {
-    if (this.bugs.length < 5) {
+    if (this.bugs.length < 5) { // TODO: something
         const bug = this.makeBug(random);
 
         if (bug)
             this.bugs.push(bug);
     }
 
-    for (let bug = this.bugs.length; bug-- > 0;) if (this.bugs[bug].update(this.pathMaker)) {
-        this.bugs[bug].free();
-        this.bugs.splice(bug, 1);
+    for (let bug = this.bugs.length; bug-- > 0;) {
+        if (this.bugs[bug].update(this.pathMaker, this.constellation.width, this.constellation.height)) {
+            this.bugs[bug].free();
+            this.bugs.splice(bug, 1);
+        }
     }
 };
 

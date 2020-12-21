@@ -43,6 +43,14 @@ BugPath.prototype.getStart = function() {
 };
 
 /**
+ * Get the last node
+ * @returns {BugPathNode} The last node
+ */
+BugPath.prototype.getLastNode = function() {
+    return this.nodes[this.nodes.length - 1];
+};
+
+/**
  * Get the current position on the path
  * @returns {Vector2} The current position
  */
@@ -50,4 +58,12 @@ BugPath.prototype.getPosition = function() {
     this.curve.sample(this.position, this.at);
 
     return this.position;
+};
+
+/**
+ * Get the distance to the end node
+ * @returns {Number} The distance to the end point
+ */
+BugPath.prototype.getDistanceLeft = function() {
+    return this.curve.length - this.at;
 };

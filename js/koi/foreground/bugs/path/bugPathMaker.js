@@ -8,13 +8,13 @@
 const BugPathMaker = function(constellation, biome, bugSpots) {
     this.constellation = constellation;
     this.biome = biome;
-    this.bugSpots = bugSpots; // TODO: Exclude bug spots too close to the view edge
+    this.bugSpots = bugSpots;
 };
 
 BugPathMaker.prototype.EDGE_PADDING = 1.2;
-BugPathMaker.prototype.CONE_ANGLE = Math.PI * .25;
-BugPathMaker.prototype.CONE_STEP = 2;
-BugPathMaker.prototype.CONE_DENSITY = 4;
+BugPathMaker.prototype.CONE_ANGLE = Math.PI * .5;
+BugPathMaker.prototype.CONE_STEP = 1.3;
+BugPathMaker.prototype.CONE_DENSITY = 4.5;
 
 /**
  * Get a random bug spot from the pool
@@ -25,7 +25,16 @@ BugPathMaker.prototype.getSpot = function(random) {
     if (this.bugSpots.length === 0)
         return null;
 
-    return this.bugSpots.splice(Math.floor(this.bugSpots.length * random.getFloat()), 1)[0];
+    return this.occupySpot(this.bugSpots[Math.floor(this.bugSpots.length * random.getFloat())]);
+};
+
+/**
+ * Mark a spot as occupied, removing it from the spots that may be used
+ * @param {BugSpot} spot The spot
+ * @returns {BugSpot} The spot that was occupied
+ */
+BugPathMaker.prototype.occupySpot = function(spot) {
+    return this.bugSpots.splice(this.bugSpots.indexOf(spot), 1)[0];
 };
 
 /**
@@ -39,24 +48,12 @@ BugPathMaker.prototype.returnSpot = function(spot) {
 /**
  * Get a vector pointing towards the closest scene edge
  * @param {Vector2} position The position to create an exit vector for
+ * @param {Random} random A randomizer
  * @returns {Vector2} A unit vector pointing towards the closest edge
  */
-BugPathMaker.prototype.getExitVector = function(position) {
-    const nx = position.x / this.constellation.width;
-    const ny = position.y / this.constellation.height;
-    // TODO: Randomize exit vector within the entire cone
-    if (nx > ny) {
-        if (1 - ny > nx)
-            return new Vector2(0, -1);
-        else
-            return new Vector2(1, 0);
-    }
-    else {
-        if (1 - ny > nx)
-            return new Vector2(-1, 0);
-        else
-            return new Vector2(0, 1);
-    }
+BugPathMaker.prototype.getExitVector = function(position, random) {
+    return position.copy().subtract(
+        new Vector2(this.constellation.width, this.constellation.height).multiply(.5)).normalize();
 };
 
 /**
@@ -82,6 +79,9 @@ BugPathMaker.prototype.trace = function(origin, direction, random, stopAtSpot = 
 
     for (let radius = this.CONE_STEP;; radius += this.CONE_STEP) {
         const radiusNext = radius + this.CONE_STEP;
+
+        // TODO: Check if spot is in cone here
+
         const angleSampler = new Sampler(angle - this.CONE_ANGLE * .5, angle + this.CONE_ANGLE * .5);
         const area = -.5 * Math.PI * Math.PI * this.CONE_ANGLE * (radius * radius - radiusNext * radiusNext);
         const candidateCount = Math.ceil(area / this.CONE_DENSITY);
@@ -128,7 +128,7 @@ BugPathMaker.prototype.makeEntrance = function(random) {
         return null;
 
     const origin = target.position.vector2();
-    const exitVector = this.getExitVector(origin);
+    const exitVector = this.getExitVector(origin, random);
 
     return new BugPath([new BugPathNode(target.position, target), ...this.trace(origin, exitVector, random)].reverse());
 };

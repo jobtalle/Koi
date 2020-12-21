@@ -65,3 +65,11 @@ CubicHermiteSampler.prototype.sample = function(vector, at) {
 CubicHermiteSampler.prototype.getStart = function() {
     return this.points[0];
 };
+
+/**
+ * Get the end of this curve
+ * @returns {Vector2} The end point
+ */
+CubicHermiteSampler.prototype.getEnd = function() {
+    return this.points[this.points.length - 1];
+};
