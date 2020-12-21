@@ -15,7 +15,7 @@ const Foreground = function(
     this.gl = gl;
     this.rocks = new Rocks(gl, constellation, slots, this.Y_SCALE, biome, random);
     this.plants = new Plants(gl, constellation, slots, biome, random);
-    this.bugs = new Bugs(gl, constellation, this.plants.bugSpots);
+    this.bugs = new Bugs(gl, constellation, biome, this.plants.bugSpots);
 };
 
 Foreground.prototype.Y_SCALE = .74;

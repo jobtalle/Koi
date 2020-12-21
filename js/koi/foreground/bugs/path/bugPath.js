@@ -4,24 +4,22 @@
  * @constructor
  */
 const BugPath = function(nodes) {
+    this.nodes = nodes;
     this.at = 0;
     this.position = new Vector2();
-    this.curve = this.makeCurve(nodes);
+    this.curve = this.makeCurve();
 };
 
 BugPath.prototype.CURVE_RESOLUTION = .05;
 
 /**
  * Make the curve between the nodes
- * @param {BugPathNode[]} nodes The path nodes
  * @returns {CubicHermiteSampler} The curve connecting all nodes
  */
-BugPath.prototype.makeCurve = function(nodes) {
-    this.nodes = nodes;
-
+BugPath.prototype.makeCurve = function() {
     const points = [];
 
-    for (const node of nodes)
+    for (const node of this.nodes)
         points.push(node.position.vector2());
 
     return new CubicHermiteSampler(new CubicHermite(points), this.CURVE_RESOLUTION);

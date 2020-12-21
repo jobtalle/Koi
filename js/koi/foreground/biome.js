@@ -13,6 +13,7 @@ const Biome = function(constellation, width, height, random) {
         random);
     this.noiseRocksRiver = this.noiseRocksPonds.createSimilar();
     this.sdfWidth = Math.ceil(width * this.SDF_RESOLUTION) + 1;
+    this.sdfHeight = Math.ceil(height * this.SDF_RESOLUTION) + 1;
     this.sdf = this.makeSDF(constellation, width, height);
 };
 
@@ -28,10 +29,9 @@ Biome.prototype.SDF_RESOLUTION = 3;
  * @returns {Number[]} The SDF
  */
 Biome.prototype.makeSDF = function(constellation, width, height) {
-    const sdfHeight = Math.ceil(height * this.SDF_RESOLUTION) + 1;
-    const sdf = new Array(this.sdfWidth * sdfHeight);
+    const sdf = new Array(this.sdfWidth * this.sdfHeight);
 
-    for (let y = 0; y < sdfHeight; ++y) for (let x = 0; x < this.sdfWidth; ++x)
+    for (let y = 0; y < this.sdfHeight; ++y) for (let x = 0; x < this.sdfWidth; ++x)
         sdf[x + y * this.sdfWidth] = constellation.distanceToWater(
             x / this.SDF_RESOLUTION,
             y / this.SDF_RESOLUTION);
@@ -46,8 +46,8 @@ Biome.prototype.makeSDF = function(constellation, width, height) {
  * @returns {Number} The distance to the nearest shore
  */
 Biome.prototype.sampleSDF = function(x, y) {
-    const xi = Math.floor(x * this.SDF_RESOLUTION);
-    const yi = Math.floor(y * this.SDF_RESOLUTION);
+    const xi = Math.min(this.sdfWidth - 1, Math.max(0, Math.floor(x * this.SDF_RESOLUTION)));
+    const yi = Math.min(this.sdfHeight - 1, Math.max(0, Math.floor(y * this.SDF_RESOLUTION)));
     const xf = (x * this.SDF_RESOLUTION - xi);
     const yf = (y * this.SDF_RESOLUTION - yi);
     const top = this.sdf[yi * this.sdfWidth + xi] +

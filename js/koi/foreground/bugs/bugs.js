@@ -2,13 +2,14 @@
  * Bugs
  * @param {WebGLRenderingContext} gl A WebGL rendering context
  * @param {Constellation} constellation The constellation
+ * @param {Biome} biome The biome
  * @param {BugSpot[]} bugSpots Bug spots
  * @constructor
  */
-const Bugs = function(gl, constellation, bugSpots) {
+const Bugs = function(gl, constellation, biome, bugSpots) {
     this.gl = gl;
     this.constellation = constellation;
-    this.pathMaker = new BugPathMaker(constellation, bugSpots);
+    this.pathMaker = new BugPathMaker(constellation, biome, bugSpots);
     this.bugs = [];
 
     for (const spot of bugSpots)
@@ -26,7 +27,7 @@ Bugs.prototype.makeBug = function(random) {
     if (path)
         return new Bug(
             new BugBodyButterfly(this.gl),
-            this.pathMaker.makeEntrance(random));
+            path);
 
     return null;
 };
@@ -36,7 +37,7 @@ Bugs.prototype.makeBug = function(random) {
  * @param {Random} random A randomizer
  */
 Bugs.prototype.update = function(random) {
-    if (this.bugs.length < 1) {
+    if (this.bugs.length < 5) {
         const bug = this.makeBug(random);
 
         if (bug)
