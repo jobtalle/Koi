@@ -45,7 +45,7 @@ Bugs.prototype.update = function(random) {
     }
 
     for (let bug = this.bugs.length; bug-- > 0;) {
-        if (this.bugs[bug].update(this.pathMaker, this.constellation.width, this.constellation.height)) {
+        if (this.bugs[bug].update(this.pathMaker, this.constellation.width, this.constellation.height, random)) {
             this.bugs[bug].free();
             this.bugs.splice(bug, 1);
         }

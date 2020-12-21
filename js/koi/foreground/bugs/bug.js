@@ -7,11 +7,10 @@
 const Bug = function(body, path) {
     this.body = body;
     this.path = path;
-    this.hover = new BugHover(path.getLastNode().spot.position.z);
     this.flex = new Vector2();
     this.flexPrevious = this.flex.copy();
     this.flexRender = this.flex.copy();
-    this.position = new Vector3(this.path.getStart().x, this.path.getStart().y, .65);
+    this.position = new Vector3(this.path.getStart().x, this.path.getStart().y, this.path.getLastNode().spot.position.z);
     this.positionPrevious = this.position.copy();
     this.positionRender = this.position.copy();
     this.wind = new Vector2();
@@ -19,23 +18,25 @@ const Bug = function(body, path) {
     this.windRender = this.wind.copy();
     this.flexAngle = 0;
     this.flexAnglePrevious = this.flexAngle;
-    this.state = this.STATE_PATH;console.log(path);
-    this.spotProximity = 0;
+    this.state = this.STATE_PATH;
+    this.wait = 0;
 };
 
 Bug.prototype.STATE_PATH = 0;
 Bug.prototype.STATE_PATH_LEAVE = 1;
 Bug.prototype.STATE_IDLE = 2;
-Bug.prototype.SPOT_PROXIMITY_DISTANCE = 1;
+Bug.prototype.SPOT_PROXIMITY_DISTANCE = 1.8;
+Bug.prototype.IDLE_TIME = new SamplerPower(15, 90, 2.2);
 
 /**
  * Update a bug
  * @param {BugPathMaker} pathMaker A path maker
  * @param {Number} width The scene width in meters
  * @param {Number} height The scene height in meters
+ * @param {Random} random A randomizer
  * @returns {Boolean} True if the bug may be deleted
  */
-Bug.prototype.update = function(pathMaker, width, height) {
+Bug.prototype.update = function(pathMaker, width, height, random) {
     this.positionPrevious.set(this.position);
     this.flexPrevious.set(this.flex);
     this.windPrevious.set(this.wind);
@@ -44,17 +45,8 @@ Bug.prototype.update = function(pathMaker, width, height) {
     switch (this.state) {
         case this.STATE_PATH:
         case this.STATE_PATH_LEAVE:
-            const pathPosition = this.path.getPosition();
-
-            this.position.x = pathPosition.x;
-            this.position.y = pathPosition.y;
-            this.position.z = this.hover.update();
-            this.wind.x = this.positionRender.x / width;
-            this.wind.y = 1 - this.positionRender.y / height;
-            this.flexAngle = this.body.flexAngle;
-
+            const lastNode = this.path.getLastNode();
             const finishedPath = this.path.move(.05);
-            const spotDistance = Math.min(1, this.path.getDistanceLeft() / this.SPOT_PROXIMITY_DISTANCE);
 
             if (finishedPath) {
                 pathMaker.recycle(this.path);
@@ -62,19 +54,45 @@ Bug.prototype.update = function(pathMaker, width, height) {
                 if (this.state === this.STATE_PATH_LEAVE)
                     return true;
                 else {
-                    const lastNode = this.path.getLastNode();
-
                     this.state = this.STATE_IDLE;
                     this.flex = lastNode.spot.flex;
                     this.position.set(lastNode.spot.position);
                     this.wind.set(lastNode.spot.windPosition);
                     this.flexAngle = lastNode.spot.angle;
+                    this.wait = Math.round(this.IDLE_TIME.sample(random.getFloat()));
+                }
+            }
+            else {
+                const pathPosition = this.path.getPosition();
+                const spotDistance = Math.min(1, this.path.getDistanceLeft() / this.SPOT_PROXIMITY_DISTANCE);
+                // TODO: Z position
+                this.position.x = pathPosition.x;
+                this.position.y = pathPosition.y;
+
+                if (this.state === this.STATE_PATH) {
+                    this.wind.x = (this.positionRender.x / width) * spotDistance + (1 - spotDistance) * lastNode.spot.windPosition.x;
+                    this.wind.y = (1 - this.positionRender.y / height) * spotDistance + (1 - spotDistance) * lastNode.spot.windPosition.y;
+                    this.flex.set(this.body.flex).subtract(lastNode.spot.flex).multiply(spotDistance).add(lastNode.spot.flex);
+                    this.flexAngle = lastNode.spot.angle + (this.body.flexAngle - lastNode.spot.angle) * spotDistance;
+                }
+                else {
+                    this.wind.x = this.positionRender.x / width;
+                    this.wind.y = 1 - this.positionRender.y / height;
+                    this.flex.set(this.body.flex);
+                    this.flexAngle = this.body.flexAngle;
                 }
             }
 
             break;
         case this.STATE_IDLE:
-            // TODO
+            if (--this.wait === 0) {
+                this.path = pathMaker.makeWander(this.position, random);
+
+                if (this.path.getLastNode().spot)
+                    this.state = this.STATE_PATH;
+                else
+                    this.state = this.STATE_PATH_LEAVE;
+            }
 
             break;
     }

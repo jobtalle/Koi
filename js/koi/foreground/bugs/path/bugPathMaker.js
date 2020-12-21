@@ -75,12 +75,39 @@ BugPathMaker.prototype.recycle = function(path) {
  */
 BugPathMaker.prototype.trace = function(origin, direction, random, stopAtSpot = false) {
     const nodes = [];
+    const spots = [];
+    const spotDistances = [];
     const angle = direction.angle();
+    const aCos = Math.cos(this.CONE_ANGLE * .5);
+
+    if (stopAtSpot) for (const spot of this.bugSpots) {
+        const delta = spot.position.vector2().subtract(origin);
+        const distance = delta.length();
+
+        if (delta.normalize().dot(direction) < aCos) {
+            spots.push(spot);
+            spotDistances.push(distance);
+        }
+    }
 
     for (let radius = this.CONE_STEP;; radius += this.CONE_STEP) {
         const radiusNext = radius + this.CONE_STEP;
 
-        // TODO: Check if spot is in cone here
+        if (stopAtSpot) {
+            const endPoints = [];
+
+            for (let spot = 0, spotCount = spots.length; spot < spotCount; ++spot)
+                if (spotDistances[spot] > radius && spotDistances[spot] < radiusNext)
+                    endPoints.push(spots[spot]);
+
+            if (endPoints.length !== 0) {
+                const spot = this.occupySpot(endPoints[Math.floor(random.getFloat() * endPoints.length)]);
+
+                nodes.push(new BugPathNode(spot.position, spot));
+
+                break;
+            }
+        }
 
         const angleSampler = new Sampler(angle - this.CONE_ANGLE * .5, angle + this.CONE_ANGLE * .5);
         const area = -.5 * Math.PI * Math.PI * this.CONE_ANGLE * (radius * radius - radiusNext * radiusNext);
@@ -133,8 +160,18 @@ BugPathMaker.prototype.makeEntrance = function(random) {
     return new BugPath([new BugPathNode(target.position, target), ...this.trace(origin, exitVector, random)].reverse());
 };
 
-BugPathMaker.prototype.makeWander = function(direction, random) {
-    // TODO
+/**
+ * Make a wandering path, ending either at another bug spot or outside the view
+ * @param {Vector3} origin The start position
+ * @param {Random} random A randomizer
+ * @param {Vector2} [direction] The initial direction
+ * @returns {BugPath} A bug path
+ */
+BugPathMaker.prototype.makeWander = function(
+    origin,
+    random,
+    direction = new Vector2().fromAngle(random.getFloat() * Math.PI * 2)) {
+    return new BugPath([new BugPathNode(origin), ...this.trace(origin.vector2(), direction, random, true)]);
 };
 
 BugPathMaker.prototype.makeLeave = function(random) {
