@@ -22,6 +22,7 @@ const Bug = function(body, path) {
     this.wait = 0;
     this.proximityDistance = 0;
     this.startSpot = null;
+    this.visitedSpots = [];
 
     this.startPath(path);
 };
@@ -37,6 +38,11 @@ Bug.prototype.IDLE_TIME = new SamplerPower(15, 90, 2.2);
  * @param {BugPath} path The path
  */
 Bug.prototype.startPath = function(path) {
+    const spot = path.getLastNode().spot;
+
+    if (spot)
+        this.visitedSpots.push(spot);
+
     if (this.path) {
         const previousLastNode = this.path.getLastNode();
 
@@ -142,7 +148,7 @@ Bug.prototype.update = function(pathMaker, width, height, random) {
             break;
         case this.STATE_IDLE:
             if (--this.wait === 0) {
-                this.startPath(pathMaker.makeWander(this.position, random));
+                this.startPath(pathMaker.makeWander(this.position, this.visitedSpots, random));
 
                 if (this.path.getLastNode().spot)
                     this.state = this.STATE_PATH;

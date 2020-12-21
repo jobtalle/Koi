@@ -12,7 +12,7 @@ const BugPathMaker = function(constellation, biome, bugSpots) {
 };
 
 BugPathMaker.prototype.EDGE_PADDING = 1.2;
-BugPathMaker.prototype.CONE_ANGLE = Math.PI * .5;
+BugPathMaker.prototype.CONE_ANGLE = Math.PI * .35;
 BugPathMaker.prototype.CONE_STEP = 1.3;
 BugPathMaker.prototype.CONE_DENSITY = 4.5;
 
@@ -71,16 +71,22 @@ BugPathMaker.prototype.recycle = function(path) {
  * @param {Vector2} direction The cone direction
  * @param {Random} random A randomizer
  * @param {Boolean} [stopAtSpot] True if the path should end at the next found bug spot
+ * @param {BugSpot[]} [excludeSpots] A list of spots that may not be visited
  * @returns {BugPathNode[]} The nodes in the path
  */
-BugPathMaker.prototype.trace = function(origin, direction, random, stopAtSpot = false) {
+BugPathMaker.prototype.trace = function(
+    origin,
+    direction,
+    random,
+    stopAtSpot = false,
+    excludeSpots = null) {
     const nodes = [];
     const spots = [];
     const spotDistances = [];
     const angle = direction.angle();
     const aCos = Math.cos(this.CONE_ANGLE * .5);
 
-    if (stopAtSpot) for (const spot of this.bugSpots) {
+    if (stopAtSpot) for (const spot of this.bugSpots) if (excludeSpots.indexOf(spot) === -1) {
         const delta = spot.position.vector2().subtract(origin);
         const distance = delta.length();
 
@@ -163,15 +169,22 @@ BugPathMaker.prototype.makeEntrance = function(random) {
 /**
  * Make a wandering path, ending either at another bug spot or outside the view
  * @param {Vector3} origin The start position
+ * @param {BugSpot[]} excludeSpots A list of spots that may not be visited
  * @param {Random} random A randomizer
  * @param {Vector2} [direction] The initial direction
  * @returns {BugPath} A bug path
  */
 BugPathMaker.prototype.makeWander = function(
     origin,
+    excludeSpots,
     random,
     direction = new Vector2().fromAngle(random.getFloat() * Math.PI * 2)) {
-    return new BugPath([new BugPathNode(origin), ...this.trace(origin.vector2(), direction, random, true)]);
+    return new BugPath([new BugPathNode(origin), ...this.trace(
+        origin.vector2(),
+        direction,
+        random,
+        true,
+        excludeSpots)]);
 };
 
 BugPathMaker.prototype.makeLeave = function(random) {
