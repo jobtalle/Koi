@@ -99,6 +99,8 @@ Bug.prototype.update = function(pathMaker, width, height, random) {
             const lastNode = this.path.getLastNode();
             const finishedPath = this.path.move(.05);
 
+            this.body.update(false);
+
             if (finishedPath) {
                 pathMaker.recycle(this.path);
 
@@ -155,6 +157,8 @@ Bug.prototype.update = function(pathMaker, width, height, random) {
                 else
                     this.state = this.STATE_PATH_LEAVE;
             }
+
+            this.body.update(true);
 
             break;
     }

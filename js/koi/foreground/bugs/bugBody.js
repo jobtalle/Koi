@@ -14,6 +14,15 @@ const BugBody = function(gl, flex, flexAngle, vertices, indices) {
     this.vao = null;
     this.mesh = new Mesh(gl, new MeshData(vertices, indices));
     this.flap = 0;
+    this.flapPrevious = this.flap;
+};
+
+/**
+ * Update the bug body
+ * @param {Boolean} idle True if the bug is currently idle
+ */
+BugBody.prototype.update = function(idle) {
+    this.flapPrevious = this.flap;
 };
 
 /**
@@ -41,7 +50,8 @@ BugBody.prototype.render = function(
     if (!this.vao)
         this.vao = flying.register(this.mesh);
 
-    this.flap += .5;
+    const flapPhase = this.flapPrevious +
+        (this.flap > this.flapPrevious ? this.flap - this.flapPrevious : 1 - this.flapPrevious + this.flap) * time;
 
     flying.render(
         this.vao,
@@ -49,7 +59,7 @@ BugBody.prototype.render = function(
         position,
         windPosition,
         flex,
-        .5 * Math.sin(this.flap) + .5,
+        .5 + Math.cos(Math.PI * 2 * flapPhase) * .5,
         angle,
         width,
         height,
