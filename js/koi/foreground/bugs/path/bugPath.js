@@ -61,9 +61,9 @@ BugPath.prototype.getPosition = function() {
 };
 
 /**
- * Get the distance to the end node
- * @returns {Number} The distance to the end point
+ * Get the length of this bug path
+ * @returns {Number} The length of the bug path
  */
-BugPath.prototype.getDistanceLeft = function() {
-    return this.curve.length - this.at;
+BugPath.prototype.length = function() {
+    return this.curve.length;
 };

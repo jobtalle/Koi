@@ -37,7 +37,7 @@ Bugs.prototype.makeBug = function(random) {
  * @param {Random} random A randomizer
  */
 Bugs.prototype.update = function(random) {
-    if (this.bugs.length < 5) { // TODO: something
+    if (this.bugs.length < 1) { // TODO: something
         const bug = this.makeBug(random);
 
         if (bug)

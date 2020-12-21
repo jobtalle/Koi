@@ -6,20 +6,24 @@
  */
 const Bug = function(body, path) {
     this.body = body;
-    this.path = path;
+    this.path = null;
     this.flex = new Vector2();
     this.flexPrevious = this.flex.copy();
     this.flexRender = this.flex.copy();
-    this.position = new Vector3(this.path.getStart().x, this.path.getStart().y, this.path.getLastNode().spot.position.z);
-    this.positionPrevious = this.position.copy();
-    this.positionRender = this.position.copy();
+    this.position = this.positionPrevious = this.positionRender = null;
     this.wind = new Vector2();
     this.windPrevious = this.wind.copy();
     this.windRender = this.wind.copy();
+    this.windMapped = new Vector2();
     this.flexAngle = 0;
     this.flexAnglePrevious = this.flexAngle;
+    this.zStart = 0;
     this.state = this.STATE_PATH;
     this.wait = 0;
+    this.proximityDistance = 0;
+    this.startSpot = null;
+
+    this.startPath(path);
 };
 
 Bug.prototype.STATE_PATH = 0;
@@ -27,6 +31,47 @@ Bug.prototype.STATE_PATH_LEAVE = 1;
 Bug.prototype.STATE_IDLE = 2;
 Bug.prototype.SPOT_PROXIMITY_DISTANCE = 1.8;
 Bug.prototype.IDLE_TIME = new SamplerPower(15, 90, 2.2);
+
+/**
+ * Start moving along a path
+ * @param {BugPath} path The path
+ */
+Bug.prototype.startPath = function(path) {
+    if (this.path) {
+        const previousLastNode = this.path.getLastNode();
+
+        if (previousLastNode.spot)
+            this.zStart = previousLastNode.spot.position.z;
+    }
+    else
+        this.zStart = path.getLastNode().position.z;
+
+    this.position = new Vector3(path.getStart().x, path.getStart().y, this.zStart);
+    this.positionPrevious = this.position.copy();
+    this.positionRender = this.position.copy();
+    this.path = path;
+    this.proximityDistance = Math.min(this.SPOT_PROXIMITY_DISTANCE, path.length() * .5);
+};
+
+/**
+ * Set interpolated spot related properties
+ * @param {Vector2} windFrom The wind start position
+ * @param {Vector2} windTo The wind start position
+ * @param {Vector2} flexFrom The flex start vector
+ * @param {Vector2} flexTo The flex end vector
+ * @param {Number} flexAngleFrom The flex start angle
+ * @param {Number} flexAngleTo The flex end angle
+ * @param {Number} f The interpolation factor
+ */
+Bug.prototype.interpolateSpotProperties = function(
+    windFrom, windTo,
+    flexFrom, flexTo,
+    flexAngleFrom, flexAngleTo,
+    f) {
+    this.wind.set(windTo).subtract(windFrom).multiply(f).add(windFrom);
+    this.flex.set(flexTo).subtract(flexFrom).multiply(f).add(flexFrom);
+    this.flexAngle = flexAngleFrom + (flexAngleTo - flexAngleFrom) * f;
+};
 
 /**
  * Update a bug
@@ -55,29 +100,40 @@ Bug.prototype.update = function(pathMaker, width, height, random) {
                     return true;
                 else {
                     this.state = this.STATE_IDLE;
-                    this.flex = lastNode.spot.flex;
                     this.position.set(lastNode.spot.position);
                     this.wind.set(lastNode.spot.windPosition);
+                    this.flex = lastNode.spot.flex;
                     this.flexAngle = lastNode.spot.angle;
+                    this.startSpot = lastNode.spot;
                     this.wait = Math.round(this.IDLE_TIME.sample(random.getFloat()));
                 }
             }
             else {
                 const pathPosition = this.path.getPosition();
-                const spotDistance = Math.min(1, this.path.getDistanceLeft() / this.SPOT_PROXIMITY_DISTANCE);
-                // TODO: Z position
+
                 this.position.x = pathPosition.x;
                 this.position.y = pathPosition.y;
+                this.windMapped.x = this.positionRender.x / width;
+                this.windMapped.y = 1 - this.positionRender.y / height;
 
-                if (this.state === this.STATE_PATH) {
-                    this.wind.x = (this.positionRender.x / width) * spotDistance + (1 - spotDistance) * lastNode.spot.windPosition.x;
-                    this.wind.y = (1 - this.positionRender.y / height) * spotDistance + (1 - spotDistance) * lastNode.spot.windPosition.y;
-                    this.flex.set(this.body.flex).subtract(lastNode.spot.flex).multiply(spotDistance).add(lastNode.spot.flex);
-                    this.flexAngle = lastNode.spot.angle + (this.body.flexAngle - lastNode.spot.angle) * spotDistance;
-                }
+                if (lastNode.spot)
+                    this.position.z = this.zStart + (lastNode.spot.position.z - this.zStart) *
+                        (this.path.at / this.path.length());
+
+                if (this.startSpot && this.path.at < this.proximityDistance)
+                    this.interpolateSpotProperties(
+                        this.startSpot.windPosition, this.windMapped,
+                        this.startSpot.flex, this.body.flex,
+                        this.startSpot.angle, this.body.flexAngle,
+                        this.path.at / this.proximityDistance);
+                else if (lastNode.spot && this.path.at > this.path.length() - this.proximityDistance)
+                    this.interpolateSpotProperties(
+                        lastNode.spot.windPosition, this.windMapped,
+                        lastNode.spot.flex, this.body.flex,
+                        lastNode.spot.angle, this.body.flexAngle,
+                        (this.path.length() - this.path.at) / this.proximityDistance);
                 else {
-                    this.wind.x = this.positionRender.x / width;
-                    this.wind.y = 1 - this.positionRender.y / height;
+                    this.wind.set(this.windMapped);
                     this.flex.set(this.body.flex);
                     this.flexAngle = this.body.flexAngle;
                 }
@@ -86,7 +142,7 @@ Bug.prototype.update = function(pathMaker, width, height, random) {
             break;
         case this.STATE_IDLE:
             if (--this.wait === 0) {
-                this.path = pathMaker.makeWander(this.position, random);
+                this.startPath(pathMaker.makeWander(this.position, random));
 
                 if (this.path.getLastNode().spot)
                     this.state = this.STATE_PATH;
