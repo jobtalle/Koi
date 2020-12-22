@@ -17,6 +17,8 @@ const Bug = function(body, path) {
     this.windMapped = new Vector2();
     this.flexAngle = 0;
     this.flexAnglePrevious = this.flexAngle;
+    this.angle = 0;
+    this.anglePrevious = this.angle;
     this.zStart = 0;
     this.state = this.STATE_PATH;
     this.wait = 0;
@@ -36,9 +38,9 @@ Bug.prototype.IDLE_TIME = new SamplerPower(30, 400, 2.2);
 /**
  * Start moving along a path
  * @param {BugPath} path The path
- * @param {BugPathMaker} pathMaker A path maker to recycle previous paths in
+ * @param {BugPathMaker} [pathMaker] A path maker to recycle previous paths in
  */
-Bug.prototype.startPath = function(path, pathMaker) {
+Bug.prototype.startPath = function(path, pathMaker = null) {
     const spot = path.getLastNode().spot;
 
     if (spot)
@@ -95,6 +97,7 @@ Bug.prototype.update = function(pathMaker, width, height, random) {
     this.flexPrevious.set(this.flex);
     this.windPrevious.set(this.wind);
     this.flexAnglePrevious = this.flexAngle;
+    this.anglePrevious = this.angle;
 
     switch (this.state) {
         case this.STATE_PATH:
@@ -103,6 +106,7 @@ Bug.prototype.update = function(pathMaker, width, height, random) {
             const proximityStart = Math.min(1, this.path.at / this.proximityDistance);
             const proximityEnd = Math.min(1, (this.path.length() - this.path.at) / this.proximityDistance);
             const finishedPath = this.path.move(this.body.speed.sample(Math.min(proximityStart, proximityEnd)));
+
             this.body.update(false);
 
             if (finishedPath) {

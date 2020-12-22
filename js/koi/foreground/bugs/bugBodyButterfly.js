@@ -33,8 +33,8 @@ BugBodyButterfly.prototype.FLAP_SPEED_IDLE = .05;
  * @param {Number[]} indices The array to store the indices in
  */
 BugBodyButterfly.prototype.model = function(vertices, indices) {
-    const shade = .3;
-    const highlight = 1.7;
+    const shade = -.3;
+    const highlight = .3;
     const flapScale = .2;
     const color = new Color(1, .9, .9);
     const sample = new Vector2();

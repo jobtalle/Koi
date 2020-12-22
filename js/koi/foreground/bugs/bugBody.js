@@ -38,7 +38,7 @@ BugBody.prototype.update = function(idle) {
  * @param {Vector3} position The position
  * @param {Vector2} windPosition The wind position
  * @param {Vector2} flex The flex vector
- * @param {Number} angle The angle
+ * @param {Number} flexAngle The angle
  * @param {Number} width The scene width in meters
  * @param {Number} height The scene height in meters
  * @param {Flying} flying The flying objects renderer
@@ -49,7 +49,7 @@ BugBody.prototype.render = function(
     position,
     windPosition,
     flex,
-    angle,
+    flexAngle,
     width,
     height,
     flying,
@@ -68,7 +68,8 @@ BugBody.prototype.render = function(
         windPosition,
         flex,
         .5 + Math.cos(Math.PI * 2 * flapPhase) * .5,
-        angle,
+        flexAngle,
+        0,
         width,
         height,
         air,

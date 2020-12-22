@@ -11,7 +11,7 @@ const Flying = function(gl) {
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
         ["position", "positionFlap", "color", "flapShade"],
-        ["filter", "scale", "center", "windCenter", "flex", "flap", "angle", "time"]);
+        ["filter", "scale", "center", "windCenter", "flex", "flap", "flexAngle", "angle", "time"]);
     this.vao = gl.vao.createVertexArrayOES();
     this.filter = Color.WHITE;
 };
@@ -23,6 +23,7 @@ uniform vec3 center;
 uniform vec2 windCenter;
 uniform vec2 flex;
 uniform float flap;
+uniform float flexAngle;
 uniform float angle;
 uniform float time;
 
@@ -33,14 +34,14 @@ attribute float flapShade;
 
 varying vec3 iColor;
 
-void main() {
-  iColor = mix(color, color * flapShade, flap);
-  
+void main() {  
   vec2 states = texture2D(air, windCenter).ar;
   float displacement = mix(states.x, states.y, time) * 2.0 - 1.0;
-  float rCos = cos(angle * displacement);
-  float rSin = sin(angle * displacement);
+  float rCos = cos(flexAngle * displacement + angle);
+  float rSin = sin(flexAngle * displacement + angle);
   vec2 flappedPosition = mix(position, positionFlap, flap) * mat2(rCos, -rSin, rSin, rCos);
+  
+  iColor = mix(color, color * (1.0 + flapShade * rCos), flap);
   
   gl_Position = vec4(
     (vec2(
@@ -101,6 +102,7 @@ Flying.prototype.setFilter = function(filter) {
  * @param {Vector2} windPosition The wind position
  * @param {Vector2} flex The flex vector at the target position
  * @param {Number} flap The flap amount at the current time in the range [0, 1]
+ * @param {Number} flexAngle The flex angle
  * @param {Number} angle The angle
  * @param {Number} width The scene width
  * @param {Number} height The scene height
@@ -114,6 +116,7 @@ Flying.prototype.render = function(
     windPosition,
     flex,
     flap,
+    flexAngle,
     angle,
     width,
     height,
@@ -140,6 +143,7 @@ Flying.prototype.render = function(
     this.gl.uniform2f(this.program["uWindCenter"], windPosition.x, windPosition.y);
     this.gl.uniform2f(this.program["uFlex"], flex.x, flex.y);
     this.gl.uniform1f(this.program["uFlap"], flap);
+    this.gl.uniform1f(this.program["uFlexAngle"], flexAngle);
     this.gl.uniform1f(this.program["uAngle"], angle);
     this.gl.uniform1f(this.program["uTime"], time);
     this.gl.drawElements(this.gl.TRIANGLES, mesh.elementCount, this.gl.UNSIGNED_SHORT, 0);
