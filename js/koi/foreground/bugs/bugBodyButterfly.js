@@ -26,7 +26,7 @@ const BugBodyButterfly = function(gl) {
 BugBodyButterfly.prototype = Object.create(BugBody.prototype);
 BugBodyButterfly.prototype.FLEX = .2;
 BugBodyButterfly.prototype.FLEX_ANGLE = -.6;
-BugBodyButterfly.prototype.SPEED = new SamplerPower(.01, .08, .3);
+BugBodyButterfly.prototype.SPEED = new SamplerPower(.005, .08, .3);
 BugBodyButterfly.prototype.FLAP_SPEED_FLYING = .41;
 BugBodyButterfly.prototype.FLAP_SPEED_IDLE = .05;
 

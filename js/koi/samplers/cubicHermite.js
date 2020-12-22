@@ -25,7 +25,7 @@ CubicHermite.prototype.interpolate = function(a, b, c, d, t) {
 };
 
 /**
- * Sample the
+ * Sample the spline
  * @param {Vector2} vector The vector to store the sample in
  * @param {Number} t The distance on the curve in the range [0, 1]
  */
