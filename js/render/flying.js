@@ -11,8 +11,9 @@ const Flying = function(gl) {
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
         ["position", "positionFlap", "color", "flapShade"],
-        ["scale", "center", "windCenter", "flex", "flap", "angle", "time"]);
+        ["filter", "scale", "center", "windCenter", "flex", "flap", "angle", "time"]);
     this.vao = gl.vao.createVertexArrayOES();
+    this.filter = Color.WHITE;
 };
 
 Flying.prototype.SHADER_VERTEX =  `#version 100
@@ -51,10 +52,12 @@ void main() {
 `;
 
 Flying.prototype.SHADER_FRAGMENT = `#version 100
+uniform lowp vec3 filter;
+
 varying lowp vec3 iColor;
 
 void main() {
-  gl_FragColor = vec4(iColor, 1.0);
+  gl_FragColor = vec4(iColor * filter, 1.0);
 }
 `;
 
@@ -80,6 +83,14 @@ Flying.prototype.register = function(mesh) {
     this.gl.vertexAttribPointer(this.program["aFlapShade"], 1, this.gl.FLOAT, false, 32, 28);
 
     return vao;
+};
+
+/**
+ * Set the filtering color
+ * @param {Color} filter The filtering color
+ */
+Flying.prototype.setFilter = function(filter) {
+    this.filter = filter;
 };
 
 /**
@@ -110,6 +121,16 @@ Flying.prototype.render = function(
     time) {
     this.gl.vao.bindVertexArrayOES(vao);
     this.program.use();
+
+    if (this.filter !== null) {
+        this.gl.uniform3f(
+            this.program["uFilter"],
+            this.filter.r,
+            this.filter.g,
+            this.filter.b);
+
+        this.filter = null;
+    }
 
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, air.getFront().texture);

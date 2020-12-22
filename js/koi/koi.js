@@ -413,6 +413,7 @@ Koi.prototype.render = function(deltaTime) {
         this.systems.stone.setFilter(this.weather.filter);
         this.systems.vegetation.setFilter(this.weather.filter);
         this.systems.ponds.setFilter(this.weather.filter);
+        this.systems.flying.setFilter(this.weather.filter);
     }
 
     // Render shadows
