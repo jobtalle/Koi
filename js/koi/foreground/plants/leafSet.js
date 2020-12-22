@@ -15,7 +15,7 @@
  * @param {Random} random A randomizer
  * @constructor
  */
-LeafSet = function(
+const LeafSet = function(
     x1,
     z1,
     x2,

@@ -7,7 +7,7 @@
  * @param {Vector2} [baseFlex] The flex vector to add to
  * @constructor
  */
-FlexSampler = function(
+const FlexSampler = function(
     xOrigin,
     zOrigin,
     amount,

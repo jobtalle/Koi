@@ -15,7 +15,7 @@ BugPathMaker.prototype.EDGE_PADDING = 1.2;
 BugPathMaker.prototype.CONE_ANGLE = 1;
 BugPathMaker.prototype.CONE_STEP = 1.3;
 BugPathMaker.prototype.CONE_DENSITY = 4.5;
-BugPathMaker.prototype.APPROACH_DISTANCE = new SamplerPower(.13, .3, 1.9);
+BugPathMaker.prototype.APPROACH_DISTANCE = new SamplerPower(.2, .4, 1.7);
 BugPathMaker.prototype.APPROACH_ANGLE = new Sampler(Math.PI * .4, Math.PI * .6);
 
 /**
@@ -50,28 +50,27 @@ BugPathMaker.prototype.returnSpot = function(spot) {
 /**
  * Get a vector pointing towards the closest scene edge
  * @param {Vector2} position The position to create an exit vector for
- * @param {Random} random A randomizer
  * @returns {Vector2} A unit vector pointing towards the closest edge
  */
-BugPathMaker.prototype.getExitVector = function(position, random) {
+BugPathMaker.prototype.getExitVector = function(position) {
     return position.copy().subtract(
         new Vector2(this.constellation.width, this.constellation.height).multiply(.5)).normalize();
 };
 
 /**
  * Get a path node that can be placed before a bug spot node
- * @param {BugSpot} spot A bug spot
+ * @param {Vector3} position A bug spot position
  * @param {Random} random A randomizer
  * @returns {BugPathNode} The approach node
  */
-BugPathMaker.prototype.getApproachNode = function(spot, random) {
+BugPathMaker.prototype.makeApproachNode = function(position, random) {
     const distance = this.APPROACH_DISTANCE.sample(random.getFloat());
     const angle = this.APPROACH_ANGLE.sample(random.getFloat());
 
     return new BugPathNode(new Vector3(
-        spot.position.x + Math.cos(angle) * distance,
-        spot.position.y + Math.sin(angle) * distance,
-        spot.position.z));
+        position.x + Math.cos(angle) * distance,
+        position.y + Math.sin(angle) * distance,
+        position.z));
 };
 
 /**
@@ -128,7 +127,7 @@ BugPathMaker.prototype.trace = function(
                 const spot = this.occupySpot(endPoints[Math.floor(random.getFloat() * endPoints.length)]);
 
                 nodes.push(
-                    this.getApproachNode(spot, random),
+                    this.makeApproachNode(spot.position, random),
                     new BugPathNode(spot.position, spot));
 
                 break;
@@ -181,11 +180,11 @@ BugPathMaker.prototype.makeEntrance = function(random) {
         return null;
 
     const origin = target.position.vector2();
-    const exitVector = this.getExitVector(origin, random);
+    const exitVector = this.getExitVector(origin);
 
     return new BugPath([
         new BugPathNode(target.position, target),
-        this.getApproachNode(target, random),
+        this.makeApproachNode(target.position, random),
         ...this.trace(origin, exitVector, random)].reverse());
 };
 
@@ -204,5 +203,6 @@ BugPathMaker.prototype.makeWander = function(
     direction = new Vector2().fromAngle(random.getFloat() * Math.PI * 2)) {
     return new BugPath([
         new BugPathNode(origin),
+        this.makeApproachNode(origin, random),
         ...this.trace(origin.vector2(), direction, random,true, excludeSpots)]);
 };
