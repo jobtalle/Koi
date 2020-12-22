@@ -112,9 +112,9 @@ Bug.prototype.update = function(pathMaker, width, height, random) {
                 }
                 else {
                     this.state = this.STATE_IDLE;
-                    this.position.set(lastNode.spot.position);
                     this.startSpot = lastNode.spot;
 
+                    this.position.set(lastNode.spot.position);
                     this.wind.set(lastNode.spot.windPosition);
                     this.flex.set(lastNode.spot.flex);
                     this.flexAngle = lastNode.spot.angle;

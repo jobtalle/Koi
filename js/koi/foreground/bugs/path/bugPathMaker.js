@@ -12,7 +12,7 @@ const BugPathMaker = function(constellation, biome, bugSpots) {
 };
 
 BugPathMaker.prototype.EDGE_PADDING = 1.2;
-BugPathMaker.prototype.CONE_ANGLE = Math.PI * .35;
+BugPathMaker.prototype.CONE_ANGLE = 1;
 BugPathMaker.prototype.CONE_STEP = 1.3;
 BugPathMaker.prototype.CONE_DENSITY = 4.5;
 
@@ -90,7 +90,7 @@ BugPathMaker.prototype.trace = function(
         const delta = spot.position.vector2().subtract(origin);
         const distance = delta.length();
 
-        if (delta.normalize().dot(direction) < aCos) {
+        if (delta.normalize().dot(direction) > aCos) {
             spots.push(spot);
             spotDistances.push(distance);
         }
