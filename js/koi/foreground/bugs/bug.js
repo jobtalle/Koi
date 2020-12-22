@@ -100,8 +100,9 @@ Bug.prototype.update = function(pathMaker, width, height, random) {
         case this.STATE_PATH:
         case this.STATE_PATH_LEAVE:
             const lastNode = this.path.getLastNode();
-            const finishedPath = this.path.move(.072);
-
+            const proximityStart = Math.min(1, this.path.at / this.proximityDistance);
+            const proximityEnd = Math.min(1, (this.path.length() - this.path.at) / this.proximityDistance);
+            const finishedPath = this.path.move(this.body.speed.sample(Math.min(proximityStart, proximityEnd)));
             this.body.update(false);
 
             if (finishedPath) {
@@ -139,13 +140,13 @@ Bug.prototype.update = function(pathMaker, width, height, random) {
                         this.startSpot.windPosition, this.windMapped,
                         this.startSpot.flex, this.body.flex,
                         this.startSpot.angle, this.body.flexAngle,
-                        this.path.at / this.proximityDistance);
+                        proximityStart);
                 else if (lastNode.spot && this.path.at > this.path.length() - this.proximityDistance)
                     this.interpolateSpotProperties(
                         lastNode.spot.windPosition, this.windMapped,
                         lastNode.spot.flex, this.body.flex,
                         lastNode.spot.angle, this.body.flexAngle,
-                        (this.path.length() - this.path.at) / this.proximityDistance);
+                        proximityEnd);
                 else {
                     this.wind.set(this.windMapped);
                     this.flex.set(this.body.flex);

@@ -186,7 +186,3 @@ BugPathMaker.prototype.makeWander = function(
         true,
         excludeSpots)]);
 };
-
-BugPathMaker.prototype.makeLeave = function(random) {
-    // TODO
-};

@@ -3,14 +3,22 @@
  * @param {WebGLRenderingContext} gl A WebGL rendering context
  * @param {Vector2} flex The flex vector during flight
  * @param {Number} flexAngle The maximum amount of rotation caused by wind gusts
+ * @param {Sampler} speed The flying speed sampler
  * @param {Number[]} vertices The vertices
  * @param {Number[]} indices The indices
  * @constructor
  */
-const BugBody = function(gl, flex, flexAngle, vertices, indices) {
+const BugBody = function(
+    gl,
+    flex,
+    flexAngle,
+    speed,
+    vertices,
+    indices) {
     this.gl = gl;
     this.flex = flex;
     this.flexAngle = flexAngle;
+    this.speed = speed;
     this.vao = null;
     this.mesh = new Mesh(gl, new MeshData(vertices, indices));
     this.flap = 0;
