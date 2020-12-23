@@ -17,7 +17,8 @@ BugPathMaker.prototype.CONE_ANGLE = 1;
 BugPathMaker.prototype.CONE_STEP = 1.3;
 BugPathMaker.prototype.CONE_DENSITY = 4.5;
 BugPathMaker.prototype.APPROACH_DISTANCE = new SamplerPower(.2, .5, 1.7);
-BugPathMaker.prototype.APPROACH_ANGLE = new Sampler(Math.PI * .4, Math.PI * .6);
+BugPathMaker.prototype.APPROACH_ANGLE = new Sampler(Math.PI * .35, Math.PI * .65);
+BugPathMaker.prototype.HOP_RADIUS = BugPathMaker.prototype.CONE_STEP;
 
 /**
  * Get a random bug spot from the pool
@@ -219,5 +220,24 @@ BugPathMaker.prototype.makeHop = function(
     origin,
     excludeSpots,
     random) {
-    // TODO
+    const inRange = [];
+
+    for (const spot of this.bugSpots) if (excludeSpots.indexOf(spot) === -1) {
+        const dx = spot.position.x - origin.x;
+        const dy = spot.position.y - origin.y;
+
+        if (dx * dx + dy * dy < this.HOP_RADIUS * this.HOP_RADIUS)
+            inRange.push(spot);
+    }
+
+    if (inRange.length === 0)
+        return null;
+
+    const spot = this.occupySpot(inRange[Math.floor(random.getFloat() * inRange.length)]);
+
+    return new BugPath([
+        new BugPathNode(origin),
+        this.makeApproachNode(origin, random),
+        this.makeApproachNode(spot.position, random),
+        new BugPathNode(spot.position, spot)]);
 };

@@ -33,7 +33,9 @@ Bug.prototype.STATE_PATH = 0;
 Bug.prototype.STATE_PATH_LEAVE = 1;
 Bug.prototype.STATE_IDLE = 2;
 Bug.prototype.SPOT_PROXIMITY_DISTANCE = 1.8;
-Bug.prototype.IDLE_TIME = new SamplerPower(30, 400, 2.2);
+Bug.prototype.IDLE_TIME = new SamplerPower(30, 100, 2.2);
+Bug.prototype.IDLE_CHANCE_ROTATE = .5;
+Bug.prototype.IDLE_CHANCE_HOP = Bug.prototype.IDLE_CHANCE_ROTATE + .3;
 
 /**
  * Start moving along a path
@@ -162,12 +164,29 @@ Bug.prototype.update = function(pathMaker, width, height, random) {
             break;
         case this.STATE_IDLE:
             if (--this.wait === 0) {
-                this.startPath(pathMaker.makeWander(this.position, this.visitedSpots, random), pathMaker);
+                const r = random.getFloat();
 
-                if (this.path.getLastNode().spot)
-                    this.state = this.STATE_PATH;
-                else
-                    this.state = this.STATE_PATH_LEAVE;
+                if (r < this.IDLE_CHANCE_ROTATE) {
+                    this.wait = Math.round(this.IDLE_TIME.sample(random.getFloat()));
+                }
+                else if (r < this.IDLE_CHANCE_HOP) {
+                    const hopPath = pathMaker.makeHop(this.position, this.visitedSpots, random);
+                    console.log(hopPath);
+                    if (hopPath) {
+                        this.startPath(hopPath, pathMaker);
+                        this.state = this.STATE_PATH;
+                    }
+                    else
+                        this.wait = Math.round(this.IDLE_TIME.sample(random.getFloat()));
+                }
+                else {
+                    this.startPath(pathMaker.makeWander(this.position, this.visitedSpots, random), pathMaker);
+
+                    if (this.path.getLastNode().spot)
+                        this.state = this.STATE_PATH;
+                    else
+                        this.state = this.STATE_PATH_LEAVE;
+                }
             }
 
             this.body.update(true);

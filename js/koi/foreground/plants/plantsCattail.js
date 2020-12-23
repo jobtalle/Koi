@@ -23,7 +23,7 @@ Plants.prototype.CATTAIL_CAPSULE_START = .65;
 Plants.prototype.CATTAIL_CAPSULE_END = .95;
 Plants.prototype.CATTAIL_CAPSULE_RADIUS = .04;
 Plants.prototype.CATTAIL_CAPSULE_SHADE = .65;
-Plants.prototype.CATTAIL_CAPSULE_SPOT = new SamplerPlateau(.1, .5, .9, 1);
+Plants.prototype.CATTAIL_CAPSULE_SPOT = new SamplerPlateau(.2, .5, .8, 0.5);
 
 /**
  * Model cattail
@@ -85,6 +85,7 @@ Plants.prototype.modelCattail = function(
         vertices,
         indices);
 
+    // TODO: Add multiple if the capsule is long enough
     bugSpots.push(new BugSpot(
         new Vector3(
             x + directionCos * capsuleSpot,
