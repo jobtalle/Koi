@@ -23,6 +23,7 @@ Plants.prototype.CATTAIL_CAPSULE_START = .65;
 Plants.prototype.CATTAIL_CAPSULE_END = .95;
 Plants.prototype.CATTAIL_CAPSULE_RADIUS = .04;
 Plants.prototype.CATTAIL_CAPSULE_SHADE = .65;
+Plants.prototype.CATTAIL_CAPSULE_SPOT = new SamplerPlateau(.1, .5, .9, 1);
 
 /**
  * Model cattail
@@ -48,6 +49,7 @@ Plants.prototype.modelCattail = function(
 
     const capsuleStart = height * this.CATTAIL_CAPSULE_START;
     const capsuleEnd = height * this.CATTAIL_CAPSULE_END;
+    const capsuleSpot = capsuleStart + (capsuleEnd - capsuleStart) * this.CATTAIL_CAPSULE_SPOT.sample(random.getFloat());
     const leafStart = height * this.CATTAIL_LEAVES_START;
     const leafEnd = height * this.CATTAIL_LEAVES_END;
     const direction = Math.PI * .5 + (random.getFloat() * 2 - 1) * this.CATTAIL_ANGLE_RADIUS;
@@ -85,9 +87,9 @@ Plants.prototype.modelCattail = function(
 
     bugSpots.push(new BugSpot(
         new Vector3(
-            x + directionCos * (capsuleStart + capsuleEnd) * .5,
+            x + directionCos * capsuleSpot,
             y,
-            directionSin * (capsuleStart + capsuleEnd) * .5),
+            directionSin * capsuleSpot),
         uv,
         flexSampler));
 
