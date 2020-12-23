@@ -134,6 +134,7 @@ Bug.prototype.update = function(pathMaker, width, height, random) {
                 this.position.y = pathPosition.y;
                 this.windMapped.x = this.positionRender.x / width;
                 this.windMapped.y = 1 - this.positionRender.y / height;
+                this.angle = -this.position.vector2().subtract(this.positionPrevious.vector2()).angle() - Math.PI * .5;
 
                 if (lastNode.spot)
                     this.position.z = this.zStart + (lastNode.spot.position.z - this.zStart) *
@@ -195,6 +196,7 @@ Bug.prototype.render = function(width, height, flying, air, time) {
         this.windRender,
         this.flexRender,
         this.flexAnglePrevious + (this.flexAngle - this.flexAnglePrevious) * time,
+        this.anglePrevious + (this.angle - this.anglePrevious) * time,
         width,
         height,
         flying,

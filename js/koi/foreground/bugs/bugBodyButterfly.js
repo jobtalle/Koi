@@ -24,8 +24,9 @@ BugBodyButterfly.prototype.STEPS = 9;
 BugBodyButterfly.prototype.FLEX = .2;
 BugBodyButterfly.prototype.FLEX_ANGLE = -.6;
 BugBodyButterfly.prototype.SPEED = new SamplerPower(.002, .08, .38);
-BugBodyButterfly.prototype.FLAP_SPEED_FLYING = .41;
+BugBodyButterfly.prototype.FLAP_SPEED_FLYING = .5;
 BugBodyButterfly.prototype.FLAP_SPEED_IDLE = .05;
+BugBodyButterfly.prototype.COLOR = Color.fromCSS("--color-bug-butterfly");
 
 /**
  * Model the butterfly
@@ -36,7 +37,6 @@ BugBodyButterfly.prototype.model = function(vertices, indices) {
     const shade = -.3;
     const highlight = .3;
     const flapScale = .2;
-    const color = new Color(1, .9, .9);
     const sample = new Vector2();
     const bezier = new CubicBezier(
         new Vector2(0, -.05),
@@ -52,12 +52,12 @@ BugBodyButterfly.prototype.model = function(vertices, indices) {
         vertices.push(
             sample.x, sample.y,
             sample.x * flapScale, sample.y,
-            color.r, color.g, color.b,
+            this.COLOR.r, this.COLOR.g, this.COLOR.b,
             shade);
         vertices.push(
             -sample.x, sample.y,
             -sample.x * flapScale, sample.y,
-            color.r, color.g, color.b,
+            this.COLOR.r, this.COLOR.g, this.COLOR.b,
             highlight);
         indices.push(0, step << 1, step + 1 << 1);
         indices.push(1, (step << 1) + 1, (step + 1 << 1) + 1);

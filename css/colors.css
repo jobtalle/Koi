@@ -30,4 +30,7 @@
     --color-fish-orange: #cd6142;
     --color-fish-red: #db3030;
     --color-fish-brown: var(--color-rock-top);
+
+    /* Bug colors */
+    --color-bug-butterfly: #fff8ef;
 }

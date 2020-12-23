@@ -12,6 +12,7 @@ const BugPathMaker = function(constellation, biome, bugSpots) {
 };
 
 BugPathMaker.prototype.EDGE_PADDING = 1.2;
+BugPathMaker.prototype.EDGE_PADDING_Z = 2;
 BugPathMaker.prototype.CONE_ANGLE = 1;
 BugPathMaker.prototype.CONE_STEP = 1.3;
 BugPathMaker.prototype.CONE_DENSITY = 4.5;
@@ -161,7 +162,7 @@ BugPathMaker.prototype.trace = function(
         if (bestCandidate.position.x < -this.EDGE_PADDING ||
             bestCandidate.position.y < -this.EDGE_PADDING ||
             bestCandidate.position.x > this.constellation.width + this.EDGE_PADDING ||
-            bestCandidate.position.y > this.constellation.height + this.EDGE_PADDING)
+            bestCandidate.position.y > this.constellation.height + this.EDGE_PADDING + this.EDGE_PADDING_Z)
             break;
     }
 
@@ -205,4 +206,18 @@ BugPathMaker.prototype.makeWander = function(
         new BugPathNode(origin),
         this.makeApproachNode(origin, random),
         ...this.trace(origin.vector2(), direction, random,true, excludeSpots)]);
+};
+
+/**
+ * Make a hop path, hopping to another nearby unvisited bug spot
+ * @param {Vector3} origin The start position
+ * @param {BugSpot[]} excludeSpots A list of spots that may not be visited
+ * @param {Random} random A randomizer
+ * @returns {BugPath} A bug path, or null if no hop is possible
+ */
+BugPathMaker.prototype.makeHop = function(
+    origin,
+    excludeSpots,
+    random) {
+    // TODO
 };
