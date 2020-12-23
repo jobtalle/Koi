@@ -18,7 +18,9 @@ BugPathMaker.prototype.CONE_STEP = 1.3;
 BugPathMaker.prototype.CONE_DENSITY = 4.5;
 BugPathMaker.prototype.APPROACH_DISTANCE = new SamplerPower(.2, .5, 1.7);
 BugPathMaker.prototype.APPROACH_ANGLE = new Sampler(Math.PI * .35, Math.PI * .65);
+BugPathMaker.prototype.APPROACH_ALTITUDE = .9;
 BugPathMaker.prototype.HOP_RADIUS = BugPathMaker.prototype.CONE_STEP;
+BugPathMaker.prototype.ALTITUDE = .6;
 
 /**
  * Get a random bug spot from the pool
@@ -72,7 +74,7 @@ BugPathMaker.prototype.makeApproachNode = function(position, random) {
     return new BugPathNode(new Vector3(
         position.x + Math.cos(angle) * distance,
         position.y + Math.sin(angle) * distance,
-        position.z));
+        this.ALTITUDE + (position.z - this.ALTITUDE) * this.APPROACH_ALTITUDE));
 };
 
 /**
@@ -149,7 +151,7 @@ BugPathMaker.prototype.trace = function(
             const candidate = new BugPathNode(new Vector3(
                 origin.x + Math.cos(a) * r,
                 origin.y + Math.sin(a) * r,
-                1));
+                this.ALTITUDE));
             const priority = candidate.getPriority(this.biome);
 
             if (!bestCandidate || bestCandidatePriority < priority) {

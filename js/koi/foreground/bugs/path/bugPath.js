@@ -6,7 +6,7 @@
 const BugPath = function(nodes) {
     this.nodes = nodes;
     this.at = 0;
-    this.position = new Vector2();
+    this.position = new Vector3();
     this.curve = this.makeCurve();
 };
 
@@ -20,7 +20,7 @@ BugPath.prototype.makeCurve = function() {
     const points = [];
 
     for (const node of this.nodes)
-        points.push(node.position.vector2());
+        points.push(node.position);
 
     return new CubicHermiteSampler(new CubicHermite(points), this.CURVE_RESOLUTION);
 };
@@ -52,7 +52,7 @@ BugPath.prototype.getLastNode = function() {
 
 /**
  * Get the current position on the path
- * @returns {Vector2} The current position
+ * @returns {Vector3} The current position
  */
 BugPath.prototype.getPosition = function() {
     this.curve.sample(this.position, this.at);

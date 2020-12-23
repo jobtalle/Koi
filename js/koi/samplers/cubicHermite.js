@@ -1,6 +1,6 @@
 /**
  * A cubic hermite spline
- * @param {Vector2[]} points The points on this spline
+ * @param {Vector3[]} points The points on this spline
  * @constructor
  */
 const CubicHermite = function(points) {
@@ -17,7 +17,7 @@ const CubicHermite = function(points) {
  * @returns {Number} The interpolated value
  */
 CubicHermite.prototype.interpolate = function(a, b, c, d, t) {
-    const A = a * -.5 + (3 * b ) * .5 - (3 * c) * .5 + d * .5;
+    const A = a * -.5 + (3 * b ) * .5 - (3 * c) * .5 + d * .5; // TODO: You can shorten this
     const B = a - (5 * b) * .5 + 2 * c - d * .5;
     const C = a * -.5 + c * .5;
 
@@ -26,7 +26,7 @@ CubicHermite.prototype.interpolate = function(a, b, c, d, t) {
 
 /**
  * Sample the spline
- * @param {Vector2} vector The vector to store the sample in
+ * @param {Vector3} vector The vector to store the sample in
  * @param {Number} t The distance on the curve in the range [0, 1]
  */
 CubicHermite.prototype.sample = function(vector, t) {
@@ -39,11 +39,12 @@ CubicHermite.prototype.sample = function(vector, t) {
 
     vector.x = this.interpolate(this.points[i0].x, this.points[i1].x, this.points[i2].x, this.points[i3].x, f);
     vector.y = this.interpolate(this.points[i0].y, this.points[i1].y, this.points[i2].y, this.points[i3].y, f);
+    vector.z = this.interpolate(this.points[i0].z, this.points[i1].z, this.points[i2].z, this.points[i3].z, f);
 };
 
 /**
  * Get the start point of this spline
- * @returns {Vector2} The start point
+ * @returns {Vector3} The start point
  */
 CubicHermite.prototype.getStart = function() {
     return this.points[0];
@@ -51,7 +52,7 @@ CubicHermite.prototype.getStart = function() {
 
 /**
  * Get the end point of this spline
- * @returns {Vector2} The end point
+ * @returns {Vector3} The end point
  */
 CubicHermite.prototype.getEnd = function() {
     return this.points[this.points.length - 1];

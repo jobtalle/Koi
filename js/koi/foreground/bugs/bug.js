@@ -20,7 +20,6 @@ const Bug = function(body, path) {
     this.angle = 0;
     this.anglePrevious = this.angle;
     this.angleTarget = this.angle;
-    this.zStart = 0;
     this.state = this.STATE_PATH;
     this.wait = 0;
     this.proximityDistance = 0;
@@ -50,18 +49,10 @@ Bug.prototype.startPath = function(path, pathMaker = null) {
     if (spot)
         this.visitedSpots.push(spot);
 
-    if (this.path) {
-        const previousLastNode = this.path.getLastNode();
-
+    if (this.path)
         pathMaker.recycle(this.path);
 
-        if (previousLastNode.spot)
-            this.zStart = previousLastNode.spot.position.z;
-    }
-    else
-        this.zStart = path.getLastNode().position.z;
-
-    this.position = new Vector3(path.getStart().x, path.getStart().y, this.zStart);
+    this.position = path.getStart().copy();
     this.positionPrevious = this.position.copy();
     this.positionRender = this.position.copy();
     this.path = path;
@@ -133,7 +124,11 @@ Bug.prototype.hop = function(pathMaker, random) {
  * @param {Random} random A randomizer
  */
 Bug.prototype.wander = function(pathMaker, random) {
-    this.startPath(pathMaker.makeWander(this.position, this.visitedSpots, random), pathMaker);
+    this.startPath(pathMaker.makeWander(
+        this.position,
+        this.visitedSpots,
+        random,
+        new Vector2().fromAngle(this.angle)), pathMaker);
 
     if (this.path.getLastNode().spot)
         this.state = this.STATE_PATH;
@@ -198,15 +193,10 @@ Bug.prototype.update = function(pathMaker, width, height, random) {
                 const dx = pathPosition.x - this.position.x;
                 const dy = pathPosition.y - this.position.y;
 
-                this.position.x = pathPosition.x;
-                this.position.y = pathPosition.y;
+                this.position.set(pathPosition);
                 this.windMapped.x = this.positionRender.x / width;
                 this.windMapped.y = 1 - this.positionRender.y / height;
                 this.angleTarget = Math.atan2(-dx, -dy);
-
-                if (lastNode.spot)
-                    this.position.z = this.zStart + (lastNode.spot.position.z - this.zStart) *
-                        (this.path.at / this.path.length());
 
                 if (this.startSpot && this.path.at < this.proximityDistance)
                     this.interpolateSpotProperties(

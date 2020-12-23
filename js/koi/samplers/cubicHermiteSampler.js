@@ -17,7 +17,8 @@ const CubicHermiteSampler = function(cubicHermite, precision) {
 
         const dx = sample.x - lastSample.x;
         const dy = sample.y - lastSample.y;
-        const d = Math.sqrt(dx * dx + dy * dy);
+        const dz = sample.z - lastSample.z;
+        const d = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
         if (d > precision) {
             lastSample = sample.copy();
@@ -37,7 +38,7 @@ CubicHermiteSampler.prototype.EPSILON = .005;
 
 /**
  * Sample the path at a certain length
- * @param {Vector2} vector The vector to store the sample in
+ * @param {Vector3} vector The vector to store the sample in
  * @param {Number} at The distance from the starting point, no higher than the path length
  */
 CubicHermiteSampler.prototype.sample = function(vector, at) {
@@ -49,6 +50,7 @@ CubicHermiteSampler.prototype.sample = function(vector, at) {
 
     const dx = this.points[startIndex + 1].x - this.points[startIndex].x;
     const dy = this.points[startIndex + 1].y - this.points[startIndex].y;
+    const dz = this.points[startIndex + 1].z - this.points[startIndex].z;
     const pointDistance = this.lengths[startIndex + 1] - this.lengths[startIndex];
     const distance = at - this.lengths[startIndex];
     const traveled = distance / pointDistance;
@@ -56,20 +58,13 @@ CubicHermiteSampler.prototype.sample = function(vector, at) {
     vector.set(this.points[startIndex]);
     vector.x += dx * traveled;
     vector.y += dy * traveled;
+    vector.z += dz * traveled;
 };
 
 /**
  * Get the start of this curve
- * @returns {Vector2} The starting point
+ * @returns {Vector3} The starting point
  */
 CubicHermiteSampler.prototype.getStart = function() {
     return this.points[0];
-};
-
-/**
- * Get the end of this curve
- * @returns {Vector2} The end point
- */
-CubicHermiteSampler.prototype.getEnd = function() {
-    return this.points[this.points.length - 1];
 };

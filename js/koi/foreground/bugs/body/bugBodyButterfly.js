@@ -64,14 +64,14 @@ BugBodyButterfly.prototype.model = function(
             sample.x, sample.y,
             sample.x * flapScale, sample.y,
             colorWings.r, colorWings.g, colorWings.b,
-            this.WING_SHADE);
-        vertices.push(
+            this.WING_SHADE,
             -sample.x, sample.y,
             -sample.x * flapScale, sample.y,
             colorWings.r, colorWings.g, colorWings.b,
             this.WING_HIGHLIGHT);
-        indices.push(0, step << 1, step + 1 << 1);
-        indices.push(1, (step << 1) + 1, (step + 1 << 1) + 1);
+        indices.push(
+            0, step << 1, step + 1 << 1,
+            1, (step << 1) + 1, (step + 1 << 1) + 1);
     }
 };
 

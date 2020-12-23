@@ -63,8 +63,10 @@ BugBody.prototype.render = function(
     if (!this.vao)
         this.vao = flying.register(this.mesh);
 
-    const flapPhase = this.flapPrevious +
-        (this.flap > this.flapPrevious ? this.flap - this.flapPrevious : 1 - this.flapPrevious + this.flap) * time;
+    const flapDelta = this.flap >= this.flapPrevious ?
+        this.flap - this.flapPrevious :
+        1 - this.flapPrevious + this.flap;
+    const flapPhase = this.flapPrevious + flapDelta * time;
 
     flying.render(
         this.vao,
@@ -72,7 +74,7 @@ BugBody.prototype.render = function(
         position,
         windPosition,
         flex,
-        .5 + Math.cos(Math.PI * 2 * flapPhase) * .5,
+        .5 + Math.sin(Math.PI * 2 * flapPhase) * .5,
         flexAngle,
         angle,
         width,
