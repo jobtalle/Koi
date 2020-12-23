@@ -21,6 +21,7 @@ const BugBodyButterfly = function(
         new Vector2(this.FLEX, 0),
         this.FLEX_ANGLE,
         this.SPEED,
+        this.ROTATION,
         vertices,
         indices);
 };
@@ -30,6 +31,7 @@ BugBodyButterfly.prototype.STEPS = 9;
 BugBodyButterfly.prototype.FLEX = .2;
 BugBodyButterfly.prototype.FLEX_ANGLE = -.6;
 BugBodyButterfly.prototype.SPEED = new SamplerPower(.002, .08, .38);
+BugBodyButterfly.prototype.ROTATION = new Sampler(-1.7, 1.7);
 BugBodyButterfly.prototype.FLAP_SPEED_FLYING = .5;
 BugBodyButterfly.prototype.FLAP_SPEED_IDLE = .05;
 BugBodyButterfly.prototype.WING_SHADE = -.35;

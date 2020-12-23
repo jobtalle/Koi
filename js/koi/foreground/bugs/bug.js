@@ -19,6 +19,7 @@ const Bug = function(body, path) {
     this.flexAnglePrevious = this.flexAngle;
     this.angle = 0;
     this.anglePrevious = this.angle;
+    this.angleTarget = this.angle;
     this.zStart = 0;
     this.state = this.STATE_PATH;
     this.wait = 0;
@@ -33,9 +34,10 @@ Bug.prototype.STATE_PATH = 0;
 Bug.prototype.STATE_PATH_LEAVE = 1;
 Bug.prototype.STATE_IDLE = 2;
 Bug.prototype.SPOT_PROXIMITY_DISTANCE = 1.8;
-Bug.prototype.IDLE_TIME = new SamplerPower(30, 100, 2.2);
-Bug.prototype.IDLE_CHANCE_ROTATE = .5;
-Bug.prototype.IDLE_CHANCE_HOP = Bug.prototype.IDLE_CHANCE_ROTATE + .3;
+Bug.prototype.IDLE_TIME = new SamplerPower(15, 70, 2.2);
+Bug.prototype.IDLE_CHANCE_ROTATE = .7;
+Bug.prototype.IDLE_CHANCE_HOP = Bug.prototype.IDLE_CHANCE_ROTATE + .2;
+Bug.prototype.ANGLE_APPROACH = .42;
 
 /**
  * Start moving along a path
@@ -87,6 +89,59 @@ Bug.prototype.interpolateSpotProperties = function(
 };
 
 /**
+ * Set the wait timer to a new value
+ * @param {Random} random A randomizer
+ */
+Bug.prototype.setWait = function(random) {
+    this.wait = Math.round(this.IDLE_TIME.sample(random.getFloat()));
+};
+
+/**
+ * Rotate the bug
+ * @param {Random} random A randomizer
+ */
+Bug.prototype.rotate = function(random) {
+    this.setWait(random);
+
+    this.angleTarget = Math.max(
+        -Math.PI,
+        Math.min(Math.PI, this.angle + this.body.rotation.sample(random.getFloat())));
+};
+
+/**
+ * Hop to a nearby plant
+ * @param {BugPathMaker} pathMaker The path maker
+ * @param {Random} random A randomizer
+ * @returns {Boolean} True if the hop succeeded
+ */
+Bug.prototype.hop = function(pathMaker, random) {
+    const hopPath = pathMaker.makeHop(this.position, this.visitedSpots, random);
+
+    if (hopPath) {
+        this.startPath(hopPath, pathMaker);
+        this.state = this.STATE_PATH;
+
+        return true;
+    }
+
+    return false;
+};
+
+/**
+ * Wander
+ * @param {BugPathMaker} pathMaker The path maker
+ * @param {Random} random A randomizer
+ */
+Bug.prototype.wander = function(pathMaker, random) {
+    this.startPath(pathMaker.makeWander(this.position, this.visitedSpots, random), pathMaker);
+
+    if (this.path.getLastNode().spot)
+        this.state = this.STATE_PATH;
+    else
+        this.state = this.STATE_PATH_LEAVE;
+};
+
+/**
  * Update a bug
  * @param {BugPathMaker} pathMaker A path maker
  * @param {Number} width The scene width in meters
@@ -100,6 +155,15 @@ Bug.prototype.update = function(pathMaker, width, height, random) {
     this.windPrevious.set(this.wind);
     this.flexAnglePrevious = this.flexAngle;
     this.anglePrevious = this.angle;
+
+    let angleDelta = this.angleTarget - this.angle;
+
+    if (angleDelta > Math.PI)
+        angleDelta -= Math.PI * 2;
+    else if (angleDelta < -Math.PI)
+        angleDelta += Math.PI * 2;
+
+    this.angle += angleDelta * this.ANGLE_APPROACH;
 
     switch (this.state) {
         case this.STATE_PATH:
@@ -131,12 +195,14 @@ Bug.prototype.update = function(pathMaker, width, height, random) {
             }
             else {
                 const pathPosition = this.path.getPosition();
+                const dx = pathPosition.x - this.position.x;
+                const dy = pathPosition.y - this.position.y;
 
                 this.position.x = pathPosition.x;
                 this.position.y = pathPosition.y;
                 this.windMapped.x = this.positionRender.x / width;
                 this.windMapped.y = 1 - this.positionRender.y / height;
-                this.angle = -this.position.vector2().subtract(this.positionPrevious.vector2()).angle() - Math.PI * .5;
+                this.angleTarget = Math.atan2(-dx, -dy);
 
                 if (lastNode.spot)
                     this.position.z = this.zStart + (lastNode.spot.position.z - this.zStart) *
@@ -166,27 +232,14 @@ Bug.prototype.update = function(pathMaker, width, height, random) {
             if (--this.wait === 0) {
                 const r = random.getFloat();
 
-                if (r < this.IDLE_CHANCE_ROTATE) {
-                    this.wait = Math.round(this.IDLE_TIME.sample(random.getFloat()));
-                }
+                if (r < this.IDLE_CHANCE_ROTATE)
+                    this.rotate(random);
                 else if (r < this.IDLE_CHANCE_HOP) {
-                    const hopPath = pathMaker.makeHop(this.position, this.visitedSpots, random);
-                    console.log(hopPath);
-                    if (hopPath) {
-                        this.startPath(hopPath, pathMaker);
-                        this.state = this.STATE_PATH;
-                    }
-                    else
-                        this.wait = Math.round(this.IDLE_TIME.sample(random.getFloat()));
+                    if (!this.hop(pathMaker, random))
+                        this.wander(pathMaker, random);
                 }
-                else {
-                    this.startPath(pathMaker.makeWander(this.position, this.visitedSpots, random), pathMaker);
-
-                    if (this.path.getLastNode().spot)
-                        this.state = this.STATE_PATH;
-                    else
-                        this.state = this.STATE_PATH_LEAVE;
-                }
+                else
+                    this.wander(pathMaker, random);
             }
 
             this.body.update(true);
@@ -210,12 +263,21 @@ Bug.prototype.render = function(width, height, flying, air, time) {
     this.flexRender.set(this.flex).subtract(this.flexPrevious).multiply(time).add(this.flexPrevious);
     this.windRender.set(this.wind).subtract(this.windPrevious).multiply(time).add(this.windPrevious);
 
+    let angleDelta = this.angle - this.anglePrevious;
+
+    if (angleDelta > Math.PI)
+        angleDelta -= Math.PI * 2;
+    else if (angleDelta < -Math.PI)
+        angleDelta += Math.PI * 2;
+
+    const angleRender = this.anglePrevious + angleDelta * time;
+
     this.body.render(
         this.positionRender,
         this.windRender,
         this.flexRender,
         this.flexAnglePrevious + (this.flexAngle - this.flexAnglePrevious) * time,
-        this.anglePrevious + (this.angle - this.anglePrevious) * time,
+        angleRender,
         width,
         height,
         flying,
