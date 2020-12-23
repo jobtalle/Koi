@@ -1,13 +1,19 @@
 /**
  * A butterfly body
  * @param {WebGLRenderingContext} gl A WebGL rendering context
+ * @param {Color} colorWings The wing color
  * @constructor
  */
-const BugBodyButterfly = function(gl) {
+const BugBodyButterfly = function(
+    gl,
+    colorWings) {
     const vertices = [];
     const indices = [];
 
-    this.model(vertices, indices);
+    this.model(
+        vertices,
+        indices,
+        colorWings);
 
     BugBody.call(
         this,
@@ -26,16 +32,19 @@ BugBodyButterfly.prototype.FLEX_ANGLE = -.6;
 BugBodyButterfly.prototype.SPEED = new SamplerPower(.002, .08, .38);
 BugBodyButterfly.prototype.FLAP_SPEED_FLYING = .5;
 BugBodyButterfly.prototype.FLAP_SPEED_IDLE = .05;
-BugBodyButterfly.prototype.COLOR = Color.fromCSS("--color-bug-butterfly");
+BugBodyButterfly.prototype.WING_SHADE = -.35;
+BugBodyButterfly.prototype.WING_HIGHLIGHT = .35;
 
 /**
  * Model the butterfly
  * @param {Number[]} vertices The array to store the vertices in
  * @param {Number[]} indices The array to store the indices in
+ * @param {Color} colorWings The wing color
  */
-BugBodyButterfly.prototype.model = function(vertices, indices) {
-    const shade = -.3;
-    const highlight = .3;
+BugBodyButterfly.prototype.model = function(
+    vertices,
+    indices,
+    colorWings) {
     const flapScale = .2;
     const sample = new Vector2();
     const bezier = new CubicBezier(
@@ -52,13 +61,13 @@ BugBodyButterfly.prototype.model = function(vertices, indices) {
         vertices.push(
             sample.x, sample.y,
             sample.x * flapScale, sample.y,
-            this.COLOR.r, this.COLOR.g, this.COLOR.b,
-            shade);
+            colorWings.r, colorWings.g, colorWings.b,
+            this.WING_SHADE);
         vertices.push(
             -sample.x, sample.y,
             -sample.x * flapScale, sample.y,
-            this.COLOR.r, this.COLOR.g, this.COLOR.b,
-            highlight);
+            colorWings.r, colorWings.g, colorWings.b,
+            this.WING_HIGHLIGHT);
         indices.push(0, step << 1, step + 1 << 1);
         indices.push(1, (step << 1) + 1, (step + 1 << 1) + 1);
     }

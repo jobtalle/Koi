@@ -26,7 +26,7 @@ Bugs.prototype.makeBug = function(random) {
 
     if (path)
         return new Bug(
-            new BugBodyButterfly(this.gl),
+            new BugBodyButterflyYellow(this.gl),
             path);
 
     return null;
