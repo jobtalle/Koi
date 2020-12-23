@@ -33,4 +33,6 @@
 
     /* Bug colors */
     --color-bug-butterfly-yellow: #ded5bd;
+    --color-bug-butterfly-blue: #bdd7f3;
+    --color-bug-butterfly-blue-edge: #8db2e2;
 }

@@ -2,18 +2,21 @@
  * A butterfly body
  * @param {WebGLRenderingContext} gl A WebGL rendering context
  * @param {Color} colorWings The wing color
+ * @param {Color} colorWingsEdge The wing edge color
  * @constructor
  */
 const BugBodyButterfly = function(
     gl,
-    colorWings) {
+    colorWings,
+    colorWingsEdge) {
     const vertices = [];
     const indices = [];
 
     this.model(
         vertices,
         indices,
-        colorWings);
+        colorWings,
+        colorWingsEdge);
 
     BugBody.call(
         this,
@@ -42,11 +45,13 @@ BugBodyButterfly.prototype.WING_HIGHLIGHT = .35;
  * @param {Number[]} vertices The array to store the vertices in
  * @param {Number[]} indices The array to store the indices in
  * @param {Color} colorWings The wing color
+ * @param {Color} colorWingsEdge The wing edge color
  */
 BugBodyButterfly.prototype.model = function(
     vertices,
     indices,
-    colorWings) {
+    colorWings,
+    colorWingsEdge) {
     const flapScale = .2;
     const sample = new Vector2();
     const bezier = new CubicBezier(
@@ -56,6 +61,7 @@ BugBodyButterfly.prototype.model = function(
         new Vector2(0, .05));
 
     for (let step = 0; step < this.STEPS; ++step) {
+        const color = step === 0 || step === this.STEPS - 1 ? colorWings : colorWingsEdge;
         const t = step / (this.STEPS - 1);
 
         bezier.sample(sample, t);
@@ -63,11 +69,11 @@ BugBodyButterfly.prototype.model = function(
         vertices.push(
             sample.x, sample.y,
             sample.x * flapScale, sample.y,
-            colorWings.r, colorWings.g, colorWings.b,
+            color.r, color.g, color.b,
             this.WING_SHADE,
             -sample.x, sample.y,
             -sample.x * flapScale, sample.y,
-            colorWings.r, colorWings.g, colorWings.b,
+            color.r, color.g, color.b,
             this.WING_HIGHLIGHT);
         indices.push(
             0, step << 1, step + 1 << 1,
