@@ -34,8 +34,9 @@ const BugBody = function(
 /**
  * Update the bug body
  * @param {Boolean} idle True if the bug is currently idle
+ * @param {Random} random A randomizer
  */
-BugBody.prototype.update = function(idle) {
+BugBody.prototype.update = function(idle, random) {
     this.flapPrevious = this.flap;
 };
 

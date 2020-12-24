@@ -30,6 +30,8 @@ const BugBodyButterfly = function(
         resistant,
         vertices,
         indices);
+
+    this.skipFlap = 0;
 };
 
 BugBodyButterfly.prototype = Object.create(BugBody.prototype);
@@ -40,8 +42,11 @@ BugBodyButterfly.prototype.SPEED = new SamplerPower(.002, .08, .38);
 BugBodyButterfly.prototype.ROTATION = new SamplerPlateau(-Math.PI, 0, Math.PI, 1);
 BugBodyButterfly.prototype.FLAP_SPEED_FLYING = .55;
 BugBodyButterfly.prototype.FLAP_SPEED_IDLE = .035;
+BugBodyButterfly.prototype.FLAP_SPEED_SKIP = .3;
 BugBodyButterfly.prototype.WING_SHADE = -.35;
 BugBodyButterfly.prototype.WING_HIGHLIGHT = .35;
+BugBodyButterfly.prototype.SKIP_CHANCE = .25;
+BugBodyButterfly.prototype.SKIP_STEPS = new Sampler(1, 3);
 
 /**
  * Model the butterfly
@@ -87,15 +92,35 @@ BugBodyButterfly.prototype.model = function(
 /**
  * Update the bug body
  * @param {Boolean} idle True if the bug is currently idle
+ * @param {Random} random A randomizer
  */
-BugBodyButterfly.prototype.update = function(idle) {
+BugBodyButterfly.prototype.update = function(idle, random) {
     BugBody.prototype.update.call(this, idle);
 
-    if (idle)
-        this.flap += this.FLAP_SPEED_IDLE;
-    else
+    if (idle) {
+        if (this.skipFlap !== 0) {
+            this.flap += this.FLAP_SPEED_SKIP;
+
+            if (this.flap > 1) {
+                --this.flap;
+                --this.skipFlap;
+            }
+        }
+        else {
+            this.flap += this.FLAP_SPEED_IDLE;
+
+            if (this.flap > 1) {
+                --this.flap;
+
+                if (random.getFloat() < this.SKIP_CHANCE)
+                    this.skipFlap = Math.round(this.SKIP_STEPS.sample(random.getFloat()));
+            }
+        }
+    }
+    else {
         this.flap += this.FLAP_SPEED_FLYING;
 
-    if (this.flap > 1)
-        this.flap -= 1;
+        if (this.flap > 1)
+            --this.flap;
+    }
 };

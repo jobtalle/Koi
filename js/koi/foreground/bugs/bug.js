@@ -34,9 +34,9 @@ Bug.prototype.STATE_PATH = 0;
 Bug.prototype.STATE_PATH_LEAVE = 1;
 Bug.prototype.STATE_IDLE = 2;
 Bug.prototype.SPOT_PROXIMITY_DISTANCE = 1.8;
-Bug.prototype.IDLE_TIME = new SamplerPower(15, 50, 3.3);
-Bug.prototype.IDLE_CHANCE_ROTATE = .7;
-Bug.prototype.IDLE_CHANCE_HOP = Bug.prototype.IDLE_CHANCE_ROTATE + .2;
+Bug.prototype.IDLE_TIME = new SamplerPower(20, 60, 2.5);
+Bug.prototype.IDLE_CHANCE_ROTATE = .75;
+Bug.prototype.IDLE_CHANCE_HOP = Bug.prototype.IDLE_CHANCE_ROTATE + .15;
 Bug.prototype.ANGLE_APPROACH = .6;
 Bug.prototype.AIM_DELTA = .8;
 
@@ -208,7 +208,7 @@ Bug.prototype.update = function(
             const proximityEnd = Math.min(1, (this.path.length() - this.path.at) / this.proximityDistance);
             const finishedPath = this.path.move(this.body.speed.sample(Math.min(proximityStart, proximityEnd)));
 
-            this.body.update(false);
+            this.body.update(false, random);
 
             if (finishedPath) {
                 if (this.state === this.STATE_PATH_LEAVE) {
@@ -273,7 +273,7 @@ Bug.prototype.update = function(
                     this.leave(pathMaker, random);
             }
 
-            this.body.update(true);
+            this.body.update(true, random);
 
             break;
     }
