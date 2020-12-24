@@ -18,6 +18,15 @@ const Bugs = function(gl, constellation, biome, bugSpots) {
 };
 
 /**
+ * Create some initial bugs
+ * @param {WeatherState} weatherState The weather state
+ * @param {Random} random A randomizer
+ */
+Bugs.prototype.initialize = function(weatherState, random) {
+    this.bugs.push(...this.spawner.spawnInitial(this.gl, weatherState, this.pathMaker, random));
+};
+
+/**
  * Displace sitting bugs
  * @param {Number} x The X position
  * @param {Number} y The Y position

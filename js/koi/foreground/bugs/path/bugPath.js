@@ -11,6 +11,15 @@ const BugPath = function(nodes) {
 };
 
 BugPath.prototype.CURVE_RESOLUTION = .05;
+BugPath.prototype.INITIAL_POSITION = new SamplerPower(0, 1, .2);
+
+/**
+ * Set the position on this path to a random position
+ * @param {Random} random A randomizer
+ */
+BugPath.prototype.setRandomPosition = function(random) {
+    this.at = this.curve.length * this.INITIAL_POSITION.sample(random.getFloat());
+};
 
 /**
  * Make the curve between the nodes

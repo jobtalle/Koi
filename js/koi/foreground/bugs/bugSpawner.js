@@ -10,6 +10,7 @@ const BugSpawner = function(constellation) {
 
 BugSpawner.prototype.MAX_AREA_PER_BUG = 12;
 BugSpawner.prototype.SPAWN_FREQUENCY = 30;
+BugSpawner.prototype.INITIAL_COUNT = .25;
 BugSpawner.prototype.LOST_RAIN_BUG_CHANCE = .12;
 BugSpawner.prototype.MAX_BUGS_MULTIPLIER = {
     [WeatherState.prototype.ID_SUNNY]: 1,
@@ -19,11 +20,11 @@ BugSpawner.prototype.MAX_BUGS_MULTIPLIER = {
     [WeatherState.prototype.ID_THUNDERSTORM]: .1
 };
 BugSpawner.prototype.SPAWN_CHANCE = {
-    [WeatherState.prototype.ID_SUNNY]: .8,
+    [WeatherState.prototype.ID_SUNNY]: .7,
     [WeatherState.prototype.ID_OVERCAST]: .5,
-    [WeatherState.prototype.ID_DRIZZLE]: .2,
-    [WeatherState.prototype.ID_RAIN]: .1,
-    [WeatherState.prototype.ID_THUNDERSTORM]: .05
+    [WeatherState.prototype.ID_DRIZZLE]: .15,
+    [WeatherState.prototype.ID_RAIN]: .06,
+    [WeatherState.prototype.ID_THUNDERSTORM]: .03
 };
 
 /**
@@ -35,6 +36,7 @@ BugSpawner.prototype.SPAWN_CHANCE = {
  */
 BugSpawner.prototype.makeBody = function(gl, weatherState, random) {
     switch (weatherState.state) {
+        default:
         case weatherState.ID_SUNNY:
             return new BugBodyButterflySunny(gl);
         case weatherState.ID_OVERCAST:
@@ -43,12 +45,43 @@ BugSpawner.prototype.makeBody = function(gl, weatherState, random) {
             else
                 return new BugBodyButterflySunny(gl);
         case weatherState.ID_DRIZZLE:
+        case weatherState.ID_RAIN:
             return new BugBodyButterflyRainy(gl);
         case weatherState.ID_THUNDERSTORM:
             return new BugBodyButterflyThunder(gl);
     }
+};
 
-    return null;
+/**
+ * Spawn initial bugs fitting the environment
+ * @param {WebGLRenderingContext} gl A WebGL rendering context
+ * @param {WeatherState} weatherState The current weather state
+ * @param {BugPathMaker} pathMaker The bug path maker
+ * @param {Random} random A randomizer
+ * @returns {Bug[]} The initial bugs to spawn
+ */
+BugSpawner.prototype.spawnInitial = function(
+    gl,
+    weatherState,
+    pathMaker,
+    random) {
+    if (weatherState.state === weatherState.ID_THUNDERSTORM || weatherState.state === weatherState.ID_RAIN)
+        return [];
+
+    const count = Math.ceil(this.maxBugs * this.MAX_BUGS_MULTIPLIER[weatherState.state] * this.INITIAL_COUNT);
+    const bugs = [];
+
+    for (let i = 0; i < count; ++i) {
+        const path = pathMaker.makeEntrance(random);
+
+        if (path) {
+            path.setRandomPosition(random);
+
+            bugs.push(new Bug(this.makeBody(gl, weatherState, random), path));
+        }
+    }
+
+    return bugs;
 };
 
 /**
@@ -75,14 +108,8 @@ BugSpawner.prototype.update = function(
 
         const path = pathMaker.makeEntrance(random);
 
-        if (path) {
-            const body = this.makeBody(gl, weatherState, random);
-
-            if (body)
-                return new Bug(body, path);
-            else
-                pathMaker.recycle(path);
-        }
+        if (path)
+            return new Bug(this.makeBody(gl, weatherState, random), path);
     }
 
     return null;

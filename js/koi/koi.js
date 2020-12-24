@@ -87,6 +87,8 @@ Koi.prototype.deserialize = function(buffer) {
         this.weather.setState(WeatherState.deserialize(buffer));
         this.mutations.deserialize(buffer);
         this.weatherFilterChanged = true;
+
+        this.foreground.bugs.initialize(this.weather.state, this.effectsRandom);
     }
     catch (error) {
         this.free();
