@@ -24,7 +24,7 @@ const WeatherState = function(
     this.initialized = false;
 };
 
-WeatherState.prototype.STATE_TIME = 500;
+WeatherState.prototype.STATE_TIME = 620;
 WeatherState.prototype.CRICKET_TIME = 350;
 WeatherState.prototype.CRICKET_COUNT = 4;
 WeatherState.prototype.ID_SUNNY = 0;
@@ -36,11 +36,6 @@ WeatherState.prototype.SAMPLER_ONE_SHOT_TIME = new SamplerPower(20, 150, 0.3);
 WeatherState.prototype.SAMPLER_ONE_SHOT_PAN = new Sampler(-.8, .8);
 WeatherState.prototype.ONE_SHOT_VOLUME_SUPPRESION = .7;
 WeatherState.prototype.TRANSITION_MATRIX = [
-    // [0, 0, 0, 0, 1],
-    // [0, 0, 0, 0, 1],
-    // [0, 0, 0, 0, 1],
-    // [0, 0, 0, 0, 1],
-    // [1, 0, 0, 0, 0]
     [         // Transitions from sunny weather
         0.6,  // Sunny
         0.3,  // Overcast

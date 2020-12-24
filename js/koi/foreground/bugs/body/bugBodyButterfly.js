@@ -1,22 +1,39 @@
 /**
  * A butterfly body
  * @param {WebGLRenderingContext} gl A WebGL rendering context
+ * @param {Sampler} bodyHeightSampler The height of the body
+ * @param {Sampler} topLengthSampler The distance to the top left control point
+ * @param {Sampler} topAngleSampler The angle towards the top left control
+ * @param {Sampler} bottomLengthSampler The distance to the bottom left control point
+ * @param {Sampler} bottomAngleSampler The angle towards the top left control point
  * @param {Color} colorWings The wing color
  * @param {Color} colorWingsEdge The wing edge color
  * @param {Boolean} resistant True if the bug resists rain
+ * @param {Random} random A randomizer
  * @constructor
  */
 const BugBodyButterfly = function(
     gl,
+    bodyHeightSampler,
+    topLengthSampler,
+    topAngleSampler,
+    bottomLengthSampler,
+    bottomAngleSampler,
     colorWings,
     colorWingsEdge,
-    resistant = false) {
+    resistant,
+    random) {
     const vertices = [];
     const indices = [];
 
     this.model(
         vertices,
         indices,
+        bodyHeightSampler.sample(random.getFloat()),
+        topLengthSampler.sample(random.getFloat()),
+        topAngleSampler.sample(random.getFloat()),
+        bottomLengthSampler.sample(random.getFloat()),
+        bottomAngleSampler.sample(random.getFloat()),
         colorWings,
         colorWingsEdge);
 
@@ -52,21 +69,40 @@ BugBodyButterfly.prototype.SKIP_STEPS = new Sampler(1, 3);
  * Model the butterfly
  * @param {Number[]} vertices The array to store the vertices in
  * @param {Number[]} indices The array to store the indices in
+ * @param {Number} bodyHeight The height of the body
+ * @param {Number} topLength The distance to the top left control point
+ * @param {Number} topAngle The angle towards the top left control
+ * @param {Number} bottomLength The distance to the bottom left control point
+ * @param {Number} bottomAngle The angle towards the top left control point
  * @param {Color} colorWings The wing color
  * @param {Color} colorWingsEdge The wing edge color
  */
 BugBodyButterfly.prototype.model = function(
     vertices,
     indices,
+    bodyHeight,
+    topLength,
+    topAngle,
+    bottomLength,
+    bottomAngle,
     colorWings,
     colorWingsEdge) {
     const flapScale = .2;
     const sample = new Vector2();
+
     const bezier = new CubicBezier(
-        new Vector2(0, -.05),
-        new Vector2(.2, -.4),
-        new Vector2(.3, .4),
-        new Vector2(0, .05));
+        new Vector2(
+            0,
+            bodyHeight * .5),
+        new Vector2(
+            Math.cos(topAngle) * topLength,
+            bodyHeight * -.5 + Math.sin(topAngle) * topLength),
+        new Vector2(
+            Math.cos(bottomAngle) * bottomLength,
+            bodyHeight * -.5 + Math.sin(bottomAngle) * bottomLength),
+        new Vector2(
+            0,
+            bodyHeight * -.5));
 
     for (let step = 0; step < this.STEPS; ++step) {
         const color = step === 0 || step === this.STEPS - 1 ? colorWings : colorWingsEdge;

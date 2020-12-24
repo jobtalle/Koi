@@ -8,21 +8,21 @@ const BugSpawner = function(constellation) {
     this.countdown = this.SPAWN_FREQUENCY;
 };
 
-BugSpawner.prototype.MAX_AREA_PER_BUG = 12;
+BugSpawner.prototype.MAX_AREA_PER_BUG = 15;
 BugSpawner.prototype.SPAWN_FREQUENCY = 30;
 BugSpawner.prototype.INITIAL_COUNT = .25;
 BugSpawner.prototype.LOST_RAIN_BUG_CHANCE = .12;
 BugSpawner.prototype.MAX_BUGS_MULTIPLIER = {
     [WeatherState.prototype.ID_SUNNY]: 1,
     [WeatherState.prototype.ID_OVERCAST]: .7,
-    [WeatherState.prototype.ID_DRIZZLE]: .2,
+    [WeatherState.prototype.ID_DRIZZLE]: .4,
     [WeatherState.prototype.ID_RAIN]: .1,
     [WeatherState.prototype.ID_THUNDERSTORM]: .1
 };
 BugSpawner.prototype.SPAWN_CHANCE = {
-    [WeatherState.prototype.ID_SUNNY]: .7,
-    [WeatherState.prototype.ID_OVERCAST]: .5,
-    [WeatherState.prototype.ID_DRIZZLE]: .15,
+    [WeatherState.prototype.ID_SUNNY]: .6,
+    [WeatherState.prototype.ID_OVERCAST]: .4,
+    [WeatherState.prototype.ID_DRIZZLE]: .2,
     [WeatherState.prototype.ID_RAIN]: .06,
     [WeatherState.prototype.ID_THUNDERSTORM]: .03
 };
@@ -38,17 +38,17 @@ BugSpawner.prototype.makeBody = function(gl, weatherState, random) {
     switch (weatherState.state) {
         default:
         case weatherState.ID_SUNNY:
-            return new BugBodyButterflySunny(gl);
+            return new BugBodyButterflySunny(gl, random);
         case weatherState.ID_OVERCAST:
             if (random.getFloat() < this.LOST_RAIN_BUG_CHANCE)
-                return new BugBodyButterflyRainy(gl);
+                return new BugBodyButterflyRainy(gl, random);
             else
-                return new BugBodyButterflySunny(gl);
+                return new BugBodyButterflySunny(gl, random);
         case weatherState.ID_DRIZZLE:
         case weatherState.ID_RAIN:
-            return new BugBodyButterflyRainy(gl);
+            return new BugBodyButterflyRainy(gl, random);
         case weatherState.ID_THUNDERSTORM:
-            return new BugBodyButterflyThunder(gl);
+            return new BugBodyButterflyThunder(gl, random);
     }
 };
 
@@ -102,7 +102,7 @@ BugSpawner.prototype.update = function(
     if (--this.countdown === 0) {
         this.countdown = this.SPAWN_FREQUENCY;
 
-        if (bugCount >= Math.ceil(this.maxBugs * this.MAX_BUGS_MULTIPLIER[weatherState.state]) ||
+        if (bugCount > Math.ceil(this.maxBugs * this.MAX_BUGS_MULTIPLIER[weatherState.state]) ||
             random.getFloat() > this.SPAWN_CHANCE[weatherState.state])
             return null;
 

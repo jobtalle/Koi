@@ -78,7 +78,7 @@ BugBody.prototype.render = function(
         position,
         windPosition,
         flex,
-        .5 + Math.sin(Math.PI * 2 * flapPhase) * .5,
+        .5 + Math.cos(Math.PI * 2 * flapPhase) * .5,
         flexAngle,
         angle,
         width,
