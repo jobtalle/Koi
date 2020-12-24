@@ -232,6 +232,8 @@ Koi.prototype.createRenderables = function() {
         this.systems.quad);
 
     shore.free();
+
+    this.foreground.bugs.initialize(this.weather.state, this.effectsRandom);
 };
 
 /**
@@ -342,6 +344,8 @@ Koi.prototype.resize = function() {
 
     this.weather.setState(weatherState);
     this.weatherFilterChanged = true;
+
+    this.foreground.bugs.initialize(this.weather.state, this.effectsRandom);
 };
 
 /**

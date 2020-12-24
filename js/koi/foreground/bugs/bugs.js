@@ -11,19 +11,23 @@ const Bugs = function(gl, constellation, biome, bugSpots) {
     this.constellation = constellation;
     this.pathMaker = new BugPathMaker(constellation, biome, bugSpots);
     this.spawner = new BugSpawner(constellation);
-    this.bugs = [];
+    this.bugs = null;
 
     for (const spot of bugSpots)
         spot.normalize(constellation.width, constellation.height);
 };
 
 /**
- * Create some initial bugs
+ * Create the initial bugs
  * @param {WeatherState} weatherState The weather state
  * @param {Random} random A randomizer
  */
 Bugs.prototype.initialize = function(weatherState, random) {
-    this.bugs.push(...this.spawner.spawnInitial(this.gl, weatherState, this.pathMaker, random));
+    if (this.bugs)
+        for (const bug of this.bugs)
+            bug.free(this.pathMaker);
+
+    this.bugs = this.spawner.spawnInitial(this.gl, weatherState, this.pathMaker, random);
 };
 
 /**
@@ -84,6 +88,7 @@ Bugs.prototype.render = function(flying, air, time) {
  * Free the bugs
  */
 Bugs.prototype.free = function() {
-    for (const bug of this.bugs)
-        bug.free();
+    if (this.bugs)
+        for (const bug of this.bugs)
+            bug.free();
 };

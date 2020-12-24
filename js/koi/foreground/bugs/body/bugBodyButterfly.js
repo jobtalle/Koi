@@ -60,6 +60,7 @@ BugBodyButterfly.prototype.ROTATION = new SamplerPlateau(-Math.PI, 0, Math.PI, 1
 BugBodyButterfly.prototype.FLAP_SPEED_FLYING = .55;
 BugBodyButterfly.prototype.FLAP_SPEED_IDLE = .035;
 BugBodyButterfly.prototype.FLAP_SPEED_SKIP = .3;
+BugBodyButterfly.prototype.FLAP_SCALE = .2;
 BugBodyButterfly.prototype.WING_SHADE = -.35;
 BugBodyButterfly.prototype.WING_HIGHLIGHT = .35;
 BugBodyButterfly.prototype.SKIP_CHANCE = .25;
@@ -87,7 +88,6 @@ BugBodyButterfly.prototype.model = function(
     bottomAngle,
     colorWings,
     colorWingsEdge) {
-    const flapScale = .2;
     const sample = new Vector2();
 
     const bezier = new CubicBezier(
@@ -112,11 +112,11 @@ BugBodyButterfly.prototype.model = function(
 
         vertices.push(
             sample.x, sample.y,
-            sample.x * flapScale, sample.y,
+            sample.x * this.FLAP_SCALE, sample.y,
             color.r, color.g, color.b,
             this.WING_SHADE,
             -sample.x, sample.y,
-            -sample.x * flapScale, sample.y,
+            -sample.x * this.FLAP_SCALE, sample.y,
             color.r, color.g, color.b,
             this.WING_HIGHLIGHT);
         indices.push(

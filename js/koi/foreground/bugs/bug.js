@@ -10,7 +10,9 @@ const Bug = function(body, path) {
     this.flex = new Vector2();
     this.flexPrevious = this.flex.copy();
     this.flexRender = this.flex.copy();
-    this.position = this.positionPrevious = this.positionRender = null;
+    this.position = new Vector3();
+    this.positionPrevious = this.position.copy();
+    this.positionRender = this.position.copy();
     this.aim = new Vector3();
     this.wind = new Vector2();
     this.windPrevious = this.wind.copy();
@@ -54,9 +56,9 @@ Bug.prototype.startPath = function(path, pathMaker = null) {
     if (this.path)
         pathMaker.recycle(this.path);
 
-    this.position = path.getStart().copy();
-    this.positionPrevious = this.position.copy();
-    this.positionRender = this.position.copy();
+    path.sample(this.position);
+    this.positionPrevious.set(this.position);
+
     this.path = path;
     this.proximityDistance = Math.min(this.SPOT_PROXIMITY_DISTANCE, path.length() * .5);
 };
@@ -318,7 +320,11 @@ Bug.prototype.render = function(width, height, flying, air, time) {
 
 /**
  * Free the bug resources
+ * @param {BugPathMaker} [pathMaker] An optional path maker if bug paths should be recycled
  */
-Bug.prototype.free = function() {
+Bug.prototype.free = function(pathMaker = null) {
     this.body.free();
+
+    if (pathMaker && this.path)
+        pathMaker.recycle(this.path);
 };
