@@ -36,7 +36,7 @@ Bug.prototype.SPOT_PROXIMITY_DISTANCE = 1.8;
 Bug.prototype.IDLE_TIME = new SamplerPower(15, 50, 3.3);
 Bug.prototype.IDLE_CHANCE_ROTATE = .7;
 Bug.prototype.IDLE_CHANCE_HOP = Bug.prototype.IDLE_CHANCE_ROTATE + .2;
-Bug.prototype.ANGLE_APPROACH = .42;
+Bug.prototype.ANGLE_APPROACH = .6;
 
 /**
  * Start moving along a path

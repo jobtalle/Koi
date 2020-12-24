@@ -36,10 +36,11 @@ Foreground.prototype.displace = function(x, y, dx, dy, radius, random) {
 
 /**
  * Update the foreground
+ * @param {WeatherState} weatherState The current weather state
  * @param {Random} random A randomizer
  */
-Foreground.prototype.update = function(random) {
-    this.bugs.update(random);
+Foreground.prototype.update = function(weatherState, random) {
+    this.bugs.update(weatherState, random);
 };
 
 /**

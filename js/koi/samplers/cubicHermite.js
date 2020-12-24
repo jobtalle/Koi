@@ -17,9 +17,9 @@ const CubicHermite = function(points) {
  * @returns {Number} The interpolated value
  */
 CubicHermite.prototype.interpolate = function(a, b, c, d, t) {
-    const A = a * -.5 + (3 * b ) * .5 - (3 * c) * .5 + d * .5; // TODO: You can shorten this
-    const B = a - (5 * b) * .5 + 2 * c - d * .5;
-    const C = a * -.5 + c * .5;
+    const A = .5 * (3 * b - a - 3 * c + d);
+    const B = a - 2.5 * b + 2 * c - .5 * d;
+    const C = .5 * (c - a);
 
     return A * t * t * t + B * t * t + C * t + b;
 };

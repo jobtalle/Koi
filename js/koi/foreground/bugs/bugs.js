@@ -10,25 +10,11 @@ const Bugs = function(gl, constellation, biome, bugSpots) {
     this.gl = gl;
     this.constellation = constellation;
     this.pathMaker = new BugPathMaker(constellation, biome, bugSpots);
-    this.spawner = new BugSpawner();
+    this.spawner = new BugSpawner(constellation);
     this.bugs = [];
 
     for (const spot of bugSpots)
         spot.normalize(constellation.width, constellation.height);
-};
-
-/**
- * Make a bug
- * @param {Random} random A randomizer
- * @returns {Bug} A bug
- */
-Bugs.prototype.makeBug = function(random) {
-    const path = this.pathMaker.makeEntrance(random);
-
-    if (path)
-        return new Bug(this.spawner.spawn(this.gl, random), path);
-
-    return null;
 };
 
 /**
@@ -51,17 +37,17 @@ Bugs.prototype.displace = function(x, y, direction, radius, random) {
 
 /**
  * Update the bugs
+ * @param {WeatherState} weatherState The current weather state
  * @param {Random} random A randomizer
  */
-Bugs.prototype.update = function(random) {
-    if (this.bugs.length < 12) { // TODO: use spawner here
-        const bug = this.makeBug(random);
+Bugs.prototype.update = function(weatherState, random) {
+    const bugCount = this.bugs.length;
+    const bug = this.spawner.update(this.gl, weatherState, this.pathMaker, bugCount, random);
 
-        if (bug)
-            this.bugs.push(bug);
-    }
+    if (bug)
+        this.bugs.push(bug);
 
-    for (let bug = this.bugs.length; bug-- > 0;) {
+    for (let bug = bugCount; bug-- > 0;) {
         if (this.bugs[bug].update(this.pathMaker, this.constellation.width, this.constellation.height, random)) {
             this.bugs[bug].free();
             this.bugs.splice(bug, 1);
