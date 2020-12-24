@@ -10,6 +10,7 @@ const Bugs = function(gl, constellation, biome, bugSpots) {
     this.gl = gl;
     this.constellation = constellation;
     this.pathMaker = new BugPathMaker(constellation, biome, bugSpots);
+    this.spawner = new BugSpawner();
     this.bugs = [];
 
     for (const spot of bugSpots)
@@ -25,9 +26,7 @@ Bugs.prototype.makeBug = function(random) {
     const path = this.pathMaker.makeEntrance(random);
 
     if (path)
-        return new Bug(
-            new BugBodyButterflyRainy(this.gl),
-            path);
+        return new Bug(this.spawner.spawn(this.gl, random), path);
 
     return null;
 };

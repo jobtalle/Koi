@@ -32,7 +32,8 @@
     --color-fish-brown: var(--color-rock-top);
 
     /* Bug colors */
-    --color-bug-butterfly-yellow: #ded5bd;
+    --color-bug-butterfly-yellow: #d7c89b;
+    --color-bug-butterfly-yellow-edge: #f6e0a2;
     --color-bug-butterfly-blue: #bdd7f3;
     --color-bug-butterfly-blue-edge: #8db2e2;
 }

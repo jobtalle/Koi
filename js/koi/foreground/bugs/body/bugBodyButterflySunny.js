@@ -13,4 +13,4 @@ const BugBodyButterflySunny = function(gl) {
 
 BugBodyButterflySunny.prototype = Object.create(BugBodyButterfly.prototype);
 BugBodyButterflySunny.prototype.COLOR_WINGS = Color.fromCSS("--color-bug-butterfly-yellow");
-BugBodyButterflySunny.prototype.COLOR_WINGS_EDGE = BugBodyButterflySunny.prototype.COLOR_WINGS;
+BugBodyButterflySunny.prototype.COLOR_WINGS_EDGE = Color.fromCSS("--color-bug-butterfly-yellow-edge");

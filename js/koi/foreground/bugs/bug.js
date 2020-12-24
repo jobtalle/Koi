@@ -33,7 +33,7 @@ Bug.prototype.STATE_PATH = 0;
 Bug.prototype.STATE_PATH_LEAVE = 1;
 Bug.prototype.STATE_IDLE = 2;
 Bug.prototype.SPOT_PROXIMITY_DISTANCE = 1.8;
-Bug.prototype.IDLE_TIME = new SamplerPower(15, 70, 2.2);
+Bug.prototype.IDLE_TIME = new SamplerPower(15, 50, 3.3);
 Bug.prototype.IDLE_CHANCE_ROTATE = .7;
 Bug.prototype.IDLE_CHANCE_HOP = Bug.prototype.IDLE_CHANCE_ROTATE + .2;
 Bug.prototype.ANGLE_APPROACH = .42;
@@ -94,9 +94,7 @@ Bug.prototype.setWait = function(random) {
 Bug.prototype.rotate = function(random) {
     this.setWait(random);
 
-    this.angleTarget = Math.max(
-        -Math.PI,
-        Math.min(Math.PI, this.angle + this.body.rotation.sample(random.getFloat())));
+    this.angleTarget = this.body.rotation.sample(random.getFloat());
 };
 
 /**

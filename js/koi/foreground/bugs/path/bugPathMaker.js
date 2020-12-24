@@ -18,7 +18,7 @@ BugPathMaker.prototype.CONE_STEP = 1.3;
 BugPathMaker.prototype.CONE_DENSITY = 4.5;
 BugPathMaker.prototype.APPROACH_DISTANCE = new SamplerPower(.2, .5, 1.7);
 BugPathMaker.prototype.APPROACH_ANGLE = new Sampler(Math.PI * .35, Math.PI * .65);
-BugPathMaker.prototype.APPROACH_ALTITUDE = .9;
+BugPathMaker.prototype.APPROACH_ALTITUDE = .75;
 BugPathMaker.prototype.HOP_RADIUS = BugPathMaker.prototype.CONE_STEP;
 BugPathMaker.prototype.ALTITUDE = .6;
 
