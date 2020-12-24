@@ -165,7 +165,7 @@ Bug.prototype.leave = function(
     this.startPath(pathMaker.makeLeave(
         this.position,
         pathMaker.getExitVector(this.position.vector2()),
-        random));
+        random), pathMaker);
 
     this.state = this.STATE_PATH_LEAVE;
 };
