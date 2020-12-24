@@ -377,7 +377,7 @@ Koi.prototype.update = function() {
         this.water,
         this.random);
     this.weather.update(this.air, this.water, this.audio, this.foreground.plants.plantMap, this.random);
-    this.mover.update(this.air, this.audio, this.foreground.plants.plantMap);
+    this.mover.update(this.air, this.audio, this.foreground, this.effectsRandom);
     this.foreground.update(this.effectsRandom);
 
     this.systems.waves.propagate(this.water, this.systems.influencePainter);

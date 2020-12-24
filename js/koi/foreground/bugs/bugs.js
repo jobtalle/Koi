@@ -32,11 +32,29 @@ Bugs.prototype.makeBug = function(random) {
 };
 
 /**
+ * Displace sitting bugs
+ * @param {Number} x The X position
+ * @param {Number} y The Y position
+ * @param {Number} direction The direction of the displacement motion in radians
+ * @param {Number} radius The displacement radius
+ * @param {Random} random A randomizer
+ */
+Bugs.prototype.displace = function(x, y, direction, radius, random) {
+    for (const bug of this.bugs) {
+        const dx = bug.position.x - x;
+        const dy = bug.position.y - y;
+
+        if (dx * dx + dy * dy < radius * radius)
+            bug.displace(this.pathMaker, direction, random);
+    }
+};
+
+/**
  * Update the bugs
  * @param {Random} random A randomizer
  */
 Bugs.prototype.update = function(random) {
-    if (this.bugs.length < 12) { // TODO: something
+    if (this.bugs.length < 12) { // TODO: use spawner here
         const bug = this.makeBug(random);
 
         if (bug)

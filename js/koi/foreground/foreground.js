@@ -22,6 +22,19 @@ Foreground.prototype.Y_SCALE = .74;
 Foreground.prototype.Y_OVERFLOW = .3;
 
 /**
+ * Displace things
+ * @param {Number} x The X position
+ * @param {Number} y The Y position
+ * @param {Number} dx The X direction
+ * @param {Number} dy The Y direction
+ * @param {Number} radius The displacement radius
+ * @param {Random} random A randomizer
+ */
+Foreground.prototype.displace = function(x, y, dx, dy, radius, random) {
+    this.bugs.displace(x, y, Math.atan2(dy, dx), radius, random);
+};
+
+/**
  * Update the foreground
  * @param {Random} random A randomizer
  */

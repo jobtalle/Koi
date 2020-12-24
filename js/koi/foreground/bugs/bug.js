@@ -80,6 +80,17 @@ Bug.prototype.interpolateSpotProperties = function(
 };
 
 /**
+ * Displace this bug into a certain direction
+ * @param {BugPathMaker} pathMaker The path maker
+ * @param {Number} direction The displacement direction
+ * @param {Random} random A randomizer
+ */
+Bug.prototype.displace = function(pathMaker, direction, random) {
+    if (this.state === this.STATE_IDLE)
+        this.wander(pathMaker, random, new Vector2().fromAngle(direction), true);
+};
+
+/**
  * Set the wait timer to a new value
  * @param {Random} random A randomizer
  */
@@ -120,13 +131,20 @@ Bug.prototype.hop = function(pathMaker, random) {
  * Wander
  * @param {BugPathMaker} pathMaker The path maker
  * @param {Random} random A randomizer
+ * @param {Vector2} [direction] The initial direction
+ * @param {Boolean} [skipApproach] True if a neat escape path should be skipped
  */
-Bug.prototype.wander = function(pathMaker, random) {
+Bug.prototype.wander = function(
+    pathMaker,
+    random,
+    direction = null,
+    skipApproach = false) {
     this.startPath(pathMaker.makeWander(
         this.position,
         this.visitedSpots,
-        random,
-        new Vector2().fromAngle(this.angle)), pathMaker);
+        direction || new Vector2().fromAngle(this.angle),
+        skipApproach,
+        random), pathMaker);
 
     if (this.path.getLastNode().spot)
         this.state = this.STATE_PATH;

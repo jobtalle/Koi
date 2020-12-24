@@ -1,6 +1,7 @@
 /**
  * A fish mover for moving fish through user input
  * @param {Constellation} constellation A constellation to move fish in
+ * @param {Foreground} foreground The foreground
  * @param {AudioBank} audio Game audio
  * @param {GUI} gui The GUI
  * @constructor
@@ -25,6 +26,7 @@ Mover.prototype.AIR_RADIUS = 1.5;
 Mover.prototype.AIR_INTENSITY = .15;
 Mover.prototype.AIR_HEIGHT = .5;
 Mover.prototype.AIR_INTERVAL = 1;
+Mover.prototype.FOREGROUND_DISPLACEMENT_RADIUS = Mover.prototype.AIR_RADIUS;
 Mover.prototype.BIG_THRESHOLD = 2;
 Mover.prototype.GRANULAR_VOLUME = .2;
 Mover.prototype.GRANULAR_INTENSITY_THRESHOLD = .1;
@@ -93,9 +95,10 @@ Mover.prototype.createGrassAudio = function(
  * Apply motion effects
  * @param {Air} air The air to displace
  * @param {AudioBank} audio Game audio
- * @param {PlantMap} plantMap The plant map
+ * @param {Foreground} foreground The foreground
+ * @param {Random} random A randomizer
  */
-Mover.prototype.applyMotion = function(air, audio, plantMap) {
+Mover.prototype.applyMotion = function(air, audio, foreground, random) {
     const dx = this.cursor.x - this.cursorPreviousUpdate.x;
     const dy = this.cursor.y - this.cursorPreviousUpdate.y;
 
@@ -105,16 +108,25 @@ Mover.prototype.applyMotion = function(air, audio, plantMap) {
     const distance = Math.sqrt(dx * dx + dy * dy);
 
     this.displaceAir(dx, dy, distance, air);
-    this.createGrassAudio(dx, dy, distance, audio, plantMap);
+    this.createGrassAudio(dx, dy, distance, audio, foreground.plants.plantMap);
+
+    foreground.displace(
+        this.cursorPreviousUpdate.x,
+        this.cursorPreviousUpdate.y + this.AIR_HEIGHT,
+        dx,
+        dy,
+        this.FOREGROUND_DISPLACEMENT_RADIUS,
+        random);
 };
 
 /**
  * Update the mover
  * @param {Air} air The air to displace
  * @param {AudioBank} audio Game audio
- * @param {PlantMap} plantMap The plant map
+ * @param {Foreground} foreground The foreground
+ * @param {Random} random A randomizer
  */
-Mover.prototype.update = function(air, audio, plantMap) {
+Mover.prototype.update = function(air, audio, foreground, random) {
     if (this.move)
         this.move.body.update(
             this.move.position,
@@ -122,7 +134,7 @@ Mover.prototype.update = function(air, audio, plantMap) {
             this.move.speed);
 
     if (this.touch)
-        this.applyMotion(air, audio, plantMap);
+        this.applyMotion(air, audio, foreground, random);
 
     audio.effectGrass.update(Koi.prototype.UPDATE_RATE);
 

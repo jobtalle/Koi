@@ -16,9 +16,9 @@ BugPathMaker.prototype.EDGE_PADDING_Z = 2;
 BugPathMaker.prototype.CONE_ANGLE = 1;
 BugPathMaker.prototype.CONE_STEP = 1.3;
 BugPathMaker.prototype.CONE_DENSITY = 4.5;
-BugPathMaker.prototype.APPROACH_DISTANCE = new SamplerPower(.2, .5, 1.7);
+BugPathMaker.prototype.APPROACH_DISTANCE = new SamplerPower(.25, .5, 1.7);
 BugPathMaker.prototype.APPROACH_ANGLE = new Sampler(Math.PI * .35, Math.PI * .65);
-BugPathMaker.prototype.APPROACH_ALTITUDE = .75;
+BugPathMaker.prototype.APPROACH_ALTITUDE = .8;
 BugPathMaker.prototype.HOP_RADIUS = BugPathMaker.prototype.CONE_STEP;
 BugPathMaker.prototype.ALTITUDE = .6;
 
@@ -196,18 +196,24 @@ BugPathMaker.prototype.makeEntrance = function(random) {
  * Make a wandering path, ending either at another bug spot or outside the view
  * @param {Vector3} origin The start position
  * @param {BugSpot[]} excludeSpots A list of spots that may not be visited
+ * @param {Vector2} direction The initial direction
+ * @param {Boolean} skipApproach True if a neat escape path should be skipped
  * @param {Random} random A randomizer
- * @param {Vector2} [direction] The initial direction
  * @returns {BugPath} A bug path
  */
 BugPathMaker.prototype.makeWander = function(
     origin,
     excludeSpots,
-    random,
-    direction = new Vector2().fromAngle(random.getFloat() * Math.PI * 2)) {
+    direction,
+    skipApproach,
+    random) {
+    const start = [new BugPathNode(origin)];
+
+    if (!skipApproach)
+        start.push(this.makeApproachNode(origin, random));
+
     return new BugPath([
-        new BugPathNode(origin),
-        this.makeApproachNode(origin, random),
+        ...start,
         ...this.trace(origin.vector2(), direction, random,true, excludeSpots)]);
 };
 
