@@ -5,6 +5,7 @@
  * @param {Number} flexAngle The maximum amount of rotation caused by wind gusts
  * @param {Sampler} speed The flying speed sampler
  * @param {Sampler} rotation The rotation change sampler
+ * @param {Boolean} resistant True if the bug resists rain
  * @param {Number[]} vertices The vertices
  * @param {Number[]} indices The indices
  * @constructor
@@ -15,6 +16,7 @@ const BugBody = function(
     flexAngle,
     speed,
     rotation,
+    resistant,
     vertices,
     indices) {
     this.gl = gl;
@@ -22,6 +24,7 @@ const BugBody = function(
     this.flexAngle = flexAngle;
     this.speed = speed;
     this.rotation = rotation;
+    this.resistant = resistant;
     this.vao = null;
     this.mesh = new Mesh(gl, new MeshData(vertices, indices));
     this.flap = 0;

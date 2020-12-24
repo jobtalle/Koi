@@ -8,7 +8,8 @@ const BugBodyButterflyThunder = function(gl) {
         this,
         gl,
         this.COLOR_WINGS,
-        this.COLOR_WINGS_EDGE);
+        this.COLOR_WINGS_EDGE,
+        true);
 };
 
 BugBodyButterflyThunder.prototype = Object.create(BugBodyButterfly.prototype);

@@ -57,7 +57,12 @@ Bugs.prototype.update = function(weatherState, random) {
         this.bugs.push(bug);
 
     for (let bug = bugCount; bug-- > 0;) {
-        if (this.bugs[bug].update(this.pathMaker, this.constellation.width, this.constellation.height, random)) {
+        if (this.bugs[bug].update(
+            this.pathMaker,
+            this.constellation.width,
+            this.constellation.height,
+            weatherState.state === weatherState.ID_RAIN || weatherState.state === weatherState.ID_THUNDERSTORM,
+            random)) {
             this.bugs[bug].free();
             this.bugs.splice(bug, 1);
         }

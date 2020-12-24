@@ -214,7 +214,24 @@ BugPathMaker.prototype.makeWander = function(
 
     return new BugPath([
         ...start,
-        ...this.trace(origin.vector2(), direction, random,true, excludeSpots)]);
+        ...this.trace(origin.vector2(), direction, random, true, excludeSpots)]);
+};
+
+/**
+ * Make a path leaving the scene
+ * @param {Vector3} origin The start position
+ * @param {Vector2} direction The initial direction
+ * @param {Random} random A randomizer
+ * @returns {BugPath} A bug path
+ */
+BugPathMaker.prototype.makeLeave = function(
+    origin,
+    direction,
+    random) {
+    return new BugPath([
+        new BugPathNode(origin),
+        this.makeApproachNode(origin, random),
+        ...this.trace(origin.vector2(), direction, random, false)]);
 };
 
 /**

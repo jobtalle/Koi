@@ -60,13 +60,12 @@ BugPath.prototype.getLastNode = function() {
 };
 
 /**
- * Get the current position on the path
- * @returns {Vector3} The current position
+ * Store the bug path position in a vector
+ * @param {Vector3} vector The vector to store the current position in
+ * @param {Number} [delta] The delta from the current position, zero by default
  */
-BugPath.prototype.getPosition = function() {
-    this.curve.sample(this.position, this.at);
-
-    return this.position;
+BugPath.prototype.sample = function(vector, delta = 0) {
+    this.curve.sample(vector, Math.min(this.curve.length, this.at + delta));
 };
 
 /**

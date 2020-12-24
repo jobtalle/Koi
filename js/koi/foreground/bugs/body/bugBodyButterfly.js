@@ -3,12 +3,14 @@
  * @param {WebGLRenderingContext} gl A WebGL rendering context
  * @param {Color} colorWings The wing color
  * @param {Color} colorWingsEdge The wing edge color
+ * @param {Boolean} resistant True if the bug resists rain
  * @constructor
  */
 const BugBodyButterfly = function(
     gl,
     colorWings,
-    colorWingsEdge) {
+    colorWingsEdge,
+    resistant = false) {
     const vertices = [];
     const indices = [];
 
@@ -25,6 +27,7 @@ const BugBodyButterfly = function(
         this.FLEX_ANGLE,
         this.SPEED,
         this.ROTATION,
+        resistant,
         vertices,
         indices);
 };
@@ -35,8 +38,8 @@ BugBodyButterfly.prototype.FLEX = .2;
 BugBodyButterfly.prototype.FLEX_ANGLE = -.6;
 BugBodyButterfly.prototype.SPEED = new SamplerPower(.002, .08, .38);
 BugBodyButterfly.prototype.ROTATION = new SamplerPlateau(-Math.PI, 0, Math.PI, 1);
-BugBodyButterfly.prototype.FLAP_SPEED_FLYING = .5;
-BugBodyButterfly.prototype.FLAP_SPEED_IDLE = .05;
+BugBodyButterfly.prototype.FLAP_SPEED_FLYING = .55;
+BugBodyButterfly.prototype.FLAP_SPEED_IDLE = .035;
 BugBodyButterfly.prototype.WING_SHADE = -.35;
 BugBodyButterfly.prototype.WING_HIGHLIGHT = .35;
 

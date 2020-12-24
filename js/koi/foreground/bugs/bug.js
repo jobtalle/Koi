@@ -11,6 +11,7 @@ const Bug = function(body, path) {
     this.flexPrevious = this.flex.copy();
     this.flexRender = this.flex.copy();
     this.position = this.positionPrevious = this.positionRender = null;
+    this.aim = new Vector3();
     this.wind = new Vector2();
     this.windPrevious = this.wind.copy();
     this.windRender = this.wind.copy();
@@ -37,6 +38,7 @@ Bug.prototype.IDLE_TIME = new SamplerPower(15, 50, 3.3);
 Bug.prototype.IDLE_CHANCE_ROTATE = .7;
 Bug.prototype.IDLE_CHANCE_HOP = Bug.prototype.IDLE_CHANCE_ROTATE + .2;
 Bug.prototype.ANGLE_APPROACH = .6;
+Bug.prototype.AIM_DELTA = .8;
 
 /**
  * Start moving along a path
@@ -153,14 +155,36 @@ Bug.prototype.wander = function(
 };
 
 /**
+ * Leave the scene
+ * @param {BugPathMaker} pathMaker The path maker
+ * @param {Random} random A randomizer
+ */
+Bug.prototype.leave = function(
+    pathMaker,
+    random) {
+    this.startPath(pathMaker.makeLeave(
+        this.position,
+        pathMaker.getExitVector(this.position.vector2()),
+        random));
+
+    this.state = this.STATE_PATH_LEAVE;
+};
+
+/**
  * Update a bug
  * @param {BugPathMaker} pathMaker A path maker
  * @param {Number} width The scene width in meters
  * @param {Number} height The scene height in meters
+ * @param {Boolean} adverseWeather True if the weather conditions are bad
  * @param {Random} random A randomizer
  * @returns {Boolean} True if the bug may be deleted
  */
-Bug.prototype.update = function(pathMaker, width, height, random) {
+Bug.prototype.update = function(
+    pathMaker,
+    width,
+    height,
+    adverseWeather,
+    random) {
     this.positionPrevious.set(this.position);
     this.flexPrevious.set(this.flex);
     this.windPrevious.set(this.wind);
@@ -205,14 +229,11 @@ Bug.prototype.update = function(pathMaker, width, height, random) {
                 }
             }
             else {
-                const pathPosition = this.path.getPosition();
-                const dx = pathPosition.x - this.position.x;
-                const dy = pathPosition.y - this.position.y;
-
-                this.position.set(pathPosition);
+                this.path.sample(this.aim, this.AIM_DELTA);
+                this.path.sample(this.position);
                 this.windMapped.x = this.positionRender.x / width;
                 this.windMapped.y = 1 - this.positionRender.y / height;
-                this.angleTarget = Math.atan2(-dx, -dy);
+                this.angleTarget = Math.atan2(this.position.x - this.aim.x, this.position.y - this.aim.y);
 
                 if (this.startSpot && this.path.at < this.proximityDistance)
                     this.interpolateSpotProperties(
@@ -236,16 +257,20 @@ Bug.prototype.update = function(pathMaker, width, height, random) {
             break;
         case this.STATE_IDLE:
             if (--this.wait === 0) {
-                const r = random.getFloat();
+                if (this.body.resistant || !adverseWeather) {
+                    const r = random.getFloat();
 
-                if (r < this.IDLE_CHANCE_ROTATE)
-                    this.rotate(random);
-                else if (r < this.IDLE_CHANCE_HOP) {
-                    if (!this.hop(pathMaker, random))
+                    if (r < this.IDLE_CHANCE_ROTATE)
+                        this.rotate(random);
+                    else if (r < this.IDLE_CHANCE_HOP) {
+                        if (!this.hop(pathMaker, random))
+                            this.wander(pathMaker, random);
+                    }
+                    else
                         this.wander(pathMaker, random);
                 }
                 else
-                    this.wander(pathMaker, random);
+                    this.leave(pathMaker, random);
             }
 
             this.body.update(true);
