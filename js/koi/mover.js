@@ -342,6 +342,7 @@ Mover.prototype.drop = function(
         }
 
         this.move = null;
+        this.dragIdle = 0;
         this.gui.cards.hand.show();
     }
 
