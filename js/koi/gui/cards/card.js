@@ -16,7 +16,6 @@ const Card = function(body, position, angle = 0) {
     this.previewURL = null;
     this.element = this.createElement(this.name, this.previewFrame);
     this.initialized = false;
-    this.onHide = null;
 
     this.updatePosition();
 };

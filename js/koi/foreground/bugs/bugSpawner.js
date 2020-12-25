@@ -10,7 +10,7 @@ const BugSpawner = function(constellation) {
 
 BugSpawner.prototype.MAX_AREA_PER_BUG = 15;
 BugSpawner.prototype.SPAWN_FREQUENCY = 30;
-BugSpawner.prototype.INITIAL_COUNT = .25;
+BugSpawner.prototype.INITIAL_COUNT = .4;
 BugSpawner.prototype.LOST_RAIN_BUG_CHANCE = .12;
 BugSpawner.prototype.MAX_BUGS_MULTIPLIER = {
     [WeatherState.prototype.ID_SUNNY]: 1,

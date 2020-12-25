@@ -1,7 +1,6 @@
 /**
  * A fish mover for moving fish through user input
  * @param {Constellation} constellation A constellation to move fish in
- * @param {Foreground} foreground The foreground
  * @param {AudioBank} audio Game audio
  * @param {GUI} gui The GUI
  * @constructor
@@ -17,6 +16,8 @@ const Mover = function(constellation, audio, gui) {
     this.offset = new Vector2();
     this.cursorOffset = new Vector2();
     this.touch = false;
+    this.dragIdle = 0;
+    this.dragPointer = null;
 };
 
 Mover.prototype.SPLASH_DROP_RADIUS = 0.13;
@@ -31,6 +32,7 @@ Mover.prototype.BIG_THRESHOLD = 2;
 Mover.prototype.GRANULAR_VOLUME = .2;
 Mover.prototype.GRANULAR_INTENSITY_THRESHOLD = .1;
 Mover.prototype.GRANULAR_INTERVAL = 0.75;
+Mover.prototype.DRAG_POINTER_TIME = 15;
 
 /**
  * Displace air between the last two cursor positions
@@ -127,11 +129,17 @@ Mover.prototype.applyMotion = function(air, audio, foreground, random) {
  * @param {Random} random A randomizer
  */
 Mover.prototype.update = function(air, audio, foreground, random) {
-    if (this.move)
+    if (this.move) {
         this.move.body.update(
             this.move.position,
             this.move.direction,
             this.move.speed);
+
+        if (++this.dragIdle === this.DRAG_POINTER_TIME && !this.dragPointer) {
+            this.dragPointer = this.gui.overlay.createArrowElement("down");
+            this.gui.cards.dropTarget.appendChild(this.dragPointer);
+        }
+    }
 
     if (this.touch)
         this.applyMotion(air, audio, foreground, random);
@@ -187,6 +195,7 @@ Mover.prototype.touchMove = function(
             this.cursorPreviousUpdate.set(this.cursor);
 
         if (this.move) {
+            this.dragIdle = 0;
             this.cursorOffset.set(this.cursor).add(this.offset);
             this.move.moveTo(this.cursorOffset);
 
@@ -327,8 +336,12 @@ Mover.prototype.drop = function(
             this.constellation.drop(this.move);
         }
 
-        this.move = null;
+        if (this.dragPointer) {
+            this.gui.cards.dropTarget.removeChild(this.dragPointer);
+            this.dragPointer = null;
+        }
 
+        this.move = null;
         this.gui.cards.hand.show();
     }
 
