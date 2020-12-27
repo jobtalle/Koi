@@ -52,7 +52,7 @@ CardBook.Flip = function() {
     this.halfway = false;
 };
 
-CardBook.Flip.prototype.SPEED = .33;
+CardBook.Flip.prototype.SPEED = .3;
 
 /**
  * Update this flip
@@ -61,13 +61,10 @@ CardBook.Flip.prototype.SPEED = .33;
 CardBook.Flip.prototype.update = function() {
     this.flipPrevious = this.flip;
 
-    if ((this.flip -= this.SPEED) < -1) {
+    if ((this.flip -= this.SPEED) < -1)
         this.flip = -1;
 
-        return true;
-    }
-
-    return false;
+    return this.flip === this.flipPrevious;
 };
 
 /**
