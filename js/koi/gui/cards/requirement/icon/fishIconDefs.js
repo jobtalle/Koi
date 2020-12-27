@@ -11,6 +11,7 @@ const FishIconDefs = function(defs, random) {
     this.makePatternsBase(defs);
     this.makePatternsSpots(defs, random);
     this.makePatternsStripes(defs, random);
+    this.makePatternsRidge(defs, random);
 };
 
 FishIconDefs.prototype = Object.create(FishIconConstants.prototype);
@@ -28,16 +29,20 @@ FishIconDefs.prototype.SPOTS_B = [
     new Vector3(.5, .95, .2)
 ];
 FishIconDefs.prototype.STRIPES_A = [
-    new Vector3(.5, .2, .3),
-    new Vector3(.7, .25, .5),
-    new Vector3(.5, .2, .7)
+    new Vector3(.5, .16, .3),
+    new Vector3(.7, .21, .5),
+    new Vector3(.5, .16, .7)
 ];
 FishIconDefs.prototype.STRIPES_B = [
-    new Vector3(.4, .15, .2),
-    new Vector3(.65, .2, .4),
-    new Vector3(.65, .2, .6),
-    new Vector3(.4, .15, .8)
+    new Vector3(.4, .11, .2),
+    new Vector3(.65, .16, .4),
+    new Vector3(.65, .16, .6),
+    new Vector3(.4, .11, .8)
 ];
+FishIconDefs.prototype.RIDGE_A = new Vector2(.5, .9);
+FishIconDefs.prototype.RIDGE_B = new Vector2(.25, .82);
+FishIconDefs.prototype.RIDGE_SPACING = 5;
+FishIconDefs.prototype.RIDGE_MAX_SHRINK = .5;
 FishIconDefs.prototype.STRIPE_CURVE_ANGLE = new Sampler(Math.PI * .3, Math.PI * .7);
 FishIconDefs.prototype.CLASSES_COLOR = [
     "white",
@@ -295,4 +300,49 @@ FishIconDefs.prototype.makePatternsStripesLayer = function(defs, id, stripes, ra
 FishIconDefs.prototype.makePatternsStripes = function(defs, random) {
     this.makePatternsStripesLayer(defs, this.ID_STRIPES_A, this.STRIPES_A, random);
     this.makePatternsStripesLayer(defs, this.ID_STRIPES_B, this.STRIPES_B, random);
+};
+
+/**
+ * Make the ridge layer patterns
+ * @param {HTMLElement} defs The defs element to populate
+ * @param {String} id The ID for this layer
+ * @param {Vector2} ridge The ridge size
+ * @param {Random} random A randomizer
+ */
+FishIconDefs.prototype.makePatternsRidgeLayer = function(defs, id, ridge, random) {
+    for (let paletteIndex = 0, colors = Palette.COLORS.length; paletteIndex < colors; ++paletteIndex) {
+        const pattern = SVG.createPattern();
+        const pathPoints = [
+            new Vector2(this.WIDTH * .5, this.HEIGHT * (.5 - ridge.y * .5)),
+            new Vector2(this.WIDTH * .5, this.HEIGHT * (.5 + ridge.y * .5))];
+        const steps = Math.ceil(ridge.y * this.HEIGHT / this.RIDGE_SPACING);
+
+        for (let step = 1; step < steps; ++step) {
+            const mx = Math.sin(Math.PI * step / steps);
+
+            pathPoints.splice(step, 0, new Vector2(
+                this.WIDTH * (.5 + mx * ridge.x * .5 * (1 - random.getFloat() * this.RIDGE_MAX_SHRINK)),
+                step * this.HEIGHT * ridge.y / steps));
+            pathPoints.push(new Vector2(
+                this.WIDTH * (.5 - mx * ridge.x * .5 * (1 - random.getFloat() * this.RIDGE_MAX_SHRINK)),
+                (steps - step + 1) * this.HEIGHT * ridge.y / steps));
+        }
+
+        SVG.setId(pattern, id + paletteIndex.toString());
+        SVG.setClass(pattern, this.CLASSES_COLOR[paletteIndex]);
+
+        pattern.appendChild(this.createQuadraticBezierPath(pathPoints));
+
+        defs.appendChild(pattern);
+    }
+};
+
+/**
+ * Make the ridge patterns
+ * @param {HTMLElement} defs The defs element to populate
+ * @param {Random} random A randomizer
+ */
+FishIconDefs.prototype.makePatternsRidge = function(defs, random) {
+    this.makePatternsRidgeLayer(defs, this.ID_RIDGE_A, this.RIDGE_A, random);
+    this.makePatternsRidgeLayer(defs, this.ID_RIDGE_B, this.RIDGE_B, random);
 };
