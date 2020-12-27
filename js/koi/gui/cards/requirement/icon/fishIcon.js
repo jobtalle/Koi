@@ -70,6 +70,10 @@ FishIcon.prototype.createLayers = function(footprint) {
                     new FishIconLayerSpots(footprint.layers[layer].paletteIndex).addToGroup(group, layer);
 
                     break;
+                case LayerStripes.prototype.ID:
+                    new FishIconLayerStripes(footprint.layers[layer].paletteIndex).addToGroup(group, layer);
+
+                    break;
             }
         }
     }

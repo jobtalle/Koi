@@ -4,7 +4,7 @@
  * @constructor
  */
 const FishIconLayerBase = function(paletteIndex) {
-    this.paletteIndex = paletteIndex;
+    FishIconLayer.call(this, paletteIndex);
 };
 
 FishIconLayerBase.prototype = Object.create(FishIconLayer.prototype);

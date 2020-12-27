@@ -1,9 +1,10 @@
 /**
  * A layer to add on a fish icon
+ * @param {Number} paletteIndex The palette index
  * @constructor
  */
-const FishIconLayer = function() {
-
+const FishIconLayer = function(paletteIndex) {
+    this.paletteIndex = paletteIndex;
 };
 
 FishIconLayer.prototype = Object.create(FishIconConstants.prototype);

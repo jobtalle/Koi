@@ -10,6 +10,7 @@ const FishIconDefs = function(defs, random) {
     this.makeWildcard(defs);
     this.makePatternsBase(defs);
     this.makePatternsSpots(defs, random);
+    this.makePatternsStripes(defs, random);
 };
 
 FishIconDefs.prototype = Object.create(FishIconConstants.prototype);
@@ -26,6 +27,18 @@ FishIconDefs.prototype.SPOTS_B = [
     new Vector3(.48, .6, .32),
     new Vector3(.5, .95, .2)
 ];
+FishIconDefs.prototype.STRIPES_A = [
+    new Vector3(.5, .2, .3),
+    new Vector3(.7, .25, .5),
+    new Vector3(.5, .2, .7)
+];
+FishIconDefs.prototype.STRIPES_B = [
+    new Vector3(.4, .15, .2),
+    new Vector3(.65, .2, .4),
+    new Vector3(.65, .2, .6),
+    new Vector3(.4, .15, .8)
+];
+FishIconDefs.prototype.STRIPE_CURVE_ANGLE = new Sampler(Math.PI * .3, Math.PI * .7);
 FishIconDefs.prototype.CLASSES_COLOR = [
     "white",
     "black",
@@ -36,10 +49,10 @@ FishIconDefs.prototype.CLASSES_COLOR = [
 ];
 
 /**
- * Create a cubic bezier path
+ * Create a quadratic bezier path
  * @param {Vector2[]} points The points on the path
  */
-FishIconDefs.prototype.createCubicBezierPath = function(points) {
+FishIconDefs.prototype.createQuadraticBezierPath = function(points) {
     const pointCount = points.length;
     const halfway = new Array(points.length);
     const commands = [];
@@ -86,7 +99,40 @@ FishIconDefs.prototype.createBlob = function(center, radius, random) {
             new Vector2().fromAngle(angleInner).multiply(multipliedInner).add(center));
     }
 
-    return this.createCubicBezierPath(pathPoints);
+    return this.createQuadraticBezierPath(pathPoints);
+};
+
+/**
+ * Create a stripe shaped path
+ * @param {Vector2} center The stripe center
+ * @param {Number} width The stripe width
+ * @param {Number} thickness The stripe thickness
+ * @param {Random} random A randomizer
+ * @returns {SVGPathElement} The blob path element
+ */
+FishIconDefs.prototype.createStripe = function(center, width, thickness, random) {
+    const angleLeft = this.STRIPE_CURVE_ANGLE.sample(random.getFloat());
+    const angleRight = this.STRIPE_CURVE_ANGLE.sample(random.getFloat());
+
+    return SVG.createPath([
+        "M",
+        center.x - width * .5,
+        center.y,
+        "C",
+        center.x - width * .5 + Math.cos(angleLeft) * thickness * .5,
+        center.y + Math.sin(angleLeft) * thickness * .5,
+        center.x + width * .5 + Math.cos(angleRight) * thickness * .5,
+        center.y + Math.sin(angleRight) * thickness * .5,
+        center.x + width * .5,
+        center.y,
+        "C",
+        center.x + width * .5 - Math.cos(angleRight) * thickness * .5,
+        center.y - Math.sin(angleRight) * thickness * .5,
+        center.x - width * .5 - Math.cos(angleLeft) * thickness * .5,
+        center.y - Math.sin(angleLeft) * thickness * .5,
+        center.x - width * .5,
+        center.y
+    ]);
 };
 
 /**
@@ -180,13 +226,15 @@ FishIconDefs.prototype.makePatternsBase = function(defs) {
 };
 
 /**
- * Make the first spots layer patterns
+ * Make the spots layer patterns
  * @param {HTMLElement} defs The defs element to populate
  * @param {String} id The ID for this layer
  * @param {Vector3[]} spots An array of spots definitions
  * @param {Random} random A randomizer
  */
 FishIconDefs.prototype.makePatternsSpotsLayer = function(defs, id, spots, random) {
+    const dimensions = new Vector2(this.WIDTH, this.HEIGHT);
+
     for (let paletteIndex = 0, colors = Palette.COLORS.length; paletteIndex < colors; ++paletteIndex) {
         const pattern = SVG.createPattern();
 
@@ -196,7 +244,7 @@ FishIconDefs.prototype.makePatternsSpotsLayer = function(defs, id, spots, random
         for (const spot of spots)
             pattern.appendChild(
                 this.createBlob(
-                    spot.vector2().multiplyVector(new Vector2(this.WIDTH, this.HEIGHT)),
+                    spot.vector2().multiplyVector(dimensions),
                     spot.z * this.WIDTH,
                     random));
 
@@ -212,4 +260,39 @@ FishIconDefs.prototype.makePatternsSpotsLayer = function(defs, id, spots, random
 FishIconDefs.prototype.makePatternsSpots = function(defs, random) {
     this.makePatternsSpotsLayer(defs, this.ID_SPOTS_A, this.SPOTS_A, random);
     this.makePatternsSpotsLayer(defs, this.ID_SPOTS_B, this.SPOTS_B, random);
+};
+
+/**
+ * Make the stripes layer patterns
+ * @param {HTMLElement} defs The defs element to populate
+ * @param {String} id The ID for this layer
+ * @param {Vector2[]} stripes An array of stripe definitions
+ * @param {Random} random A randomizer
+ */
+FishIconDefs.prototype.makePatternsStripesLayer = function(defs, id, stripes, random) {
+    for (let paletteIndex = 0, colors = Palette.COLORS.length; paletteIndex < colors; ++paletteIndex) {
+        const pattern = SVG.createPattern();
+
+        SVG.setId(pattern, id + paletteIndex.toString());
+        SVG.setClass(pattern, this.CLASSES_COLOR[paletteIndex]);
+
+        for (const stripe of stripes)
+            pattern.appendChild(this.createStripe(
+                new Vector2(this.WIDTH * .5, stripe.z * this.HEIGHT),
+                stripe.x * this.WIDTH,
+                stripe.y * this.HEIGHT,
+                random));
+
+        defs.appendChild(pattern);
+    }
+};
+
+/**
+ * Make the stripes patterns
+ * @param {HTMLElement} defs The defs element to populate
+ * @param {Random} random A randomizer
+ */
+FishIconDefs.prototype.makePatternsStripes = function(defs, random) {
+    this.makePatternsStripesLayer(defs, this.ID_STRIPES_A, this.STRIPES_A, random);
+    this.makePatternsStripesLayer(defs, this.ID_STRIPES_B, this.STRIPES_B, random);
 };
