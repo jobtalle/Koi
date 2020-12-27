@@ -32,13 +32,12 @@ BlueprintLayerSpots.prototype = Object.create(BlueprintLayer.prototype);
 /**
  * Spawn a spots layer
  * @param {Random} random A randomizer
- * @param {Number} [paletteIndex] The palette index
  * @returns {LayerSpots} A spots layer
  */
-BlueprintLayerSpots.prototype.spawn = function(random, paletteIndex = this.paletteIndex) {
+BlueprintLayerSpots.prototype.spawn = function(random) {
     return new LayerSpots(
         Plane.createRandom(random),
-        paletteIndex,
+        this.paletteIndex,
         Math.round(this.samplerScale.sample(random.getFloat())),
         Math.round(this.samplerStretch.sample(random.getFloat())),
         Math.round(this.samplerThreshold.sample(random.getFloat())),

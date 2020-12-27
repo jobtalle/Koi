@@ -38,13 +38,12 @@ BlueprintLayerStripes.prototype = Object.create(BlueprintLayer.prototype);
 /**
  * Spawn a stripes layer
  * @param {Random} random A randomizer
- * @param {Number} [paletteIndex] The palette index
  * @returns {LayerStripes} A stripes layer
  */
-BlueprintLayerStripes.prototype.spawn = function(random, paletteIndex) {
+BlueprintLayerStripes.prototype.spawn = function(random) {
     return new LayerStripes(
         Plane.createRandom(random),
-        paletteIndex,
+        this.paletteIndex,
         Math.round(this.samplerScale.sample(random.getFloat())),
         Math.round(this.samplerDistortion.sample(random.getFloat())),
         Math.round(this.samplerRoughness.sample(random.getFloat())),

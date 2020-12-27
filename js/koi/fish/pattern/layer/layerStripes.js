@@ -24,7 +24,6 @@ const LayerStripes = function(
     focus,
     power) {
     this.plane = plane;
-    this.paletteIndex = paletteIndex;
     this.scale = scale;
     this.distortion = distortion;
     this.roughness = roughness;
@@ -34,12 +33,11 @@ const LayerStripes = function(
     this.focus = focus;
     this.power = power;
 
-    Layer.call(this, this.ID, paletteIndex, true, false, false, this.DOMINANCE);
+    Layer.call(this, this.ID, paletteIndex);
 };
 
 LayerStripes.prototype = Object.create(Layer.prototype);
 
-LayerStripes.prototype.DOMINANCE = .9;
 LayerStripes.prototype.SAMPLER_SCALE = new SamplerPlateau(2.8, 4.3, 8.5, 5);
 LayerStripes.prototype.SAMPLER_DISTORTION = new SamplerPlateau(3, 7, 12, 4);
 LayerStripes.prototype.SAMPLER_ROUGHNESS = new Sampler(2, 4.3);

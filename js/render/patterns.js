@@ -77,7 +77,7 @@ Patterns.prototype.writeLayer = function(
  * @param {Number} pixelSize The pixel size
  */
 Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
-    let colorPrevious = Palette.COLORS[pattern.base.paletteIndex];
+    let color = Palette.COLORS[pattern.base.paletteIndex];
 
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, randomSource.texture); // TODO: Don't use variable random source for this
@@ -100,7 +100,7 @@ Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
         1, 0
     ]));
 
-    this.writeLayer(pattern.base, this.programBase, this.vaoBase, colorPrevious);
+    this.writeLayer(pattern.base, this.programBase, this.vaoBase, color);
 
     this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array([
         2 * (region.uBodyStart + pixelSize) - 1,
@@ -121,10 +121,7 @@ Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
 
     for (const layer of pattern.layers) {
-        const color = Palette.COLORS[layer.paletteIndex];
-
-        if (color === colorPrevious)
-            break;
+        color = Palette.COLORS[layer.paletteIndex];
 
         switch (layer.id) {
             case LayerSpots.prototype.ID:

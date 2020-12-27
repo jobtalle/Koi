@@ -24,7 +24,7 @@ BugSpawner.prototype.SPAWN_CHANCE = {
     [WeatherState.prototype.ID_OVERCAST]: .4,
     [WeatherState.prototype.ID_DRIZZLE]: .2,
     [WeatherState.prototype.ID_RAIN]: .06,
-    [WeatherState.prototype.ID_THUNDERSTORM]: .03
+    [WeatherState.prototype.ID_THUNDERSTORM]: .012
 };
 
 /**
