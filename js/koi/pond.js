@@ -163,6 +163,7 @@ Pond.prototype.pick = function(x, y, whitelist) {
  * @param {Boolean} forceMutation True if at least one mutation must occur when possible during breeding
  * @param {Water} water A water plane to disturb
  * @param {Constellation} constellation The constellation containing all ponds
+ * @param {Boolean} raining True if it's raining
  * @param {Random} random A randomizer
  */
 Pond.prototype.update = function(
@@ -173,6 +174,7 @@ Pond.prototype.update = function(
     forceMutation,
     water,
     constellation,
+    raining,
     random) {
     for (let a = this.fishes.length; a-- > 0;) {
         const fish = this.fishes[a];
@@ -180,7 +182,7 @@ Pond.prototype.update = function(
         for (let b = a; b-- > 0;)
             fish.interact(this.fishes[b], random);
 
-        if (fish.update(this.constraint, water, random))
+        if (fish.update(this.constraint, water, raining, random))
             this.removeFish(a, atlas);
         else {
             if (constellation.getFishCount() < Koi.prototype.FISH_CAPACITY - 1 &&

@@ -53,6 +53,7 @@ Fish.prototype.BOOST_POWER = .0015;
 Fish.prototype.BOOST_MIN = 5;
 Fish.prototype.BOOST_MAX = 30;
 Fish.prototype.TURN_CHANCE = .0016;
+Fish.prototype.TURN_CHANCE_RAINING = .05;
 Fish.prototype.TURN_FORCE = Math.fround(.06);
 Fish.prototype.TURN_POWER = .4;
 Fish.prototype.TURN_DECAY = .94;
@@ -371,10 +372,11 @@ Fish.prototype.canMate = function() {
  * Update the fish
  * @param {Constraint} constraint A constraint
  * @param {Water} water A water plane to disturb
+ * @param {Boolean} raining True if it's raining
  * @param {Random} random A randomizer
  * @returns {Boolean} A boolean indicating whether the fish left the scene
  */
-Fish.prototype.update = function(constraint, water, random) {
+Fish.prototype.update = function(constraint, water, raining, random) {
     if (this.constrain(constraint))
         return true;
 
@@ -410,7 +412,7 @@ Fish.prototype.update = function(constraint, water, random) {
     if (this.speed < this.SPEED_SLOW) {
         if (this.boost === 0 && random.getFloat() < this.BOOST_CHANCE)
             this.boostSpeed(random);
-        else if (this.turnForce === 0 && random.getFloat() < this.TURN_CHANCE)
+        else if (this.turnForce === 0 && random.getFloat() < (raining ? this.TURN_CHANCE_RAINING : this.TURN_CHANCE))
             this.turn(random);
         else if (this.speed < this.SPEED_NIBBLE) if ((--this.nibbleTime === 0)) {
             this.nibbleTime = this.NIBBLE_TIME_MIN +
