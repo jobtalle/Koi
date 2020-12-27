@@ -26,6 +26,7 @@
     transition-property: top;
     box-shadow: 0 0 var(--book-shadow-radius) var(--book-shadow-color);
     user-select: none;
+    border-radius: var(--card-border-radius);
 }
 
 #book.hidden {
@@ -49,6 +50,7 @@
     justify-content: space-evenly;
     align-items: center;
     flex-wrap: wrap;
+    overflow: hidden;
 }
 
 #book #spine .page .overlay {
@@ -78,6 +80,8 @@
         var(--book-page-color) var(--book-page-shade-size),
         var(--book-page-color-highlight));
     transform-origin: right;
+    border-top-left-radius: var(--card-border-radius);
+    border-bottom-left-radius: var(--card-border-radius);
 }
 
 #book #spine .page.right {
@@ -87,6 +91,8 @@
         var(--book-page-color) var(--book-page-shade-size),
         var(--book-page-color-shade));
     transform-origin: left;
+    border-top-right-radius: var(--card-border-radius);
+    border-bottom-right-radius: var(--card-border-radius);
 }
 
 #book #spine .page .slot {
