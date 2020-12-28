@@ -8,7 +8,8 @@ const Cards = function(element) {
     this.dropTarget = this.createDropTarget();
     this.buttonBook = this.createButtonBook();
     this.book = new CardBook(element.clientWidth, element.clientHeight, this, () => {
-        this.koi.onUnlock();
+        if (this.koi)
+            this.koi.onUnlock();
     });
     this.hand = new CardHand(element.clientWidth, element.clientHeight, this.dropTarget);
     this.cards = [];

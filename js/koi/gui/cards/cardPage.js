@@ -283,6 +283,20 @@ CardPage.prototype.createSlots = function(element) {
 };
 
 /**
+ * Get the number of page slots with satisfied requirements
+ * @returns {Number} The number of satisfied requirements
+ */
+CardPage.prototype.getSatisfiedRequirements = function() {
+    let satisfied = 0;
+
+    for (let slot = 0; slot < 4; ++slot)
+        if (this.requirements[slot] && this.cards[slot])
+            ++satisfied;
+
+    return satisfied;
+};
+
+/**
  * Create the shading overlay for this page
  * @param {HTMLDivElement} element The page element
  * @param {Number} direction The direction of the page from the book center, -1 or 1

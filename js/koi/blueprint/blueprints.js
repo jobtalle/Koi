@@ -91,25 +91,7 @@ const Blueprints = {
                     // Roundness
                     new Sampler(200, 250)),
                 // Layers
-                [
-                    // new BlueprintLayerStripes(
-                    //     Palette.INDEX_WHITE,
-                    //     new Sampler(150, 180),
-                    //     new Sampler(150, 180),
-                    //     new Sampler(150, 180),
-                    //     new Sampler(150, 180),
-                    //     new Sampler(150, 180),
-                    //     new Sampler(150, 180),
-                    //     new Sampler(150, 180),
-                    //     new Sampler(150, 180))
-                    new BlueprintLayerRidge(
-                        Palette.INDEX_GOLD,
-                        new Sampler(150, 180),
-                        new Sampler(150, 180),
-                        new Sampler(150, 180),
-                        new Sampler(150, 180),
-                        new Sampler(150, 180))
-                ]
+                []
             )
         )
     ),

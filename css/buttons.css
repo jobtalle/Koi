@@ -21,6 +21,8 @@ button {
     outline: none;
     background-color: var(--button-color);
     padding: 0;
+    color: white;
+    font-size: 18pt;
 }
 
 #button-book {

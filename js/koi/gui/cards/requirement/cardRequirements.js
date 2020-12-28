@@ -7,6 +7,36 @@ const CardRequirements = [
         null, null, null, null
     ],
     [
+        null,
+        null,
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_WHITE)
+        ])),
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_BLACK)
+        ]))
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_ORANGE)
+        ])),
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_GOLD)
+        ])),
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_WHITE)
+        ])),
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_BLACK)
+        ]))
+    ],
+    [
+        null, null, null, null
+    ],
+    [
         new CardRequirement(new PatternFootprint([
             new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_BLACK),
             new LayerFootprint(LayerStripes.prototype.ID, Palette.INDEX_WHITE)

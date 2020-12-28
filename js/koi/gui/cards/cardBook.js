@@ -28,6 +28,7 @@ const CardBook = function(width, height, cards, onUnlock) {
     this.element.appendChild(this.buttonPageRight);
 
     this.fit();
+    this.setButtonLockedStatus();
 };
 
 CardBook.prototype.ID = "book";
@@ -54,7 +55,7 @@ CardBook.Flip = function() {
     this.halfway = false;
 };
 
-CardBook.Flip.prototype.SPEED = .2;
+CardBook.Flip.prototype.SPEED = .3;
 
 /**
  * Update this flip
@@ -98,6 +99,8 @@ CardBook.prototype.deserialize = function(buffer, cards) {
 
     for (const page of this.pages)
         page.deserialize(buffer, cards);
+
+    this.setButtonLockedStatus();
 };
 
 /**
@@ -306,13 +309,56 @@ CardBook.prototype.createButtonPage = function(classSide, onClick) {
 };
 
 /**
+ * Get the number of requirements on a page
+ * @param {Number} page The first of the two pages to check
+ * @returns {Number} The number of requirements
+ */
+CardBook.prototype.getRequirementCount = function(page) {
+    let requirements = 0;
+
+    for (let slot = 0; slot < 4; ++slot) {
+        if (CardRequirements[page][slot])
+            ++requirements;
+
+        if (CardRequirements[page + 1][slot])
+            ++requirements;
+    }
+
+    return requirements;
+};
+
+/**
+ * Get the number of page slots with satisfied requirements
+ * @param {Number} page The first of the two pages to check
+ * @returns {Number} The number of satisfied requirements
+ */
+CardBook.prototype.getSatisfiedRequirements = function(page) {
+    return this.pages[page].getSatisfiedRequirements() + this.pages[page + 1].getSatisfiedRequirements();
+};
+
+/**
  * Update the locked status of the right page button
  */
 CardBook.prototype.setButtonLockedStatus = function() {
-    if (this.nextFlipLocked())
-        this.buttonPageRight.classList.add(this.CLASS_BUTTON_LOCKED);
-    else
+    if (this.nextFlipLocked()) {
+        const requirementCount = this.getRequirementCount(this.page + this.flips.length * 2);
+        const satisfiedRequirements = this.getSatisfiedRequirements(this.page + this.flips.length * 2);
+
+        if (requirementCount === satisfiedRequirements) {
+            ++this.unlocked;
+
+            this.onUnlock();
+            this.setButtonLockedStatus();
+        }
+        else {
+            this.buttonPageRight.classList.add(this.CLASS_BUTTON_LOCKED);
+            this.buttonPageRight.innerText = satisfiedRequirements.toString() + "/" + requirementCount.toString();
+        }
+    }
+    else {
         this.buttonPageRight.classList.remove(this.CLASS_BUTTON_LOCKED);
+        this.buttonPageRight.innerText = "";
+    }
 };
 
 /**
@@ -336,6 +382,7 @@ CardBook.prototype.findSnap = function(x, y, body) {
  */
 CardBook.prototype.addToBook = function(card, snap) {
     this.pages[this.page].addCard(card, snap) || this.pages[this.page + 1].addCard(card, snap);
+    this.setButtonLockedStatus();
 };
 
 /**
@@ -344,6 +391,7 @@ CardBook.prototype.addToBook = function(card, snap) {
  */
 CardBook.prototype.removeFromBook = function(card) {
     this.pages[this.page].removeCard(card) || this.pages[this.page + 1].removeCard(card);
+    this.setButtonLockedStatus();
 };
 
 /**
