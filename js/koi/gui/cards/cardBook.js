@@ -19,6 +19,7 @@ const CardBook = function(width, height, cards, onUnlock) {
     this.buttonPageRight = this.createButtonPage(this.CLASS_BUTTON_RIGHT, this.flipLeft.bind(this));
     this.cards = cards;
     this.onUnlock = onUnlock;
+    this.unlocked = 0;
     this.invisibleTimeout = null;
 
     this.populateSpine();
@@ -36,6 +37,7 @@ CardBook.prototype.CLASS_INVISIBLE = "invisible";
 CardBook.prototype.CLASS_BUTTON = "button-page";
 CardBook.prototype.CLASS_BUTTON_LEFT = "left";
 CardBook.prototype.CLASS_BUTTON_RIGHT = "right";
+CardBook.prototype.CLASS_BUTTON_LOCKED = "locked";
 CardBook.prototype.HIDE_TIME = StyleUtils.getFloat("--book-hide-time");
 CardBook.prototype.PADDING_TOP = .05;
 CardBook.prototype.PADDING_PAGE = .02;
@@ -52,7 +54,7 @@ CardBook.Flip = function() {
     this.halfway = false;
 };
 
-CardBook.Flip.prototype.SPEED = .3;
+CardBook.Flip.prototype.SPEED = .2;
 
 /**
  * Update this flip
@@ -92,6 +94,8 @@ CardBook.Flip.prototype.getScale = function(time) {
  * @throws {RangeError} A range error if deserialized values are not valid
  */
 CardBook.prototype.deserialize = function(buffer, cards) {
+    this.unlocked = buffer.readUint8();
+
     for (const page of this.pages)
         page.deserialize(buffer, cards);
 };
@@ -101,6 +105,8 @@ CardBook.prototype.deserialize = function(buffer, cards) {
  * @param {BinBuffer} buffer The buffer to serialize to
  */
 CardBook.prototype.serialize = function(buffer) {
+    buffer.writeUint8(this.unlocked);
+
     for (const page of this.pages)
         page.serialize(buffer);
 };
@@ -165,6 +171,16 @@ CardBook.prototype.reverse = function() {
     this.page -= this.flips.length * this.flipDirection * 2;
 
     this.flipDirection = -this.flipDirection;
+
+    this.setButtonLockedStatus();
+};
+
+/**
+ * Check whether the next flip is locked
+ * @returns {Boolean} True if the next page flip cannot be made because it's locked
+ */
+CardBook.prototype.nextFlipLocked = function() {
+    return this.unlocked <= (this.page >> 1) - this.flips.length * this.flipDirection;
 };
 
 /**
@@ -184,6 +200,8 @@ CardBook.prototype.flipRight = function() {
 
     this.flips.push(new CardBook.Flip());
     this.flipDirection = 1;
+
+    this.setButtonLockedStatus();
 };
 
 /**
@@ -196,7 +214,7 @@ CardBook.prototype.flipLeft = function() {
         return;
     }
 
-    if (this.page + 2 === this.PAGE_COUNT - this.flips.length * 2)
+    if (this.page + 2 === this.PAGE_COUNT - this.flips.length * 2 || this.nextFlipLocked())
         return;
 
     this.pages[this.page + this.flips.length * 2 + 3].show(this.cards);
@@ -204,7 +222,7 @@ CardBook.prototype.flipLeft = function() {
     this.flips.push(new CardBook.Flip());
     this.flipDirection = -1;
 
-    this.onUnlock(); // TODO: Placeholder until locks are implemented
+    this.setButtonLockedStatus();
 };
 
 /**
@@ -281,9 +299,20 @@ CardBook.prototype.createButtonPage = function(classSide, onClick) {
 
     element.className = this.CLASS_BUTTON;
     element.classList.add(classSide);
+
     element.onclick = onClick;
 
     return element;
+};
+
+/**
+ * Update the locked status of the right page button
+ */
+CardBook.prototype.setButtonLockedStatus = function() {
+    if (this.nextFlipLocked())
+        this.buttonPageRight.classList.add(this.CLASS_BUTTON_LOCKED);
+    else
+        this.buttonPageRight.classList.remove(this.CLASS_BUTTON_LOCKED);
 };
 
 /**

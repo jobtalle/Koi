@@ -33,6 +33,10 @@ button {
     position: absolute;
 }
 
+.button-page.locked {
+    background-color: #a43333;
+}
+
 .button-page.left {
     left: calc(var(--button-width) * var(--button-page-shift) * -1);
 }
