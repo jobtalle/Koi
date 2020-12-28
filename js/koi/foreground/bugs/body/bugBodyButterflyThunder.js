@@ -16,10 +16,12 @@ const BugBodyButterflyThunder = function(gl, random) {
         this.COLOR_WINGS,
         this.COLOR_WINGS_EDGE,
         true,
+        this.SPEED,
         random);
 };
 
 BugBodyButterflyThunder.prototype = Object.create(BugBodyButterfly.prototype);
+BugBodyButterflyThunder.prototype.SPEED = new SamplerPower(.002, .11, .38);
 BugBodyButterflyThunder.prototype.COLOR_WINGS = Color.fromCSS("--color-bug-butterfly-thunder");
 BugBodyButterflyThunder.prototype.COLOR_WINGS_EDGE = Color.fromCSS("--color-bug-butterfly-thunder-edge");
 BugBodyButterflyThunder.prototype.SAMPLER_BODY_HEIGHT = new SamplerPower(.05, .06, 2);

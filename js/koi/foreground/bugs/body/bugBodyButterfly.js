@@ -9,6 +9,7 @@
  * @param {Color} colorWings The wing color
  * @param {Color} colorWingsEdge The wing edge color
  * @param {Boolean} resistant True if the bug resists rain
+ * @param {Sampler} speed The flying speed sampler
  * @param {Random} random A randomizer
  * @constructor
  */
@@ -22,6 +23,7 @@ const BugBodyButterfly = function(
     colorWings,
     colorWingsEdge,
     resistant,
+    speed,
     random) {
     const vertices = [];
     const indices = [];
@@ -42,7 +44,7 @@ const BugBodyButterfly = function(
         gl,
         new Vector2(this.FLEX, 0),
         this.FLEX_ANGLE,
-        this.SPEED,
+        speed,
         this.ROTATION,
         resistant,
         vertices,
@@ -55,7 +57,6 @@ BugBodyButterfly.prototype = Object.create(BugBody.prototype);
 BugBodyButterfly.prototype.STEPS = 9;
 BugBodyButterfly.prototype.FLEX = .2;
 BugBodyButterfly.prototype.FLEX_ANGLE = -.6;
-BugBodyButterfly.prototype.SPEED = new SamplerPower(.002, .08, .38);
 BugBodyButterfly.prototype.ROTATION = new SamplerPlateau(-Math.PI, 0, Math.PI, 1);
 BugBodyButterfly.prototype.FLAP_SPEED_FLYING = .55;
 BugBodyButterfly.prototype.FLAP_SPEED_IDLE = .035;

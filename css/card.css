@@ -38,7 +38,6 @@
     background-color: var(--card-color-background);
     user-select: none;
     box-shadow: 0 0 var(--book-shadow-radius) var(--book-shadow-color);
-    /* TODO: Give card its own shadow variables */
     -webkit-tap-highlight-color: transparent;
 }
 

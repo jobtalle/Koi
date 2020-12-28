@@ -42,7 +42,7 @@ FishIconDefs.prototype.STRIPES_B = [
 FishIconDefs.prototype.RIDGE_A = new Vector2(.5, .9);
 FishIconDefs.prototype.RIDGE_B = new Vector2(.25, .82);
 FishIconDefs.prototype.RIDGE_SPACING = 5;
-FishIconDefs.prototype.RIDGE_MAX_SHRINK = .5;
+FishIconDefs.prototype.RIDGE_MAX_SHRINK = .75;
 FishIconDefs.prototype.STRIPE_CURVE_ANGLE = new Sampler(Math.PI * .3, Math.PI * .7);
 FishIconDefs.prototype.CLASSES_COLOR = [
     "white",
