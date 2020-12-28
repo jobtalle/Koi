@@ -29,12 +29,13 @@ BlueprintLayerRidge.prototype = Object.create(BlueprintLayer.prototype);
 /**
  * Spawn a ridge layer
  * @param {Random} random A randomizer
+ * @param {Number} [paletteIndex] A different palette index, if applicable
  * @returns {LayerRidge} A ridge layer
  */
-BlueprintLayerRidge.prototype.spawn = function(random) {
+BlueprintLayerRidge.prototype.spawn = function(random, paletteIndex = this.paletteIndex) {
     return new LayerRidge(
         Plane.createRandom(random),
-        this.paletteIndex,
+        paletteIndex,
         Math.round(this.samplerScale.sample(random.getFloat())),
         Math.round(this.samplerPower.sample(random.getFloat())),
         Math.round(this.samplerThreshold.sample(random.getFloat())),

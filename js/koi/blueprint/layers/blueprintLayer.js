@@ -12,8 +12,9 @@ BlueprintLayer.PALETTE_RANDOM = -1;
 /**
  * Spawn a layer
  * @param {Random} random A randomizer
+ * @param {Number} paletteIndex The palette index
  * @returns {Layer} A ridge layer
  */
-BlueprintLayer.prototype.spawn = function(random) {
+BlueprintLayer.prototype.spawn = function(random, paletteIndex) {
     return null;
 };
