@@ -11,6 +11,7 @@ const TutorialCards = function(overlay) {
     this.cardStored = false;
     this.unlocked = false;
     this.stored = false;
+    this.highlight1 = this.highlight2 = null;
 };
 
 TutorialCards.prototype = Object.create(Tutorial.prototype);
@@ -27,7 +28,6 @@ TutorialCards.prototype.LANG_OPEN_BOOK_STORE = "TUTORIAL_OPEN_BOOK_STORE";
 TutorialCards.prototype.LANG_OPEN_BOOK = "TUTORIAL_OPEN_BOOK";
 TutorialCards.prototype.LANG_STORE_CARD = "TUTORIAL_STORE_CARD";
 TutorialCards.prototype.LANG_UNLOCK = "TUTORIAL_UNLOCK";
-TutorialCards.prototype.LANG_CLOSE_BOOK = "TUTORIAL_CLOSE_BOOK";
 
 /**
  * Cue the card mechanic tutorial
@@ -87,14 +87,26 @@ TutorialCards.prototype.pointToBookButton = function(koi) {
  * Point towards the unlock button
  * @param {Koi} koi The koi object
  */
-TutorialCards.prototype.pointToUnlockButton = function(koi) {
-    this.overlay.createArrow(koi.gui.cards.book.buttonPageRight, "down");
+TutorialCards.prototype.pointToUnlockables = function(koi) {
+    if (!this.highlight1) {
+        this.highlight1 = koi.gui.overlay.createHighlightElement();
+        this.highlight2 = koi.gui.overlay.createHighlightElement();
+
+        koi.gui.cards.book.pages[1].slots[2].appendChild(this.highlight1);
+        koi.gui.cards.book.pages[1].slots[3].appendChild(this.highlight2);
+    }
 };
 
 /**
  * Mark the cards tutorial as finished
+ * @param {Koi} koi The koi object
  */
-TutorialCards.prototype.markFinished = function() {
+TutorialCards.prototype.markFinished = function(koi) {
+    if (this.highlight1) {
+        koi.gui.cards.book.pages[1].slots[2].removeChild(this.highlight1);
+        koi.gui.cards.book.pages[1].slots[3].removeChild(this.highlight2);
+    }
+
     window["localStorage"].setItem("tutorial", (this.MUTATIONS_REQUIRED + 1).toString());
 };
 
@@ -157,7 +169,7 @@ TutorialCards.prototype.update = function(koi) {
                 if (this.stored) {
                     this.overlay.setText(language.get(this.LANG_UNLOCK));
 
-                    this.pointToUnlockButton(koi);
+                    this.pointToUnlockables(koi);
 
                     this.phase = this.PHASE_UNLOCK;
                 }
@@ -182,37 +194,19 @@ TutorialCards.prototype.update = function(koi) {
                 this.overlay.setText(language.get(this.LANG_UNLOCK));
                 this.stored = true;
 
-                this.pointToUnlockButton(koi);
+                this.pointToUnlockables(koi);
                 this.advance();
             }
 
             break;
         case this.PHASE_UNLOCK:
-            if (!koi.gui.cards.bookVisible) {
-                this.overlay.setText(language.get(this.LANG_OPEN_BOOK));
-
-                this.pointToBookButton(koi);
-
-                this.phase = this.PHASE_OPEN_BOOK;
-            }
-            else if (this.unlocked) {
-                this.overlay.setText(language.get(this.LANG_CLOSE_BOOK));
-                this.overlay.deleteArrow();
-
-                this.advance();
-            }
-
-            break;
-        case this.PHASE_CLOSE_BOOK:
-            if (!koi.gui.cards.bookVisible) {
-                this.markFinished();
+            if (!koi.gui.cards.bookVisible || this.unlocked) {
+                this.markFinished(koi);
 
                 this.overlay.removeText();
 
                 return true;
             }
-
-            break;
     }
 
     return false;

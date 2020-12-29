@@ -21,6 +21,5 @@
   "TUTORIAL_OPEN_BOOK_STORE": "Open the card book to store the card.",
   "TUTORIAL_OPEN_BOOK": "Open the card book.",
   "TUTORIAL_STORE_CARD": "Drag the card into one of the book slots to store it.",
-  "TUTORIAL_UNLOCK": "Unlock more pages by storing the appropriate cards in these slots.",
-  "TUTORIAL_CLOSE_BOOK": "Close the book by tapping anywhere outside it."
+  "TUTORIAL_UNLOCK": "Unlock more pages by storing the appropriate cards in these slots."
 }

@@ -13,6 +13,7 @@ const Overlay = function(element) {
 };
 
 Overlay.prototype.CLASS_POINTER = "pointer";
+Overlay.prototype.CLASS_HIGHLIGHT = "overlay-highlight";
 Overlay.prototype.CLASS_ARROW = "overlay-arrow";
 Overlay.prototype.CLASS_TEXT = "text";
 Overlay.prototype.POINTER_RADIUS =
@@ -68,6 +69,18 @@ Overlay.prototype.createTextElement = function(text) {
 
     element.className = this.CLASS_TEXT;
     element.appendChild(paragraph);
+
+    return element;
+};
+
+/**
+ * Create a highlight element
+ * @returns {HTMLDivElement} The element
+ */
+Overlay.prototype.createHighlightElement = function() {
+    const element = document.createElement("div");
+
+    element.className = this.CLASS_HIGHLIGHT;
 
     return element;
 };
