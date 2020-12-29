@@ -39,6 +39,7 @@ CardBook.prototype.CLASS_BUTTON = "button-page";
 CardBook.prototype.CLASS_BUTTON_LEFT = "left";
 CardBook.prototype.CLASS_BUTTON_RIGHT = "right";
 CardBook.prototype.CLASS_BUTTON_LOCKED = "locked";
+CardBook.prototype.CLASS_BUTTON_DISABLED = "disabled";
 CardBook.prototype.HIDE_TIME = StyleUtils.getFloat("--book-hide-time");
 CardBook.prototype.PADDING_TOP = .05;
 CardBook.prototype.PADDING_PAGE = .02;
@@ -96,7 +97,7 @@ CardBook.Flip.prototype.getScale = function(time) {
  */
 CardBook.prototype.deserialize = function(buffer, cards) {
     this.unlocked = buffer.readUint8();
-
+    this.unlocked = 0;
     for (const page of this.pages)
         page.deserialize(buffer, cards);
 
@@ -340,25 +341,36 @@ CardBook.prototype.getSatisfiedRequirements = function(page) {
  * Update the locked status of the right page button
  */
 CardBook.prototype.setButtonLockedStatus = function() {
-    if (this.nextFlipLocked()) {
-        const requirementCount = this.getRequirementCount(this.page + this.flips.length * 2);
-        const satisfiedRequirements = this.getSatisfiedRequirements(this.page + this.flips.length * 2);
+    if (this.page - this.flips.length * 2 * this.flipDirection === this.pages.length - 2)
+        this.buttonPageRight.classList.add(this.CLASS_BUTTON_DISABLED);
+    else {
+        this.buttonPageRight.classList.remove(this.CLASS_BUTTON_DISABLED);
 
-        if (requirementCount === satisfiedRequirements) {
-            ++this.unlocked;
+        if (this.nextFlipLocked()) {
+            const requirementCount = this.getRequirementCount(this.page + this.flips.length * 2);
+            const satisfiedRequirements = this.getSatisfiedRequirements(this.page + this.flips.length * 2);
 
-            this.onUnlock();
-            this.setButtonLockedStatus();
+            if (requirementCount === satisfiedRequirements) {
+                ++this.unlocked;
+
+                this.onUnlock();
+                this.setButtonLockedStatus();
+            }
+            else {
+                this.buttonPageRight.classList.add(this.CLASS_BUTTON_LOCKED);
+                this.buttonPageRight.innerText = satisfiedRequirements.toString() + "/" + requirementCount.toString();
+            }
         }
         else {
-            this.buttonPageRight.classList.add(this.CLASS_BUTTON_LOCKED);
-            this.buttonPageRight.innerText = satisfiedRequirements.toString() + "/" + requirementCount.toString();
+            this.buttonPageRight.classList.remove(this.CLASS_BUTTON_LOCKED);
+            this.buttonPageRight.innerText = "";
         }
     }
-    else {
-        this.buttonPageRight.classList.remove(this.CLASS_BUTTON_LOCKED);
-        this.buttonPageRight.innerText = "";
-    }
+
+    if (this.page - this.flips.length * 2 * this.flipDirection === 0)
+        this.buttonPageLeft.classList.add(this.CLASS_BUTTON_DISABLED);
+    else
+        this.buttonPageLeft.classList.remove(this.CLASS_BUTTON_DISABLED);
 };
 
 /**
