@@ -126,16 +126,17 @@ Mover.prototype.applyMotion = function(air, audio, foreground, random) {
  * @param {Air} air The air to displace
  * @param {AudioBank} audio Game audio
  * @param {Foreground} foreground The foreground
+ * @param {Boolean} tutorial True if any tutorial is active
  * @param {Random} random A randomizer
  */
-Mover.prototype.update = function(air, audio, foreground, random) {
+Mover.prototype.update = function(air, audio, foreground, tutorial, random) {
     if (this.move) {
         this.move.body.update(
             this.move.position,
             this.move.direction,
             this.move.speed);
 
-        if (++this.dragIdle === this.DRAG_POINTER_TIME && !this.dragPointer) {
+        if (!tutorial && ++this.dragIdle === this.DRAG_POINTER_TIME && !this.dragPointer) {
             this.dragPointer = this.gui.overlay.createArrowElement("down");
             this.gui.cards.dropTarget.appendChild(this.dragPointer);
         }
