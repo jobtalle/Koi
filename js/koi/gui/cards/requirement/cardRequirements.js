@@ -55,5 +55,11 @@ const CardRequirements = [
             new LayerFootprint(LayerSpots.prototype.ID, Palette.INDEX_WHITE),
             new LayerFootprint(LayerSpots.prototype.ID, Palette.INDEX_GOLD)
         ]))
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
     ]
 ];

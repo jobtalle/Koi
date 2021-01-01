@@ -15,8 +15,8 @@ const CardBook = function(width, height, cards, onUnlock) {
     this.pages = this.createPages(this.page);
     this.flips = [];
     this.flipDirection = 0;
-    this.buttonPageLeft = this.createButtonPage(this.CLASS_BUTTON_LEFT, this.flipRight.bind(this));
-    this.buttonPageRight = this.createButtonPage(this.CLASS_BUTTON_RIGHT, this.flipLeft.bind(this));
+    this.buttonPageLeft = new CardPageButton(false, this.flipRight.bind(this));
+    this.buttonPageRight = new CardPageButton(true, this.flipLeft.bind(this));
     this.cards = cards;
     this.onUnlock = onUnlock;
     this.unlocked = 0;
@@ -24,8 +24,8 @@ const CardBook = function(width, height, cards, onUnlock) {
 
     this.populateSpine();
 
-    this.element.appendChild(this.buttonPageLeft);
-    this.element.appendChild(this.buttonPageRight);
+    this.element.appendChild(this.buttonPageLeft.element);
+    this.element.appendChild(this.buttonPageRight.element);
 
     this.fit();
     this.setButtonLockedStatus();
@@ -35,11 +35,6 @@ CardBook.prototype.ID = "book";
 CardBook.prototype.ID_SPINE = "spine";
 CardBook.prototype.CLASS_HIDDEN = "hidden";
 CardBook.prototype.CLASS_INVISIBLE = "invisible";
-CardBook.prototype.CLASS_BUTTON = "button-page";
-CardBook.prototype.CLASS_BUTTON_LEFT = "left";
-CardBook.prototype.CLASS_BUTTON_RIGHT = "right";
-CardBook.prototype.CLASS_BUTTON_LOCKED = "locked";
-CardBook.prototype.CLASS_BUTTON_DISABLED = "disabled";
 CardBook.prototype.HIDE_TIME = StyleUtils.getFloat("--book-hide-time");
 CardBook.prototype.PADDING_TOP = .05;
 CardBook.prototype.PADDING_PAGE = .02;
@@ -97,7 +92,7 @@ CardBook.Flip.prototype.getScale = function(time) {
  */
 CardBook.prototype.deserialize = function(buffer, cards) {
     this.unlocked = buffer.readUint8();
-    this.unlocked = 0;
+
     for (const page of this.pages)
         page.deserialize(buffer, cards);
 
@@ -293,23 +288,6 @@ CardBook.prototype.render = function(time) {
 };
 
 /**
- * Create a page turn button
- * @param {String} classSide The class name for the buttons side
- * @param {Function} onClick The function to execute when the button has been clicked
- * @returns {HTMLButtonElement} The page button element
- */
-CardBook.prototype.createButtonPage = function(classSide, onClick) {
-    const element = document.createElement("button");
-
-    element.className = this.CLASS_BUTTON;
-    element.classList.add(classSide);
-
-    element.onclick = onClick;
-
-    return element;
-};
-
-/**
  * Get the number of requirements on a page
  * @param {Number} page The first of the two pages to check
  * @returns {Number} The number of requirements
@@ -342,9 +320,9 @@ CardBook.prototype.getSatisfiedRequirements = function(page) {
  */
 CardBook.prototype.setButtonLockedStatus = function() {
     if (this.page - this.flips.length * 2 * this.flipDirection === this.pages.length - 2)
-        this.buttonPageRight.classList.add(this.CLASS_BUTTON_DISABLED);
+        this.buttonPageRight.setDisabled(true);
     else {
-        this.buttonPageRight.classList.remove(this.CLASS_BUTTON_DISABLED);
+        this.buttonPageRight.setDisabled(false);
 
         if (this.nextFlipLocked()) {
             const requirementCount = this.getRequirementCount(this.page + this.flips.length * 2);
@@ -356,21 +334,17 @@ CardBook.prototype.setButtonLockedStatus = function() {
                 this.onUnlock();
                 this.setButtonLockedStatus();
             }
-            else {
-                this.buttonPageRight.classList.add(this.CLASS_BUTTON_LOCKED);
-                this.buttonPageRight.innerText = satisfiedRequirements.toString() + "/" + requirementCount.toString();
-            }
+            else
+                this.buttonPageRight.setSatisfied(requirementCount, satisfiedRequirements);
         }
-        else {
-            this.buttonPageRight.classList.remove(this.CLASS_BUTTON_LOCKED);
-            this.buttonPageRight.innerText = "";
-        }
+        else
+            this.buttonPageRight.setUnlocked();
     }
 
     if (this.page - this.flips.length * 2 * this.flipDirection === 0)
-        this.buttonPageLeft.classList.add(this.CLASS_BUTTON_DISABLED);
+        this.buttonPageLeft.setDisabled(true);
     else
-        this.buttonPageLeft.classList.remove(this.CLASS_BUTTON_DISABLED);
+        this.buttonPageLeft.setDisabled(false);
 };
 
 /**

@@ -21,11 +21,11 @@ const BugBodyButterflyRainy = function(gl, random) {
 };
 
 BugBodyButterflyRainy.prototype = Object.create(BugBodyButterfly.prototype);
-BugBodyButterflyRainy.prototype.SPEED = new SamplerPower(.002, .11, .38);
+BugBodyButterflyRainy.prototype.SPEED = new SamplerPower(.002, .1, .38);
 BugBodyButterflyRainy.prototype.COLOR_WINGS = Color.fromCSS("--color-bug-butterfly-blue");
 BugBodyButterflyRainy.prototype.COLOR_WINGS_EDGE = Color.fromCSS("--color-bug-butterfly-blue-edge");
 BugBodyButterflyRainy.prototype.SAMPLER_BODY_HEIGHT = new SamplerPower(.07, .08, 2);
-BugBodyButterflyRainy.prototype.SAMPLER_TOP_LENGTH = new SamplerPower(.6, .66, 2);
+BugBodyButterflyRainy.prototype.SAMPLER_TOP_LENGTH = new SamplerPower(.5, .56, 2);
 BugBodyButterflyRainy.prototype.SAMPLER_TOP_ANGLE = new Sampler(Math.PI * .27, Math.PI * .33);
-BugBodyButterflyRainy.prototype.SAMPLER_BOTTOM_LENGTH = new SamplerPower(.46, .5, 2);
+BugBodyButterflyRainy.prototype.SAMPLER_BOTTOM_LENGTH = new SamplerPower(.38, .42, 2);
 BugBodyButterflyRainy.prototype.SAMPLER_BOTTOM_ANGLE = new Sampler(Math.PI * -.37, Math.PI * -.42);
