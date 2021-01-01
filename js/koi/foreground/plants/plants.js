@@ -51,7 +51,7 @@ Plants.prototype.makeMesh = function(
         [8],
         [9]).apply(vertices);
 
-    return new Mesh(gl, new MeshData(vertices, indices), this.getFirstIndex(vertices) - 1 > 0xFFFF);
+    return new Mesh(gl, new MeshData(vertices, indices), this.getFirstIndex(vertices) - 1 > 0xFFFF ? 4 : 2);
 };
 
 /**

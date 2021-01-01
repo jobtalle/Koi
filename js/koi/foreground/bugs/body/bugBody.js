@@ -26,7 +26,7 @@ const BugBody = function(
     this.rotation = rotation;
     this.resistant = resistant;
     this.vao = null;
-    this.mesh = new Mesh(gl, new MeshData(vertices, indices));
+    this.mesh = new Mesh(gl, new MeshData(vertices, indices), 1);
     this.flap = 0;
     this.flapPrevious = this.flap;
 };

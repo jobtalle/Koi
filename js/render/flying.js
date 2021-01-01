@@ -146,7 +146,7 @@ Flying.prototype.render = function(
     this.gl.uniform1f(this.program["uAngle"], angle);
     this.gl.uniform1f(this.program["uTime"], time);
 
-    this.gl.drawElements(this.gl.TRIANGLES, mesh.elementCount, this.gl.UNSIGNED_SHORT, 0);
+    this.gl.drawElements(this.gl.TRIANGLES, mesh.elementCount, this.gl.UNSIGNED_BYTE, 0);
 };
 
 /**
