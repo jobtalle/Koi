@@ -11,9 +11,15 @@
     /* dimensions */
     --book-page-shade-size: 95%;
     --book-page-skew: 30;
-    --book-button-radius: 64px;
     --book-shadow-radius: 12px;
     --book-hide-time: 0.5s;
+    --book-button-padding: 16px;
+    --page-button-padding: 10px;
+    --page-button-page-shift: 0.65;
+    --page-button-color-enabled: #75a757;
+    --page-button-color-disabled: gray;
+    --page-button-color-unfulfilled: #a43333;
+    --page-button-shadow-radius: 4px;
 }
 
 #book {
@@ -112,4 +118,53 @@
     margin: 0;
     transform-origin: left top;
     box-shadow: none;
+}
+
+#button-book {
+    position: absolute;
+    left: var(--book-button-padding);
+    top: var(--book-button-padding);
+}
+
+.button-page {
+    position: absolute;
+}
+
+.button-page div {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.button-page div p {
+    margin: 0;
+    padding-left: var(--page-button-padding);
+}
+
+.button-page svg {
+    filter: drop-shadow(0 0 var(--page-button-shadow-radius) var(--book-shadow-color));
+}
+
+.button-page path {
+    fill: var(--page-button-color-enabled);
+}
+
+.button-page.locked path {
+    fill: var(--page-button-color-unfulfilled);
+}
+
+.button-page.disabled path {
+    fill: var(--page-button-color-disabled);
+}
+
+.button-page.left {
+    left: calc(var(--button-width) * var(--page-button-page-shift) * -1);
+}
+
+.button-page.right {
+    right: calc(var(--button-width) * var(--page-button-page-shift) * -1);
 }

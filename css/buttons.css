@@ -1,52 +1,19 @@
 :root {
-    /* Colors */
-    --button-color: #75a757;
-
     /* Dimensions */
     --button-width: 80px;
     --button-height: 80px;
-    --button-border-width: 2px;
-    --button-border-color: var(--card-color-border);
-    --button-padding: 16px;
-    --button-page-shift: 0.5;
 }
 
 button {
-    width: calc(var(--button-width) - 2 * var(--button-border-width));
-    height: calc(var(--button-height) - 2 * var(--button-border-width));
-    border: var(--button-border-width) solid var(--button-border-color);
+    width: var(--button-width);
+    height: var(--button-height);
+    border: none;
     box-sizing: border-box;
     cursor: pointer;
     pointer-events: auto;
     outline: none;
-    background-color: var(--button-color);
+    background-color: transparent;
     padding: 0;
     color: white;
     font-size: 18pt;
-}
-
-#button-book {
-    position: absolute;
-    left: var(--button-padding);
-    top: var(--button-padding);
-}
-
-.button-page {
-    position: absolute;
-}
-
-.button-page.locked {
-    background-color: #a43333;
-}
-
-.button-page.disabled {
-    background-color: gray;
-}
-
-.button-page.left {
-    left: calc(var(--button-width) * var(--button-page-shift) * -1);
-}
-
-.button-page.right {
-    right: calc(var(--button-width) * var(--button-page-shift) * -1);
 }

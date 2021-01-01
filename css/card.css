@@ -1,7 +1,6 @@
 :root {
     /* Colors */
     --card-color-background: #967a74;
-    --card-color-border: #242424;
     --card-color-drop-target: #ffffff55;
     --card-color-background-dark: #37657e;
     --card-color-background-light: var(--color-water-shallow);
