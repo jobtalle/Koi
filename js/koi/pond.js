@@ -192,10 +192,10 @@ Pond.prototype.update = function(
                     fish.lastInteraction.mate(random);
 
                     let mutated = false;
-                    const onMutate = mutation => {
+                    const onMutate = () => {
                         mutated = true;
 
-                        this.onMutate(mutation);
+                        this.onMutate();
                     };
 
                     const breeder = random.getFloat() < .5 ?

@@ -109,9 +109,8 @@ Koi.prototype.onBreed = function(pond, mutated) {
 
 /**
  * A function that is called when a pattern mutation occurs
- * @param {Mutation} mutation The mutation that occurred
  */
-Koi.prototype.onMutate = function(mutation) {
+Koi.prototype.onMutate = function() {
     if (this.tutorial)
         this.tutorial.onMutate();
 };
