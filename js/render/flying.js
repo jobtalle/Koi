@@ -4,7 +4,6 @@
  * @constructor
  */
 const Flying = function(gl) {
-    // TODO: Add ambient uniform
     this.gl = gl;
     this.program = new Shader(
         gl,
@@ -146,6 +145,7 @@ Flying.prototype.render = function(
     this.gl.uniform1f(this.program["uFlexAngle"], flexAngle);
     this.gl.uniform1f(this.program["uAngle"], angle);
     this.gl.uniform1f(this.program["uTime"], time);
+
     this.gl.drawElements(this.gl.TRIANGLES, mesh.elementCount, this.gl.UNSIGNED_SHORT, 0);
 };
 

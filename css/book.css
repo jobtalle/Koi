@@ -153,12 +153,18 @@
     fill: var(--page-button-color-enabled);
 }
 
+.button-page:active path {
+    fill: white;
+}
+
 .button-page.locked path {
     fill: var(--page-button-color-unfulfilled);
+    pointer-events: none;
 }
 
 .button-page.disabled path {
     fill: var(--page-button-color-disabled);
+    pointer-events: none;
 }
 
 .button-page.left {

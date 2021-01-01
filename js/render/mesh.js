@@ -10,7 +10,7 @@ const Mesh = function(
     meshData,
     longIndices = false) {
     this.gl = gl;
-    this.indexFormat = longIndices ? gl.UNSIGNED_INT : gl.UNSIGNED_SHORT;
+    this.indexFormat = longIndices ? gl.UNSIGNED_INT : gl.UNSIGNED_SHORT; // TODO: Allow 2, 4 and 8 byte indices
     this.vertices = gl.createBuffer();
     this.indices = gl.createBuffer();
     this.elementCount = meshData.getIndexCount();

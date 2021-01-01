@@ -120,9 +120,11 @@ BugBodyButterfly.prototype.model = function(
             -sample.x * this.FLAP_SCALE, sample.y,
             color.r, color.g, color.b,
             this.WING_HIGHLIGHT);
-        indices.push(
-            0, step << 1, step + 1 << 1,
-            1, (step << 1) + 1, (step + 1 << 1) + 1);
+
+        if (step !== this.STEPS - 1)
+            indices.push(
+                0, step << 1, step + 1 << 1,
+                1, (step << 1) + 1, (step + 1 << 1) + 1);
     }
 };
 
