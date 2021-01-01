@@ -5,8 +5,8 @@
  * @constructor
  */
 const CardPageButton = function(right, onClick) {
-    this.text = document.createElement("p");
-    this.element = this.makeElement(this.text, right, onClick);
+    this.textContainer = null;
+    this.element = this.makeElement(right, onClick);
 };
 
 CardPageButton.prototype.WIDTH = 10;
@@ -30,27 +30,54 @@ CardPageButton.prototype.setDisabled = function(disabled) {
 };
 
 /**
+ * Create a text element
+ * @param {String} text The text
+ */
+CardPageButton.prototype.setText = function(text) {
+    const paragraph = document.createElement("p");
+
+    paragraph.innerText = text;
+
+    this.textContainer = document.createElement("div");
+    this.textContainer.appendChild(paragraph);
+
+    this.element.appendChild(this.textContainer);
+};
+
+/**
+ * Remove text, if any
+ */
+CardPageButton.prototype.removeText = function() {
+    if (this.textContainer !== null) {
+        this.element.removeChild(this.textContainer);
+        this.textContainer = null;
+    }
+};
+
+/**
  * Set the satisfied state of a button
  * @param {Number} required The number of card slots that need to be filled for this button
  * @param {Number} satisfied The amount of satisfied card slots
  */
 CardPageButton.prototype.setSatisfied = function(required, satisfied) {
+    this.removeText();
+
     if (satisfied < required) {
+        this.setText(satisfied.toString() + "/" + required.toString());
+
         this.element.classList.add(this.CLASS_LOCKED);
-        this.text.innerText = satisfied.toString() + "/" + required.toString();
     }
-    else {
+    else
         this.element.classList.remove(this.CLASS_LOCKED);
-        this.text.innerText = "";
-    }
 };
 
 /**
  * Set this button to unlocked
  */
 CardPageButton.prototype.setUnlocked = function() {
+    this.removeText();
+
     this.element.classList.remove(this.CLASS_LOCKED);
-    this.text.innerText = "";
 };
 
 /**
@@ -133,16 +160,12 @@ CardPageButton.prototype.makeIcon = function(right) {
 
 /**
  * Make the button element
- * @param {HTMLParagraphElement} text The text element
  * @param {Boolean} right True if this button points towards the right
  * @param {Function} onClick The function to execute on click
  * @returns {HTMLButtonElement} The button element
  */
-CardPageButton.prototype.makeElement = function(text, right, onClick) {
+CardPageButton.prototype.makeElement = function(right, onClick) {
     const element = document.createElement("button");
-    const textContainer = document.createElement("div");
-
-    textContainer.appendChild(text);
 
     element.onclick = onClick;
     element.className = this.CLASS;
@@ -153,7 +176,6 @@ CardPageButton.prototype.makeElement = function(text, right, onClick) {
         element.classList.add(this.CLASS_LEFT);
 
     element.appendChild(this.makeIcon(right));
-    element.appendChild(textContainer);
 
     return element;
 };
