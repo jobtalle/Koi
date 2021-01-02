@@ -3,6 +3,7 @@
     --book-shadow-color: #1d1d1d;
     --book-page-color: #bca994;
     --book-page-color-shade: #92806b;
+    --book-page-color-side: #81715e;
     --book-page-color-highlight: #ded1bf;
     --book-page-shade-opacity: 0.7;
     --book-page-slot-color: #9d9d9d;
@@ -124,6 +125,18 @@
     position: absolute;
     left: var(--book-button-padding);
     top: var(--book-button-padding);
+}
+
+#button-book svg {
+    filter: drop-shadow(0 0 var(--page-button-shadow-radius) var(--book-shadow-color));
+}
+
+#button-book:active path.page {
+    fill: white;
+}
+
+#button-book path.side {
+    fill: var(--book-page-color-side);
 }
 
 .button-page {

@@ -11,6 +11,13 @@ const SVG = {
         return document.createElementNS(SVG.URI, "svg");
     },
     /**
+     * Create a SVG defs element
+     * @returns {SVGDefsElement} The defs element
+     */
+    createDefs: function() {
+        return document.createElementNS(SVG.URI, "defs");
+    },
+    /**
      * Create a pattern element
      * @returns {SVGPatternElement} The pattern element
      */
@@ -36,6 +43,14 @@ const SVG = {
      */
     setMask: function(element, id) {
         element.setAttribute("mask", "url(#" + id + ")");
+    },
+    /**
+     * Set the fill for an SVG element
+     * @param {SVGElement} element The SVG element
+     * @param {String} id The ID name of the fill
+     */
+    setFill: function(element, id) {
+        element.setAttribute("fill", "url(#" + id + ")");
     },
     /**
      * Set the view box of an existing SVG element
@@ -76,6 +91,30 @@ const SVG = {
      */
     setPreserveAspectRatio: function(element, value) {
         element.setAttribute("preserveAspectRatio", value);
+    },
+    /**
+     * Create a linear gradient
+     * @param {Number[]} stopPositions An array of stop positions in the range [0, 1]
+     * @param {Color[]} stopColors An array of stop colors
+     * @returns {SVGLinearGradientElement} The linear gradient element
+     */
+    createHorizontalGradient: function(stopPositions, stopColors) {
+        const element = document.createElementNS(SVG.URI, "linearGradient");
+
+        for (let stop = 0, stops = stopPositions.length; stop < stops; ++stop) {
+            const stopElement = document.createElementNS(SVG.URI, "stop");
+
+            stopElement.setAttribute(
+                "offset",
+                (100 * stopPositions[stop]).toFixed(2) + "%");
+            stopElement.setAttribute(
+                "style",
+                "stop-color:" + stopColors[stop].toHex());
+
+            element.appendChild(stopElement);
+        }
+
+        return element;
     },
     /**
      * Set the ID of a SVG element

@@ -16,8 +16,7 @@ SpawnerState.prototype.BLUEPRINT_INITIAL = Blueprints.baseWhite;
 SpawnerState.prototype.BLUEPRINTS = [
     Blueprints.baseWhite,
     Blueprints.baseBlack,
-    Blueprints.baseGold,
-    Blueprints.baseRed
+    Blueprints.baseGold
 ];
 
 /**

@@ -138,6 +138,11 @@ Bodies.prototype.render = function(
 
         this.gl.uniform2f(this.program["uScale"], 2 / width, -2 / height);
         this.buffer.render();
+
+        // Fix for issue #112
+        // this.gl.blendFunc(
+        //     this.gl.SRC_ALPHA,
+        //     this.gl.ONE_MINUS_SRC_ALPHA);
     }
 
     this.gl.disable(this.gl.BLEND);
