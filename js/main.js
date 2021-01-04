@@ -7,7 +7,8 @@ const glParameters = {
 };
 const loader = new Loader(
     document.getElementById("loader"),
-    document.getElementById("loader-button"),
+    document.getElementById("loader-button-start"),
+    document.getElementById("loader-button-new"),
     document.getElementById("loader-bar-inner"));
 const canvas = document.getElementById("renderer");
 const gl =
@@ -92,19 +93,23 @@ if (gl &&
 
             session = new Session();
 
+            gui.clear();
+
+            if (koi)
+                koi.free();
+
             koi = session.makeKoi(systems, audio, gui, new TutorialBreeding(gui.overlay));
         };
 
         // Retrieve last session if it exists
         if (sessionData) {
             try {
-                // throw new Error();
                 session.deserialize(new BinBuffer(sessionData));
 
                 koi = session.makeKoi(systems, audio, gui, new TutorialCards(gui.overlay));
-            } catch (error) {
-                gui.clear();
 
+                loader.setLoadedPrevious();
+            } catch (error) {
                 newSession();
 
                 console.warn(error);
@@ -152,7 +157,9 @@ if (gl &&
             koi.touchMove(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
         })
 
-        canvas.addEventListener("mouseup", koi.touchEnd.bind(koi));
+        canvas.addEventListener("mouseup", () => {
+            koi.touchEnd();
+        });
 
         canvas.addEventListener("touchend", event => {
             event.preventDefault();
@@ -182,6 +189,8 @@ if (gl &&
 
             audioEngine.interact();
         });
+
+        loader.setNewGameCallback(newSession);
     }, onFailure);
 
     // Create globally available SVG defs

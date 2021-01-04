@@ -1,18 +1,26 @@
 /**
  * A load screen
  * @param {HTMLElement} element The container element
- * @param {HTMLElement} elementButton The element to build the start button in
+ * @param {HTMLElement} elementButtonStart The element to build the start button in
+ * @param {HTMLElement} elementButtonNew The element to build the new game button in
  * @param {HTMLElement} elementBar The loading bar element
  * @constructor
  */
-const Loader = function(element, elementButton, elementBar) {
+const Loader = function(
+    element,
+    elementButtonStart,
+    elementButtonNew,
+    elementBar) {
     this.element = element;
-    this.elementButton = elementButton;
+    this.elementButtonStart = elementButtonStart;
+    this.elementButtonNew = elementButtonNew;
     this.elementBar = elementBar;
+    this.loadedPrevious = false;
     this.outstanding = 0;
     this.finished = 0;
     this.released = false;
     this.onFinish = null;
+    this.onNewGame = null;
 };
 
 /**
@@ -36,7 +44,16 @@ Loader.Requirement.prototype.satisfy = function() {
 };
 
 Loader.prototype.LANG_START = "START";
+Loader.prototype.LANG_CONTINUE = "CONTINUE";
+Loader.prototype.LANG_NEW = "NEW";
 Loader.prototype.CLASS_FINISHED = "finished";
+
+/**
+ * Indicate that a previous game has been loaded
+ */
+Loader.prototype.setLoadedPrevious = function() {
+    this.loadedPrevious = true;
+};
 
 /**
  * Update the loading bar element after loaded content has changed
@@ -46,27 +63,57 @@ Loader.prototype.updateBar = function() {
 };
 
 /**
+ * Hide the loader GUI
+ */
+Loader.prototype.hide = function() {
+    this.element.className = this.CLASS_FINISHED;
+};
+
+/**
  * Create the start button
  * @returns {HTMLButtonElement} The start button
  */
-Loader.prototype.createButton = function() {
+Loader.prototype.createButtonStart = function() {
     const element = document.createElement("button");
 
-    element.appendChild(document.createTextNode(language.get(this.LANG_START)));
+    element.appendChild(document.createTextNode(language.get(this.loadedPrevious ? this.LANG_CONTINUE : this.LANG_START)));
     element.onclick = () => {
         this.onFinish();
 
-        this.element.className = this.CLASS_FINISHED;
+        this.hide();
     };
 
     return element;
-}
+};
+
+/**
+ * Create the new game button
+ * @returns {HTMLButtonElement} The new game button
+ */
+Loader.prototype.createButtonNew = function() {
+    const element = document.createElement("button");
+
+    element.appendChild(document.createTextNode(language.get(this.LANG_NEW)));
+    element.onclick = () => {
+        if (this.onNewGame) {
+            this.onNewGame();
+            this.onFinish();
+
+            this.hide();
+        }
+    };
+
+    return element;
+};
 
 /**
  * Finish loading
  */
 Loader.prototype.complete = function() {
-    this.elementButton.appendChild(this.createButton());
+    this.elementButtonStart.appendChild(this.createButtonStart());
+
+    if (this.loadedPrevious)
+        this.elementButtonNew.appendChild(this.createButtonNew());
 };
 
 /**
@@ -88,6 +135,14 @@ Loader.prototype.setFinishCallback = function(onFinish) {
         this.complete();
 
     this.released = true;
+};
+
+/**
+ * Set the function to call when a new game should be created, overwriting the current one
+ * @param {Function} onNewGame A function that creates a new game
+ */
+Loader.prototype.setNewGameCallback = function(onNewGame) {
+    this.onNewGame = onNewGame;
 };
 
 /**

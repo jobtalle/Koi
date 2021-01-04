@@ -8,7 +8,7 @@ const BugSpawner = function(constellation) {
     this.countdown = this.SPAWN_FREQUENCY;
 };
 
-BugSpawner.prototype.MAX_AREA_PER_BUG = 15;
+BugSpawner.prototype.MAX_AREA_PER_BUG = 20;
 BugSpawner.prototype.SPAWN_FREQUENCY = 30;
 BugSpawner.prototype.INITIAL_COUNT = .4;
 BugSpawner.prototype.LOST_RAIN_BUG_CHANCE = .12;
@@ -20,8 +20,8 @@ BugSpawner.prototype.MAX_BUGS_MULTIPLIER = {
     [WeatherState.prototype.ID_THUNDERSTORM]: .1
 };
 BugSpawner.prototype.SPAWN_CHANCE = {
-    [WeatherState.prototype.ID_SUNNY]: .6,
-    [WeatherState.prototype.ID_OVERCAST]: .4,
+    [WeatherState.prototype.ID_SUNNY]: .5,
+    [WeatherState.prototype.ID_OVERCAST]: .3,
     [WeatherState.prototype.ID_DRIZZLE]: .2,
     [WeatherState.prototype.ID_RAIN]: .06,
     [WeatherState.prototype.ID_THUNDERSTORM]: .012

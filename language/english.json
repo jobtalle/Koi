@@ -4,6 +4,8 @@
     "units/imperial.json"
   ],
   "START": "Start",
+  "CONTINUE": "Continue",
+  "NEW": "New pond",
   "INFO_WEIGHT": "Weight",
   "INFO_LENGTH": "Length",
   "INFO_AGE": "Age",

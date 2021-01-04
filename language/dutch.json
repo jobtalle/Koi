@@ -4,6 +4,8 @@
     "units/metric.json"
   ],
   "START": "Start",
+  "CONTINUE": "Ga verder",
+  "NEW": "Nieuwe vijver",
   "INFO_WEIGHT": "Gewicht",
   "INFO_LENGTH": "Lengte",
   "INFO_AGE": "Leeftijd",

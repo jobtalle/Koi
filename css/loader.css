@@ -37,7 +37,7 @@
     transition: 0.1s;
 }
 
-#loader-button {
+.loader-button {
     width: 100%;
     height: 15%;
     padding-bottom: 8px;
@@ -46,7 +46,7 @@
     justify-content: center;
 }
 
-#loader-button button {
+.loader-button button {
     border: 1px solid black;
     width: 15%;
 }
