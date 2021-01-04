@@ -11,19 +11,19 @@ StorageLocal.prototype = Object.create(Storage.prototype);
 /**
  * Set the value of an item
  * @param {String} key The key of the item
- * @param {Object} value The value of the item
+ * @param {String} value The value of the item
  */
 StorageLocal.prototype.set = function(key, value) {
-    window["localStorage"][key] = value;
+    window["localStorage"].setItem(key, value);
 };
 
 /**
  * Get an item
  * @param {String} key The key of the item
- * @returns {Object} The value of the item
+ * @returns {String|null} The value of the item, or null if it does not exist
  */
 StorageLocal.prototype.get = function(key) {
-    return window["localStorage"][key];
+    return window["localStorage"].getItem(key);
 };
 
 /**
