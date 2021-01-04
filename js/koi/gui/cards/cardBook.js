@@ -115,8 +115,12 @@ CardBook.prototype.serialize = function(buffer) {
  * @param {Cards} cards The cards
  */
 CardBook.prototype.clear = function(cards) {
+    this.unlocked = 0;
+
     for (const page of this.pages)
         page.clear(cards);
+
+    this.setButtonLockedStatus();
 };
 
 /**
