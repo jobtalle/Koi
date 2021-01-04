@@ -6,7 +6,7 @@ const StorageLocal = function() {
 
 };
 
-StorageLocal.prototype = Object.create(Storage.prototype);
+StorageLocal.prototype = Object.create(StorageSystem.prototype);
 
 /**
  * Set the value of an item
