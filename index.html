@@ -18,17 +18,6 @@
 <body>
 <div id="wrapper">
     <canvas id="renderer"></canvas>
-<!--    <div id="logs" style="position: absolute; left:0; top:0; color:white;"></div>-->
-<!--    <script>-->
-<!--        const olog = console.log;-->
-<!--        console.log = message => {-->
-<!--            document.getElementById("logs").innerText = message;-->
-
-<!--            olog(message);-->
-<!--        };-->
-
-<!--        console.warn = console.error = console.log;-->
-<!--    </script>-->
     <div id="gui"></div>
     <div id="no-portrait">
         <div class="message">
@@ -42,6 +31,17 @@
             <div id="loader-bar-inner"></div>
         </div>
     </div>
+<!--    <div id="logs" style="position: absolute; left:0; top:0; color:white;"></div>-->
+<!--    <script>-->
+<!--        const olog = console.log;-->
+<!--        console.log = message => {-->
+<!--            document.getElementById("logs").innerText = message;-->
+
+<!--            olog(message);-->
+<!--        };-->
+
+<!--        console.warn = console.error = console.log;-->
+<!--    </script>-->
 </div>
 <svg xmlns="http://www.w3.org/2000/svg">
     <defs id="fish-icon-defs"></defs>
@@ -53,6 +53,7 @@
 
 <script src="js/storage/storageSystem.js"></script>
 <script src="js/storage/storageLocal.js"></script>
+<script src="js/storage/storageFile.js"></script>
 
 <script src="js/audio/effects/audioEffect.js"></script>
 <script src="js/audio/effects/audioEffectPeriodic.js"></script>

@@ -51,7 +51,7 @@ if (gl &&
         imperial = language.get("UNIT_LENGTH") === "ft";
 
         let session = new Session();
-        const storage = new StorageLocal();
+        const storage = window["require"] ? new StorageFile() : new StorageLocal();
         const tutorial = storage.get("tutorial") !== null;
         const wrapper = document.getElementById("wrapper");
         const gui = new GUI(document.getElementById("gui"));
