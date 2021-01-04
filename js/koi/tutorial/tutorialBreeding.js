@@ -1,10 +1,11 @@
 /**
  * The breeding tutorial
+ * @param {Storage} storage A storage system
  * @param {Overlay} overlay The overlay object to show hints on
  * @constructor
  */
-const TutorialBreeding = function(overlay) {
-    Tutorial.call(this, overlay, false);
+const TutorialBreeding = function(storage, overlay) {
+    Tutorial.call(this, storage, overlay, false);
 
     this.pointer = null;
     this.targetedFish = null;
@@ -180,8 +181,7 @@ TutorialBreeding.prototype.update = function(koi) {
         case this.PHASE_BREED_WAIT:
             if (this.bred) {
                 this.overlay.setText(language.get(this.LANG_CROSSBREED));
-
-                window["localStorage"].setItem("tutorial", "0");
+                this.storage.set("tutorial", "0");
 
                 this.allowMutation = true;
                 this.phase = this.PHASE_CROSSBREED;
@@ -209,8 +209,7 @@ TutorialBreeding.prototype.update = function(koi) {
         case this.PHASE_CROSSBREED:
             if (this.mutated) {
                 this.overlay.removeText();
-
-                window["localStorage"].setItem("tutorial", "1");
+                this.storage.set("tutorial", "1");
 
                 return true;
             }

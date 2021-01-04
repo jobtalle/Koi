@@ -1,5 +1,6 @@
 /**
  * The tutorial base class
+ * @param {Storage} storage A storage system
  * @param {Overlay} overlay The overlay object to show hints on
  * @param {Boolean} [allowMutation] Indicate whether mutations are allowed while this tutorial is active
  * @param {Boolean} [forceMutation] True if at least one mutation must occur when possible during breeding
@@ -7,11 +8,13 @@
  * @constructor
  */
 const Tutorial = function(
+    storage,
     overlay,
     allowMutation = true,
     forceMutation = true,
     handEnabled = false) {
     this.phase = 0;
+    this.storage = storage;
     this.overlay = overlay;
     this.allowMutation = allowMutation;
     this.forceMutation = forceMutation;

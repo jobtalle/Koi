@@ -51,10 +51,11 @@ if (gl &&
         imperial = language.get("UNIT_LENGTH") === "ft";
 
         let session = new Session();
-        const tutorial = window["localStorage"].getItem("tutorial") !== null;
+        const storage = new StorageLocal();
+        const tutorial = storage.get("tutorial") !== null;
         const wrapper = document.getElementById("wrapper");
         const gui = new GUI(document.getElementById("gui"));
-        const sessionData = tutorial ? window["localStorage"].getItem("session") : null;
+        const sessionData = tutorial ? storage.get("session") : null;
         const systems = new Systems(gl, new Random(session.environmentSeed), wrapper.clientWidth, wrapper.clientHeight);
         let lastDate = null;
         let koi = null;
@@ -82,14 +83,14 @@ if (gl &&
          * Save the game state to local storage
          */
         const save = () => {
-            window["localStorage"].setItem("session", session.serialize(koi, gui).toString());
+            storage.set("session", session.serialize(koi, gui).toString());
         };
 
         /**
          * A function that creates a new game session
          */
         const newSession = () => {
-            window["localStorage"].removeItem("tutorial");
+            storage.remove("tutorial");
 
             session = new Session();
 
@@ -98,7 +99,7 @@ if (gl &&
             if (koi)
                 koi.free();
 
-            koi = session.makeKoi(systems, audio, gui, new TutorialBreeding(gui.overlay));
+            koi = session.makeKoi(storage, systems, audio, gui, new TutorialBreeding(storage, gui.overlay));
         };
 
         // Retrieve last session if it exists
@@ -106,7 +107,7 @@ if (gl &&
             try {
                 session.deserialize(new BinBuffer(sessionData));
 
-                koi = session.makeKoi(systems, audio, gui, new TutorialCards(gui.overlay));
+                koi = session.makeKoi(storage, systems, audio, gui, new TutorialCards(storage, gui.overlay));
 
                 loader.setLoadedPrevious();
             } catch (error) {

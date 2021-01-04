@@ -1,5 +1,6 @@
 /**
  * The koi game
+ * @param {Storage} storage A storage system
  * @param {Systems} systems The render systems
  * @param {AudioBank} audio Game audio
  * @param {GUI} gui The GUI
@@ -9,12 +10,14 @@
  * @constructor
  */
 const Koi = function(
+    storage,
     systems,
     audio,
     gui,
     environmentSeed,
     tutorial,
     random) {
+    this.storage = storage;
     this.systems = systems;
     this.audio = audio;
     this.gui = gui;
@@ -366,7 +369,7 @@ Koi.prototype.update = function() {
     if (this.tutorial && this.tutorial.update(this)) {
         if (this.tutorial instanceof TutorialBreeding) {
             this.spawner.setBehavior(new SpawnerBehaviorDefault());
-            this.tutorial = new TutorialCards(this.gui.overlay);
+            this.tutorial = new TutorialCards(this.storage, this.gui.overlay);
         }
         else
             this.tutorial = null;

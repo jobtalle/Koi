@@ -1,12 +1,13 @@
 /**
  * The cards tutorial
+ * @param {Storage} storage A storage system
  * @param {Overlay} overlay The overlay object to show hints on
  * @constructor
  */
-const TutorialCards = function(overlay) {
-    Tutorial.call(this, overlay);
+const TutorialCards = function(storage, overlay) {
+    Tutorial.call(this, storage, overlay);
 
-    this.mutations = Number.parseInt(window["localStorage"].getItem("tutorial"));
+    this.mutations = Number.parseInt(storage.get("tutorial"));
     this.pointingToDropTarget = false;
     this.cardStored = false;
     this.unlocked = false;
@@ -43,7 +44,7 @@ TutorialCards.prototype.start = function() {
  */
 TutorialCards.prototype.onMutate = function() {
     if (this.mutations < this.MUTATIONS_REQUIRED) {
-        window["localStorage"].setItem("tutorial", (++this.mutations).toString());
+        this.storage.set("tutorial", (++this.mutations).toString());
 
         if (this.mutations === this.MUTATIONS_REQUIRED)
             this.start();
@@ -105,7 +106,7 @@ TutorialCards.prototype.markFinished = function(koi) {
         koi.gui.cards.book.pages[1].slots[3].removeChild(this.highlight2);
     }
 
-    window["localStorage"].setItem("tutorial", (this.MUTATIONS_REQUIRED + 1).toString());
+    this.storage.set("tutorial", (this.MUTATIONS_REQUIRED + 1).toString());
 };
 
 /**
