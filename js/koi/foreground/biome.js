@@ -17,8 +17,9 @@ const Biome = function(constellation, width, height, random) {
     this.sdf = this.makeSDF(constellation, width, height);
 };
 
-Biome.prototype.ROCKS_NOISE_SCALE = .9;
-Biome.prototype.ROCKS_NOISE_THRESHOLD = .36;
+Biome.prototype.ROCKS_NOISE_SCALE = 1;
+Biome.prototype.ROCKS_NOISE_THRESHOLD = .28;
+Biome.prototype.ROCKS_NOISE_POWER = 1.25;
 Biome.prototype.SDF_RESOLUTION = 3;
 
 /**
@@ -65,9 +66,11 @@ Biome.prototype.sampleSDF = function(x, y) {
  * @returns {Number} The rocks intensity in the range [0, 1]
  */
 Biome.prototype.sampleRocksPonds = function(x, y) {
-    const intensity = this.noiseRocksPonds.sample(x * this.ROCKS_NOISE_SCALE, y * this.ROCKS_NOISE_SCALE);
+    const intensity = Math.pow(
+        this.noiseRocksPonds.sample(x * this.ROCKS_NOISE_SCALE, y * this.ROCKS_NOISE_SCALE),
+        this.ROCKS_NOISE_POWER);
 
-    return (intensity - this.ROCKS_NOISE_THRESHOLD) / (1 - this.ROCKS_NOISE_THRESHOLD);
+    return Math.max(0, intensity - this.ROCKS_NOISE_THRESHOLD) / (1 - this.ROCKS_NOISE_THRESHOLD);
 };
 
 /**
@@ -77,7 +80,9 @@ Biome.prototype.sampleRocksPonds = function(x, y) {
  * @returns {Number} The rocks intensity in the range [0, 1]
  */
 Biome.prototype.sampleRocksRiver = function(x, y) {
-    const intensity = this.noiseRocksRiver.sample(x * this.ROCKS_NOISE_SCALE, y * this.ROCKS_NOISE_SCALE);
+    const intensity = Math.pow(
+        this.noiseRocksRiver.sample(x * this.ROCKS_NOISE_SCALE, y * this.ROCKS_NOISE_SCALE),
+        this.ROCKS_NOISE_POWER);
 
-    return (intensity - this.ROCKS_NOISE_THRESHOLD) / (1 - this.ROCKS_NOISE_THRESHOLD);
+    return Math.max(0, intensity - this.ROCKS_NOISE_THRESHOLD) / (1 - this.ROCKS_NOISE_THRESHOLD);
 };
