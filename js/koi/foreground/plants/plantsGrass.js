@@ -7,7 +7,7 @@ Plants.prototype.GRASS_FLEX_MAX = new Sampler(.2, .4);
 Plants.prototype.GRASS_FLEX_POWER = 1.7;
 Plants.prototype.GRASS_HEIGHT = new SamplerPower(.55, .75, 1.4);
 Plants.prototype.GRASS_BLADES = 3;
-Plants.prototype.GRASS_FAN = .23;
+Plants.prototype.GRASS_FAN = new Sampler(.2, .24);
 Plants.prototype.GRASS_SHADE = .85;
 Plants.prototype.GRASS_RADIUS = .18;
 Plants.prototype.GRASS_RADIUS_POWER = .7;
@@ -48,7 +48,7 @@ Plants.prototype.modelGrass = function(
 
     for (let i = 0; i < this.GRASS_BLADES; ++i) {
         const height = this.GRASS_HEIGHT.sample(random.getFloat());
-        const angle = Math.PI * .5 + ((i / (this.GRASS_BLADES - 1)) * 2 - 1) * this.GRASS_FAN;
+        const angle = Math.PI * .5 + ((i / (this.GRASS_BLADES - 1)) * 2 - 1) * this.GRASS_FAN.sample(random.getFloat());
 
         this.modelStalk(
             x,
