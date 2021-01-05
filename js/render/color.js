@@ -24,6 +24,20 @@ Color.prototype.copy = function() {
 };
 
 /**
+ * Create an interpolated version of a color that lies between this color and a given color
+ * @param {Color} other The other color
+ * @param {Number} f The interpolation factor in the range [0, 1]
+ * @returns {Color} The new color
+ */
+Color.prototype.lerp = function(other, f) {
+    return new Color(
+        this.r + (other.r - this.r) * f,
+        this.g + (other.g - this.g) * f,
+        this.b + (other.b - this.b) * f,
+        this.a + (other.a - this.a) * f);
+};
+
+/**
  * Multiply this color by a scalar
  * @param {Number} n The number to multiply the color by
  * @returns {Color} The changed color

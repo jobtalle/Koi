@@ -16,9 +16,9 @@ const Planter = function(slots, biome, plantMap, random) {
 };
 
 Planter.prototype.BEACH_MAX = .1;
-Planter.prototype.CATTAIL_CHANCE = .1;
+Planter.prototype.CATTAIL_CHANCE = .12;
 Planter.prototype.CATTAIL_DIST_MIN = .5;
-Planter.prototype.CATTAIL_DIST_MAX = 1.3;
+Planter.prototype.CATTAIL_DIST_MAX = 1.15;
 
 /**
  * Get the cattail factor
@@ -53,7 +53,13 @@ Planter.prototype.plant = function(plants, vertices, indices) {
         const cattailFactor = this.getCattailFactor(waterDistance, beachFactor);
 
         if (this.random.getFloat() < cattailFactor * this.CATTAIL_CHANCE)
-            bugSpots.push(...plants.modelCattail(slot.x, slot.y, cattailFactor, this.random, vertices, indices));
+            bugSpots.push(...plants.modelCattail(
+                slot.x,
+                slot.y,
+                cattailFactor,
+                this.random,
+                vertices,
+                indices));
         else
             plants.modelGrass(
                 slot.x,

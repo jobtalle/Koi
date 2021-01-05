@@ -1,7 +1,7 @@
 :root {
     /* Environment colors */
-    --color-water-deep: #192f3e;
-    --color-water-shallow: #6cb4a9;
+    --color-water-deep: #1a2c48;
+    --color-water-shallow: #7ad6d6;
     --color-water-filter: #def6ea;
     --color-water-highlight: #a9dbd1;
     --color-earth: #D5C28E;
@@ -18,15 +18,16 @@
     --color-ambient-thunderstorm: #9ea6bf;
 
     /* Plant colors */
-    --color-grass: #8ea451;
-    --color-cattail-leaf: #657635;
+    --color-grass-a: #93a94e;
+    --color-grass-b: #51812e;
+    --color-cattail-leaf: #5e8136;
     --color-cattail-stalk: #a09e7a;
     --color-cattail-capsule: #eceaac;
 
     /* Fish colors */
     --color-fish-white: #E1E0C4;
     --color-fish-black: #414345;
-    --color-fish-gold: #d7933e;
+    --color-fish-gold: #eaa247;
     --color-fish-orange: #cd6142;
     --color-fish-red: #db3030;
     --color-fish-brown: var(--color-rock-top);

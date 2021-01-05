@@ -1,6 +1,7 @@
-Plants.prototype.GRASS_COLOR = Color.fromCSS("--color-grass");
+Plants.prototype.GRASS_COLOR_A = Color.fromCSS("--color-grass-a");
+Plants.prototype.GRASS_COLOR_B = Color.fromCSS("--color-grass-b");
 Plants.prototype.GRASS_COLOR_DARKEN_RANDOM = .15;
-Plants.prototype.GRASS_COLOR_DARKEN_BIOME = .5;
+Plants.prototype.GRASS_COLOR_DARKEN_BIOME = 2;
 Plants.prototype.GRASS_FLEX_MAX = new Sampler(.2, .4);
 Plants.prototype.GRASS_FLEX_POWER = 1.7;
 Plants.prototype.GRASS_HEIGHT_MIN = .5;
@@ -22,9 +23,10 @@ Plants.prototype.GRASS_RADIUS_POWER = .8;
  */
 Plants.prototype.modelGrass = function(x, y, darken, random, vertices, indices) {
     const height = this.GRASS_HEIGHT_MIN + (this.GRASS_HEIGHT_MAX - this.GRASS_HEIGHT_MIN) * random.getFloat();
-    const color = this.GRASS_COLOR.copy().multiply(1 -
-        this.GRASS_COLOR_DARKEN_RANDOM * random.getFloat() -
-        this.GRASS_COLOR_DARKEN_BIOME * darken);
+    const color = this.GRASS_COLOR_A.lerp(
+        this.GRASS_COLOR_B,
+        Math.min(1, darken * this.GRASS_COLOR_DARKEN_BIOME)).multiply(
+            1 - this.GRASS_COLOR_DARKEN_RANDOM * random.getFloat());
     const flexSampler = new FlexSampler(
         x,
         0,
