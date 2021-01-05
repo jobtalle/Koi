@@ -16,10 +16,11 @@ const Planter = function(slots, biome, plantMap, random) {
 };
 
 Planter.prototype.BEACH_MAX = .1;
-Planter.prototype.GRASS_CLEARANCE = .07;
+Planter.prototype.GRASS_CLEARANCE = .1;
 Planter.prototype.CATTAIL_CHANCE = .12;
-Planter.prototype.CATTAIL_DIST_MIN = .8;
-Planter.prototype.CATTAIL_DIST_MAX = 1.15;
+Planter.prototype.CATTAIL_CHANCE_RAMP = 10;
+Planter.prototype.CATTAIL_DIST_MIN = .1;
+Planter.prototype.CATTAIL_DIST_MAX = 1.5;
 
 /**
  * Get the cattail factor
@@ -28,11 +29,16 @@ Planter.prototype.CATTAIL_DIST_MAX = 1.15;
  * @returns {Number} The cattail chance
  */
 Planter.prototype.getCattailFactor = function(shoreDistance, beachFactor) {
-    return beachFactor * (1 - Math.max(
-        0,
-        Math.min(
-            1,
-            (shoreDistance - this.CATTAIL_DIST_MIN) / (this.CATTAIL_DIST_MAX - this.CATTAIL_DIST_MIN))));
+    const distance = Math.min(
+        1,
+        Math.max(
+            0,
+            shoreDistance - this.CATTAIL_DIST_MIN) / (this.CATTAIL_DIST_MAX - this.CATTAIL_DIST_MIN));
+    const distanceScore = Math.min(
+        Math.cos(Math.PI * .5 * distance),
+        this.CATTAIL_CHANCE_RAMP * distance);
+
+    return beachFactor * distanceScore;
 };
 
 /**
