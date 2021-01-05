@@ -5,15 +5,15 @@ Plants.prototype.GRASS_COLOR_DARKEN_RANDOM = .15;
 Plants.prototype.GRASS_COLOR_DARKEN_BIOME = 2;
 Plants.prototype.GRASS_FLEX_MAX = new Sampler(.2, .4);
 Plants.prototype.GRASS_FLEX_POWER = 1.7;
-Plants.prototype.GRASS_HEIGHT_MIN = .55;
-Plants.prototype.GRASS_HEIGHT_MAX = .75;
+Plants.prototype.GRASS_HEIGHT = new SamplerPower(.55, .75, 1.4);
 Plants.prototype.GRASS_BLADES = 3;
 Plants.prototype.GRASS_FAN = .23;
 Plants.prototype.GRASS_SHADE = .85;
-Plants.prototype.GRASS_RADIUS = .19;
-Plants.prototype.GRASS_RADIUS_POWER = .8;
+Plants.prototype.GRASS_RADIUS = .18;
+Plants.prototype.GRASS_RADIUS_POWER = .7;
 Plants.prototype.GRASS_SHORE_GRADIENT = .5;
 Plants.prototype.GRASS_SHORE_WIDTH = .3;
+Plants.prototype.GRASS_Y_SHIFT = new Sampler(-.01, .01);
 
 /**
  * Model grass
@@ -44,10 +44,10 @@ Plants.prototype.modelGrass = function(
         x,
         0,
         new SamplerPower(0, this.GRASS_FLEX_MAX.sample(random.getFloat()), this.GRASS_FLEX_POWER),
-        this.GRASS_HEIGHT_MAX);
+        this.GRASS_HEIGHT.max);
 
     for (let i = 0; i < this.GRASS_BLADES; ++i) {
-        const height = this.GRASS_HEIGHT_MIN + (this.GRASS_HEIGHT_MAX - this.GRASS_HEIGHT_MIN) * random.getFloat();
+        const height = this.GRASS_HEIGHT.sample(random.getFloat());
         const angle = Math.PI * .5 + ((i / (this.GRASS_BLADES - 1)) * 2 - 1) * this.GRASS_FAN;
 
         this.modelStalk(
@@ -55,7 +55,7 @@ Plants.prototype.modelGrass = function(
             0,
             x + Math.cos(angle) * height,
             Math.sin(angle) * height,
-            y,
+            y + this.GRASS_Y_SHIFT.sample(random.getFloat()),
             this.GRASS_RADIUS * height,
             this.GRASS_RADIUS_POWER,
             this.makeUV(x, y, random),

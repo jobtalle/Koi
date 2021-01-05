@@ -20,7 +20,7 @@ Planter.prototype.GRASS_CLEARANCE = .1;
 Planter.prototype.CATTAIL_CHANCE = .12;
 Planter.prototype.CATTAIL_CHANCE_RAMP = 10;
 Planter.prototype.CATTAIL_DIST_MIN = .1;
-Planter.prototype.CATTAIL_DIST_MAX = 1.5;
+Planter.prototype.CATTAIL_DIST_MAX = 1.3;
 
 /**
  * Get the cattail factor
