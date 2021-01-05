@@ -16,8 +16,9 @@ const Planter = function(slots, biome, plantMap, random) {
 };
 
 Planter.prototype.BEACH_MAX = .1;
+Planter.prototype.GRASS_CLEARANCE = .07;
 Planter.prototype.CATTAIL_CHANCE = .12;
-Planter.prototype.CATTAIL_DIST_MIN = .5;
+Planter.prototype.CATTAIL_DIST_MIN = .8;
 Planter.prototype.CATTAIL_DIST_MAX = 1.15;
 
 /**
@@ -60,7 +61,7 @@ Planter.prototype.plant = function(plants, vertices, indices) {
                 this.random,
                 vertices,
                 indices));
-        else
+        else if (shoreDistance > this.GRASS_CLEARANCE)
             plants.modelGrass(
                 slot.x,
                 slot.y,

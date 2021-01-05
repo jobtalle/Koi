@@ -5,14 +5,14 @@ Plants.prototype.GRASS_COLOR_DARKEN_RANDOM = .15;
 Plants.prototype.GRASS_COLOR_DARKEN_BIOME = 2;
 Plants.prototype.GRASS_FLEX_MAX = new Sampler(.2, .4);
 Plants.prototype.GRASS_FLEX_POWER = 1.7;
-Plants.prototype.GRASS_HEIGHT_MIN = .6;
+Plants.prototype.GRASS_HEIGHT_MIN = .55;
 Plants.prototype.GRASS_HEIGHT_MAX = .75;
 Plants.prototype.GRASS_BLADES = 3;
 Plants.prototype.GRASS_FAN = .23;
 Plants.prototype.GRASS_SHADE = .85;
 Plants.prototype.GRASS_RADIUS = .19;
 Plants.prototype.GRASS_RADIUS_POWER = .8;
-Plants.prototype.GRASS_SHORE_GRADIENT = 1;
+Plants.prototype.GRASS_SHORE_GRADIENT = .5;
 Plants.prototype.GRASS_SHORE_WIDTH = .3;
 
 /**
