@@ -10,6 +10,7 @@ Plants.prototype.STALK_RESOLUTION = .3;
  * @param {Number} radius The stalk radius
  * @param {Number} radiusPower A power to apply to the radius
  * @param {Vector2} uv The air UV
+ * @param {Color} colorBase The base color
  * @param {Color} color The color
  * @param {Number} shade The dark side shade
  * @param {FlexSampler} flexSampler A flex sampler
@@ -25,6 +26,7 @@ Plants.prototype.modelStalk = function(
     radius,
     radiusPower,
     uv,
+    colorBase,
     color,
     shade,
     flexSampler,
@@ -44,20 +46,45 @@ Plants.prototype.modelStalk = function(
         const z = z1 + dz * f;
         const r = radius * Math.pow(1 - f, radiusPower);
 
+        if (segment === 0) {
+            if (colorBase === color)
+                vertices.push(
+                    colorBase.r * shade,
+                    colorBase.g * shade,
+                    colorBase.b * shade);
+            else
+                vertices.push(
+                    colorBase.r,
+                    colorBase.g,
+                    colorBase.b);
+        }
+        else
+            vertices.push(
+                color.r * shade,
+                color.g * shade,
+                color.b * shade);
+
         vertices.push(
-            color.r * shade,
-            color.g * shade,
-            color.b * shade,
             x + nx * r,
             y,
             z + nz * r,
             0,
             0,
             uv.x,
-            uv.y,
-            color.r,
-            color.g,
-            color.b,
+            uv.y);
+
+        if (segment === 0)
+            vertices.push(
+                colorBase.r,
+                colorBase.g,
+                colorBase.b);
+        else
+            vertices.push(
+                color.r,
+                color.g,
+                color.b);
+
+        vertices.push(
             x - nx * r,
             y,
             z - nz * r,

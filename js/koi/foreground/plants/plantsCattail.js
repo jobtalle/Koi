@@ -104,6 +104,7 @@ Plants.prototype.modelCattail = function(
         this.CATTAIL_STALK_RADIUS_POWER,
         uv,
         this.CATTAIL_COLOR_STALK,
+        this.CATTAIL_COLOR_STALK,
         this.CATTAIL_STALK_SHADE,
         flexSampler,
         vertices,
