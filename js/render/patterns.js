@@ -80,7 +80,7 @@ Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
     let color = Palette.COLORS[pattern.base.paletteIndex];
 
     this.gl.activeTexture(this.gl.TEXTURE0);
-    this.gl.bindTexture(this.gl.TEXTURE_2D, randomSource.texture); // TODO: Don't use variable random source for this
+    this.gl.bindTexture(this.gl.TEXTURE_2D, randomSource.texture);
 
     this.gl.vao.bindVertexArrayOES(this.vao);
 

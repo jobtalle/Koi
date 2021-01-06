@@ -1,7 +1,7 @@
 /**
  * A fin
- * @param {Number} at The position on the body in the range [0, 1]
- * @param {Number} radius The radius as a factor of body width
+ * @param {Number} at The position on the body in the range [0, 255]
+ * @param {Number} radius The radius in the range [0, 255]
  * @param {Number} [sign] The sign of the fin direction, 1 (default) or -1
  * @constructor
  */
@@ -28,8 +28,7 @@ Fin.prototype.X_SCALE = .6;
 Fin.prototype.SPRING = .4;
 Fin.prototype.PHASE_SHIFT = 2;
 Fin.prototype.DEPTH_FACTOR = .4;
-Fin.prototype.RADIUS_MIN = Math.fround(.3);
-Fin.prototype.RADIUS_MAX = Math.fround(2);
+Fin.prototype.SAMPLER_RADIUS = new Sampler(.5, 2.2);
 
 /**
  * Deserialize a fin
@@ -37,15 +36,12 @@ Fin.prototype.RADIUS_MAX = Math.fround(2);
  * @throws {RangeError} A range error if deserialized values are not valid
  */
 Fin.deserialize = function(buffer) {
-    const at = buffer.readFloat();
+    const at = buffer.readUint8();
 
     if (!(at >= 0 && at <= 1))
         throw new RangeError();
 
-    const radius = buffer.readFloat(); // TODO: Use sampler
-
-    if (!(radius >= Fin.prototype.RADIUS_MIN && radius <= Fin.prototype.RADIUS_MAX))
-        throw new RangeError();
+    const radius = buffer.readByte();
 
     return new Fin(at, radius);
 };
@@ -55,8 +51,8 @@ Fin.deserialize = function(buffer) {
  * @param {BinBuffer} buffer The buffer to serialize to
  */
 Fin.prototype.serialize = function(buffer) {
-    buffer.writeFloat(this.at);
-    buffer.writeFloat(this.radius);
+    buffer.writeUint8(this.at);
+    buffer.writeUint8(this.radius);
 };
 
 /**
@@ -73,7 +69,7 @@ Fin.prototype.copyMirrored = function() {
  * @returns {Number} The vertebrae index to connect the fin to
  */
 Fin.prototype.getVertebraIndex = function(spineLength) {
-    return Math.max(1, Math.round(spineLength * this.at));
+    return Math.max(1, Math.round(spineLength * this.at / 0xFF));
 };
 
 /**
@@ -84,7 +80,7 @@ Fin.prototype.getVertebraIndex = function(spineLength) {
 Fin.prototype.connect = function(pattern, radius) {
     this.pattern = pattern;
     this.anchorRadius = this.ANCHOR_INSET * radius;
-    this.finRadius = this.radius * radius;
+    this.finRadius = this.SAMPLER_RADIUS.sample(this.radius / 0xFF) * radius;
 };
 
 /**

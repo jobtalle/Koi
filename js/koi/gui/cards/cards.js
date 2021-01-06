@@ -17,7 +17,7 @@ const Cards = function(element) {
     this.grabOffset = new Vector2();
     this.snap = null;
     this.bookVisible = false;
-    this.hidden = false; // TODO: Use for pausing card animations
+    this.hidden = false;
     this.hideTimer = 0;
     this.koi = null;
 

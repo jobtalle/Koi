@@ -21,16 +21,20 @@ const CardRequirements = [
     ],
     [
         new CardRequirement(new PatternFootprint([
-            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_ORANGE)
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_ORANGE),
+            new LayerFootprint(LayerSpots.prototype.ID, Palette.INDEX_WHITE)
         ])),
         new CardRequirement(new PatternFootprint([
-            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_GOLD)
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_GOLD),
+            new LayerFootprint(LayerSpots.prototype.ID, Palette.INDEX_BLACK)
         ])),
         new CardRequirement(new PatternFootprint([
-            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_WHITE)
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_WHITE),
+            new LayerFootprint(LayerSpots.prototype.ID, Palette.INDEX_GOLD)
         ])),
         new CardRequirement(new PatternFootprint([
-            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_BLACK)
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_BLACK),
+            new LayerFootprint(LayerRidge.prototype.ID, Palette.INDEX_RED)
         ]))
     ],
     [

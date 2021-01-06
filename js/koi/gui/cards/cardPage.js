@@ -268,7 +268,6 @@ CardPage.prototype.createSlots = function(element) {
 
         slotElement.className = this.CLASS_SLOT;
 
-        // TODO: Only create icons when page becomes visible to spread out processing power
         if (this.requirements[slot])
             new FishIcon(slotElement, this.requirements[slot].footprint);
         else

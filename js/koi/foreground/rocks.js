@@ -15,7 +15,7 @@ const Rocks = function(
     yScale,
     biome,
     random) {
-    this.mesh = this.createMesh(gl, constellation, slots, yScale, biome, random); // TODO: Omit back faces
+    this.mesh = this.createMesh(gl, constellation, slots, yScale, biome, random);
 };
 
 /**
@@ -269,6 +269,8 @@ Rocks.prototype.createPillar = function(
     const offset = random.getFloat() * Math.PI / precision;
     const zShift = (-.5 + random.getFloat()) * .5;
     const lightTop = .8 - zShift * .4;
+    const lx = 1 / Math.sqrt(2);
+    const ly = lx;
     let index = firstIndex;
     let indexPrevious = index;
 
@@ -288,12 +290,9 @@ Rocks.prototype.createPillar = function(
             height + dx * zShift * this.PILLAR_SKEW);
 
         if (frontFace) {
-            // TODO: Put lighting calculations in constants
             const l = Math.sqrt(dx * dx + dy * dy);
             const nx = dx / l;
             const ny = dy / l;
-            const lx = 1 / Math.sqrt(2);
-            const ly = 1 / Math.sqrt(2);
             const light = this.PILLAR_LIGHT_AMBIENT + (1 - this.PILLAR_LIGHT_AMBIENT) *
                 Math.max(0, nx * lx + ny * ly);
 

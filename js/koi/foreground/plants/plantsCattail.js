@@ -85,7 +85,6 @@ Plants.prototype.modelCattail = function(
         vertices,
         indices);
 
-    // TODO: Add multiple if the capsule is long enough
     bugSpots.push(new BugSpot(
         new Vector3(
             x + directionCos * capsuleSpot,

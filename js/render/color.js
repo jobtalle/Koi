@@ -98,6 +98,4 @@ Color.fromCSS = function(name) {
                 ((integer >> 8) & 0xFF) / 0xFF,
                 (integer & 0xFF) / 255);
     }
-
-    // TODO: support rgba, rgb
 };
