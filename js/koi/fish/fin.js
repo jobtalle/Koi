@@ -36,14 +36,7 @@ Fin.prototype.SAMPLER_RADIUS = new Sampler(.5, 2.2);
  * @throws {RangeError} A range error if deserialized values are not valid
  */
 Fin.deserialize = function(buffer) {
-    const at = buffer.readUint8();
-
-    if (!(at >= 0 && at <= 1))
-        throw new RangeError();
-
-    const radius = buffer.readByte();
-
-    return new Fin(at, radius);
+    return new Fin(buffer.readUint8(), buffer.readUint8());
 };
 
 /**
