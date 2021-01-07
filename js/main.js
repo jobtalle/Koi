@@ -55,7 +55,7 @@ if (gl &&
         const tutorial = storage.get("tutorial") !== null;
         const wrapper = document.getElementById("wrapper");
         const gui = new GUI(document.getElementById("gui"));
-        const sessionData = tutorial ? storage.get("session") : null;
+        const sessionBuffer = tutorial ? storage.getBuffer("session") : null;
         const systems = new Systems(gl, new Random(session.environmentSeed), wrapper.clientWidth, wrapper.clientHeight);
         let lastDate = null;
         let koi = null;
@@ -83,7 +83,7 @@ if (gl &&
          * Save the game state to local storage
          */
         const save = () => {
-            storage.set("session", session.serialize(koi, gui).toString());
+            storage.setBuffer("session", session.serialize(koi, gui));
         };
 
         /**
@@ -103,9 +103,9 @@ if (gl &&
         };
 
         // Retrieve last session if it exists
-        if (sessionData) {
+        if (sessionBuffer) {
             try {
-                session.deserialize(new BinBuffer(sessionData));
+                session.deserialize(sessionBuffer);
 
                 koi = session.makeKoi(storage, systems, audio, gui, new TutorialCards(storage, gui.overlay));
 

@@ -9,9 +9,18 @@ const StorageSystem = function() {
 /**
  * Set the value of an item
  * @param {String} key The key of the item
- * @param {String|null} value The value of the item
+ * @param {String} value The value of the item
  */
 StorageSystem.prototype.set = function(key, value) {
+
+};
+
+/**
+ * Set the buffer of an item
+ * @param {String} key The key of the item
+ * @param {BinBuffer} value The buffer of the item
+ */
+StorageSystem.prototype.setBuffer = function(key, value) {
 
 };
 
@@ -21,6 +30,15 @@ StorageSystem.prototype.set = function(key, value) {
  * @returns {String|null} The value of the item, or null if it does not exist
  */
 StorageSystem.prototype.get = function(key) {
+
+};
+
+/**
+ * Get a buffer
+ * @param {String} key The key of the buffer
+ * @returns {BinBuffer|null} The buffer, or null if it does not exist
+ */
+StorageSystem.prototype.getBuffer = function(key) {
 
 };
 

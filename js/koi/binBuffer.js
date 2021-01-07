@@ -1,11 +1,25 @@
 /**
  * A binary buffer
- * @param {String} [string] A string to deserialize from
+ * @param {String|Uint8Array} [data] A string or a byte array to deserialize from
  * @constructor
  */
-const BinBuffer = function(string = null) {
-    this.bytes = string ? this.fromString(string) : [];
+const BinBuffer = function(data = null) {
+    this.bytes = this.constructFrom(data);
     this.at = 0;
+};
+
+/**
+ * Construct the bytes from a source
+ * @param {String|Uint8Array|null} data The data to construct the bytes from
+ * @returns {Number[]} The bytes
+ */
+BinBuffer.prototype.constructFrom = function(data) {
+    if (data === null)
+        return [];
+    if (typeof(data) === "string")
+        return this.fromString(data);
+
+    return this.fromByteArray(data);
 };
 
 /**
@@ -17,12 +31,29 @@ BinBuffer.prototype.toString = function() {
 };
 
 /**
+ * Convert the contents of this buffer to a byte array
+ * @returns {Uint8Array} The byte array
+ */
+BinBuffer.prototype.toByteArray = function() {
+    return new Uint8Array(this.bytes);
+};
+
+/**
  * Get the contents of this buffer from a string
  * @param {String} string A base64 string
  * @returns {Number[]} The bytes stored in this string
  */
 BinBuffer.prototype.fromString = function(string) {
     return atob(string).split("").map(c => c.charCodeAt(0));
+};
+
+/**
+ * Get the contents of this buffer from a byte array
+ * @param {Uint8Array} array The byte array
+ * @returns {Number[]} The bytes stored in this string
+ */
+BinBuffer.prototype.fromByteArray = function(array) {
+    return Array.from(array);
 };
 
 /**
