@@ -1,0 +1,52 @@
+:root {
+    --loader-bar-color-background: gray;
+    --loader-bar-color-foreground: white;
+    --loader-bar-color-border: black;
+    --loader-bar-height: 8px;
+    --loader-bar-width: 35%;
+}
+
+#loader {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #8ea451;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#loader.finished {
+    display: none;
+}
+
+#loader-bar-outer {
+    height: var(--loader-bar-height);
+    border: 1px solid var(--loader-bar-color-border);
+    background-color: var(--loader-bar-color-background);
+    width: var(--loader-bar-width);
+}
+
+#loader-bar-inner {
+    width: 0;
+    height: 100%;
+    background-color: var(--loader-bar-color-foreground);
+    transition: 0.1s;
+}
+
+.loader-button {
+    width: 100%;
+    height: 15%;
+    padding-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loader-button button {
+    border: 1px solid black;
+    width: 15%;
+}

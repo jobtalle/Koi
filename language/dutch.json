@@ -1,0 +1,26 @@
+{
+  "INCLUDE": [
+    "names/western.json",
+    "units/metric.json"
+  ],
+  "START": "Start",
+  "CONTINUE": "Ga verder",
+  "NEW": "Nieuwe vijver",
+  "INFO_WEIGHT": "Gewicht",
+  "INFO_LENGTH": "Lengte",
+  "INFO_AGE": "Leeftijd",
+  "INFO_MINUTE": "minuut",
+  "INFO_MINUTES": "minuten",
+  "INFO_HOUR": "uur",
+  "INFO_FRY": "Baby",
+  "TUTORIAL_MOVE_FISH": "Verplaats de vis door de vis aan te raken en te verslepen.",
+  "TUTORIAL_MOVE_POND_1": "Plaats een vis in de kleine vijver.",
+  "TUTORIAL_MOVE_POND_2": "Plaats nog een vis in de kleine vijver zodat de vissen zich voort kunnen planten.",
+  "TUTORIAL_BREED_WAIT": "Vissen zullen zich voortplanten als ze enige tijd met z'n tweeën samen zijn.",
+  "TUTORIAL_BREED_TOO_MANY": "Haal vissen uit de kleine vijver totdat er slechts twee vissen over zijn.",
+  "TUTORIAL_CROSSBREED": "Laat verschillende soorten vissen zich met elkaar voortplanten om nieuwe soorten te maken.",
+  "TUTORIAL_CREATE_CARD": "Sleep een vis naar het kaart veld aan de onderkant van het scherm om er een bewaarbare kaart van te maken.",
+  "TUTORIAL_OPEN_BOOK_STORE": "Open het kaartenboek om de kaart in te bewaren.",
+  "TUTORIAL_STORE_CARD": "Sleep de kaart naar een van de lege plekken in het boek om deze op te slaan.",
+  "TUTORIAL_UNLOCK": "Speel meer bladzijden vrij door kaarten te verzamelen die hier passen."
+}

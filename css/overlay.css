@@ -1,0 +1,106 @@
+:root {
+    --overlay-element-color: #fffc;
+    --overlay-pointer-animation-time: 1s;
+    --overlay-pointer-radius: 48px;
+    --overlay-pointer-border: 8px;
+    --overlay-pointer-animation-scale: 1.2;
+    --overlay-highlight-animation-time: 1.2s;
+    --overlay-highlight-alpha: 50%;
+    --overlay-arrow-width: 70px;
+    --overlay-arrow-spacing: 16px;
+    --overlay-arrow-raise: 32px;
+    --overlay-arrow-scale: 0.7;
+    --overlay-arrow-animation-time: 0.7s;
+    --overlay-text-width: 65%;
+    --overlay-text-top: 16px;
+}
+
+@keyframes pointer-pulse {
+    0% {transform: translate(-50%, -50%) scale(1)}
+    25% {transform: translate(-50%, -50%) scale(var(--overlay-pointer-animation-scale))}
+    100% {transform: translate(-50%, -50%) scale(1)}
+}
+
+@keyframes highlight-pulse {
+    0% {opacity: 0}
+    20% {opacity: var(--overlay-highlight-alpha)}
+    100% {opacity: 0}
+}
+
+@keyframes arrow-bounce-down {
+    0% {margin-top: calc(-1 * var(--overlay-arrow-spacing))}
+    50% {margin-top: calc(-1 * (var(--overlay-arrow-spacing) + var(--overlay-arrow-raise)))}
+    100% {margin-top: calc(-1 * var(--overlay-arrow-spacing))}
+}
+
+@keyframes arrow-bounce-left-up {
+    0% {
+        margin-left: calc(var(--overlay-arrow-spacing));
+        margin-top: calc(var(--overlay-arrow-spacing));
+    }
+    50% {
+        margin-left: calc((var(--overlay-arrow-spacing) + var(--overlay-arrow-raise)));
+        margin-top: calc((var(--overlay-arrow-spacing) + var(--overlay-arrow-raise)));
+    }
+    100% {
+        margin-left: calc(var(--overlay-arrow-spacing));
+        margin-top: calc(var(--overlay-arrow-spacing));
+    }
+}
+
+#overlay .pointer {
+    position: absolute;
+    width: calc(2 * var(--overlay-pointer-radius));
+    height: calc(2 * var(--overlay-pointer-radius));
+    border-radius: calc(var(--overlay-pointer-radius) + var(--overlay-pointer-border));
+    border: var(--overlay-pointer-border) solid var(--overlay-element-color);
+    animation: pointer-pulse var(--overlay-pointer-animation-time) infinite;
+    animation-timing-function: ease-in-out;
+}
+
+#overlay .text {
+    width: var(--overlay-text-width);
+    margin-top: var(--overlay-text-top);
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    background-color: #db9c37cc;
+    color: black;
+    font-size: 32px;
+    border-radius: 16px;
+    border: 2px solid black;
+}
+
+.overlay-highlight {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: white;
+    animation: highlight-pulse var(--overlay-highlight-animation-time) infinite;
+    animation-timing-function: ease-in-out;
+}
+
+.overlay-arrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-top: var(--overlay-arrow-width) solid var(--overlay-element-color);
+    border-right: var(--overlay-arrow-width) solid transparent;
+    transform-origin: left top;
+}
+
+.overlay-arrow.down {
+    left: 50%;
+    top: 0;
+    animation: arrow-bounce-down var(--overlay-arrow-animation-time) infinite;
+    animation-timing-function: ease-in-out;
+    transform: scale(var(--overlay-arrow-scale), 1) rotate(-135deg);
+}
+
+.overlay-arrow.left-up {
+    left: 100%;
+    top: 100%;
+    animation: arrow-bounce-left-up var(--overlay-arrow-animation-time) infinite;
+    animation-timing-function: ease-in-out;
+    transform: rotate(45deg) scale(1, var(--overlay-arrow-scale)) rotate(-45deg);
+}

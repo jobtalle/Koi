@@ -10,6 +10,35 @@ const Vector2 = function(x = 0, y = 0) {
 };
 
 /**
+ * Serialize this vector
+ * @param {BinBuffer} buffer A buffer to serialize to
+ */
+Vector2.prototype.serialize = function(buffer) {
+    buffer.writeFloat(this.x);
+    buffer.writeFloat(this.y);
+};
+
+/**
+ * Deserialize this vector
+ * @param {BinBuffer} buffer A buffer to deserialize from
+ * @returns {Vector2} This vector
+ */
+Vector2.prototype.deserialize = function(buffer) {
+    this.x = buffer.readFloat();
+    this.y = buffer.readFloat();
+
+    return this;
+};
+
+/**
+ * A function that evaluates whether this vector is a normal vector
+ * @returns {Boolean} True if this vector is approximately a normal vector
+ */
+Vector2.prototype.isNormal = function() {
+    return Math.abs(this.length() - 1) < .01;
+};
+
+/**
  * Copy this vector
  * @returns {Vector2} A copy of the vector
  */
@@ -25,6 +54,17 @@ Vector2.prototype.copy = function() {
 Vector2.prototype.set = function(other) {
     this.x = other.x;
     this.y = other.y;
+
+    return this;
+};
+
+/**
+ * Round the components of this vector
+ * @returns {Vector2} The vector
+ */
+Vector2.prototype.round = function() {
+    this.x = Math.round(this.x);
+    this.y = Math.round(this.y);
 
     return this;
 };
@@ -66,6 +106,18 @@ Vector2.prototype.multiply = function(scalar) {
 };
 
 /**
+ * Multiply this vector by a vector
+ * @param {Vector2} other A vector
+ * @returns {Vector2} The modified vector
+ */
+Vector2.prototype.multiplyVector = function(other) {
+    this.x *= other.x;
+    this.y *= other.y;
+
+    return this;
+};
+
+/**
  * Divide this vector by a scalar
  * @param {Number} scalar A number
  * @returns {Vector2} The modified vector
@@ -96,7 +148,16 @@ Vector2.prototype.length = function() {
  * @returns {Vector2} The modified vector
  */
 Vector2.prototype.normalize = function() {
-    return this.divide(this.length());
+    const length = this.length();
+
+    if (length !== 0)
+        return this.divide(length);
+    else {
+        this.x = 1;
+        this.y = 0;
+
+        return this;
+    }
 };
 
 /**

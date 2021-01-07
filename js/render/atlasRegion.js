@@ -7,7 +7,7 @@
 const AtlasRegion = function(slot, slotSize) {
     this.slot = slot;
     this.vStart = slot.y;
-    this.vEnd = this.slot.y + slotSize.y;
+    this.vEnd = slot.y + slotSize.y;
     this.uBodyStart = slot.x;
     this.uBodyEnd = slot.x + slotSize.x;
     this.uFinStart = this.uBodyEnd;

@@ -1,69 +1,92 @@
 /**
  * A sand synthesizer
  * @param {WebGLRenderingContext} gl A WebGL rendering context
- * @param {RandomSource} randomSource A random source
  * @constructor
  */
-const Sand = function(gl, randomSource) {
-    this.gl = gl;
-    this.randomSource = randomSource;
-    this.buffer = gl.createBuffer();
+const Sand = function(gl) {
     this.program = new Shader(
         gl,
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
+        ["position", "depth"],
         ["scale"],
-        ["position"]);
+        [
+            new Shader.Constant("colorDeep", "f", this.COLOR_DEEP.toArrayRGB()),
+            new Shader.Constant("colorShallow", "f", this.COLOR_SHALLOW.toArrayRGB())
+        ]);
+    this.vao = gl.vao.createVertexArrayOES();
 
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
-    this.gl.bufferData(
-        this.gl.ARRAY_BUFFER,
-        new Float32Array([-1, -1, -1, 1, 1, 1, 1, -1]),
-        gl.STATIC_DRAW);
+    Meshed.call(this, gl, [
+        new Meshed.VAOConfiguration(
+            this.vao,
+            () => {
+                gl.enableVertexAttribArray(this.program["aPosition"]);
+                gl.vertexAttribPointer(this.program["aPosition"],
+                    2, gl.FLOAT, false, 16, 0);
+                gl.enableVertexAttribArray(this.program["aDepth"]);
+                gl.vertexAttribPointer(this.program["aDepth"],
+                    2, gl.FLOAT, false, 16, 8);
+            }
+        )
+    ]);
 };
+
+Sand.prototype = Object.create(Meshed.prototype);
+
+Sand.prototype.COLOR_DEEP = Color.fromCSS("--color-water-deep");
+Sand.prototype.COLOR_SHALLOW = Color.fromCSS("--color-water-shallow");
 
 Sand.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
+attribute vec2 depth;
 
-void main() {  
+varying vec2 iDepth;
+
+void main() {
+  iDepth = depth;
+
   gl_Position = vec4(position, 0.0, 1.0);
 }
 `;
 
 Sand.prototype.SHADER_FRAGMENT = `#version 100
-` + CommonShaders.cubicNoise + `
+` + CommonShaders.cubicNoise2 + `
 uniform mediump float scale;
+uniform lowp vec3 colorDeep;
+uniform lowp vec3 colorShallow;
+
+varying mediump vec2 iDepth;
 
 void main() {
-  mediump vec3 sandy = vec3(196.0 / 255.0, 147.0 / 255.0, 74.0 / 255.0);
+  lowp float noise = pow(random2(gl_FragCoord.xy), 9.0);
+  lowp float hill = cubicNoise(1.5 * gl_FragCoord.xy / scale);
+  lowp vec3 color = mix(colorShallow, colorDeep, iDepth.y * (0.5 - 0.5 * cos(3.141592 * sqrt(iDepth.x))));
   
-  gl_FragColor = vec4(sandy * (pow(random2(gl_FragCoord.xy), 9.0) * 0.4 * cubicNoise(vec3(1.5 * gl_FragCoord.xy / scale, 0.0)) + 0.9), 1.0);
+  gl_FragColor = vec4(color * (noise * 0.3 * hill + 0.85), 1.0);
 }
 `;
 
 /**
  * Write a sand texture
+ * @param {RandomSource} randomSource A random source
  * @param {Number} scale The render scale
  */
-Sand.prototype.write = function(scale) {
+Sand.prototype.write = function(randomSource, scale) {
     this.program.use();
+    this.gl.vao.bindVertexArrayOES(this.vao);
 
     this.gl.activeTexture(this.gl.TEXTURE0);
-    this.gl.bindTexture(this.gl.TEXTURE_2D, this.randomSource.texture);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, randomSource.texture);
 
-    this.gl.uniform1f(this.program.uScale, scale);
+    this.gl.uniform1f(this.program["uScale"], scale);
 
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
-    this.gl.enableVertexAttribArray(this.program.aPosition);
-    this.gl.vertexAttribPointer(this.program.aPosition, 2, this.gl.FLOAT, false, 8, 0);
-
-    this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, 4);
+    this.renderMesh();
 };
 
 /**
  * Free all resources maintained by this system
  */
 Sand.prototype.free = function() {
-    this.gl.deleteBuffer(this.buffer);
+    this.gl.vao.deleteVertexArrayOES(this.vao);
     this.program.free();
 };

@@ -43,7 +43,7 @@ Atlas.prototype.createRenderTarget = function(capacity) {
     const blocks = Math.ceil(capacity / (this.RATIO + 1));
     const blockResolution = Math.ceil(Math.sqrt(blocks));
     const size = blockResolution * this.RESOLUTION * (this.RATIO + 1);
-    const renderTarget = new RenderTarget(this.gl, size, size, this.gl.RGBA, this.gl.LINEAR, this.gl.UNSIGNED_BYTE);
+    const renderTarget = new RenderTarget(this.gl, size, size, this.gl.RGBA, false, this.gl.LINEAR);
 
     this.slotSize.x = this.RESOLUTION * this.RATIO / size;
     this.slotSize.y = this.RESOLUTION / size;
@@ -71,12 +71,13 @@ Atlas.prototype.returnRegion = function(region) {
 /**
  * Write a texture to the atlas
  * @param {Pattern} pattern The pattern to write to the atlas
+ * @param {RandomSource} randomSource A random source
  */
-Atlas.prototype.write = function(pattern) {
+Atlas.prototype.write = function(pattern, randomSource) {
     pattern.region = new AtlasRegion(this.getSlot(), this.slotSize);
 
     this.renderTarget.target();
-    this.patterns.write(pattern, pattern.region, 1 / this.renderTarget.width);
+    this.patterns.write(pattern, randomSource, pattern.region, 1 / this.renderTarget.width);
 };
 
 /**

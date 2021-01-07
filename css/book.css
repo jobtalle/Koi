@@ -1,0 +1,189 @@
+:root {
+    /* colors */
+    --book-shadow-color: #1d1d1d;
+    --book-page-color: #bca994;
+    --book-page-color-shade: #92806b;
+    --book-page-color-side: #81715e;
+    --book-page-color-highlight: #ded1bf;
+    --book-page-shade-opacity: 0.7;
+    --book-page-slot-color: #9d9d9d;
+    --book-page-slot-color-icon-neutral: #949494;
+
+    /* dimensions */
+    --book-page-shade-size: 95%;
+    --book-page-skew: 30;
+    --book-shadow-radius: 12px;
+    --book-hide-time: 0.5s;
+    --book-button-padding: 16px;
+    --page-button-padding: 10px;
+    --page-button-page-shift: 0.65;
+    --page-button-color-enabled: #75a757;
+    --page-button-color-disabled: gray;
+    --page-button-color-unfulfilled: #a43333;
+    --page-button-shadow-radius: 4px;
+}
+
+#book {
+    pointer-events: auto;
+    position: absolute;
+    background-color: var(--card-color-background);
+    display: flex;
+    align-items: center;
+    transition: var(--book-hide-time) ease;
+    transition-property: top;
+    box-shadow: 0 0 var(--book-shadow-radius) var(--book-shadow-color);
+    user-select: none;
+    border-radius: var(--card-border-radius);
+}
+
+#book.hidden {
+    top: -100% !important;
+}
+
+#book.invisible {
+    visibility: hidden;
+}
+
+#book #spine {
+    width: 0;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+}
+
+#book #spine .page {
+    position: absolute;
+    display: none;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
+    overflow: hidden;
+}
+
+#book #spine .page .overlay {
+    position: absolute;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+}
+
+#book #spine .page .overlay.left {
+    background-color: white;
+}
+
+#book #spine .page .overlay.right {
+    background-color: black;
+}
+
+#book #spine .page.visible {
+    display: flex;
+}
+
+#book #spine .page.left {
+    right: 0;
+    background: linear-gradient(
+        to right,
+        var(--book-page-color) var(--book-page-shade-size),
+        var(--book-page-color-highlight));
+    transform-origin: right;
+    border-top-left-radius: var(--card-border-radius);
+    border-bottom-left-radius: var(--card-border-radius);
+}
+
+#book #spine .page.right {
+    left: 0;
+    background: linear-gradient(
+        to left,
+        var(--book-page-color) var(--book-page-shade-size),
+        var(--book-page-color-shade));
+    transform-origin: left;
+    border-top-right-radius: var(--card-border-radius);
+    border-bottom-right-radius: var(--card-border-radius);
+}
+
+#book #spine .page .slot {
+    position: relative;
+    background-color: var(--book-page-slot-color);
+    border-radius: var(--card-border-radius);
+    overflow: hidden;
+}
+
+#book #spine .page .slot svg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+#book #spine .page .slot .card {
+    margin: 0;
+    transform-origin: left top;
+    box-shadow: none;
+}
+
+#button-book {
+    position: absolute;
+    left: var(--book-button-padding);
+    top: var(--book-button-padding);
+}
+
+#button-book svg {
+    filter: drop-shadow(0 0 var(--page-button-shadow-radius) var(--book-shadow-color));
+}
+
+#button-book:active path.page {
+    fill: white;
+}
+
+#button-book path.side {
+    fill: var(--book-page-color-side);
+}
+
+.button-page {
+    position: absolute;
+}
+
+.button-page div {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.button-page div p {
+    margin: 0;
+    padding-left: var(--page-button-padding);
+}
+
+.button-page svg {
+    filter: drop-shadow(0 0 var(--page-button-shadow-radius) var(--book-shadow-color));
+}
+
+.button-page path {
+    fill: var(--page-button-color-enabled);
+}
+
+.button-page:active path {
+    fill: white;
+}
+
+.button-page.locked path {
+    fill: var(--page-button-color-unfulfilled);
+    pointer-events: none;
+}
+
+.button-page.disabled path {
+    fill: var(--page-button-color-disabled);
+    pointer-events: none;
+}
+
+.button-page.left {
+    left: calc(var(--button-width) * var(--page-button-page-shift) * -1);
+}
+
+.button-page.right {
+    right: calc(var(--button-width) * var(--page-button-page-shift) * -1);
+}

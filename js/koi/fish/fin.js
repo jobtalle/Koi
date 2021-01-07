@@ -1,11 +1,11 @@
 /**
  * A fin
- * @param {Number} at The position on the body in the range [0, 1]
- * @param {Number} radius The radius as a factor of body width
- * @param {Number} sign The sign of the fin direction, 1 or -1
+ * @param {Number} at The position on the body in the range [0, 255]
+ * @param {Number} radius The radius in the range [0, 255]
+ * @param {Number} [sign] The sign of the fin direction, 1 (default) or -1
  * @constructor
  */
-const Fin = function(at, radius, sign) {
+const Fin = function(at, radius, sign = 1) {
     this.at = at;
     this.radius = radius;
     this.sign = sign;
@@ -17,6 +17,7 @@ const Fin = function(at, radius, sign) {
     this.endPrevious = new Vector2();
     this.anchorRadius = 0;
     this.finRadius = 0;
+    this.finDepth = 0;
     this.pattern = null;
 };
 
@@ -26,6 +27,34 @@ Fin.prototype.WAVE_SKEW = .2;
 Fin.prototype.X_SCALE = .6;
 Fin.prototype.SPRING = .4;
 Fin.prototype.PHASE_SHIFT = 2;
+Fin.prototype.DEPTH_FACTOR = .4;
+Fin.prototype.SAMPLER_RADIUS = new Sampler(.5, 2.2);
+
+/**
+ * Deserialize a fin
+ * @param {BinBuffer} buffer A buffer to deserialize from
+ * @throws {RangeError} A range error if deserialized values are not valid
+ */
+Fin.deserialize = function(buffer) {
+    return new Fin(buffer.readUint8(), buffer.readUint8());
+};
+
+/**
+ * Serialize this fin
+ * @param {BinBuffer} buffer The buffer to serialize to
+ */
+Fin.prototype.serialize = function(buffer) {
+    buffer.writeUint8(this.at);
+    buffer.writeUint8(this.radius);
+};
+
+/**
+ * Make a mirrored copy of this fin
+ * @returns {Fin} The copy
+ */
+Fin.prototype.copyMirrored = function() {
+    return new Fin(this.at, this.radius, -this.sign);
+};
 
 /**
  * Get the index of the vertebra this fin is connected to
@@ -33,7 +62,7 @@ Fin.prototype.PHASE_SHIFT = 2;
  * @returns {Number} The vertebrae index to connect the fin to
  */
 Fin.prototype.getVertebraIndex = function(spineLength) {
-    return Math.max(1, Math.round(spineLength * this.at));
+    return Math.max(1, Math.round(spineLength * this.at / 0xFF));
 };
 
 /**
@@ -44,7 +73,7 @@ Fin.prototype.getVertebraIndex = function(spineLength) {
 Fin.prototype.connect = function(pattern, radius) {
     this.pattern = pattern;
     this.anchorRadius = this.ANCHOR_INSET * radius;
-    this.finRadius = this.radius * radius;
+    this.finRadius = this.SAMPLER_RADIUS.sample(this.radius / 0xFF) * radius;
 };
 
 /**
@@ -69,6 +98,8 @@ Fin.prototype.shift = function(dx, dy) {
     this.start.y += dy;
     this.end.x += dx;
     this.end.y += dy;
+
+    this.storePreviousState();
 };
 
 /**
@@ -81,30 +112,62 @@ Fin.prototype.storePreviousState = function() {
 };
 
 /**
+ * Set a neutral position for this fin
+ * @param {Vector2} vertebra The connected vertebra location
+ * @param {Number} dx The normalized X direction of the vertebra
+ * @param {Number} dy The normalized Y direction of the vertebra
+ * @param {Number} phase The fin phase
+ * @param {Number} phaseAmplitude The phase amplitude multiplier
+ * @param {Number} size The fin size in the range [0, 1]
+ */
+Fin.prototype.setNeutral = function(
+    vertebra,
+    dx,
+    dy,
+    phase,
+    phaseAmplitude,
+    size) {
+    this.update(vertebra, dx, dy, phase, size, 1, phaseAmplitude);
+};
+
+/**
  * Update the fin state
  * @param {Vector2} vertebra The connected vertebra location
  * @param {Number} dx The normalized X direction of the vertebra
  * @param {Number} dy The normalized Y direction of the vertebra
  * @param {Number} phase The fin phase
+ * @param {Number} size The fin size in the range [0, 1]
+ * @param {Number} [spring] The spring strength
+ * @param {Number} [phaseAmplitude] The phase amplitude multiplier
  */
-Fin.prototype.update = function(vertebra, dx, dy, phase) {
+Fin.prototype.update = function(
+    vertebra,
+    dx,
+    dy,
+    phase,
+    size,
+    spring = this.SPRING,
+    phaseAmplitude = 1) {
     this.storePreviousState();
 
-    const dxSide = this.sign * dy;
-    const dySide = this.sign * -dx;
-    let dxStart = dxSide * this.finRadius * this.X_SCALE;
-    let dyStart = dySide * this.finRadius * this.X_SCALE;
+    this.finDepth = this.finRadius * this.DEPTH_FACTOR * size;
+
+    const radius = this.finRadius * size;
+    const dxSide = this.sign * dy * size;
+    const dySide = this.sign * -dx * size;
+    let dxStart = dxSide * radius * this.X_SCALE;
+    let dyStart = dySide * radius * this.X_SCALE;
 
     this.anchor.x = vertebra.x + dxSide * this.anchorRadius;
     this.anchor.y = vertebra.y + dySide * this.anchorRadius;
 
-    const skew = Math.sin(phase + this.at * this.PHASE_SHIFT) * this.WAVE_SKEW + this.SKEW;
+    const skew = Math.sin(phase + this.at * this.PHASE_SHIFT) * this.WAVE_SKEW * phaseAmplitude + this.SKEW;
 
-    this.start.x += (this.anchor.x + dxStart + this.finRadius * dx * skew - this.start.x) * this.SPRING;
-    this.start.y += (this.anchor.y + dyStart + this.finRadius * dy * skew - this.start.y) * this.SPRING;
+    this.start.x += (this.anchor.x + dxStart + radius * dx * skew - this.start.x) * spring;
+    this.start.y += (this.anchor.y + dyStart + radius * dy * skew - this.start.y) * spring;
 
-    this.end.x = this.anchor.x + this.finRadius * dx;
-    this.end.y = this.anchor.y + this.finRadius * dy;
+    this.end.x = this.anchor.x + radius * dx;
+    this.end.y = this.anchor.y + radius * dy;
 };
 
 /**
@@ -113,7 +176,7 @@ Fin.prototype.update = function(vertebra, dx, dy, phase) {
  * @param {Number} time The interpolation factor
  */
 Fin.prototype.render = function(bodies, time) {
-    const startIndex = bodies.getIndexOffset();
+    const startIndex = bodies.buffer.getVertexCount();
 
     const ax = this.anchorPrevious.x + (this.anchor.x - this.anchorPrevious.x) * time;
     const ay = this.anchorPrevious.y + (this.anchor.y - this.anchorPrevious.y) * time;
@@ -122,13 +185,13 @@ Fin.prototype.render = function(bodies, time) {
     const ex = this.endPrevious.x + (this.end.x - this.endPrevious.x) * time;
     const ey = this.endPrevious.y + (this.end.y - this.endPrevious.y) * time;
 
-    bodies.vertices.push(
+    bodies.buffer.addVertices(
         ax,
         ay,
         this.pattern.region.uFinStart,
         this.pattern.region.vStart,
         sx,
-        sy,
+        sy + this.finDepth,
         this.pattern.region.uFinEnd,
         this.pattern.region.vStart,
         ex,
@@ -136,10 +199,10 @@ Fin.prototype.render = function(bodies, time) {
         this.pattern.region.uFinStart,
         this.pattern.region.vEnd,
         sx + (ex - ax),
-        sy + (ey - ay),
+        sy + (ey - ay) + this.finDepth,
         this.pattern.region.uFinEnd,
         this.pattern.region.vEnd);
-    bodies.indices.push(
+    bodies.buffer.addIndices(
         startIndex,
         startIndex + 1,
         startIndex + 2,

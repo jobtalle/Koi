@@ -1,0 +1,35 @@
+#fish-icon-defs mask {
+    fill: white;
+}
+
+#fish-icon-defs #fish-icon-background {
+    fill: var(--book-page-slot-color-icon-neutral);
+}
+
+#fish-icon-defs #fish-icon-layer-wildcard {
+    fill: var(--book-page-slot-color-icon-neutral);
+}
+
+#fish-icon-defs .white {
+    fill: var(--color-fish-white);
+}
+
+#fish-icon-defs .black {
+    fill: var(--color-fish-black);
+}
+
+#fish-icon-defs .gold {
+    fill: var(--color-fish-gold);
+}
+
+#fish-icon-defs .orange {
+    fill: var(--color-fish-orange);
+}
+
+#fish-icon-defs .red {
+    fill: var(--color-fish-red);
+}
+
+#fish-icon-defs .brown {
+    fill: var(--color-fish-brown);
+}

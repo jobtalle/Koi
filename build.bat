@@ -1,0 +1,1 @@
+python ..\squish.py\squish.py index.html release.html

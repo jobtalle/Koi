@@ -1,42 +1,70 @@
 /**
  * The pattern renderer
  * @param {WebGLRenderingContext} gl A webGL context
- * @param {RandomSource} randomSource A random source
  * @constructor
  */
-const Patterns = function(gl, randomSource) {
+const Patterns = function(gl) {
     this.gl = gl;
-    this.randomSource = randomSource;
     this.buffer = gl.createBuffer();
-    this.programBase = PatternBase.prototype.createShader(gl);
-    this.programSpots = PatternSpots.prototype.createShader(gl);
-    this.programShapeBody = PatternShapeBody.prototype.createShader(gl);
-    this.programShapeFin = PatternShapeFin.prototype.createShader(gl);
+    this.programBase = LayerBase.prototype.createShader(gl);
+    this.vaoBase = this.createVAO(gl, this.programBase);
+    this.programSpots = LayerSpots.prototype.createShader(gl);
+    this.vaoSpots = this.createVAO(gl, this.programSpots);
+    this.programRidge = LayerRidge.prototype.createShader(gl);
+    this.vaoRidge = this.createVAO(gl, this.programRidge);
+    this.programStripes = LayerStripes.prototype.createShader(gl);
+    this.vaoStripes = this.createVAO(gl, this.programStripes);
+    this.programShapeBody = LayerShapeBody.prototype.createShader(gl);
+    this.vaoShapeBody = this.createVAO(gl, this.programShapeBody);
+    this.programShapeFin = LayerShapeFin.prototype.createShader(gl);
+    this.vaoShapeFin = this.createVAO(gl, this.programShapeFin);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
     gl.bufferData(gl.ARRAY_BUFFER, 64, gl.DYNAMIC_DRAW);
 };
 
 /**
+ * Create a VAO for a pattern shader
+ * @param {WebGLRenderingContext} gl A webGL context
+ * @param {Shader} program The shader program to create a VAO for
+ */
+Patterns.prototype.createVAO = function(gl, program) {
+    const vao = gl.vao.createVertexArrayOES();
+
+    gl.vao.bindVertexArrayOES(vao);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
+    gl.enableVertexAttribArray(program["aPosition"]);
+    gl.vertexAttribPointer(program["aPosition"], 2, gl.FLOAT, false, 16, 0);
+
+    if (program["aUv"] !== undefined) {
+        gl.enableVertexAttribArray(program["aUv"]);
+        gl.vertexAttribPointer(program["aUv"], 2, gl.FLOAT, false, 16, 8);
+    }
+
+    return vao;
+};
+
+/**
  * Write a specific layer
  * @param {Object} layer A valid pattern layer object
  * @param {Shader} program The shader program for this layer type
+ * @param {WebGLVertexArrayObjectOES} vao The VAO for this layer type
+ * @param {Color} [color] The palette sample, if this layer samples
  */
-Patterns.prototype.writeLayer = function(layer, program) {
+Patterns.prototype.writeLayer = function(
+    layer,
+    program,
+    vao,
+    color = null) {
     program.use();
 
-    layer.configure(this.gl, program);
+    layer.configure(this.gl, program, color);
 
-    this.gl.enableVertexAttribArray(program.aPosition);
-    this.gl.vertexAttribPointer(program.aPosition, 2, this.gl.FLOAT, false, 16, 0);
+    this.gl.vao.bindVertexArrayOES(vao);
 
-    if (program.aUv !== undefined) {
-        this.gl.enableVertexAttribArray(program.aUv);
-        this.gl.vertexAttribPointer(program.aUv, 2, this.gl.FLOAT, false, 16, 8);
-    }
-
-    if (program.uSize !== undefined)
-        this.gl.uniform2f(program.uSize, Atlas.prototype.RATIO, 1);
+    if (program["uSize"] !== undefined)
+        this.gl.uniform2f(program["uSize"], Atlas.prototype.RATIO, 1);
 
     this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, 4);
 };
@@ -44,10 +72,18 @@ Patterns.prototype.writeLayer = function(layer, program) {
 /**
  * Write a pattern
  * @param {Pattern} pattern A pattern
+ * @param {RandomSource} randomSource A random source
  * @param {AtlasRegion} region A region on the atlas on which the pattern may be written
  * @param {Number} pixelSize The pixel size
  */
-Patterns.prototype.write = function(pattern, region, pixelSize) {
+Patterns.prototype.write = function(pattern, randomSource, region, pixelSize) {
+    let color = Palette.COLORS[pattern.base.paletteIndex];
+
+    this.gl.activeTexture(this.gl.TEXTURE0);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, randomSource.texture);
+
+    this.gl.vao.bindVertexArrayOES(this.vao);
+
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
     this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array([
         2 * (region.uBodyStart + pixelSize) - 1,
@@ -64,7 +100,7 @@ Patterns.prototype.write = function(pattern, region, pixelSize) {
         1, 0
     ]));
 
-    this.writeLayer(pattern.base, this.programBase);
+    this.writeLayer(pattern.base, this.programBase, this.vaoBase, color);
 
     this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array([
         2 * (region.uBodyStart + pixelSize) - 1,
@@ -80,23 +116,32 @@ Patterns.prototype.write = function(pattern, region, pixelSize) {
         2 * (region.vStart + pixelSize) - 1,
         1, 0
     ]));
-
-    this.gl.activeTexture(this.gl.TEXTURE0);
-    this.gl.bindTexture(this.gl.TEXTURE_2D, this.randomSource.texture);
 
     this.gl.enable(this.gl.BLEND);
     this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
 
-    for (const layer of pattern.layers) switch (layer.constructor) {
-        case PatternSpots:
-            this.writeLayer(layer, this.programSpots);
+    for (const layer of pattern.layers) {
+        color = Palette.COLORS[layer.paletteIndex];
 
-            break;
+        switch (layer.id) {
+            case LayerSpots.prototype.ID:
+                this.writeLayer(layer, this.programSpots, this.vaoSpots, color);
+
+                break;
+            case LayerRidge.prototype.ID:
+                this.writeLayer(layer, this.programRidge, this.vaoRidge, color);
+
+                break;
+            case LayerStripes.prototype.ID:
+                this.writeLayer(layer, this.programStripes, this.vaoStripes, color);
+
+                break;
+        }
     }
 
     this.gl.blendFunc(this.gl.ZERO, this.gl.SRC_COLOR)
 
-    this.writeLayer(pattern.shapeBody, this.programShapeBody);
+    this.writeLayer(pattern.shapeBody, this.programShapeBody, this.vaoShapeBody);
 
     this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array([
         2 * region.uFinStart - 1,
@@ -113,7 +158,7 @@ Patterns.prototype.write = function(pattern, region, pixelSize) {
         1, 0
     ]));
 
-    this.writeLayer(pattern.shapeFin, this.programShapeFin);
+    this.writeLayer(pattern.shapeFin, this.programShapeFin, this.vaoShapeFin);
 
     this.gl.disable(this.gl.BLEND);
 };
@@ -123,9 +168,17 @@ Patterns.prototype.write = function(pattern, region, pixelSize) {
  */
 Patterns.prototype.free = function() {
     this.programBase.free();
+    this.gl.vao.deleteVertexArrayOES(this.vaoBase);
     this.programSpots.free();
+    this.gl.vao.deleteVertexArrayOES(this.vaoSpots);
+    this.programRidge.free();
+    this.gl.vao.deleteVertexArrayOES(this.vaoRidge);
+    this.programStripes.free();
+    this.gl.vao.deleteVertexArrayOES(this.vaoStripes);
     this.programShapeBody.free();
+    this.gl.vao.deleteVertexArrayOES(this.vaoShapeBody);
     this.programShapeFin.free();
+    this.gl.vao.deleteVertexArrayOES(this.vaoShapeFin);
 
     this.gl.deleteBuffer(this.buffer);
 };

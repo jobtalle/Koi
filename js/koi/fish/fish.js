@@ -1,11 +1,14 @@
 /**
  * A fish
- * @param {Body} body The fish body
+ * @param {FishBody} body The fish body
  * @param {Vector2} position The initial position
  * @param {Vector2} direction The initial direction vector, which must be normalized
  * @constructor
  */
-const Fish = function(body, position, direction) {
+const Fish = function(
+    body,
+    position,
+    direction) {
     this.position = position.copy();
     this.positionPrevious = position.copy();
     this.direction = direction.copy();
@@ -16,15 +19,20 @@ const Fish = function(body, position, direction) {
     this.turnDirection = new Vector2();
     this.turnForce = 0;
     this.nibbleTime = this.NIBBLE_TIME_MIN;
+    this.mateTimeout = body.getMateTimeout();
+    this.mated = this.mateTimeout;
+    this.mateTime = 0;
+    this.interactions = 0;
+    this.lastInteraction = null;
 
     this.body.initializeSpine(position, direction);
 };
 
-Fish.prototype.FORCE_CONSTRAINT = .5;
-Fish.prototype.FORCE_REPULSION  = .25;
-Fish.prototype.FORCE_ALIGNMENT = .04;
+Fish.prototype.FORCE_CONSTRAINT = .6;
+Fish.prototype.FORCE_REPULSION  = .45;
+Fish.prototype.FORCE_ALIGNMENT = .05;
 Fish.prototype.FORCE_ATTRACTION = .05;
-Fish.prototype.RADIUS_REPULSION = .8;
+Fish.prototype.RADIUS_REPULSION = .6;
 Fish.prototype.RADIUS_ALIGNMENT = 1.25;
 Fish.prototype.RADIUS_ATTRACTION = 1.5;
 Fish.prototype.NIBBLE_TIME_MIN = 20;
@@ -32,7 +40,9 @@ Fish.prototype.NIBBLE_TIME_MAX = 40;
 Fish.prototype.NIBBLE_RADIUS = .1;
 Fish.prototype.NIBBLE_DISPLACEMENT = 0.25;
 Fish.prototype.NIBBLE_TURN_FORCE = .07;
-Fish.prototype.SPEED_MIN = .015;
+Fish.prototype.SPEED_BASE = .4;
+Fish.prototype.SPEED_MIN = Math.fround(.015);
+Fish.prototype.SPEED_MAX = Math.fround(.078);
 Fish.prototype.SPEED_NIBBLE = .0155;
 Fish.prototype.SPEED_SLOW = .025;
 Fish.prototype.SPEED_DROP = .06;
@@ -42,22 +52,111 @@ Fish.prototype.BOOST_CHANCE = .003;
 Fish.prototype.BOOST_POWER = .0015;
 Fish.prototype.BOOST_MIN = 5;
 Fish.prototype.BOOST_MAX = 30;
-Fish.prototype.TURN_CHANCE = .0013;
-Fish.prototype.TURN_FORCE = .06;
+Fish.prototype.TURN_CHANCE = .0016;
+Fish.prototype.TURN_CHANCE_RAINING = .05;
+Fish.prototype.TURN_FORCE = Math.fround(.06);
 Fish.prototype.TURN_POWER = .4;
 Fish.prototype.TURN_DECAY = .94;
 Fish.prototype.TURN_THRESHOLD = .005;
 Fish.prototype.TURN_CARRY = .95;
 Fish.prototype.TURN_FOLLOW_CHANCE = .025;
 Fish.prototype.TURN_AMPLITUDE = Math.PI * .4;
+Fish.prototype.SIZE_MATING = .2; // TODO: Reduced for debugging
+Fish.prototype.MATE_PROXIMITY_TIME = 120;
+
+/**
+ * Deserialize a fish
+ * @param {BinBuffer} buffer A buffer to deserialize from
+ * @param {Vector2} position The fish position
+ * @param {Atlas} atlas The atlas
+ * @param {RandomSource} randomSource A random source
+ * @returns {Fish} A fish
+ * @throws {RangeError} A range error if deserialized values are not valid
+ */
+Fish.deserialize = function(buffer, position, atlas, randomSource) {
+    const body = FishBody.deserialize(buffer, atlas, randomSource);
+    const direction = new Vector2().deserialize(buffer);
+
+    if (!direction.isNormal())
+        throw new RangeError();
+
+    const fish = new Fish(
+        body,
+        position,
+        direction);
+
+    fish.mated = buffer.readUint16();
+    fish.mateTime = buffer.readUint8();
+
+    if (fish.mateTime > Fish.prototype.MATE_PROXIMITY_TIME)
+        throw new RangeError();
+
+    fish.nibbleTime = buffer.readUint8();
+
+    if (fish.nibbleTime > Fish.prototype.NIBBLE_TIME_MAX)
+        throw new RangeError();
+
+    fish.speed = buffer.readFloat();
+
+    if (!(fish.speed >= Fish.prototype.SPEED_MIN && fish.speed <= Fish.prototype.SPEED_MAX))
+        throw new RangeError();
+
+    fish.boost = buffer.readUint8();
+
+    if (fish.boost > Fish.prototype.BOOST_MAX)
+        throw new RangeError();
+
+    fish.turnForce = buffer.readFloat();
+
+    if (!(fish.turnForce >= 0 && fish.turnForce <= Fish.prototype.TURN_FORCE))
+        throw new RangeError();
+
+    if (fish.turnForce !== 0) {
+        fish.turnDirection.deserialize(buffer);
+
+        if (!fish.turnDirection.isNormal())
+            throw new RangeError();
+    }
+
+    return fish;
+};
+
+/**
+ * Serialize this fish
+ * @param {BinBuffer} buffer A buffer to serialize to
+ */
+Fish.prototype.serialize = function(buffer) {
+    this.body.serialize(buffer);
+    this.direction.serialize(buffer);
+
+    buffer.writeUint16(Math.min(0xFFFF, this.mated));
+    buffer.writeUint8(this.mateTime);
+    buffer.writeUint8(this.nibbleTime);
+    buffer.writeFloat(this.speed);
+    buffer.writeUint8(this.boost);
+    buffer.writeFloat(this.turnForce);
+
+    if (this.turnForce !== 0)
+        this.turnDirection.serialize(buffer);
+};
+
+/**
+ * Get the weight of the fish
+ * @returns {Number} The weight in kilograms
+ */
+Fish.prototype.getWeight = function() {
+    return this.body.getWeight(this.body.size);
+};
 
 /**
  * Move the fish to a given position
  * @param {Vector2} position The position to move to
  */
 Fish.prototype.moveTo = function(position) {
-    this.position.set(position);
     this.body.moveTo(position);
+
+    this.position.set(position);
+    this.positionPrevious.set(this.position);
 };
 
 /**
@@ -66,6 +165,7 @@ Fish.prototype.moveTo = function(position) {
  */
 Fish.prototype.drop = function(position) {
     this.moveTo(position);
+
     this.speed = this.SPEED_DROP;
 };
 
@@ -78,6 +178,17 @@ Fish.prototype.turn = function(random) {
 
     this.turnDirection.fromAngle(angle);
     this.turnForce = this.TURN_FORCE;
+};
+
+/**
+ * Chase the fish away from a certain point
+ * @param {Vector2} origin The point to chase this fish away from
+ * @param {Number} force The force of the chase in the range [0, 1]
+ */
+Fish.prototype.chase = function(origin, force) {
+    this.boost = Math.floor(this.BOOST_MAX * force);
+    this.turnForce = this.TURN_FORCE;
+    this.turnDirection.set(this.position).subtract(origin).normalize();
 };
 
 /**
@@ -119,6 +230,18 @@ Fish.prototype.applyTurn = function() {
 };
 
 /**
+ * This fish has just mated
+ * @param {Random} random A randomizer
+ */
+Fish.prototype.mate = function(random) {
+    this.mateTime = 0;
+    this.mated = 0;
+
+    this.turn(random);
+    this.boostSpeed(random);
+};
+
+/**
  * Interact with another fish that may be in range, applying interaction to both fishes
  * @param {Fish} other Another fish
  * @param {Random} random A randomizer
@@ -126,10 +249,20 @@ Fish.prototype.applyTurn = function() {
 Fish.prototype.interact = function(other, random) {
     const dx = this.position.x - other.position.x;
     const dy = this.position.y - other.position.y;
+
+    if (dx === 0 && dy === 0)
+        return;
+
     const squaredDistance = dx * dx + dy * dy;
 
     if (squaredDistance < this.RADIUS_ATTRACTION * this.RADIUS_ATTRACTION) {
         const distance = Math.sqrt(squaredDistance);
+
+        ++this.interactions;
+        ++other.interactions;
+
+        this.lastInteraction = other;
+        other.lastInteraction = this;
 
         if (this.speed < other.speed)
             this.speed += (other.speed - this.speed) * this.SPEED_CATCH_UP;
@@ -172,6 +305,16 @@ Fish.prototype.interact = function(other, random) {
 };
 
 /**
+ * Immediately constrain this fish within a constraint
+ * @param {Constraint} constraint A constraint
+ */
+Fish.prototype.constrainHard = function(constraint) {
+    this.velocity.set(constraint.normal);
+
+    constraint.constrain(this.position);
+};
+
+/**
  * Constrain the fish within its constraint
  * @param {Constraint} constraint A constraint
  * @returns {Boolean} A boolean indicating whether the fish left the scene
@@ -180,29 +323,33 @@ Fish.prototype.constrain = function(constraint) {
     const proximity = constraint.sample(this.position);
 
     if (proximity > 0) {
-        const magnitude = this.FORCE_CONSTRAINT * proximity;
+        if (proximity > 1)
+            this.constrainHard(constraint);
+        else {
+            const magnitude = this.FORCE_CONSTRAINT * proximity;
 
-        if (this.velocity.dot(constraint.normal) < 0) {
-            if (this.velocity.y * constraint.normal.x - this.velocity.x * constraint.normal.y > 0) {
-                this.velocity.x += this.speed * this.direction.y * magnitude;
-                this.velocity.y -= this.speed * this.direction.x * magnitude;
+            if (this.velocity.dot(constraint.normal) < 0) {
+                if (this.velocity.y * constraint.normal.x - this.velocity.x * constraint.normal.y > 0) {
+                    this.velocity.x += this.speed * this.direction.y * magnitude;
+                    this.velocity.y -= this.speed * this.direction.x * magnitude;
+                }
+                else {
+                    this.velocity.x -= this.speed * this.direction.y * magnitude;
+                    this.velocity.y += this.speed * this.direction.x * magnitude;
+                }
             }
             else {
-                this.velocity.x -= this.speed * this.direction.y * magnitude;
-                this.velocity.y += this.speed * this.direction.x * magnitude;
+                this.velocity.x += this.speed * constraint.normal.x * magnitude;
+                this.velocity.y += this.speed * constraint.normal.y * magnitude;
             }
-        }
-        else {
-            this.velocity.x += this.speed * constraint.normal.x * magnitude;
-            this.velocity.y += this.speed * constraint.normal.y * magnitude;
-        }
 
-        this.turnForce = 0;
-
-        return false;
+            this.turnForce = 0;
+        }
     }
     else if (proximity === -1)
         return true;
+
+    return false;
 };
 
 /**
@@ -214,15 +361,33 @@ Fish.prototype.boostSpeed = function(random) {
 };
 
 /**
+ * Check whether this fish can mate
+ * @returns {Boolean} true if this fish can mate
+ */
+Fish.prototype.canMate = function() {
+    return this.mateTime === this.MATE_PROXIMITY_TIME;
+};
+
+/**
  * Update the fish
  * @param {Constraint} constraint A constraint
- * @param {WaterPlane} water A water plane to disturb
+ * @param {Water} water A water plane to disturb
+ * @param {Boolean} raining True if it's raining
  * @param {Random} random A randomizer
  * @returns {Boolean} A boolean indicating whether the fish left the scene
  */
-Fish.prototype.update = function(constraint, water, random) {
+Fish.prototype.update = function(constraint, water, raining, random) {
     if (this.constrain(constraint))
         return true;
+
+    ++this.mated;
+
+    if (this.mated > this.mateTimeout && this.body.size > this.SIZE_MATING) {
+        if (this.mateTime < this.MATE_PROXIMITY_TIME)
+            ++this.mateTime;
+    }
+    else
+        this.mateTime = 0;
 
     if (this.turnDirection)
         this.applyTurn();
@@ -234,7 +399,11 @@ Fish.prototype.update = function(constraint, water, random) {
 
     if (this.boost) {
         --this.boost;
+
         this.speed += this.BOOST_POWER;
+
+        if (this.speed > this.SPEED_MAX)
+            this.speed = this.SPEED_MAX;
     }
 
     this.direction.set(this.velocity).normalize();
@@ -243,7 +412,7 @@ Fish.prototype.update = function(constraint, water, random) {
     if (this.speed < this.SPEED_SLOW) {
         if (this.boost === 0 && random.getFloat() < this.BOOST_CHANCE)
             this.boostSpeed(random);
-        else if (this.turnForce === 0 && random.getFloat() < this.TURN_CHANCE)
+        else if (this.turnForce === 0 && random.getFloat() < (raining ? this.TURN_CHANCE_RAINING : this.TURN_CHANCE))
             this.turn(random);
         else if (this.speed < this.SPEED_NIBBLE) if ((--this.nibbleTime === 0)) {
             this.nibbleTime = this.NIBBLE_TIME_MIN +
@@ -258,20 +427,23 @@ Fish.prototype.update = function(constraint, water, random) {
             this.velocity.normalize();
         }
     }
+
+    const adjustedSpeed = this.speed * (this.SPEED_BASE + (1 - this.SPEED_BASE) * this.body.size);
+
     this.positionPrevious.set(this.position);
-    this.position.add(this.velocity.multiply(this.speed));
-    this.body.update(this.position, this.direction, this.speed, water, random);
+    this.position.add(this.velocity.multiply(adjustedSpeed));
+    this.body.update(this.position, this.direction, adjustedSpeed, true, water, random);
 
     return false;
 };
 
 /**
  * Render the fish
- * @param {Primitives} primitives The primitives renderer
+ * @param {Bodies} bodies The bodies renderer
  * @param {Number} time The interpolation factor
  */
-Fish.prototype.render = function(primitives, time) {
-    this.body.render(primitives, time);
+Fish.prototype.render = function(bodies, time) {
+    this.body.render(bodies, time);
 };
 
 /**

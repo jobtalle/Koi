@@ -1,7 +1,7 @@
 /**
  * A container for all persistent rendering systems
  * @param {WebGLRenderingContext} gl A WebGL context
- * @param {Random} random A randomizer
+ * @param {Random} random A randomizer which may be used only once
  * @param {Number} width The WebGL context width in pixels
  * @param {Number} height The WebGL context height in pixels
  * @constructor
@@ -10,13 +10,24 @@ const Systems = function(gl, random, width, height) {
     this.gl = gl;
     this.width = width;
     this.height = height;
-    this.primitives = new Primitives(gl);
-    this.randomSource = new RandomSource(gl, random);
-    this.patterns = new Patterns(gl, this.randomSource);
-    this.sand = new Sand(gl, this.randomSource);
+    this.blit = new Blit(gl);
+    this.quad = new Quad(gl, this.blit);
+    this.sand = new Sand(gl);
     this.waves = new Waves(gl);
-    this.wavePainter = new WavePainter(gl);
+    this.ponds = new Ponds(gl);
+    this.influencePainter = new InfluencePainter(gl);
     this.bodies = new Bodies(gl);
+    this.vegetation = new Vegetation(gl);
+    this.stone = new Stone(gl);
+    this.shadows = new Shadows(gl);
+    this.blur = new Blur(gl, this.quad);
+    this.wind = new Wind(gl, this.quad);
+    this.patterns = new Patterns(gl);
+    this.atlas = new Atlas(gl, this.patterns, Koi.prototype.FISH_CAPACITY);
+    this.distanceField = new DistanceField(gl, this.quad);
+    this.drops = new Drops(gl);
+    this.flying = new Flying(gl);
+    this.preview = new Preview(gl);
 };
 
 /**
@@ -41,11 +52,22 @@ Systems.prototype.targetMain = function() {
  * Free all rendering systems
  */
 Systems.prototype.free = function() {
-    this.primitives.free();
-    this.randomSource.free();
+    this.atlas.free();
+    this.blit.free();
     this.patterns.free();
     this.sand.free();
     this.waves.free();
-    this.wavePainter.free();
+    this.ponds.free();
+    this.influencePainter.free();
     this.bodies.free();
+    this.quad.free();
+    this.vegetation.free();
+    this.stone.free();
+    this.shadows.free();
+    this.blur.free();
+    this.wind.free();
+    this.distanceField.free();
+    this.drops.free();
+    this.flying.free();
+    this.preview.free();
 };

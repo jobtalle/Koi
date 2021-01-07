@@ -1,78 +1,268 @@
 /**
  * The koi game
+ * @param {Storage} storage A storage system
  * @param {Systems} systems The render systems
+ * @param {AudioBank} audio Game audio
+ * @param {GUI} gui The GUI
+ * @param {Number} environmentSeed The seed for all stable systems
+ * @param {Tutorial} tutorial The tutorial object, or null if no tutorial is active
  * @param {Random} random A randomizer
  * @constructor
  */
-const Koi = function(systems, random) {
+const Koi = function(
+    storage,
+    systems,
+    audio,
+    gui,
+    environmentSeed,
+    tutorial,
+    random) {
+    this.storage = storage;
     this.systems = systems;
+    this.audio = audio;
+    this.gui = gui;
     this.random = random;
+    this.effectsRandom = new Random();
+    this.environmentSeed = environmentSeed;
+    this.tutorial = tutorial;
     this.scale = this.getScale(systems.width, systems.height);
-    this.constellation = new Constellation(
+    this.constellation =  new Constellation(
         systems.width / this.scale,
-        systems.height / this.scale);
-    this.mover = new Mover(this.constellation);
-    this.atlas = null;
+        systems.height / this.scale,
+        this.onBreed.bind(this),
+        this.onMutate.bind(this));
+    this.mover = new Mover(this.constellation, audio, gui);
+    this.shadowBuffer = null;
+    this.rocks = null;
     this.background = null;
+    this.foreground = null;
     this.underwater = null;
     this.water = null;
-    this.constellationMesh = null;
-    this.spawner = new Spawner(this.constellation);
-    this.time = 0;
+    this.air = null;
+    this.constellationMeshWater = null;
+    this.constellationMeshDepth = null;
+    this.randomSource = null;
+    this.reflections = null;
+    this.weather = null;
+    this.weatherFilterChanged = false;
+    this.spawner = new Spawner(
+        this.constellation,
+        tutorial instanceof TutorialBreeding ? new SpawnerBehaviorTutorial() : new SpawnerBehaviorDefault());
+    this.mutations = new Mutations();
+    this.time = this.UPDATE_RATE;
+    this.phase = 0;
 
     this.createRenderables();
 
-    // TODO: This is a debug warp
-    for (let i = 0; i < 1500; ++i)
-        this.update();
+    gui.setKoi(this);
 };
 
-Koi.prototype.BACKGROUND_COLOR = new Color(0.26, 0.49, 0.14);
 Koi.prototype.FRAME_TIME_MAX = 1;
 Koi.prototype.UPDATE_RATE = 1 / 14;
-Koi.prototype.PREFERRED_SCALE = 95;
-Koi.prototype.SIZE_MIN = 8;
-Koi.prototype.SIZE_MAX = 13;
+Koi.prototype.SCALE_FACTOR = .051;
+Koi.prototype.SCALE_MIN = 50;
+Koi.prototype.FISH_CAPACITY = 80;
+Koi.prototype.COLOR_BACKGROUND = Color.fromCSS("--color-earth");
+Koi.prototype.PHASE_SPEED = .005;
+Koi.prototype.TOUCH_WATER_RADIUS = .1;
+Koi.prototype.TOUCH_WATER_INTENSITY = .5;
 
 /**
- * Create all renderable objects
+ * Serialize the koi
+ * @param {BinBuffer} buffer A buffer to serialize to
+ */
+Koi.prototype.serialize = function(buffer) {
+    this.constellation.serialize(buffer);
+    this.spawner.getState().serialize(buffer);
+    this.weather.getState().serialize(buffer);
+    this.mutations.serialize(buffer);
+};
+
+/**
+ * Deserialize the koi
+ * @param {BinBuffer} buffer A buffer to deserialize from
+ * @throws {RangeError} A range error if deserialized values are not valid
+ */
+Koi.prototype.deserialize = function(buffer) {
+    try {
+        this.constellation.deserialize(buffer, this.systems.atlas, this.randomSource);
+        this.spawner.setState(SpawnerState.deserialize(buffer));
+        this.weather.setState(WeatherState.deserialize(buffer));
+        this.mutations.deserialize(buffer);
+        this.weatherFilterChanged = true;
+
+        this.foreground.bugs.initialize(this.weather.state, this.effectsRandom);
+    }
+    catch (error) {
+        this.free();
+
+        throw error;
+    }
+};
+
+/**
+ * A function that is called after breeding takes place
+ * @param {Pond} pond The pond where the breeding took place
+ * @param {Boolean} mutated True if a mutation occurred
+ */
+Koi.prototype.onBreed = function(pond, mutated) {
+    if (this.tutorial)
+        this.tutorial.onBreed(this.constellation, pond, mutated);
+};
+
+/**
+ * A function that is called when a pattern mutation occurs
+ */
+Koi.prototype.onMutate = function() {
+    if (this.tutorial)
+        this.tutorial.onMutate();
+};
+
+/**
+ * A function that is called when a card is stored in the card book
+ * @param {Card} card The card that was stored
+ */
+Koi.prototype.onStoreCard = function(card) {
+    if (this.tutorial)
+        this.tutorial.onStoreCard(card);
+};
+
+/**
+ * A function that is called when the card book unlocks a page
+ */
+Koi.prototype.onUnlock = function() {
+    if (this.tutorial)
+        this.tutorial.onUnlock();
+};
+
+/**
+ * Perform first time initialization
+ */
+Koi.prototype.initialize = function() {
+    this.spawner.spawnInitial(this.systems.atlas, this.randomSource, this.random);
+};
+
+/**
+ * Create all renderable instances
  */
 Koi.prototype.createRenderables = function() {
-    this.atlas = new Atlas(
+    const environmentRandomizer = new Random(this.environmentSeed);
+
+    // Create the random source
+    this.randomSource = new RandomSource(this.systems.gl, environmentRandomizer);
+
+    // Create constellation meshes
+    this.constellationMeshWater = this.constellation.makeMeshWater(this.systems.gl);
+    this.constellationMeshDepth = this.constellation.makeMeshDepth(this.systems.gl);
+
+    // Assign constellation meshes to systems
+    this.systems.sand.setMesh(this.constellationMeshDepth);
+    this.systems.shadows.setMesh(this.constellationMeshDepth);
+    this.systems.blur.setMesh(this.constellationMeshWater);
+    this.systems.waves.setMesh(this.constellationMeshWater);
+    this.systems.ponds.setMesh(this.constellationMeshWater);
+
+    // Create systems that depend on the environment randomizer
+    this.weather = new Weather(
         this.systems.gl,
-        this.systems.patterns,
-        this.constellation.getCapacity());
+        this.constellation,
+        environmentRandomizer);
+
+    // Assign weather meshes
+    this.systems.drops.setMesh(this.weather.rain.mesh);
+
+    // Create scene objects
+    this.shadowBuffer = new ShadowBuffer(
+        this.systems.gl,
+        this.constellation.width,
+        this.constellation.height);
     this.background = new Background(
         this.systems.gl,
         this.systems.sand,
+        this.systems.blit,
         this.systems.width,
         this.systems.height,
+        this.randomSource,
         this.scale);
+    this.foreground = new Foreground(
+        this.systems.gl,
+        this.constellation,
+        environmentRandomizer);
     this.underwater = new RenderTarget(
         this.systems.gl,
         this.systems.width,
         this.systems.height,
         this.systems.gl.RGB,
-        this.systems.gl.LINEAR,
-        this.systems.gl.UNSIGNED_BYTE);
-    this.water = new WaterPlane(
+        false,
+        this.systems.gl.LINEAR);
+    this.water = new Water(
         this.systems.gl,
-        this.systems.width / this.scale,
-        this.systems.height / this.scale);
+        this.systems.influencePainter,
+        this.constellation.width,
+        this.constellation.height);
+    this.air = new Air(
+        this.systems.gl,
+        this.systems.influencePainter,
+        this.constellation.width,
+        this.constellation.height,
+        this.random);
 
-    this.constellationMesh = this.constellation.makeMesh(this.systems.gl);
+    // Assign constellation meshes to objects
+    this.background.setMesh(this.constellationMeshDepth);
+
+    // Assign scene object meshes
+    this.systems.stone.setMesh(this.foreground.rocks.mesh);
+    this.systems.vegetation.setMesh(this.foreground.plants.mesh);
+
+    // Create systems that depend on mesh initialization
+    const shore = new Shore(
+        this.systems.gl,
+        this.constellation.width,
+        this.constellation.height,
+        this.systems.stone,
+        this.systems.ponds,
+        this.systems.distanceField);
+
+    this.reflections = new Reflections(
+        this.systems.gl,
+        this.constellation.width,
+        this.constellation.height,
+        shore,
+        this.systems.stone,
+        this.systems.vegetation,
+        this.systems.blur,
+        this.systems.quad);
+
+    shore.free();
+
+    this.foreground.bugs.initialize(this.weather.state, this.effectsRandom);
 };
 
 /**
  * Free all renderable objects
  */
 Koi.prototype.freeRenderables = function() {
-    this.atlas.free();
+    this.randomSource.free();
+    this.shadowBuffer.free();
     this.background.free();
+    this.foreground.free();
     this.underwater.free();
     this.water.free();
+    this.air.free();
+    this.reflections.free();
+    this.weather.free();
 
-    this.constellationMesh.free();
+    this.constellationMeshWater.free();
+    this.constellationMeshDepth.free();
+};
+
+/**
+ * Touch the water at a given point
+ * @param {Number} x The X coordinate in meters
+ * @param {Number} y The Y coordinate in meters
+ */
+Koi.prototype.touchWater = function(x, y) {
+    this.water.addFlare(x, y, this.TOUCH_WATER_RADIUS, this.TOUCH_WATER_INTENSITY);
 };
 
 /**
@@ -81,26 +271,53 @@ Koi.prototype.freeRenderables = function() {
  * @param {Number} y The Y position in pixels
  */
 Koi.prototype.touchStart = function(x, y) {
-    const fish = this.constellation.pick(x / this.scale, y / this.scale);
+    const wx = this.constellation.getWorldX(x, this.scale);
+    const wy = this.constellation.getWorldY(y, this.scale);
+
+    const fish = this.mover.hasFish() ? null : this.constellation.pick(
+        wx,
+        wy,
+        this.tutorial ? this.tutorial.getInteractionWhitelist() : null);
 
     if (fish)
-        this.mover.pickUp(fish,x / this.scale, y / this.scale, this.water, this.random);
+        this.mover.pickUp(fish, wx, wy, this.water, this.random);
+    else {
+        if (this.constellation.contains(wx, wy)) {
+            this.touchWater(wx, wy);
+            this.constellation.chase(wx, wy);
+        }
+
+        this.mover.startTouch(wx, wy);
+    }
+
+    this.gui.interactGame();
 };
 
 /**
  * Move a touch event
  * @param {Number} x The X position in pixels
  * @param {Number} y The Y position in pixels
+ * @param {Boolean} [entered] True if the cursor just entered the view
  */
-Koi.prototype.touchMove = function(x, y) {
-    this.mover.touchMove(x / this.scale, y / this.scale);
+Koi.prototype.touchMove = function(x, y, entered = false) {
+    this.mover.touchMove(
+        this.constellation.getWorldX(x, this.scale),
+        this.constellation.getWorldY(y, this.scale),
+        x,
+        y,
+        entered,
+        this.tutorial ? this.tutorial.handEnabled : true);
 };
 
 /**
  * End a touch event
  */
 Koi.prototype.touchEnd = function() {
-    this.mover.drop(this.water, this.random);
+    this.mover.drop(
+        this.water,
+        this.systems.atlas,
+        this.scale,
+        this.random);
 };
 
 /**
@@ -109,9 +326,7 @@ Koi.prototype.touchEnd = function() {
  * @param {Number} height The view height in pixels
  */
 Koi.prototype.getScale = function(width, height) {
-    const minSize = Math.min(width, height);
-
-    return Math.max(Math.min(this.PREFERRED_SCALE, minSize / this.SIZE_MIN), minSize / this.SIZE_MAX);
+    return Math.max(this.SCALE_MIN, Math.sqrt(width * width + height * height) * this.SCALE_FACTOR);
 };
 
 /**
@@ -122,23 +337,63 @@ Koi.prototype.resize = function() {
     this.constellation.resize(
         this.systems.width / this.scale,
         this.systems.height / this.scale,
-        this.atlas);
+        this.systems.atlas);
+
+    const weatherState = this.weather.state;
 
     this.freeRenderables();
     this.createRenderables();
 
-    this.constellation.updateAtlas(this.atlas);
+    this.weather.setState(weatherState);
+    this.weatherFilterChanged = true;
+
+    this.foreground.bugs.initialize(this.weather.state, this.effectsRandom);
+};
+
+/**
+ * Update ambient audio
+ */
+Koi.prototype.updateAudio = function() {
+    this.audio.ambientWaterTop.update(this.UPDATE_RATE);
+    this.audio.ambientWaterLow.update(this.UPDATE_RATE);
+    this.audio.ambientWind.update(this.UPDATE_RATE);
 };
 
 /**
  * Update the scene
  */
 Koi.prototype.update = function() {
-    this.spawner.update(this.UPDATE_RATE, this.atlas, this.random);
-    this.constellation.update(this.atlas, this.water, this.random);
-    this.mover.update();
+    this.updateAudio();
+    this.gui.update();
 
-    this.systems.waves.propagate(this.water, this.systems.wavePainter, this.constellationMesh);
+    if (this.tutorial && this.tutorial.update(this)) {
+        if (this.tutorial instanceof TutorialBreeding) {
+            this.spawner.setBehavior(new SpawnerBehaviorDefault());
+            this.tutorial = new TutorialCards(this.storage, this.gui.overlay);
+        }
+        else
+            this.tutorial = null;
+    }
+
+    this.spawner.update(this.UPDATE_RATE, this.systems.atlas, this.randomSource, this.random);
+    this.constellation.update(
+        this.systems.atlas,
+        this.systems.patterns,
+        this.randomSource,
+        !this.tutorial || this.tutorial.allowMutation ? this.mutations : null,
+        this.tutorial ? this.tutorial.forceMutation : false,
+        this.water,
+        this.weather.state.isRaining(),
+        this.random);
+    this.weather.update(this.air, this.water, this.audio, this.foreground.plants.plantMap, this.random);
+    this.mover.update(this.air, this.audio, this.foreground, this.tutorial !== null, this.effectsRandom);
+    this.foreground.update(this.weather.state, this.effectsRandom);
+
+    this.systems.waves.propagate(this.water, this.systems.influencePainter);
+    this.systems.wind.propagate(this.air, this.systems.influencePainter);
+
+    if ((this.phase += this.PHASE_SPEED) > 1)
+        --this.phase;
 };
 
 /**
@@ -151,64 +406,98 @@ Koi.prototype.render = function(deltaTime) {
     while (this.time > this.UPDATE_RATE) {
         this.time -= this.UPDATE_RATE;
 
-        this.update(); // TODO: Add separate update step to spread out processing?
+        this.update();
     }
 
-    const timeFactor = this.time / this.UPDATE_RATE;
+    const time = this.time / this.UPDATE_RATE;
 
-    // Target underwater bufferQuad
+    // Update GUI animations
+    this.gui.render(time);
+
+    if (this.tutorial)
+        this.tutorial.render(this.constellation, this.scale, time);
+
+    // Apply filter color
+    if (this.weatherFilterChanged) {
+        this.systems.stone.setFilter(this.weather.filter);
+        this.systems.vegetation.setFilter(this.weather.filter);
+        this.systems.ponds.setFilter(this.weather.filter);
+        this.systems.flying.setFilter(this.weather.filter);
+    }
+
+    // Render shadows
+    this.shadowBuffer.target();
+    this.constellation.render(this.systems.bodies, this.systems.atlas, time,true);
+    this.shadowBuffer.blur(this.systems.blur);
+
+    // Target underwater buffer
     this.underwater.target();
-    this.systems.primitives.setViewport(this.systems.width, this.systems.height);
 
     // Render background
-    this.background.render(this.systems.primitives);
+    this.background.render();
 
-    // Render fishes
+    // Render shadows
+    this.systems.shadows.render(
+        this.shadowBuffer,
+        this.systems.height,
+        this.scale);
+
+    // Render pond contents
     this.constellation.render(
         this.systems.bodies,
-        this.atlas,
-        this.systems.width,
-        this.systems.height,
-        this.scale,
-        timeFactor);
+        this.systems.atlas,
+        time,
+        false,
+        false);
 
-    // Target window
+    // Target main buffer
     this.systems.targetMain();
 
-    this.systems.gl.clearColor(this.BACKGROUND_COLOR.r, this.BACKGROUND_COLOR.g, this.BACKGROUND_COLOR.b, 1);
-    this.systems.gl.clear(this.systems.gl.COLOR_BUFFER_BIT);
+    // Clear background
+    this.systems.gl.clearColor(
+        this.COLOR_BACKGROUND.r * this.weather.filter.r,
+        this.COLOR_BACKGROUND.g * this.weather.filter.g,
+        this.COLOR_BACKGROUND.b * this.weather.filter.b,
+        1);
+    this.systems.gl.clear(this.systems.gl.COLOR_BUFFER_BIT | this.systems.gl.DEPTH_BUFFER_BIT);
+
+    // Enable Z buffer
+    this.systems.gl.enable(this.systems.gl.DEPTH_TEST);
+
+    // Render foreground
+    this.foreground.render(
+        this.systems.vegetation,
+        this.systems.stone,
+        this.systems.flying,
+        this.air,
+        time);
 
     // Render shaded water
-    this.systems.waves.render(
+    this.systems.ponds.render(
         this.underwater.texture,
-        this.constellationMesh,
+        this.reflections.texture,
         this.water,
         this.systems.width,
         this.systems.height,
         this.scale,
-        timeFactor);
+        this.phase + time * this.PHASE_SPEED,
+        time);
+
+    // Render weather effects
+    this.weatherFilterChanged = this.weather.render(
+        this.systems.drops,
+        time);
+
+    // Disable Z buffer
+    this.systems.gl.disable(this.systems.gl.DEPTH_TEST);
 
     // Render mover
-    this.systems.primitives.setViewport(this.systems.width, this.systems.height);
     this.mover.render(
         this.systems.bodies,
-        this.atlas,
-        this.systems.width,
-        this.systems.height,
-        this.scale,
-        timeFactor);
-
-    this.systems.gl.activeTexture(this.systems.gl.TEXTURE0);
-    this.systems.gl.bindTexture(this.systems.gl.TEXTURE_2D, this.atlas.renderTarget.texture);
-
-    // Debug atlas preview
-    // this.systems.primitives.cutStrip(0, 0, 0, 0);
-    // this.systems.primitives.drawStrip(0, 800,0, 1);
-    // this.systems.primitives.cutStrip(800, 800,1, 1);
-    // this.systems.primitives.cutStrip(0, 0, 0, 0);
-    // this.systems.primitives.drawStrip(800, 0,1, 0);
-    // this.systems.primitives.cutStrip(800, 800,1, 1);
-    // this.systems.primitives.flush();
+        this.systems.atlas,
+        this.constellation.width,
+        this.constellation.height,
+        time);
 };
 
 /**

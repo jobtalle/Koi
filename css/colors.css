@@ -1,0 +1,42 @@
+:root {
+    /* Environment colors */
+    --color-water-deep: #1a2c48;
+    --color-water-shallow: #7ad6d6;
+    --color-water-filter: #def6ea;
+    --color-water-highlight: #a9dbd1;
+    --color-earth: #D5C28E;
+    --color-rock-top: #6e5a5e;
+    --color-rock-side: #473537;
+    --color-sky: #bdd6e2;
+    --color-rain: #ccd0cf;
+
+    /* Ambient color multipliers */
+    --color-ambient-sunny: #fffdee;
+    --color-ambient-overcast: #f6f6f6;
+    --color-ambient-drizzle: #e9ecec;
+    --color-ambient-rain: #deeef6;
+    --color-ambient-thunderstorm: #9ea6bf;
+
+    /* Plant colors */
+    --color-grass-a: #8ea94e;
+    --color-grass-b: #4b812e;
+    --color-cattail-leaf: #5e8136;
+    --color-cattail-stalk: #a09e7a;
+    --color-cattail-capsule: #eceaac;
+
+    /* Fish colors */
+    --color-fish-white: #E1E0C4;
+    --color-fish-black: #414345;
+    --color-fish-gold: #eaa247;
+    --color-fish-orange: #cd6142;
+    --color-fish-red: #db3030;
+    --color-fish-brown: var(--color-rock-top);
+
+    /* Bug colors */
+    --color-bug-butterfly-yellow: #d7c89b;
+    --color-bug-butterfly-yellow-edge: #f6cda2;
+    --color-bug-butterfly-blue: #bdd7f3;
+    --color-bug-butterfly-blue-edge: #87abdb;
+    --color-bug-butterfly-thunder: #4f4e56;
+    --color-bug-butterfly-thunder-edge: #d64657;
+}

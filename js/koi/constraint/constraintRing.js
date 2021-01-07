@@ -10,10 +10,11 @@ const ConstraintRing = function(position, radius, width) {
     this.radius = radius;
     this.halfWidth = width * .5;
 
-    Constraint.call(this);
+    Constraint.call(this, Math.min(this.BORDER, this.halfWidth));
 };
 
 ConstraintRing.prototype = Object.create(Constraint.prototype);
+ConstraintRing.prototype.DEPTH = .5;
 
 /**
  * Constrain a vector to make sure it is inside the constraint
@@ -27,12 +28,12 @@ ConstraintRing.prototype.constrain = function(vector, dx, dy, distance) {
         return;
 
     if (distance < this.radius - this.halfWidth) {
-        vector.x = this.position.x + (this.radius - this.halfWidth) * dx / distance;
-        vector.y = this.position.y + (this.radius - this.halfWidth) * dy / distance;
+        vector.x = this.position.x + (this.radius - this.halfWidth + this.CONSTRAIN_EPSILON) * dx / distance;
+        vector.y = this.position.y + (this.radius - this.halfWidth + this.CONSTRAIN_EPSILON) * dy / distance;
     }
     else {
-        vector.x = this.position.x + (this.radius + this.halfWidth) * dx / distance;
-        vector.y = this.position.y + (this.radius + this.halfWidth) * dy / distance;
+        vector.x = this.position.x + (this.radius + this.halfWidth - this.CONSTRAIN_EPSILON) * dx / distance;
+        vector.y = this.position.y + (this.radius + this.halfWidth - this.CONSTRAIN_EPSILON) * dy / distance;
     }
 };
 
@@ -40,14 +41,17 @@ ConstraintRing.prototype.constrain = function(vector, dx, dy, distance) {
  * Check whether a given point is contained within this constraint
  * @param {Number} x The X position
  * @param {Number} y The Y position
- * @returns {Boolean} A boolean indicating whether the given point is inside this constraint
+ * @returns {Constraint} This constraint if it contains the coordinates, null if it does not
  */
 ConstraintRing.prototype.contains = function(x, y) {
     const dx = x - this.position.x;
     const dy = y - this.position.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
 
-    return distance > this.radius - this.halfWidth && distance < this.radius + this.halfWidth;
+    if (distance > this.radius - this.halfWidth && distance < this.radius + this.halfWidth)
+        return this;
+
+    return null;
 };
 
 /**

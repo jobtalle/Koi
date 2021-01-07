@@ -1,11 +1,64 @@
 body {
     margin: 0;
-    overscroll-behavior: contain;
 }
 
 #wrapper {
-    position: fixed;
+    position: absolute;
+    overflow: hidden;
     width: 100%;
     height: 100%;
-    overflow: hidden;
+}
+
+#gui {
+    pointer-events: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+@media screen and (orientation: portrait) {
+    #no-portrait {
+        user-select: none;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #0008;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #no-portrait .message {
+        font-family: sans-serif;
+        color: white;
+        font-size: 50px;
+        text-align: center;
+    }
+}
+
+@media screen and (orientation: landscape) {
+    #no-portrait {
+        display: none
+    }
+}
+
+#gui #cards {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#gui #overlay {
+    user-select: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
 }
