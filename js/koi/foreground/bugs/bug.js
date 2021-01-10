@@ -264,7 +264,7 @@ Bug.prototype.update = function(
                 if (this.body.resistant || !weatherState.isRaining()) {
                     const r = random.getFloat();
 
-                    if (weatherState.isDrizzle()) {
+                    if (!this.body.resistant && weatherState.isDrizzle()) {
                         if (r < this.DRIZZLE_CHANCE_ROTATE)
                             this.rotate(random);
                         else if (r < this.DRIZZLE_CHANCE_HOP) {
