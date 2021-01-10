@@ -22,11 +22,34 @@ Mutations.prototype.deserialize = function(buffer) {
 };
 
 /**
- * Create the list of possible mutations
- * @returns {Mutation[]} An array containing all possible mutations
+ * Create all color related mutations
+ * @returns {Mutation[]} The mutations
  */
-Mutations.prototype.createMutations = function() {
+Mutations.prototype.createMutationsColor = function() {
     return [
+        // Two golden koi become red
+        new Mutation(
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_GOLD)
+            ]),
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_GOLD)
+            ]),
+            [
+                new BlueprintLayerBase(Palette.INDEX_ORANGE)
+            ],
+            1
+        )
+    ];
+};
+
+/**
+ * Create all spots pattern related mutations
+ * @returns {Mutation[]} The mutations
+ */
+Mutations.prototype.createMutationsSpots = function() {
+    return [
+        // Two solid but different colored fish can become one color + spots of the other color
         new Mutation(
             new PatternFootprint([
                 new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_UNIQUE_LAYER)
@@ -55,6 +78,7 @@ Mutations.prototype.createMutations = function() {
             ],
             .2
         ),
+        // Spotted fish + solid color can become an extra layer of spots
         new Mutation(
             new PatternFootprint([
                 new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_UNIQUE),
@@ -85,5 +109,16 @@ Mutations.prototype.createMutations = function() {
             ],
             .2
         )
+    ];
+};
+
+/**
+ * Create the list of possible mutations
+ * @returns {Mutation[]} An array containing all possible mutations
+ */
+Mutations.prototype.createMutations = function() {
+    return [
+        ...this.createMutationsSpots(),
+        ...this.createMutationsColor()
     ];
 };

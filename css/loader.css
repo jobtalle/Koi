@@ -49,6 +49,7 @@
 .loader-button button {
     border: 1px solid black;
     width: 15%;
+    transition: 0.5s;
 }
 
 .loader-button button.confirm {
