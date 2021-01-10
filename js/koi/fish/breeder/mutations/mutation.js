@@ -92,7 +92,6 @@ Mutation.prototype.applicable = function(mother, father, colors) {
  * @returns {Boolean} True if this mutation is applicable to the given layer arrays
  */
 Mutation.prototype.mutates = function(mother, father, force, random) {
-    console.log(this);
     if (!force && random.getFloat() > this.probability)
         return false;
 

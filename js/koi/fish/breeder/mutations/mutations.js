@@ -27,7 +27,7 @@ Mutations.prototype.deserialize = function(buffer) {
  */
 Mutations.prototype.createMutationsColor = function() {
     return [
-        // Two golden koi become red
+        // Two golden koi become orange
         new Mutation(
             new PatternFootprint([
                 new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_GOLD)
@@ -38,7 +38,33 @@ Mutations.prototype.createMutationsColor = function() {
             [
                 new BlueprintLayerBase(Palette.INDEX_ORANGE)
             ],
-            1
+            .2
+        ),
+        // Two orange koi become red
+        new Mutation(
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_ORANGE)
+            ]),
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_ORANGE)
+            ]),
+            [
+                new BlueprintLayerBase(Palette.INDEX_RED)
+            ],
+            .1
+        ),
+        // Black and white becomes brown
+        new Mutation(
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_WHITE)
+            ]),
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_BLACK)
+            ]),
+            [
+                new BlueprintLayerBase(Palette.INDEX_BROWN)
+            ],
+            .15
         )
     ];
 };
