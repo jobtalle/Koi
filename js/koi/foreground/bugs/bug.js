@@ -269,10 +269,10 @@ Bug.prototype.update = function(
                             this.rotate(random);
                         else if (r < this.DRIZZLE_CHANCE_HOP) {
                             if (!this.hop(pathMaker, random))
-                                this.wander(pathMaker, random);
+                                this.leave(pathMaker, random);
                         }
                         else
-                            this.wander(pathMaker, random);
+                            this.leave(pathMaker, random);
                     }
                     else {
                         if (r < this.IDLE_CHANCE_ROTATE)
