@@ -17,9 +17,6 @@
     --card-border-radius: 12px;
     --card-drop-target-raise: -0.26;
     --card-info-spacing: 14px;
-    --card-name-margin: 2px;
-    --card-name-padding: 3px;
-    --card-name-margin-leading: 6px;
 }
 
 .card-shape {
@@ -45,28 +42,9 @@
     height: var(--card-preview-height);
     margin: var(--card-preview-margin);
     border-top: none;
-    border-bottom-left-radius: var(--card-border-radius);
-    border-bottom-right-radius: var(--card-border-radius);
+    border-radius: var(--card-border-radius);
     background: linear-gradient(var(--card-color-background-light), var(--card-color-background-dark));
     overflow: hidden;
-}
-
-.card .name {
-    width: calc(var(--card-preview-width) - 2 * var(--card-name-padding));
-    margin: var(--card-preview-margin);
-    margin-bottom: calc(-1 * var(--card-preview-margin));
-    padding: var(--card-name-padding);
-    background-color: #ffffffaa;
-    border-top-left-radius: var(--card-border-radius);
-    border-top-right-radius: var(--card-border-radius);
-}
-
-.card .name h2 {
-    font-family: sans-serif;
-    font-weight: normal;
-    font-size: 20px;
-    margin: var(--card-name-margin);
-    margin-left: var(--card-name-margin-leading);
 }
 
 .card .info {

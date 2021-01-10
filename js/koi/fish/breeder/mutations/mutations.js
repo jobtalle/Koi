@@ -163,7 +163,7 @@ Mutations.prototype.createMutationsStripes = function() {
                     // Power
                     new Sampler(108, 148))
             ],
-            .2
+            .15
         )
     ];
 };

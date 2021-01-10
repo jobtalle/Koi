@@ -1,6 +1,5 @@
 {
   "INCLUDE": [
-    "names/western.json",
     "units/imperial.json"
   ],
   "START": "Start",
