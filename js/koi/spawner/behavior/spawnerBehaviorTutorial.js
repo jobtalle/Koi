@@ -3,7 +3,7 @@
  * @constructor
  */
 const SpawnerBehaviorTutorial = function() {
-    SpawnerBehavior.call(this, [Blueprints.baseWhite, Blueprints.baseBlack], 1);
+    SpawnerBehavior.call(this, SpawnerState.prototype.BLUEPRINTS_TUTORIAL, 1);
 
     this.index = 0;
     this.countdown = 1;

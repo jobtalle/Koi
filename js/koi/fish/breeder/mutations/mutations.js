@@ -200,7 +200,7 @@ Mutations.prototype.createMutationsRidge = function() {
                     // Focus power
                     new Sampler(108, 148))
             ],
-            1
+            .15
         )
     ];
 };
