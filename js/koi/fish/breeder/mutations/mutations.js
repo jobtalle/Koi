@@ -163,6 +163,43 @@ Mutations.prototype.createMutationsStripes = function() {
                     // Power
                     new Sampler(108, 148))
             ],
+            .2
+        )
+    ];
+};
+
+/**
+ * Create all ridge pattern related mutations
+ * @returns {Mutation[]} The mutations
+ */
+Mutations.prototype.createMutationsRidge = function() {
+    return [
+        // A spotted and a striped fish create a ridged fish
+        new Mutation(
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_SHARED),
+                new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_SHARED)
+            ]),
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_SHARED),
+                new LayerFootprint(LayerStripes.prototype.ID, LayerFootprint.PALETTE_SHARED)
+            ]),
+            [
+                Mutation.BLUEPRINT_LAYER_MOTHER,
+                new BlueprintLayerRidge(
+                    // Palette index
+                    Mutation.createPaletteReference(true, 0),
+                    // Scale
+                    new Sampler(108, 148),
+                    // Power
+                    new Sampler(108, 148),
+                    // Threshold
+                    new Sampler(108, 148),
+                    // Focus
+                    new Sampler(108, 148),
+                    // Focus power
+                    new Sampler(108, 148))
+            ],
             1
         )
     ];
@@ -176,6 +213,7 @@ Mutations.prototype.createMutations = function() {
     return [
         ...this.createMutationsColor(),
         ...this.createMutationsSpots(),
-        ...this.createMutationsStripes()
+        ...this.createMutationsStripes(),
+        ...this.createMutationsRidge()
     ];
 };
