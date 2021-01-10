@@ -6,6 +6,7 @@
   "START": "Start",
   "CONTINUE": "Continue",
   "NEW": "New pond",
+  "CONFIRM": "Are you sure?",
   "INFO_WEIGHT": "Weight",
   "INFO_LENGTH": "Length",
   "INFO_AGE": "Age",

@@ -50,3 +50,7 @@
     border: 1px solid black;
     width: 15%;
 }
+
+.loader-button button.confirm {
+    background-color: var(--color-fish-red);
+}
