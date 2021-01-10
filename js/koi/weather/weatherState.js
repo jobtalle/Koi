@@ -258,3 +258,11 @@ WeatherState.prototype.update = function(audio, random) {
 WeatherState.prototype.isRaining = function() {
     return this.state === this.ID_RAIN || this.state === this.ID_THUNDERSTORM;
 };
+
+/**
+ * Check whether it's slightly raining
+ * @returns {Boolean} True if it's slightly raining
+ */
+WeatherState.prototype.isDrizzle = function() {
+    return this.state === this.ID_DRIZZLE;
+};

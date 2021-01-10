@@ -57,11 +57,11 @@ Mutations.prototype.createMutations = function() {
         ),
         new Mutation(
             new PatternFootprint([
-                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_UNIQUE_LAYER),
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_UNIQUE),
                 new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_UNIQUE)
             ]),
             new PatternFootprint([
-                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_UNIQUE_LAYER)
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_UNIQUE)
             ]),
             [
                 Mutation.BLUEPRINT_LAYER_MOTHER,
