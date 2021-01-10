@@ -140,5 +140,51 @@ const Blueprints = {
                 []
             )
         )
+    ),
+    baseBrown: new Blueprint(
+        // School size
+        new SamplerPlateau(1, 3, 5, 1),
+        // Body
+        new BlueprintBody(
+            // Length
+            new Sampler(200, 230),
+            // Radius
+            new Sampler(50, 70),
+            // Growth speed
+            new Sampler(20, 40),
+            // Mating frequency
+            new Sampler(200, 225),
+            // Offspring count
+            new Sampler(170, 190),
+            // Age
+            new Sampler(20000, 25000),
+            // Fins
+            new BlueprintFins(),
+            // Tail
+            new BlueprintTail(
+                // Length
+                new Sampler(220, 250),
+                // Skew
+                new Sampler(200, 220)),
+            // Pattern
+            new BlueprintPattern(
+                // Base
+                new BlueprintLayerBase(Palette.INDEX_BROWN),
+                // Body shape
+                new BlueprintLayerShapeBody(
+                    // Center power
+                    new Sampler(80, 140),
+                    // Radius power
+                    new Sampler(180, 210),
+                    // Eye position
+                    new Sampler(20, 30)),
+                // Fin shape
+                new BlueprintLayerShapeFin(
+                    // Roundness
+                    new Sampler(50, 60)),
+                // Layers
+                []
+            )
+        )
     )
 };

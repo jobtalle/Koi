@@ -14,10 +14,11 @@ SpawnerBehaviorTutorial.prototype.DELAY = 3;
 
 /**
  * Get the index of the blueprint to spawn
+ * @param {WeatherState} weatherState The weather state
  * @param {Random} random The randomizer
  * @returns {Number} The blueprint index
  */
-SpawnerBehaviorTutorial.prototype.getBlueprintIndex = function(random) {
+SpawnerBehaviorTutorial.prototype.getBlueprintIndex = function(weatherState, random) {
     if (--this.countdown === 0) {
         this.index = 1 - this.index;
         this.countdown = this.DELAY;

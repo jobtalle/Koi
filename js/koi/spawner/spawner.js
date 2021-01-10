@@ -55,20 +55,21 @@ Spawner.prototype.spawnInitial = function(atlas, randomSource, random) {
 
 /**
  * Update the spawner
- * @param {Number} timeStep The amount of time passed since the last update
  * @param {Atlas} atlas The atlas to render newly spawned patterns on
+ * @param {WeatherState} weatherState The weather state
  * @param {RandomSource} randomSource A random source
  * @param {Random} random A randomizer
  */
 Spawner.prototype.update = function(
-    timeStep,
     atlas,
+    weatherState,
     randomSource,
     random) {
     this.state.update(
         this.behavior,
         this.constellation,
         atlas,
+        weatherState,
         randomSource,
         this.SPAWN_LIMIT,
         this.SPAWN_OVERHEAD,

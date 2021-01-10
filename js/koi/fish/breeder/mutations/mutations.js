@@ -52,19 +52,6 @@ Mutations.prototype.createMutationsColor = function() {
                 new BlueprintLayerBase(Palette.INDEX_RED)
             ],
             .1
-        ),
-        // Black and white becomes brown
-        new Mutation(
-            new PatternFootprint([
-                new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_WHITE)
-            ]),
-            new PatternFootprint([
-                new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_BLACK)
-            ]),
-            [
-                new BlueprintLayerBase(Palette.INDEX_BROWN)
-            ],
-            .15
         )
     ];
 };

@@ -16,7 +16,8 @@ SpawnerState.prototype.BLUEPRINT_INITIAL = Blueprints.baseWhite;
 SpawnerState.prototype.BLUEPRINTS = [
     Blueprints.baseWhite,
     Blueprints.baseBlack,
-    Blueprints.baseGold
+    Blueprints.baseGold,
+    Blueprints.baseBrown
 ];
 
 /**
@@ -92,6 +93,7 @@ SpawnerState.prototype.spawnInitial = function(
  * @param {SpawnerBehavior} behavior The current behavior
  * @param {Constellation} constellation The constellation
  * @param {Atlas} atlas The atlas to render newly spawned patterns on
+ * @param {WeatherState} weatherState The weather state
  * @param {RandomSource} randomSource A random source
  * @param {Number} limit The maximum number of fish that may exist in the river
  * @param {Number} overhead The overhead to the maximum number of fish in the constellation
@@ -101,6 +103,7 @@ SpawnerState.prototype.update = function(
     behavior,
     constellation,
     atlas,
+    weatherState,
     randomSource,
     limit,
     overhead,
@@ -120,7 +123,7 @@ SpawnerState.prototype.update = function(
             --this.school;
         }
         else {
-            this.spawning = behavior.getBlueprint(random);
+            this.spawning = behavior.getBlueprint(weatherState, random);
 
             if (this.spawning && constellation.river.getFishCount() < limit)
                 this.school = behavior.getSchoolSize(this.spawning, random);
