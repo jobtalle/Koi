@@ -17,7 +17,7 @@ const Planter = function(slots, biome, plantMap, random) {
 
 Planter.prototype.BEACH_MAX = .1;
 Planter.prototype.GRASS_CLEARANCE = .1;
-Planter.prototype.CATTAIL_CHANCE = .12;
+Planter.prototype.CATTAIL_CHANCE = .14;
 Planter.prototype.CATTAIL_CHANCE_RAMP = 10;
 Planter.prototype.CATTAIL_DIST_MIN = .1;
 Planter.prototype.CATTAIL_DIST_MAX = 1.3;

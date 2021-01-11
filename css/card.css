@@ -14,9 +14,13 @@
     --card-preview-columns: 6;
     --card-preview-rows: 10;
     --card-preview-fps: 60;
+    --card-preview-border-radius: 6px;
     --card-border-radius: 12px;
     --card-drop-target-raise: -0.26;
     --card-info-spacing: 14px;
+    --card-info-color: white;
+    --card-info-end: 12px;
+    --card-info-slant: -18deg;
 }
 
 .card-shape {
@@ -42,7 +46,7 @@
     height: var(--card-preview-height);
     margin: var(--card-preview-margin);
     border-top: none;
-    border-radius: var(--card-border-radius);
+    border-radius: var(--card-preview-border-radius);
     background: linear-gradient(var(--card-color-background-light), var(--card-color-background-dark));
     overflow: hidden;
 }
@@ -52,29 +56,52 @@
     margin: var(--card-preview-margin);
 }
 
-.card .info p {
+.card .info .property {
     margin-top: calc(var(--card-info-spacing) / 4);
     margin-bottom: calc(var(--card-info-spacing) / 4);
-    padding: calc(var(--card-info-spacing) / 4);
     font-size: 20px;
     font-family: sans-serif;
-    background: linear-gradient(to right, transparent, white);
+    display: flex;
+    align-items: stretch;
 }
 
-.card .info p .label {
+.card .info .property .text {
+    background: linear-gradient(to right, transparent, var(--card-info-color));
+    padding: calc(var(--card-info-spacing) / 4);
+    flex-grow: 1;
+}
+
+.card .info .property .text .label {
     font-weight: bold;
 }
 
-.card .info p .label::after {
+.card .info .property .text .label::after {
     content: ":";
 }
 
-.card .info p .value {
+.card .info .property .text .value {
     float: right;
 }
 
-.card .info p .value::after {
+.card .info .property .text .value::after {
     font-style: italic;
+}
+
+.card .info .property .end {
+    width: calc(var(--card-info-end) + 1px);
+    flex-grow: 0;
+    overflow: hidden;
+    position: relative;
+    margin-left: -1px;
+}
+
+.card .info .property .end .slant {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform-origin: right top;
+    transform: skew(var(--card-info-slant));
+    background-color: var(--card-info-color);
 }
 
 @keyframes fish-preview-x {

@@ -23,6 +23,10 @@ Card.prototype.CLASS = "card-shape card";
 Card.prototype.CLASS_PREVIEW_FRAME = "preview-frame";
 Card.prototype.CLASS_PREVIEW_ANIMATION = "preview-animation";
 Card.prototype.CLASS_INFO = "info";
+Card.prototype.CLASS_INFO_PROPERTY = "property";
+Card.prototype.CLASS_INFO_TEXT = "text";
+Card.prototype.CLASS_INFO_END = "end";
+Card.prototype.CLASS_INFO_END_SLANT = "slant";
 Card.prototype.CLASS_INFO_LABEL = "label";
 Card.prototype.CLASS_INFO_VALUE = "value";
 Card.prototype.WIDTH = StyleUtils.getInt("--card-width");
@@ -224,10 +228,13 @@ Card.prototype.createPreviewFrame = function(previewAnimation) {
  * Create an element describing a fish property
  * @param {String} name The property name
  * @param {String} value The property value
- * @returns {HTMLParagraphElement} The property element
+ * @returns {HTMLElement} The property element
  */
 Card.prototype.createProperty = function(name, value) {
-    const element = document.createElement("p");
+    const element = document.createElement("div");
+    const text = document.createElement("div");
+    const end = document.createElement("div");
+    const slant = document.createElement("slant");
     const spanLabel = document.createElement("span");
     const spanValue = document.createElement("span");
 
@@ -237,8 +244,18 @@ Card.prototype.createProperty = function(name, value) {
     spanValue.className = this.CLASS_INFO_VALUE;
     spanValue.appendChild(document.createTextNode(value));
 
-    element.appendChild(spanLabel);
-    element.appendChild(spanValue);
+    text.className = this.CLASS_INFO_TEXT;
+    text.appendChild(spanLabel);
+    text.appendChild(spanValue);
+
+    slant.className = this.CLASS_INFO_END_SLANT;
+
+    end.className = this.CLASS_INFO_END;
+    end.appendChild(slant);
+
+    element.className = this.CLASS_INFO_PROPERTY;
+    element.appendChild(text);
+    element.appendChild(end);
 
     return element;
 };
