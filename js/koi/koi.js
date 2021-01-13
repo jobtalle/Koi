@@ -41,7 +41,6 @@ const Koi = function(
     this.air = null;
     this.constellationMeshWater = null;
     this.constellationMeshDepth = null;
-    this.randomSource = null;
     this.reflections = null;
     this.weather = null;
     this.weatherFilterChanged = false;
@@ -85,7 +84,7 @@ Koi.prototype.serialize = function(buffer) {
  */
 Koi.prototype.deserialize = function(buffer) {
     try {
-        this.constellation.deserialize(buffer, this.systems.atlas, this.randomSource);
+        this.constellation.deserialize(buffer, this.systems.atlas, this.systems.randomSource);
         this.spawner.setState(SpawnerState.deserialize(buffer));
         this.weather.setState(WeatherState.deserialize(buffer));
         this.mutations.deserialize(buffer);
@@ -139,7 +138,7 @@ Koi.prototype.onUnlock = function() {
  * Perform first time initialization
  */
 Koi.prototype.initialize = function() {
-    this.spawner.spawnInitial(this.systems.atlas, this.randomSource, this.random);
+    this.spawner.spawnInitial(this.systems.atlas, this.systems.randomSource, this.random);
 };
 
 /**
@@ -147,9 +146,6 @@ Koi.prototype.initialize = function() {
  */
 Koi.prototype.createRenderables = function() {
     const environmentRandomizer = new Random(this.environmentSeed);
-
-    // Create the random source
-    this.randomSource = new RandomSource(this.systems.gl, environmentRandomizer);
 
     // Create constellation meshes
     this.constellationMeshWater = this.constellation.makeMeshWater(this.systems.gl);
@@ -182,7 +178,7 @@ Koi.prototype.createRenderables = function() {
         this.systems.blit,
         this.systems.width,
         this.systems.height,
-        this.randomSource,
+        this.systems.randomSource,
         this.scale);
     this.foreground = new Foreground(
         this.systems.gl,
@@ -242,7 +238,6 @@ Koi.prototype.createRenderables = function() {
  * Free all renderable objects
  */
 Koi.prototype.freeRenderables = function() {
-    this.randomSource.free();
     this.shadowBuffer.free();
     this.background.free();
     this.foreground.free();
@@ -375,11 +370,11 @@ Koi.prototype.update = function() {
             this.tutorial = null;
     }
 
-    this.spawner.update(this.systems.atlas, this.weather.state, this.randomSource, this.random);
+    this.spawner.update(this.systems.atlas, this.weather.state, this.systems.randomSource, this.random);
     this.constellation.update(
         this.systems.atlas,
         this.systems.patterns,
-        this.randomSource,
+        this.systems.randomSource,
         !this.tutorial || this.tutorial.allowMutation ? this.mutations : null,
         this.tutorial ? this.tutorial.forceMutation : false,
         this.water,

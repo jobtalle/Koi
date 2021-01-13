@@ -218,7 +218,7 @@ Cards.prototype.convertToFish = function(x, y) {
 
         fish.moveTo(new Vector2(worldX * 2 - origin.x, worldY * 2 - origin.y));
 
-        this.koi.systems.atlas.write(this.grabbed.body.pattern, this.koi.randomSource);
+        this.koi.systems.atlas.write(this.grabbed.body.pattern, this.koi.systems.randomSource);
         this.koi.mover.pickUp(fish, worldX, worldY);
 
         return true;
@@ -361,7 +361,7 @@ Cards.prototype.registerCard = function(card, addToGUI = true, initialize = fals
             this.koi.systems.preview,
             this.koi.systems.atlas,
             this.koi.systems.bodies,
-            this.koi.randomSource);
+            this.koi.systems.randomSource);
 };
 
 /**

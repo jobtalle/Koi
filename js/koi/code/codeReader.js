@@ -108,9 +108,7 @@ CodeReader.prototype.read = function(atlas, randomSource) {
     let body = null;
 
     try {
-        console.log("Deserializing...");
         body = FishBody.deserialize(buffer, atlas, randomSource);
-        console.log(body);
     }
     catch (error) {
         return null;
