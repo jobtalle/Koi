@@ -574,7 +574,7 @@ FishBody.prototype.animateSpineLoop = function(
     const dx = xEnd - xStart;
     const dy = yEnd - yStart;
     const d = Math.sqrt(dx * dx + dy * dy);
-    const direction = Math.asin(dy / d);
+    const direction = -Math.atan2(dy, dx) + Math.PI;
     const shift = .5 * (d - (this.spine.length - 1) * this.spacing);
 
     this.spine[0].x = xStart + shift * dx / d;

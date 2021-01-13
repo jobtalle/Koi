@@ -11,6 +11,7 @@ Still.prototype = Object.create(ImageMaker.prototype);
 Still.prototype.RADIUS = 128;
 Still.prototype.UPSCALE = 1.5;
 Still.prototype.SCALE = 220 * Still.prototype.UPSCALE;
+Still.prototype.ANGLE = 0;
 
 /**
  * Render a fish still
@@ -29,10 +30,10 @@ Still.prototype.render = function(body, atlas, bodies) {
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
 
     body.renderLoop(
-        this.RADIUS * this.UPSCALE / this.SCALE,
-        (this.RADIUS << 1) * this.UPSCALE / this.SCALE,
-        this.RADIUS * this.UPSCALE / this.SCALE,
-        0,
+        (this.RADIUS + Math.cos(this.ANGLE) * this.RADIUS) * this.UPSCALE / this.SCALE,
+        (this.RADIUS + Math.sin(this.ANGLE) * this.RADIUS) * this.UPSCALE / this.SCALE,
+        (this.RADIUS - Math.cos(this.ANGLE) * this.RADIUS) * this.UPSCALE / this.SCALE,
+        (this.RADIUS - Math.sin(this.ANGLE) * this.RADIUS) * this.UPSCALE / this.SCALE,
         bodies,
         body.hash() / 0xFF);
     bodies.render(atlas, widthMeters, -heightMeters, false);
