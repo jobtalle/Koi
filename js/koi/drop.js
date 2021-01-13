@@ -10,7 +10,6 @@ const Drop = function(gui, systems, element, targetElement) {
     this.gui = gui;
     this.element = element;
     this.systems = systems;
-    // TODO: Disable while tutorials are active
 
     targetElement.addEventListener("dragenter", this.dragEnter.bind(this));
     targetElement.addEventListener("dragleave", this.dragLeave.bind(this));

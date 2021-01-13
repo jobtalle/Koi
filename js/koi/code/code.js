@@ -6,9 +6,10 @@ const Code = function() {
 
 };
 
-Code.prototype.RING_WIDTH = 10;
+Code.prototype.RING_WIDTH = 15;
 Code.prototype.RINGS = 4;
 Code.prototype.INNER_RADIUS = Still.prototype.RADIUS;
+Code.prototype.STEPS = Math.round(Math.PI * 2 * Code.prototype.INNER_RADIUS / Code.prototype.RING_WIDTH);
 Code.prototype.RADIUS = Code.prototype.RING_WIDTH * Code.prototype.RINGS + Code.prototype.INNER_RADIUS;
 Code.prototype.QUADBITS = [
     Color.fromCSS("--color-code-00"),
@@ -41,14 +42,25 @@ Code.prototype.iterate = function(onIteration) {
     for (let ring = 0; ring < this.RINGS; ++ring) {
         const radiusInner = this.INNER_RADIUS + ring * this.RING_WIDTH;
         const radiusOuter = this.INNER_RADIUS + (ring + 1) * this.RING_WIDTH;
-        const steps = Math.round(Math.PI * (radiusInner + radiusOuter) / this.RING_WIDTH);
-        const stepOffset = -.5 * (ring & 1);
+        const stepOffset = .5 * (ring & 1);
 
-        for (let step = 0; step < steps; ++step) {
-            const aStart = Math.PI * 2 * (step + stepOffset) / steps;
-            const aEnd = Math.PI * 2 * (step + stepOffset + 1) / steps;
+        for (let step = 0; step < this.STEPS; ++step) {
+            if (!onIteration(
+                iteration++,
+                radiusInner,
+                radiusOuter,
+                Math.PI * 2 * (step + stepOffset) / this.STEPS,
+                Math.PI * 2 * (step + stepOffset + 1) / this.STEPS,
+                true))
+                return;
 
-            if (!onIteration(iteration++, radiusInner, radiusOuter, aStart, aEnd))
+            if (!onIteration(
+                iteration++,
+                radiusInner,
+                radiusOuter,
+                Math.PI * 2 * (step + stepOffset + .5) / this.STEPS,
+                Math.PI * 2 * (step + stepOffset + 1.5) / this.STEPS,
+                false))
                 return;
         }
     }

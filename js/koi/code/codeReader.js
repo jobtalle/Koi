@@ -8,7 +8,7 @@ const CodeReader = function(image) {
 };
 
 CodeReader.prototype = Object.create(Code.prototype);
-CodeReader.prototype.TOLERANCE = .1;
+CodeReader.prototype.TOLERANCE = .2;
 
 /**
  * Make a canvas out of the source image
@@ -62,8 +62,8 @@ CodeReader.prototype.read = function() {
     const quadBits = [];
     let failure = false;
 
-    this.iterate((color, radiusInner, radiusOuter, aStart, aEnd) => {
-        const radius = .5 * (radiusInner + radiusOuter);
+    this.iterate((color, radiusInner, radiusOuter, aStart, aEnd, base) => {
+        const radius = (radiusInner + radiusOuter + (base ? radiusInner : radiusOuter)) / 3;
         const angle = .5 * (aStart + aEnd);
         const x = Math.round(this.RADIUS + Math.cos(angle) * radius);
         const y = Math.round(this.RADIUS + Math.sin(angle) * radius);

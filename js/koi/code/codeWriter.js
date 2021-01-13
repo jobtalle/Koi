@@ -87,22 +87,39 @@ CodeWriter.prototype.write = function() {
     context.arc(this.RADIUS, this.RADIUS, this.RADIUS, Math.PI * 2, 0, true);
     context.closePath();
     context.fill();
-    // TODO: Combine arcs to reduce breaks
-    this.iterate((color, radiusInner, radiusOuter, aStart, aEnd) => {
-        const fillColor = colors[color % colorCount];
 
+    let lastColor = 0;
+
+    // TODO: Combine arcs to reduce breaks
+    this.iterate((color, radiusInner, radiusOuter, aStart, aEnd, base) => {
+        const fillColor = colors[color % colorCount];
+        lastColor = color;
         if (fillColor === this.QUADBITS[0])
             return true;
 
         context.fillStyle = fillColor.toHex();
         context.beginPath();
-        context.arc(this.RADIUS, this.RADIUS, radiusInner, aStart, aEnd);
-        context.arc(this.RADIUS, this.RADIUS, radiusOuter, aEnd, aStart, true);
+
+        if (base) {
+            context.arc(this.RADIUS, this.RADIUS, radiusInner, aStart, aEnd);
+            context.lineTo(
+                this.RADIUS + Math.cos(.5 * (aStart + aEnd)) * radiusOuter,
+                this.RADIUS + Math.sin(.5 * (aStart + aEnd)) * radiusOuter);
+        }
+        else {
+            context.lineTo(
+                this.RADIUS + Math.cos(.5 * (aStart + aEnd)) * radiusInner,
+                this.RADIUS + Math.sin(.5 * (aStart + aEnd)) * radiusInner);
+            context.arc(this.RADIUS, this.RADIUS, radiusOuter, aEnd, aStart, true);
+        }
+
         context.closePath();
         context.fill();
 
         return true;
     });
+
+    console.log(colors.length + " of " + lastColor);
 
     return canvas;
 };
