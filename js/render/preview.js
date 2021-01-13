@@ -4,15 +4,10 @@
  * @constructor
  */
 const Preview = function(gl) {
-    this.gl = gl;
-    this.target = new RenderTarget(
-        gl,
-        this.PREVIEW_WIDTH * this.PREVIEW_COLUMNS,
-        this.PREVIEW_HEIGHT * this.PREVIEW_ROWS,
-        gl.RGBA,
-        false);
+    ImageMaker.call(this, gl, this.PREVIEW_WIDTH * this.PREVIEW_COLUMNS, this.PREVIEW_HEIGHT * this.PREVIEW_ROWS);
 };
 
+Preview.prototype = Object.create(ImageMaker.prototype);
 Preview.prototype.PREVIEW_WIDTH = StyleUtils.getInt("--card-preview-width");
 Preview.prototype.PREVIEW_HEIGHT = StyleUtils.getInt("--card-preview-height");
 Preview.prototype.PREVIEW_COLUMNS = StyleUtils.getInt("--card-preview-columns");
@@ -20,44 +15,17 @@ Preview.prototype.PREVIEW_ROWS = StyleUtils.getInt("--card-preview-rows");
 Preview.prototype.SCALE = 150;
 
 /**
- * Create a canvas from the render target
- * @returns {HTMLCanvasElement} The canvas
- */
-Preview.prototype.createCanvas = function() {
-    const pixels = new Uint8Array((this.target.width * this.target.height) << 2);
-    const canvas = document.createElement("canvas");
-    const context = canvas.getContext("2d");
-
-    canvas.width = this.target.width;
-    canvas.height = this.target.height;
-
-    this.gl.readPixels(0, 0, this.target.width, this.target.height, this.gl.RGBA, this.gl.UNSIGNED_BYTE, pixels);
-
-    const imageData = context.createImageData(canvas.width, canvas.height);
-
-    imageData.data.set(pixels);
-
-    context.putImageData(imageData, 0, 0);
-
-    return canvas;
-};
-
-/**
  * Render a fish preview to a canvas
  * @param {FishBody} body The fish body to render
  * @param {Atlas} atlas The atlas
  * @param {Bodies} bodies The bodies renderer
- * @param {RandomSource} [randomSource] A random source, if the pattern region can be null
  * @returns {HTMLCanvasElement} The canvas containing the preview
  */
-Preview.prototype.render = function(body, atlas, bodies, randomSource = null) {
+Preview.prototype.render = function(body, atlas, bodies) {
     const phaseShift = body.hash() / 0xFF;
     const widthMeters = this.target.width / this.SCALE;
     const heightMeters = this.target.height / this.SCALE;
     const frames = this.PREVIEW_COLUMNS * this.PREVIEW_ROWS;
-
-    if (!body.pattern.region)
-        atlas.write(body.pattern, randomSource);
 
     this.target.target();
 
@@ -86,7 +54,7 @@ Preview.prototype.render = function(body, atlas, bodies, randomSource = null) {
 
     this.gl.disable(this.gl.SCISSOR_TEST);
 
-    return this.createCanvas();
+    return this.toCanvas();
 };
 
 /**

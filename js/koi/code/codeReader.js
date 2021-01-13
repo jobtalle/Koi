@@ -8,7 +8,7 @@ const CodeReader = function(image) {
 };
 
 CodeReader.prototype = Object.create(Code.prototype);
-CodeReader.prototype.TOLERANCE = .15;
+CodeReader.prototype.TOLERANCE = .1;
 
 /**
  * Make a canvas out of the source image

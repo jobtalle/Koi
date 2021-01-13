@@ -28,6 +28,7 @@ const Systems = function(gl, random, width, height) {
     this.drops = new Drops(gl);
     this.flying = new Flying(gl);
     this.preview = new Preview(gl);
+    this.still = new Still(gl);
     this.randomSource = new RandomSource(gl, random);
 };
 
@@ -71,5 +72,6 @@ Systems.prototype.free = function() {
     this.drops.free();
     this.flying.free();
     this.preview.free();
+    this.still.free();
     this.randomSource.free();
 };

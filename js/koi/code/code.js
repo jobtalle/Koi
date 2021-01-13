@@ -8,7 +8,7 @@ const Code = function() {
 
 Code.prototype.RING_WIDTH = 10;
 Code.prototype.RINGS = 4;
-Code.prototype.INNER_RADIUS = 128;
+Code.prototype.INNER_RADIUS = Still.prototype.RADIUS;
 Code.prototype.RADIUS = Code.prototype.RING_WIDTH * Code.prototype.RINGS + Code.prototype.INNER_RADIUS;
 Code.prototype.QUADBITS = [
     Color.fromCSS("--color-code-00"),
