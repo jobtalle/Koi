@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href="css/book.css">
     <link rel="stylesheet" type="text/css" href="css/buttons.css">
     <link rel="stylesheet" type="text/css" href="css/overlay.css">
+    <link rel="stylesheet" type="text/css" href="css/drop.css">
     <meta charset="utf-8">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="viewport" content="width=device-width height=device-height initial-scale=0.5 user-scalable=no">
@@ -19,6 +20,7 @@
 <div id="wrapper">
     <canvas id="renderer"></canvas>
     <div id="gui"></div>
+    <div id="drop"></div>
     <div id="no-portrait">
         <div class="message">
             <p>Please switch to portrait mode</p>
@@ -31,7 +33,7 @@
             <div id="loader-bar-inner"></div>
         </div>
     </div>
-    <div id="logs" style="position: absolute; left:0; top:0; color:white;"></div>
+<!--    <div id="logs" style="position: absolute; left:0; top:0; color:white;"></div>-->
 <!--    <script>-->
 <!--        const olog = console.log;-->
 <!--        console.log = message => {-->
@@ -235,6 +237,9 @@
 <script src="js/koi/foreground/biome.js"></script>
 <script src="js/koi/foreground/foreground.js"></script>
 
+<script src="js/koi/code/codeReader.js"></script>
+<script src="js/koi/code/codeWriter.js"></script>
+
 <script src="js/koi/gui/svg.js"></script>
 <script src="js/koi/gui/gui.js"></script>
 
@@ -261,6 +266,8 @@
 <script src="js/koi/gui/cards/cardBook.js"></script>
 
 <script src="js/koi/gui/overlay/overlay.js"></script>
+
+<script src="js/koi/drop.js"></script>
 
 <script src="js/koi/pond.js"></script>
 <script src="js/koi/constellation.js"></script>

@@ -55,6 +55,7 @@ if (gl &&
         const tutorial = storage.get("tutorial") !== null;
         const wrapper = document.getElementById("wrapper");
         const gui = new GUI(document.getElementById("gui"));
+        const drop = new Drop(gui, document.getElementById("drop"), canvas);
         const sessionBuffer = tutorial ? storage.getBuffer("session") : null;
         const systems = new Systems(gl, new Random(session.environmentSeed), wrapper.clientWidth, wrapper.clientHeight);
         let lastDate = null;
