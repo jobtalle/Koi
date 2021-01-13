@@ -26,10 +26,19 @@ Drop.prototype.CLASS_POSSIBLE = "possible";
 Drop.prototype.IMAGE_TYPES = ["image/jpeg", "image/png"];
 
 /**
+ * Check whether dropping is possible
+ * @returns {Boolean} True if a target can be dropped
+ */
+Drop.prototype.canDrop = function() {
+    return this.gui.cards.koi && !this.gui.cards.koi.tutorial
+};
+
+/**
  * Enter the drag area
  */
 Drop.prototype.dragEnter = function() {
-    this.element.classList.add(this.CLASS_POSSIBLE);
+    if (this.canDrop())
+        this.element.classList.add(this.CLASS_POSSIBLE);
 };
 
 /**
@@ -46,14 +55,16 @@ Drop.prototype.dragLeave = function() {
 Drop.prototype.drop = function(event) {
     event.preventDefault();
 
-    for (const file of event.dataTransfer.files) {
-        if (this.gui.cards.hand.isFull())
-            break;
-
-        this.dropFile(file, new Vector2(event.clientX, event.clientY));
-    }
-
     this.dragLeave();
+
+    if (this.canDrop()) {
+        for (const file of event.dataTransfer.files) {
+            if (this.gui.cards.hand.isFull())
+                break;
+
+            this.dropFile(file, new Vector2(event.clientX, event.clientY));
+        }
+    }
 };
 
 /**
