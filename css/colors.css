@@ -39,4 +39,10 @@
     --color-bug-butterfly-blue-edge: #87abdb;
     --color-bug-butterfly-thunder: #4f4e56;
     --color-bug-butterfly-thunder-edge: #d64657;
+
+    /* Code colors */
+    --color-code-00: #212121;
+    --color-code-01: #454545;
+    --color-code-10: #aeaeae;
+    --color-code-11: #FFFFFF;
 }

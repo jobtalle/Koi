@@ -18,5 +18,5 @@
 #code .view {
     margin-left: auto;
     margin-right: auto;
-    border: 1px solid red;
+    pointer-events: auto;
 }

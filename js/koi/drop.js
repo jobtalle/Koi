@@ -1,13 +1,15 @@
 /**
  * The drop target
  * @param {GUI} gui The GUI
+ * @param {Systems} systems The systems
  * @param {HTMLElement} element The visual drop target element
  * @param {HTMLElement} targetElement The element to listen to drop events on
  * @constructor
  */
-const Drop = function(gui, element, targetElement) {
+const Drop = function(gui, systems, element, targetElement) {
     this.gui = gui;
     this.element = element;
+    this.systems = systems;
     // TODO: Disable while tutorials are active
 
     targetElement.addEventListener("dragenter", this.dragEnter.bind(this));
@@ -39,7 +41,7 @@ Drop.prototype.dragLeave = function() {
 
 /**
  * Drop something
- * @param event
+ * @param {Object} event The drop event
  */
 Drop.prototype.drop = function(event) {
     event.preventDefault();
@@ -48,7 +50,7 @@ Drop.prototype.drop = function(event) {
         if (this.gui.cards.hand.isFull())
             break;
 
-        this.dropFile(file);
+        this.dropFile(file, new Vector2(event.clientX, event.clientY));
     }
 
     this.dragLeave();
@@ -57,8 +59,9 @@ Drop.prototype.drop = function(event) {
 /**
  * Process a dropped file, turn it into a card if possible
  * @param {File} file A file
+ * @param {Vector2} target The position the file was dropped at
  */
-Drop.prototype.dropFile = function(file) {
+Drop.prototype.dropFile = function(file, target) {
     if (!this.IMAGE_TYPES.includes(file.type))
         return;
 
@@ -68,7 +71,13 @@ Drop.prototype.dropFile = function(file) {
         const image = new Image();
 
         image.onload = () => {
-            new CodeReader(image);
+            const body = new CodeReader(image).read(this.systems.atlas, this.systems.randomSource);
+
+            if (body) {
+                body.initializeSpine(new Vector2(), new Vector2(1, 0));
+
+                this.gui.cards.add(new Card(body, target, 0));
+            }
         };
 
         image.src = event.target.result;

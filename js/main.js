@@ -57,9 +57,9 @@ if (gl &&
         const gui = new GUI(
             document.getElementById("gui"),
             new CodeViewer(document.getElementById("code")));
-        const drop = new Drop(gui, document.getElementById("drop"), canvas);
+        const systems = new Systems(gl, new Random(2893), wrapper.clientWidth, wrapper.clientHeight);
+        const drop = new Drop(gui, systems, document.getElementById("drop"), canvas);
         const sessionBuffer = tutorial ? storage.getBuffer("session") : null;
-        const systems = new Systems(gl, new Random(session.environmentSeed), wrapper.clientWidth, wrapper.clientHeight);
         let lastDate = null;
         let koi = null;
         let loaded = true;

@@ -23,6 +23,7 @@ CodeViewer.prototype.createView = function(image) {
 
     element.className = this.CLASS_VIEW;
     element.appendChild(image);
+    element.addEventListener("mousedown", event => event.stopImmediatePropagation());
 
     return element;
 };

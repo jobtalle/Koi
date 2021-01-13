@@ -307,7 +307,7 @@ Card.prototype.createInfo = function() {
 Card.prototype.createDownload = function() {
     const button = document.createElement("button");
 
-    button.innerText = "Download";
+    button.innerText = "Code";
     button.addEventListener("mousedown", event => {
         event.stopImmediatePropagation();
     });

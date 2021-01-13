@@ -28,6 +28,7 @@ const Systems = function(gl, random, width, height) {
     this.drops = new Drops(gl);
     this.flying = new Flying(gl);
     this.preview = new Preview(gl);
+    this.randomSource = new RandomSource(gl, random);
 };
 
 /**
