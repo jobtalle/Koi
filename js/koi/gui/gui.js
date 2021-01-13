@@ -1,9 +1,10 @@
 /**
  * The HTML gui
  * @param {HTMLElement} element The root element for the GUI
+ * @param {CodeViewer} codeViewer The code viewer
  * @constructor
  */
-const GUI = function(element) {
+const GUI = function(element, codeViewer) {
     const elementCards = document.createElement("div");
     const elementOverlay = document.createElement("div");
 
@@ -13,7 +14,7 @@ const GUI = function(element) {
     element.appendChild(elementCards);
     element.appendChild(elementOverlay);
 
-    this.cards = new Cards(elementCards);
+    this.cards = new Cards(elementCards, codeViewer);
     this.overlay = new Overlay(elementOverlay);
 };
 

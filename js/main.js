@@ -54,7 +54,9 @@ if (gl &&
         const storage = window["require"] ? new StorageFile() : new StorageLocal();
         const tutorial = storage.get("tutorial") !== null;
         const wrapper = document.getElementById("wrapper");
-        const gui = new GUI(document.getElementById("gui"));
+        const gui = new GUI(
+            document.getElementById("gui"),
+            new CodeViewer(document.getElementById("code")));
         const drop = new Drop(gui, document.getElementById("drop"), canvas);
         const sessionBuffer = tutorial ? storage.getBuffer("session") : null;
         const systems = new Systems(gl, new Random(session.environmentSeed), wrapper.clientWidth, wrapper.clientHeight);

@@ -15,6 +15,7 @@ const Card = function(body, position, angle = 0) {
     this.previewURL = null;
     this.element = this.createElement(this.previewFrame);
     this.initialized = false;
+    this.codeViewer = null;
 
     this.updatePosition();
 };
@@ -60,6 +61,14 @@ Card.deserialize = function(buffer, position = new Vector2(), angle = 0) {
  */
 Card.prototype.serialize = function(buffer) {
     this.body.serialize(buffer);
+};
+
+/**
+ * Set the code viewer
+ * @param {CodeViewer} codeViewer The code viewer
+ */
+Card.prototype.setCodeViewer = function(codeViewer) {
+    this.codeViewer = codeViewer;
 };
 
 /**
@@ -304,7 +313,7 @@ Card.prototype.createDownload = function() {
     });
 
     button.onclick = () => {
-        new CodeWriter(this.body).write();
+        this.codeViewer.view(new CodeWriter(this.body).write());
     };
 
     return button;

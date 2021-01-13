@@ -11,11 +11,12 @@ CodeWriter.prototype = Object.create(Code.prototype);
 
 /**
  * Write
+ * @returns {HTMLCanvasElement} A canvas containing the code
  */
 CodeWriter.prototype.write = function() {
     const canvas = document.createElement("canvas");
 
     canvas.width = canvas.height = this.RADIUS << 1;
 
-    console.log(canvas);
+    return canvas;
 };

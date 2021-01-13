@@ -1,10 +1,12 @@
 /**
  * The cards visible on the GUI
  * @param {HTMLDivElement} element The root element for the GUI
+ * @param {CodeViewer} codeViewer The code viewer
  * @constructor
  */
-const Cards = function(element) {
+const Cards = function(element, codeViewer) {
     this.element = element;
+    this.codeViewer = codeViewer;
     this.dropTarget = this.createDropTarget();
     this.buttonBook = new CardBookButton(this.toggleBook.bind(this));
     this.book = new CardBook(element.clientWidth, element.clientHeight, this, () => {
@@ -324,6 +326,8 @@ Cards.prototype.release = function() {
  * @param {Boolean} [initialize] True if the card must be initialized
  */
 Cards.prototype.registerCard = function(card, addToGUI = true, initialize = false) {
+    card.setCodeViewer(this.codeViewer);
+
     card.element.addEventListener("mousedown", event => {
         if (event.button === 0)
             this.grabCard(
