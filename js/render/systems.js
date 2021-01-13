@@ -71,4 +71,5 @@ Systems.prototype.free = function() {
     this.drops.free();
     this.flying.free();
     this.preview.free();
+    this.randomSource.free();
 };

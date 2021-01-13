@@ -115,11 +115,8 @@ Card.prototype.initialize = function(
             requirement.satisfy();
     });
 
-    if (createdTexture) {
-        atlas.returnRegion(this.body.pattern.region);
-
-        this.body.pattern.region = null;
-    }
+    if (createdTexture)
+        this.body.pattern.free(atlas);
 };
 
 /**

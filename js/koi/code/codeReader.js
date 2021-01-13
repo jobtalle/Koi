@@ -56,11 +56,9 @@ CodeReader.prototype.createBuffer = function(quadBits) {
 
 /**
  * Read
- * @param {Atlas} atlas The atlas
- * @param {RandomSource} randomSource A random source
  * @returns {FishBody|null} A fish body, or null if deserialization failed
  */
-CodeReader.prototype.read = function(atlas, randomSource) {
+CodeReader.prototype.read = function() {
     const quadBits = [];
     let failure = false;
 
@@ -108,7 +106,7 @@ CodeReader.prototype.read = function(atlas, randomSource) {
     let body = null;
 
     try {
-        body = FishBody.deserialize(buffer, atlas, randomSource);
+        body = FishBody.deserialize(buffer);
     }
     catch (error) {
         return null;

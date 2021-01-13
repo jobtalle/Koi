@@ -82,12 +82,20 @@ Drop.prototype.dropFile = function(file, target) {
         const image = new Image();
 
         image.onload = () => {
-            const body = new CodeReader(image).read(this.systems.atlas, this.systems.randomSource);
+            const body = new CodeReader(image).read();
 
             if (body) {
                 body.initializeSpine(new Vector2(), new Vector2(1, 0));
 
-                this.gui.cards.add(new Card(body, target, 0));
+                const card = new Card(body, target, 0);
+
+                card.initialize(
+                    this.systems.preview,
+                    this.systems.atlas,
+                    this.systems.bodies,
+                    this.systems.randomSource);
+
+                this.gui.cards.add(card);
             }
         };
 
