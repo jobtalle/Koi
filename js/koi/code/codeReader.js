@@ -16,18 +16,22 @@ CodeReader.prototype.TOLERANCE = .2;
  * @returns {ImageData|null} The image pixels, or null if the image was invalid
  */
 CodeReader.prototype.getPixels = function(image) {
-    if (image.width !== image.height || image.width !== this.RADIUS << 1)
+    if (image.width !== image.height)
         return null;
 
+    const scale = (this.RADIUS << 1) / image.width;
     const canvas = document.createElement("canvas");
     const context = canvas.getContext("2d");
 
-    canvas.width = image.width;
-    canvas.height = image.height;
+    canvas.width = this.RADIUS << 1;
+    canvas.height = this.RADIUS << 1;
 
-    context.drawImage(image, 0, 0, image.width, image.height);
+    context.save();
+    context.scale(scale, scale);
+    context.drawImage(image, 0, 0);
+    context.restore();
 
-    return context.getImageData(0, 0, image.width, image.height);
+    return context.getImageData(0, 0, canvas.width, canvas.height);
 };
 
 /**

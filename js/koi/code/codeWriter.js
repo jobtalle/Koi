@@ -88,12 +88,10 @@ CodeWriter.prototype.write = function() {
     context.closePath();
     context.fill();
 
-    let lastColor = 0;
-
     // TODO: Combine arcs to reduce breaks
     this.iterate((color, radiusInner, radiusOuter, aStart, aEnd, base) => {
         const fillColor = colors[color % colorCount];
-        lastColor = color;
+
         if (fillColor === this.QUADBITS[0])
             return true;
 
@@ -118,8 +116,6 @@ CodeWriter.prototype.write = function() {
 
         return true;
     });
-
-    console.log(colors.length + " of " + lastColor);
 
     return canvas;
 };
