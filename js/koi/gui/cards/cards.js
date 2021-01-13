@@ -327,6 +327,7 @@ Cards.prototype.release = function() {
  */
 Cards.prototype.registerCard = function(card, addToGUI = true, initialize = false) {
     card.setCodeViewer(this.codeViewer);
+    card.setSystems(this.koi.systems);
 
     card.element.addEventListener("mousedown", event => {
         if (event.button === 0)

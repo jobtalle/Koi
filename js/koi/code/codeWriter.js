@@ -1,10 +1,19 @@
 /**
  * A code writer
  * @param {FishBody} body A fish body to encode
+ * @param {Still} still The still icon renderer
+ * @param {Atlas} atlas The atlas
+ * @param {Bodies} bodies The bodies renderer
+ * @param {RandomSource} randomSource The random source
  * @constructor
  */
-const CodeWriter = function(body) {
+const CodeWriter = function(body, still, atlas, bodies, randomSource) {
+    atlas.write(body.pattern, randomSource);
+
+    this.icon = still.render(body, atlas, bodies);
     this.bytes = this.toBytes(body);
+
+    body.pattern.free(atlas);
 };
 
 CodeWriter.prototype = Object.create(Code.prototype);
@@ -63,7 +72,12 @@ CodeWriter.prototype.write = function() {
 
     canvas.width = canvas.height = this.RADIUS << 1;
 
-    context.imageSmoothingEnabled = false;
+    context.save();
+    context.beginPath();
+    context.arc(this.RADIUS, this.RADIUS, .5 * (this.INNER_RADIUS + this.RADIUS), 0, Math.PI * 2);
+    context.clip();
+    context.drawImage(this.icon, this.RADIUS - this.INNER_RADIUS, this.RADIUS - this.INNER_RADIUS);
+    context.restore();
 
     context.fillStyle = this.QUADBITS[0].toHex();
     context.beginPath();

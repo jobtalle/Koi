@@ -16,6 +16,7 @@ const Card = function(body, position, angle = 0) {
     this.element = this.createElement(this.previewFrame);
     this.initialized = false;
     this.codeViewer = null;
+    this.systems = null;
 
     this.updatePosition();
 };
@@ -69,6 +70,14 @@ Card.prototype.serialize = function(buffer) {
  */
 Card.prototype.setCodeViewer = function(codeViewer) {
     this.codeViewer = codeViewer;
+};
+
+/**
+ * Set the systems
+ * @param {Systems} systems The render systems
+ */
+Card.prototype.setSystems = function(systems) {
+    this.systems = systems;
 };
 
 /**
@@ -310,7 +319,12 @@ Card.prototype.createDownload = function() {
     });
 
     button.onclick = () => {
-        this.codeViewer.view(new CodeWriter(this.body).write());
+        this.codeViewer.view(new CodeWriter(
+            this.body,
+            this.systems.still,
+            this.systems.atlas,
+            this.systems.bodies,
+            this.systems.randomSource).write());
     };
 
     return button;

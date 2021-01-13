@@ -9,7 +9,7 @@ const Still = function(gl) {
 
 Still.prototype = Object.create(ImageMaker.prototype);
 Still.prototype.RADIUS = 128;
-Still.prototype.SCALE = 200;
+Still.prototype.SCALE = 220;
 
 /**
  * Render a fish still
@@ -24,11 +24,19 @@ Still.prototype.render = function(body, atlas, bodies) {
 
     this.target.target();
 
-    this.gl.clearColor(1, 1, 1, 1);
+    this.gl.clearColor(.1, .1, .1, 1);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
 
-    body.renderLoop(this.RADIUS, this.RADIUS << 1, this.RADIUS, 0, bodies, 0);
+    body.renderLoop(
+        this.RADIUS / this.SCALE,
+        (this.RADIUS << 1) / this.SCALE,
+        this.RADIUS / this.SCALE,
+        0,
+        bodies,
+        body.hash() / 0xFF);
     bodies.render(atlas, widthMeters, -heightMeters, false);
+
+    return this.toCanvas();
 };
 
 /**
