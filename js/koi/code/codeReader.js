@@ -7,6 +7,8 @@ const CodeReader = function(image) {
     this.image = image;
 };
 
+CodeReader.prototype = Object.create(Code.prototype);
+
 /**
  * Read
  * @returns {FishBody}

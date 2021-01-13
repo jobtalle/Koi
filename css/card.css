@@ -54,6 +54,7 @@
 .card .info {
     width: calc(100% - 2 * var(--card-preview-margin));
     margin: var(--card-preview-margin);
+    margin-bottom: 0;
 }
 
 .card .info .property {
@@ -90,6 +91,15 @@
     background: linear-gradient(to right, transparent, var(--card-info-color));
     transform: skew(var(--card-info-slant));
     z-index: -1;
+}
+
+.card button {
+    width: 100%;
+    pointer-events: auto;
+}
+
+.card button:hover {
+    background-color: white;
 }
 
 @keyframes fish-preview-x {

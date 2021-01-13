@@ -292,6 +292,25 @@ Card.prototype.createInfo = function() {
 };
 
 /**
+ * Create the download button
+ * @returns {HTMLButtonElement} The download button
+ */
+Card.prototype.createDownload = function() {
+    const button = document.createElement("button");
+
+    button.innerText = "Download";
+    button.addEventListener("mousedown", event => {
+        event.stopImmediatePropagation();
+    });
+
+    button.onclick = () => {
+        new CodeWriter(this.body).write();
+    };
+
+    return button;
+};
+
+/**
  * Create an HTML element for this card
  * @param {HTMLElement} previewFrame The preview frame element
  * @returns {HTMLElement} The card element
@@ -302,6 +321,7 @@ Card.prototype.createElement = function(previewFrame) {
     element.className = this.CLASS;
     element.appendChild(previewFrame);
     element.appendChild(this.createInfo());
+    element.appendChild(this.createDownload());
 
     return element;
 };
