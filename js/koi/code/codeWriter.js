@@ -76,7 +76,9 @@ CodeWriter.prototype.write = function() {
     context.beginPath();
     context.arc(this.RADIUS, this.RADIUS, .5 * (this.INNER_RADIUS + this.RADIUS), 0, Math.PI * 2);
     context.clip();
-    context.drawImage(this.icon, this.RADIUS - this.INNER_RADIUS, this.RADIUS - this.INNER_RADIUS);
+    context.translate(this.RADIUS - this.INNER_RADIUS, this.RADIUS - this.INNER_RADIUS);
+    context.scale(1 / Still.prototype.UPSCALE, 1 / Still.prototype.UPSCALE);
+    context.drawImage(this.icon, 0, 0);
     context.restore();
 
     context.fillStyle = this.QUADBITS[0].toHex();
