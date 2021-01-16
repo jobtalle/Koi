@@ -71,7 +71,7 @@ TutorialBreeding.prototype.targetRiverFish = function(constellation) {
         (constellation.width * constellation.width + constellation.height * constellation.height);
     let nearest = null;
 
-    for (const fish of constellation.river.fishes) {
+    for (const fish of constellation.river.fish) {
         const position = fish.body.getOffspringPosition();
 
         if (position.x < this.FISH_SELECT_THRESHOLD ||
@@ -143,7 +143,7 @@ TutorialBreeding.prototype.update = function(koi) {
             break;
         case this.PHASE_DROP_FISH:
             if (!koi.mover.move) {
-                if (koi.constellation.small.fishes.length === 0) {
+                if (koi.constellation.small.fish.length === 0) {
                     this.overlay.setText(language.get(this.LANG_TO_POND_1));
 
                     this.pointToSmallPond(koi);
@@ -157,7 +157,7 @@ TutorialBreeding.prototype.update = function(koi) {
 
             break;
         case this.PHASE_TO_POND_1:
-            if (koi.constellation.small.fishes.length === 1) {
+            if (koi.constellation.small.fish.length === 1) {
                 this.overlay.setText(language.get(this.LANG_TO_POND_2));
                 this.overlay.deleteArrow();
 
@@ -166,11 +166,11 @@ TutorialBreeding.prototype.update = function(koi) {
 
             break;
         case this.PHASE_TO_POND_2:
-            if (koi.constellation.small.fishes.length === 2) {
+            if (koi.constellation.small.fish.length === 2) {
                 this.overlay.setText(language.get(this.LANG_BREED_WAIT));
                 this.phase = this.PHASE_BREED_WAIT;
             }
-            else if (koi.constellation.small.fishes.length === 0) {
+            else if (koi.constellation.small.fish.length === 0) {
                 this.pointToSmallPond(koi);
 
                 this.overlay.setText(language.get(this.LANG_TO_POND_1));
@@ -189,18 +189,18 @@ TutorialBreeding.prototype.update = function(koi) {
                 break;
             }
 
-            if (koi.constellation.small.fishes.length > 2) {
+            if (koi.constellation.small.fish.length > 2) {
                 this.overlay.setText(language.get(this.LANG_BREED_TOO_MANY));
                 this.phase = this.PHASE_BREED_TOO_MANY;
             }
-            else if (koi.constellation.small.fishes.length < 2) {
+            else if (koi.constellation.small.fish.length < 2) {
                 this.overlay.setText(language.get(this.LANG_TO_POND_2));
                 this.phase = this.PHASE_TO_POND_2;
             }
 
             break;
         case this.PHASE_BREED_TOO_MANY:
-            if (koi.constellation.small.fishes.length === 2) {
+            if (koi.constellation.small.fish.length === 2) {
                 this.overlay.setText(language.get(this.LANG_BREED_WAIT));
                 this.phase = this.PHASE_BREED_WAIT;
             }
