@@ -3,7 +3,7 @@
  * @constructor
  */
 const StorageFile = function() {
-
+    StorageSystem.call(this);
 };
 
 StorageFile.prototype = Object.create(StorageSystem.prototype);

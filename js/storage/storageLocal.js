@@ -3,7 +3,7 @@
  * @constructor
  */
 const StorageLocal = function() {
-
+    StorageSystem.call(this);
 };
 
 StorageLocal.prototype = Object.create(StorageSystem.prototype);
