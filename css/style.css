@@ -1,14 +1,3 @@
-@font-face {
-    font-family: "Grandstander";
-    src: url("../font/Grandstander.ttf");
-}
-
-@font-face {
-    font-family: "Grandstander";
-    src: url("../font/GrandstanderItalic.ttf");
-    font-style: italic;
-}
-
 body {
     margin: 0;
     font-family: Grandstander;
