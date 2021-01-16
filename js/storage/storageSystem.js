@@ -64,3 +64,12 @@ StorageSystem.prototype.imageToClipboard = function(blob) {
         })
     ]);
 };
+
+/**
+ * Save an image
+ * @param {Blob} blob The image blob data
+ * @param {String} name The file name
+ */
+StorageSystem.prototype.imageToFile = function(blob, name) {
+
+};

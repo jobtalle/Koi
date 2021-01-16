@@ -14,6 +14,7 @@ const CodeViewer = function(element, storage) {
 
 CodeViewer.prototype.CLASS_VIEW = "view";
 CodeViewer.prototype.CLASS_ACTIVE = "active";
+CodeViewer.prototype.DEFAULT_NAME = "koi.png";
 
 /**
  * Create the copy button
@@ -24,10 +25,32 @@ CodeViewer.prototype.createButtonCopy = function(image) {
     const button = document.createElement("button");
 
     button.innerText = "Copy";
-    button.onclick = () => image.toBlob(blob => this.storage.imageToClipboard(blob));
+    button.onclick = () => {
+        image.toBlob(blob => this.storage.imageToClipboard(blob));
+
+        this.hide();
+    };
 
     return button;
 };
+
+/**
+ * Create the download button
+ * @param {HTMLCanvasElement} image The fish code image
+ * @returns {HTMLButtonElement} The download button
+ */
+CodeViewer.prototype.createButtonDownload = function(image) {
+    const button = document.createElement("button");
+
+    button.innerText = "Download";
+    button.onclick = () => {
+        image.toBlob(blob => this.storage.imageToFile(blob, this.DEFAULT_NAME));
+
+        this.hide();
+    };
+
+    return button;
+}
 
 /**
  * Create a view
@@ -39,6 +62,7 @@ CodeViewer.prototype.createView = function(image) {
 
     element.className = this.CLASS_VIEW;
     element.appendChild(image);
+    element.appendChild(this.createButtonDownload(image));
 
     if (this.storage.hasClipboard)
         element.appendChild(this.createButtonCopy(image));

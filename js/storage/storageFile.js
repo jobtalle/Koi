@@ -11,6 +11,7 @@ StorageFile.prototype.EXTENSION = ".sav";
 StorageFile.prototype.DIRECTORY = "save/";
 
 if (window["require"]) {
+    const electron = window["require"]("electron");
     const url = window["require"]("url");
     const fs = window["require"]("fs");
 
@@ -21,6 +22,11 @@ if (window["require"]) {
 
     const fileExists = name => {
         return fs["existsSync"](name);
+    };
+
+    const pngFilter = {
+        "name": "PNG Image",
+        "extensions": ["png"]
     };
 
     StorageFile.prototype.set = function (key, value) {
@@ -70,5 +76,23 @@ if (window["require"]) {
 
         if (fileExists(file))
             fs["unlinkSync"](url["pathToFileURL"](file));
+    };
+
+    StorageFile.prototype.imageToFile = function(blob, name) {
+        electron["remote"]["dialog"]["showSaveDialog"](
+            null,
+            {
+                filters: [pngFilter]
+            }).then(result => {
+            if (!result["canceled"]) {
+                const reader = new FileReader();
+
+                reader.addEventListener("loadend", () => {
+                    fs["writeFileSync"](url["pathToFileURL"](result["filePath"]), new Uint8Array(reader.result));
+                });
+
+                reader.readAsArrayBuffer(blob);
+            }
+        });
     };
 }
