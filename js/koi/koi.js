@@ -104,13 +104,13 @@ Koi.prototype.deserialize = function(buffer) {
  * @param {Function} f A callback function to call for every fish body
  */
 Koi.prototype.forEveryFishBody = function(f) {
-    for (const fish of this.constellation.small.fishes)
+    for (const fish of this.constellation.small.fish)
         f(fish.body);
 
-    for (const fish of this.constellation.river.fishes)
+    for (const fish of this.constellation.river.fish)
         f(fish.body);
 
-    for (const fish of this.constellation.big.fishes)
+    for (const fish of this.constellation.big.fish)
         f(fish.body);
 
     for (const card of this.gui.cards.cards)
