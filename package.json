@@ -1,6 +1,8 @@
 {
   "name": "koifarm",
   "version": "1.0.0",
+  "author": "Job Talle",
+  "description": "A Koi breeding game",
   "main": "window.js",
   "devDependencies": {
     "electron": "^11.2.0",
