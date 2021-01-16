@@ -21,6 +21,7 @@
     --card-info-color: white;
     --card-info-slant: -18deg;
     --card-info-padding-right: 6px;
+    --card-info-text-color: #0c0c0c;
 }
 
 .card-shape {
@@ -66,6 +67,7 @@
 
 .card .info .property .text {
     padding: calc(var(--card-info-spacing) / 4);
+    color: var(--card-info-text-color);
 }
 
 .card .info .property .text .label {

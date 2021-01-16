@@ -1,3 +1,10 @@
+:root {
+    --code-button-color: var(--color-code-10);
+    --code-button-padding: 32px;
+    --code-button-margin: 20px;
+    --code-button-radius: var(--card-border-radius);
+}
+
 #code {
     position: absolute;
     left: 0;
@@ -19,4 +26,19 @@
     margin-left: auto;
     margin-right: auto;
     pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#code .view button {
+    width: auto;
+    background-color: var(--code-button-color);
+    padding: var(--code-button-padding);
+    margin-top: var(--code-button-margin);
+    border-radius: var(--code-button-radius);
+}
+
+#code .view button:active {
+    background-color: white;
 }

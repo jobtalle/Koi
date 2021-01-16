@@ -42,7 +42,7 @@
 
     /* Code colors */
     --color-code-00: #fdd373;
-    --color-code-01: #eaa247;
-    --color-code-10: #cd6142;
-    --color-code-11: #db3030;
+    --color-code-01: var(--color-fish-gold);
+    --color-code-10: var(--color-fish-orange);
+    --color-code-11: var(--color-fish-red);
 }
