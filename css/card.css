@@ -61,7 +61,6 @@
     margin-top: calc(var(--card-info-spacing) / 4);
     margin-bottom: calc(var(--card-info-spacing) / 4);
     font-size: 20px;
-    font-family: sans-serif;
     position: relative;
 }
 
