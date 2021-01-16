@@ -11,7 +11,7 @@ const Pond = function(constraint, onBreed, onMutate, canBreed = true) {
     this.onBreed = onBreed;
     this.onMutate = onMutate;
     this.canBreed = canBreed;
-    this.fishes = [];
+    this.fishes = []; // TODO: Rename to fish
 };
 
 Pond.prototype.CHASE_RADIUS = 1;

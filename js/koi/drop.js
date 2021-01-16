@@ -84,17 +84,33 @@ Drop.prototype.dropFile = function(file, target) {
             const body = new CodeReader(image).read();
 
             if (body) {
-                body.initializeSpine(new Vector2(), new Vector2(1, 0));
+                const buffer = new BinBuffer();
+                let unique = true;
 
-                const card = new Card(body, target, 0);
+                body.pattern.serialize(buffer);
 
-                card.initialize(
-                    this.systems.preview,
-                    this.systems.atlas,
-                    this.systems.bodies,
-                    this.systems.randomSource);
+                this.gui.cards.koi.forEveryFishBody(body => {
+                    const tBuffer = new BinBuffer();
 
-                this.gui.cards.add(card);
+                    body.pattern.serialize(tBuffer);
+
+                    if (tBuffer.equalTo(buffer))
+                        unique = false;
+                });
+
+                if (unique) {
+                    body.initializeSpine(new Vector2(), new Vector2(1, 0));
+
+                    const card = new Card(body, target, 0);
+
+                    card.initialize(
+                        this.systems.preview,
+                        this.systems.atlas,
+                        this.systems.bodies,
+                        this.systems.randomSource);
+
+                    this.gui.cards.add(card);
+                }
             }
         };
 

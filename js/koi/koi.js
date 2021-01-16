@@ -100,6 +100,24 @@ Koi.prototype.deserialize = function(buffer) {
 };
 
 /**
+ * Iterate over every fish body in the game
+ * @param {Function} f A callback function to call for every fish body
+ */
+Koi.prototype.forEveryFishBody = function(f) {
+    for (const fish of this.constellation.small.fishes)
+        f(fish.body);
+
+    for (const fish of this.constellation.river.fishes)
+        f(fish.body);
+
+    for (const fish of this.constellation.big.fishes)
+        f(fish.body);
+
+    for (const card of this.gui.cards.cards)
+        f(card.body);
+};
+
+/**
  * A function that is called after breeding takes place
  * @param {Pond} pond The pond where the breeding took place
  * @param {Boolean} mutated True if a mutation occurred
