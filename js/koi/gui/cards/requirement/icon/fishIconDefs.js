@@ -44,14 +44,6 @@ FishIconDefs.prototype.RIDGE_B = new Vector2(.25, .82);
 FishIconDefs.prototype.RIDGE_SPACING = 5;
 FishIconDefs.prototype.RIDGE_MAX_SHRINK = .75;
 FishIconDefs.prototype.STRIPE_CURVE_ANGLE = new Sampler(Math.PI * .3, Math.PI * .7);
-FishIconDefs.prototype.CLASSES_COLOR = [
-    "white",
-    "black",
-    "gold",
-    "orange",
-    "red",
-    "brown"
-];
 
 /**
  * Create a quadratic bezier path
@@ -223,7 +215,7 @@ FishIconDefs.prototype.makePatternsBase = function(defs) {
         const element = SVG.createRect(0, 0, this.WIDTH, this.HEIGHT);
 
         SVG.setId(pattern, this.ID_BASE + paletteIndex.toString());
-        SVG.setClass(pattern, this.CLASSES_COLOR[paletteIndex]);
+        SVG.setClass(pattern, Palette.COLOR_NAMES[paletteIndex]);
 
         pattern.appendChild(element);
         defs.appendChild(pattern);
@@ -244,7 +236,7 @@ FishIconDefs.prototype.makePatternsSpotsLayer = function(defs, id, spots, random
         const pattern = SVG.createPattern();
 
         SVG.setId(pattern, id + paletteIndex.toString());
-        SVG.setClass(pattern, this.CLASSES_COLOR[paletteIndex]);
+        SVG.setClass(pattern, Palette.COLOR_NAMES[paletteIndex]);
 
         for (const spot of spots)
             pattern.appendChild(
@@ -279,7 +271,7 @@ FishIconDefs.prototype.makePatternsStripesLayer = function(defs, id, stripes, ra
         const pattern = SVG.createPattern();
 
         SVG.setId(pattern, id + paletteIndex.toString());
-        SVG.setClass(pattern, this.CLASSES_COLOR[paletteIndex]);
+        SVG.setClass(pattern, Palette.COLOR_NAMES[paletteIndex]);
 
         for (const stripe of stripes)
             pattern.appendChild(this.createStripe(
@@ -329,7 +321,7 @@ FishIconDefs.prototype.makePatternsRidgeLayer = function(defs, id, ridge, random
         }
 
         SVG.setId(pattern, id + paletteIndex.toString());
-        SVG.setClass(pattern, this.CLASSES_COLOR[paletteIndex]);
+        SVG.setClass(pattern, Palette.COLOR_NAMES[paletteIndex]);
 
         pattern.appendChild(this.createQuadraticBezierPath(pathPoints));
 

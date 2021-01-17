@@ -24,6 +24,10 @@ const Card = function(body, position, angle = 0) {
 Card.prototype.CLASS = "card-shape card";
 Card.prototype.CLASS_PREVIEW_FRAME = "preview-frame";
 Card.prototype.CLASS_PREVIEW_ANIMATION = "preview-animation";
+Card.prototype.CLASS_COLORS = "colors";
+Card.prototype.CLASS_COLOR = "color";
+Card.prototype.CLASS_COLORS_WRAPPER = "colors-wrapper";
+Card.prototype.CLASS_COLOR_FILL = "fill-";
 Card.prototype.CLASS_INFO = "info";
 Card.prototype.CLASS_INFO_PROPERTY = "property";
 Card.prototype.CLASS_INFO_TEXT = "text";
@@ -271,6 +275,40 @@ Card.prototype.createProperty = function(name, value) {
 };
 
 /**
+ * Create a color element
+ * @param {Number} paletteIndex The palette index for this color
+ * @returns {HTMLDivElement} The color element
+ */
+Card.prototype.createColor = function(paletteIndex) {
+    const element = document.createElement("div");
+
+    element.className = this.CLASS_COLOR;
+    element.classList.add(this.CLASS_COLOR_FILL + Palette.COLOR_NAMES[paletteIndex]);
+
+    return element;
+}
+
+/**
+ * Create the colors element
+ * @returns {HTMLDivElement} The colors element
+ */
+Card.prototype.createColors = function() {
+    const element = document.createElement("div");
+    const colorsWrapper = document.createElement("div");
+
+    colorsWrapper.className = this.CLASS_COLORS_WRAPPER;
+    colorsWrapper.appendChild(this.createColor(this.body.pattern.base.paletteIndex));
+
+    for (const layer of this.body.pattern.layers)
+        colorsWrapper.appendChild(this.createColor(layer.paletteIndex));
+
+    element.className = this.CLASS_COLORS;
+    element.appendChild(colorsWrapper);
+
+    return element;
+};
+
+/**
  * Create the info element
  * @returns {HTMLDivElement} The info element
  */
@@ -340,6 +378,7 @@ Card.prototype.createElement = function(previewFrame) {
 
     element.className = this.CLASS;
     element.appendChild(previewFrame);
+    element.appendChild(this.createColors());
     element.appendChild(this.createInfo());
     element.appendChild(this.createDownload());
 

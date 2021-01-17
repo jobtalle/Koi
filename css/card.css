@@ -17,6 +17,10 @@
     --card-preview-border-radius: 6px;
     --card-border-radius: 12px;
     --card-drop-target-raise: -0.26;
+    --card-colors-size: 20px;
+    --card-colors-raise: 0.5;
+    --card-colors-overlap: 0.2;
+    --card-colors-gradient: 350%;
     --card-info-spacing: 14px;
     --card-info-color: white;
     --card-info-slant: -18deg;
@@ -48,8 +52,52 @@
     margin: var(--card-preview-margin);
     border-top: none;
     border-radius: var(--card-preview-border-radius);
+    border-bottom-right-radius: 0;
     background: linear-gradient(var(--card-color-background-light), var(--card-color-background-dark));
     overflow: hidden;
+}
+
+.card .colors {
+    margin-top: calc(-1 * var(--card-preview-margin) - var(--card-colors-raise) * var(--card-colors-size));
+    margin-left: var(--card-preview-margin);
+    margin-right: var(--card-preview-margin);
+}
+
+.card .colors .colors-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.card .colors .colors-wrapper .color {
+    width: var(--card-colors-size);
+    height: var(--card-colors-size);
+    margin-left: calc(-1 * var(--card-colors-overlap) * var(--card-colors-size));
+    border-radius: 50%;
+}
+
+.card .colors .colors-wrapper .color.fill-white {
+    background: radial-gradient(circle at top right, var(--color-fish-white), black var(--card-colors-gradient));
+}
+
+.card .colors .colors-wrapper .color.fill-black {
+    background: radial-gradient(circle at top right, var(--color-fish-black), black var(--card-colors-gradient));
+}
+
+.card .colors .colors-wrapper .color.fill-gold {
+    background: radial-gradient(circle at top right, var(--color-fish-gold), black var(--card-colors-gradient));
+}
+
+.card .colors .colors-wrapper .color.fill-orange {
+    background: radial-gradient(circle at top right, var(--color-fish-orange), black var(--card-colors-gradient));
+}
+
+.card .colors .colors-wrapper .color.fill-red {
+    background: radial-gradient(circle at top right, var(--color-fish-red), black var(--card-colors-gradient));
+}
+
+.card .colors .colors-wrapper .color.fill-brown {
+    background: radial-gradient(circle at top right, var(--color-fish-brown), black var(--card-colors-gradient));
 }
 
 .card .info {

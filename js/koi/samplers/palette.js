@@ -9,6 +9,14 @@ Palette.INDEX_GOLD = 2;
 Palette.INDEX_ORANGE = 3;
 Palette.INDEX_RED = 4;
 Palette.INDEX_BROWN = 5;
+Palette.COLOR_NAMES = [
+    "white",
+    "black",
+    "gold",
+    "orange",
+    "red",
+    "brown"
+];
 Palette.COLORS = [
     Color.fromCSS("--color-fish-white"),
     Color.fromCSS("--color-fish-black"),
