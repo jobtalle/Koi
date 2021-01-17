@@ -27,8 +27,8 @@ const Systems = function(gl, random, width, height) {
     this.distanceField = new DistanceField(gl, this.quad);
     this.drops = new Drops(gl);
     this.flying = new Flying(gl);
-    this.fishBackground = new FishBackground(gl, this.quad);
-    this.preview = new Preview(gl);
+    this.fishBackground = new FishBackground(gl);
+    this.preview = new Preview(gl, this.fishBackground);
     this.still = new Still(gl, this.fishBackground);
     this.randomSource = new RandomSource(gl, random);
 };

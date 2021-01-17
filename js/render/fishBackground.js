@@ -1,10 +1,9 @@
 /**
  * A background for fish card previews and fish codes
  * @param {WebGLRenderingContext} gl A WebGL rendering context
- * @param {Quad} quad The quad renderer to borrow the buffer from
  * @constructor
  */
-const FishBackground = function(gl, quad) {
+const FishBackground = function(gl) {
     this.gl = gl;
     this.program = new Shader(
         gl,
@@ -16,11 +15,13 @@ const FishBackground = function(gl, quad) {
             new Shader.Constant("colorInner", "f", this.COLOR_INNER.toArrayRGB()),
             new Shader.Constant("colorOuter", "f", this.COLOR_OUTER.toArrayRGB())
         ]);
+    this.buffer = gl.createBuffer();
     this.vao = gl.vao.createVertexArrayOES();
 
     gl.vao.bindVertexArrayOES(this.vao);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, quad.buffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 0, 1, 1, 1, 1, 0]), gl.STATIC_DRAW);
     gl.enableVertexAttribArray(this.program["aPosition"]);
     gl.vertexAttribPointer(this.program["aPosition"], 2, gl.FLOAT, false, 8, 0);
 };
@@ -36,9 +37,9 @@ attribute vec2 position;
 varying vec2 iUv;
 
 void main() {
-  iUv = position * 0.5 + 0.5;
+  iUv = position;
   
-  gl_Position = vec4(position, 0.0, 1.0);
+  gl_Position = vec4((position * (region.zw - region.xy) + region.xy) * 2.0 - vec2(1.0), 0.0, 1.0);
 }
 `;
 
@@ -63,8 +64,8 @@ void main() {
 FishBackground.prototype.render = function(
     xStart = 0,
     yStart = 0,
-    xEnd = 0,
-    yEnd = 0) {
+    xEnd = 1,
+    yEnd = 1) {
     this.program.use();
 
     this.gl.uniform4f(this.program["uRegion"], xStart, yStart, xEnd, yEnd);
@@ -77,6 +78,7 @@ FishBackground.prototype.render = function(
  * Free all resources maintained by the background renderer
  */
 FishBackground.prototype.free = function() {
+    this.gl.deleteBuffer(this.buffer);
     this.gl.vao.deleteVertexArrayOES(this.vao);
     this.program.free();
 };

@@ -29,7 +29,7 @@ Still.prototype.render = function(body, atlas, bodies) {
 
     this.target.target();
 
-    this.fishBackground.render(.5, .5, 1, 1);
+    this.fishBackground.render();
 
     body.renderLoop(
         (this.RADIUS + Math.cos(this.ANGLE) * this.RADIUS) * this.UPSCALE / this.SCALE,

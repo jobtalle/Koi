@@ -1,10 +1,13 @@
 /**
  * A fish preview animation maker
  * @param {WebGLRenderingContext} gl A WebGL context
+ * @param {FishBackground} fishBackground A fish background renderer
  * @constructor
  */
-const Preview = function(gl) {
+const Preview = function(gl, fishBackground) {
     ImageMaker.call(this, gl, this.PREVIEW_WIDTH * this.PREVIEW_COLUMNS, this.PREVIEW_HEIGHT * this.PREVIEW_ROWS);
+
+    this.fishBackground = fishBackground;
 };
 
 Preview.prototype = Object.create(ImageMaker.prototype);
@@ -37,6 +40,12 @@ Preview.prototype.render = function(body, atlas, bodies) {
         const bottom = (this.PREVIEW_ROWS - row - 1) * this.PREVIEW_HEIGHT;
 
         this.gl.scissor(left, row * this.PREVIEW_HEIGHT, this.PREVIEW_WIDTH, this.PREVIEW_HEIGHT);
+
+        this.fishBackground.render(
+            column / this.PREVIEW_COLUMNS,
+            row / this.PREVIEW_ROWS,
+            (column + 1) / this.PREVIEW_COLUMNS,
+            (row + 1) / this.PREVIEW_ROWS);
 
         body.renderLoop(
             right / this.SCALE,
