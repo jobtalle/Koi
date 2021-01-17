@@ -48,6 +48,6 @@
     --color-code-11: var(--color-fish-red);
 
     /* GUI colors */
-    --color-preview-outer: #37657e;
+    --color-preview-outer: #325c73;
     --color-preview-inner: var(--color-water-shallow);
 }

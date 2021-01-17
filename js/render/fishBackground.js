@@ -13,7 +13,8 @@ const FishBackground = function(gl) {
         ["region", "size"],
         [
             new Shader.Constant("colorInner", "f", this.COLOR_INNER.toArrayRGB()),
-            new Shader.Constant("colorOuter", "f", this.COLOR_OUTER.toArrayRGB())
+            new Shader.Constant("colorOuter", "f", this.COLOR_OUTER.toArrayRGB()),
+            new Shader.Constant("gradientPower", "f", [this.GRADIENT_POWER])
         ]);
     this.buffer = gl.createBuffer();
     this.vao = gl.vao.createVertexArrayOES();
@@ -28,6 +29,7 @@ const FishBackground = function(gl) {
 
 FishBackground.prototype.COLOR_INNER = Color.fromCSS("--color-preview-inner");
 FishBackground.prototype.COLOR_OUTER = Color.fromCSS("--color-preview-outer");
+FishBackground.prototype.GRADIENT_POWER = .37;
 
 FishBackground.prototype.SHADER_VERTEX = `#version 100
 uniform vec2 size;
@@ -47,11 +49,12 @@ void main() {
 FishBackground.prototype.SHADER_FRAGMENT = `#version 100
 uniform lowp vec3 colorInner;
 uniform lowp vec3 colorOuter;
+uniform mediump float gradientPower;
 
 varying mediump vec2 iPosition;
 
 void main() {
-  mediump float dist = min(1.0, length(iPosition) / 0.5);
+  mediump float dist = pow(min(1.0, length(iPosition) / 0.707106), gradientPower);
   
   gl_FragColor = vec4(mix(colorInner, colorOuter, dist), 1.0);
 }
