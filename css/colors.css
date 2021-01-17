@@ -31,6 +31,7 @@
     --color-fish-orange: #cd6142;
     --color-fish-red: #db3030;
     --color-fish-brown: var(--color-rock-top);
+    --color-fish-shade: #13232b;
 
     /* Bug colors */
     --color-bug-butterfly-yellow: #d7c89b;
@@ -47,6 +48,6 @@
     --color-code-11: var(--color-fish-red);
 
     /* GUI colors */
-    --color-preview-inner: #37657e;
-    --color-preview-outer: var(--color-water-shallow);
+    --color-preview-outer: #37657e;
+    --color-preview-inner: var(--color-water-shallow);
 }

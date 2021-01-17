@@ -42,6 +42,8 @@ Preview.prototype.render = function(body, atlas, bodies) {
         this.gl.scissor(left, row * this.PREVIEW_HEIGHT, this.PREVIEW_WIDTH, this.PREVIEW_HEIGHT);
 
         this.fishBackground.render(
+            widthMeters / this.PREVIEW_COLUMNS,
+            heightMeters / this.PREVIEW_COLUMNS,
             column / this.PREVIEW_COLUMNS,
             row / this.PREVIEW_ROWS,
             (column + 1) / this.PREVIEW_COLUMNS,

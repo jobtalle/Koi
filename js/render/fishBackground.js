@@ -10,7 +10,7 @@ const FishBackground = function(gl) {
         this.SHADER_VERTEX,
         this.SHADER_FRAGMENT,
         ["position"],
-        ["region"],
+        ["region", "size"],
         [
             new Shader.Constant("colorInner", "f", this.COLOR_INNER.toArrayRGB()),
             new Shader.Constant("colorOuter", "f", this.COLOR_OUTER.toArrayRGB())
@@ -30,14 +30,15 @@ FishBackground.prototype.COLOR_INNER = Color.fromCSS("--color-preview-inner");
 FishBackground.prototype.COLOR_OUTER = Color.fromCSS("--color-preview-outer");
 
 FishBackground.prototype.SHADER_VERTEX = `#version 100
+uniform vec2 size;
 uniform vec4 region;
 
 attribute vec2 position;
 
-varying vec2 iUv;
+varying vec2 iPosition;
 
 void main() {
-  iUv = position;
+  iPosition = (position - vec2(0.5));
   
   gl_Position = vec4((position * (region.zw - region.xy) + region.xy) * 2.0 - vec2(1.0), 0.0, 1.0);
 }
@@ -47,27 +48,34 @@ FishBackground.prototype.SHADER_FRAGMENT = `#version 100
 uniform lowp vec3 colorInner;
 uniform lowp vec3 colorOuter;
 
-varying mediump vec2 iUv;
+varying mediump vec2 iPosition;
 
 void main() {
-  gl_FragColor = vec4(colorInner, 1.0);
+  mediump float dist = min(1.0, length(iPosition) / 0.5);
+  
+  gl_FragColor = vec4(mix(colorInner, colorOuter, dist), 1.0);
 }
 `;
 
 /**
  * Render a fish background
- * {Number} [xStart] The X start in NDC space
- * {Number} [yStart] The Y start in NDC space
- * {Number} [xEnd] The X end in NDC space
- * {Number} [yEnd] The Y end in NDC space
+ * @param {Number} width The width of the background in meters
+ * @param {Number} height The height of the background in meters
+ * @param {Number} [xStart] The X start in NDC space
+ * @param {Number} [yStart] The Y start in NDC space
+ * @param {Number} [xEnd] The X end in NDC space
+ * @param {Number} [yEnd] The Y end in NDC space
  */
 FishBackground.prototype.render = function(
+    width,
+    height,
     xStart = 0,
     yStart = 0,
     xEnd = 1,
     yEnd = 1) {
     this.program.use();
 
+    this.gl.uniform2f(this.program["uSize"], width, height);
     this.gl.uniform4f(this.program["uRegion"], xStart, yStart, xEnd, yEnd);
 
     this.gl.vao.bindVertexArrayOES(this.vao);
