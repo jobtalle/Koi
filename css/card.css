@@ -8,11 +8,12 @@
     --card-height: 350px;
     --card-preview-width: 200px;
     --card-preview-height: 120px;
-    --card-preview-margin: calc((var(--card-width) - var(--card-preview-width)) * 0.5);
+    --card-preview-margin: calc((var(--card-width) - var(--card-preview-width) - 2 * var(--card-preview-border)) * 0.5);
     --card-preview-columns: 6;
     --card-preview-rows: 10;
     --card-preview-fps: 60;
     --card-preview-border-radius: 6px;
+    --card-preview-border: 2px;
     --card-border-radius: 12px;
     --card-drop-target-raise: -0.26;
     --card-colors-size: 20px;
@@ -48,16 +49,15 @@
     width: var(--card-preview-width);
     height: var(--card-preview-height);
     margin: var(--card-preview-margin);
-    border-top: none;
     border-radius: var(--card-preview-border-radius);
-    border-bottom-right-radius: 0;
     overflow: hidden;
+    border: var(--card-preview-border) solid var(--card-info-color);
 }
 
 .card .colors {
     margin-top: calc(-1 * var(--card-preview-margin) - var(--card-colors-raise) * var(--card-colors-size));
     margin-left: var(--card-preview-margin);
-    margin-right: var(--card-preview-margin);
+    margin-right: calc(var(--card-preview-margin) + var(--card-colors-size) * 0.5);
 }
 
 .card .colors .colors-wrapper {
