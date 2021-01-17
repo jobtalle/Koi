@@ -18,10 +18,10 @@
     --card-drop-target-raise: -0.26;
     --card-colors-size: 20px;
     --card-colors-raise: 0.5;
-    --card-colors-overlap: 0.2;
-    --card-colors-gradient: 350%;
+    --card-colors-overlap: 0.25;
+    --card-colors-gradient: 200%;
     --card-info-spacing: 14px;
-    --card-info-color: white;
+    --card-info-color: #d7d4c8;
     --card-info-slant: -18deg;
     --card-info-padding-right: 6px;
     --card-info-text-color: #0c0c0c;
@@ -71,6 +71,8 @@
     height: var(--card-colors-size);
     margin-left: calc(-1 * var(--card-colors-overlap) * var(--card-colors-size));
     border-radius: 50%;
+    border: var(--card-preview-border) solid var(--card-info-color);
+    box-sizing: border-box;
 }
 
 .card .colors .colors-wrapper .color.fill-white {
@@ -116,7 +118,7 @@
 }
 
 .card .info .property .text .label {
-    font-weight: bold;
+    color: var(--card-info-color);
 }
 
 .card .info .property .text .label::after {

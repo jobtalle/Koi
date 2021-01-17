@@ -40,12 +40,10 @@ Card.prototype.RATIO = Card.prototype.WIDTH / Card.prototype.HEIGHT;
 Card.prototype.LANG_WEIGHT = "INFO_WEIGHT";
 Card.prototype.LANG_LENGTH = "INFO_LENGTH";
 Card.prototype.LANG_AGE = "INFO_AGE";
-Card.prototype.LANG_MINUTE = "INFO_MINUTE";
-Card.prototype.LANG_MINUTES = "INFO_MINUTES";
-Card.prototype.LANG_HOUR = "INFO_HOUR";
 Card.prototype.LANG_FRY = "INFO_FRY";
 Card.prototype.LANG_UNIT_WEIGHT = "UNIT_WEIGHT";
 Card.prototype.LANG_UNIT_LENGTH = "UNIT_LENGTH";
+Card.prototype.LANG_UNIT_TIME = "UNIT_TIME";
 Card.prototype.REQUIREMENT_WEIGHT = 5;
 
 /**
@@ -328,18 +326,14 @@ Card.prototype.createInfo = function() {
         element.appendChild(this.createProperty(
             language.get(this.LANG_AGE),
             language.get(this.LANG_FRY)));
-    else if (Math.round(ageMinutes) < 2)
-        element.appendChild(this.createProperty(
-            language.get(this.LANG_AGE),
-            Math.round(ageMinutes).toString() + " " + language.get(this.LANG_MINUTE)));
     else if (ageMinutes > 60)
         element.appendChild(this.createProperty(
             language.get(this.LANG_AGE),
-            "> 1 " + language.get(this.LANG_HOUR)));
+            "> 60 " + language.get(this.LANG_UNIT_TIME)));
     else
         element.appendChild(this.createProperty(
             language.get(this.LANG_AGE),
-            Math.round(ageMinutes).toString() + " " + language.get(this.LANG_MINUTES)));
+            Math.round(ageMinutes).toString() + " " + language.get(this.LANG_UNIT_TIME)));
 
     return element;
 };
