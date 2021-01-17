@@ -15,7 +15,7 @@ const CodeViewer = function(element, storage) {
 CodeViewer.prototype.CLASS_VIEW = "view";
 CodeViewer.prototype.CLASS_ACTIVE = "active";
 CodeViewer.prototype.DEFAULT_NAME = "koi.png";
-CodeViewer.prototype.LANG_DOWNLOAD = "DOWNLOAD";
+CodeViewer.prototype.LANG_SAVE = "SAVE";
 CodeViewer.prototype.LANG_COPY = "COPY";
 
 /**
@@ -44,7 +44,7 @@ CodeViewer.prototype.createButtonCopy = function(image) {
 CodeViewer.prototype.createButtonDownload = function(image) {
     const button = document.createElement("button");
 
-    button.appendChild(document.createTextNode(language.get(this.LANG_DOWNLOAD)));
+    button.appendChild(document.createTextNode(language.get(this.LANG_SAVE)));
     button.onclick = () => {
         image.toBlob(blob => this.storage.imageToFile(blob, this.DEFAULT_NAME));
 
