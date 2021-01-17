@@ -370,6 +370,9 @@ Koi.prototype.updateAudio = function() {
     this.audio.ambientWaterTop.update(this.UPDATE_RATE);
     this.audio.ambientWaterLow.update(this.UPDATE_RATE);
     this.audio.ambientWind.update(this.UPDATE_RATE);
+
+    if (!this.weather.state.isRaining())
+        this.audio.ambientBirds.update(this.UPDATE_RATE);
 };
 
 /**

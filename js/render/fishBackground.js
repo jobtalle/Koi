@@ -29,6 +29,8 @@ FishBackground.prototype.COLOR_INNER = Color.fromCSS("--color-preview-inner");
 FishBackground.prototype.COLOR_OUTER = Color.fromCSS("--color-preview-outer");
 
 FishBackground.prototype.SHADER_VERTEX = `#version 100
+uniform vec4 region;
+
 attribute vec2 position;
 
 varying vec2 iUv;
@@ -53,9 +55,19 @@ void main() {
 
 /**
  * Render a fish background
+ * {Number} [xStart] The X start in NDC space
+ * {Number} [yStart] The Y start in NDC space
+ * {Number} [xEnd] The X end in NDC space
+ * {Number} [yEnd] The Y end in NDC space
  */
-FishBackground.prototype.render = function() {
+FishBackground.prototype.render = function(
+    xStart = 0,
+    yStart = 0,
+    xEnd = 0,
+    yEnd = 0) {
     this.program.use();
+
+    this.gl.uniform4f(this.program["uRegion"], xStart, yStart, xEnd, yEnd);
 
     this.gl.vao.bindVertexArrayOES(this.vao);
     this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, 4);
