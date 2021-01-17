@@ -7,7 +7,7 @@
  */
 const ImageMaker = function(gl, width, height) {
     this.gl = gl;
-    this.target = new RenderTarget(gl, width, height, gl.RGBA, false); // TODO: Use RGB for baked backgrounds
+    this.target = new RenderTarget(gl, width, height, gl.RGB, false);
 };
 
 /**

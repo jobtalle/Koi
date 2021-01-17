@@ -1,10 +1,13 @@
 /**
  * A still fish preview
  * @param {WebGLRenderingContext} gl A WebGL context
+ * @param {FishBackground} fishBackground A fish background renderer
  * @constructor
  */
-const Still = function(gl) {
+const Still = function(gl, fishBackground) {
     ImageMaker.call(this, gl, (this.RADIUS << 1) * this.UPSCALE, (this.RADIUS << 1) * this.UPSCALE);
+
+    this.fishBackground = fishBackground;
 };
 
 Still.prototype = Object.create(ImageMaker.prototype);
@@ -26,8 +29,7 @@ Still.prototype.render = function(body, atlas, bodies) {
 
     this.target.target();
 
-    this.gl.clearColor(.1, .1, .1, 1);
-    this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+    this.fishBackground.render();
 
     body.renderLoop(
         (this.RADIUS + Math.cos(this.ANGLE) * this.RADIUS) * this.UPSCALE / this.SCALE,

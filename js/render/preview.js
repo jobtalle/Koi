@@ -28,9 +28,6 @@ Preview.prototype.render = function(body, atlas, bodies) {
     const frames = this.PREVIEW_COLUMNS * this.PREVIEW_ROWS;
 
     this.target.target();
-
-    this.gl.clearColor(1, 1, 1, 0);
-    this.gl.clear(this.gl.COLOR_BUFFER_BIT);
     this.gl.enable(this.gl.SCISSOR_TEST);
 
     for (let row = 0; row < this.PREVIEW_ROWS; ++row) for (let column = 0; column < this.PREVIEW_COLUMNS; ++column) {

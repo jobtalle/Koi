@@ -2,8 +2,6 @@
     /* Colors */
     --card-color-background: #866764;
     --card-color-drop-target: #ffffff55;
-    --card-color-background-dark: #37657e;
-    --card-color-background-light: var(--color-water-shallow);
 
     /* Dimensions */
     --card-width: 250px;
@@ -53,7 +51,6 @@
     border-top: none;
     border-radius: var(--card-preview-border-radius);
     border-bottom-right-radius: 0;
-    background: linear-gradient(var(--card-color-background-light), var(--card-color-background-dark));
     overflow: hidden;
 }
 
@@ -147,7 +144,7 @@
     pointer-events: auto;
 }
 
-.card button:hover {
+.card button:active {
     background-color: white;
 }
 

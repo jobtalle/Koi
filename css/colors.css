@@ -45,4 +45,8 @@
     --color-code-01: var(--color-fish-gold);
     --color-code-10: var(--color-fish-orange);
     --color-code-11: var(--color-fish-red);
+
+    /* GUI colors */
+    --color-preview-inner: #37657e;
+    --color-preview-outer: var(--color-water-shallow);
 }
