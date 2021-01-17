@@ -323,6 +323,14 @@ Koi.prototype.touchMove = function(x, y, entered = false) {
 };
 
 /**
+ * The mouse has left the window
+ */
+Koi.prototype.mouseLeave = function() {
+    if (!this.mover.move)
+        this.touchEnd();
+};
+
+/**
  * End a touch event
  */
 Koi.prototype.touchEnd = function() {

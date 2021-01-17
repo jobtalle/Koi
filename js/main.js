@@ -58,12 +58,13 @@ if (gl &&
             document.getElementById("gui"),
             new CodeViewer(document.getElementById("code"), storage));
         const systems = new Systems(gl, new Random(2893), wrapper.clientWidth, wrapper.clientHeight);
-        const drop = new Drop(gui, systems, document.getElementById("drop"), canvas);
         const sessionBuffer = tutorial ? storage.getBuffer("session") : null;
         let lastDate = null;
         let koi = null;
         let loaded = true;
         let mouseLeft = false;
+
+        new Drop(gui, systems, document.getElementById("drop"), canvas);
 
         canvas.width = wrapper.clientWidth;
         canvas.height = wrapper.clientHeight;
@@ -172,6 +173,8 @@ if (gl &&
         });
 
         canvas.addEventListener("mouseleave", () => {
+            koi.mouseLeave();
+
             mouseLeft = true;
         });
 
