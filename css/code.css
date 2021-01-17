@@ -3,6 +3,8 @@
     --code-button-padding: 32px;
     --code-button-margin: 20px;
     --code-button-radius: var(--card-border-radius);
+    --code-shadow-radius: var(--book-shadow-radius);
+    --code-shadow-color: var(--book-shadow-color);
 }
 
 #code {
@@ -30,6 +32,10 @@
     flex-direction: column;
     align-items: center;
     user-select: none;
+}
+
+#code .view * {
+    box-shadow: 0 0 var(--code-shadow-radius) var(--code-shadow-color);
 }
 
 #code .view canvas {
