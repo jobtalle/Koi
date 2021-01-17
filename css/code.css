@@ -25,11 +25,16 @@
 #code .view {
     margin-left: auto;
     margin-right: auto;
-    pointer-events: auto;
+    pointer-events: none;
     display: flex;
     flex-direction: column;
     align-items: center;
     user-select: none;
+}
+
+#code .view canvas {
+    border-radius: 50%;
+    pointer-events: auto;
 }
 
 #code .view button {
