@@ -138,7 +138,7 @@ FishBody.prototype.serialize = function(buffer) {
 };
 
 /**
- * Get a hash byte of this fish
+ * Get a hash byte of this fish body
  * @returns {Number} The byte value
  */
 FishBody.prototype.hash = function() {

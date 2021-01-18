@@ -1,6 +1,7 @@
 :root {
     /* Colors */
     --card-color-background: #866764;
+    --card-color-background-graphics: #7a5d5b;
     --card-color-drop-target: #ffffff55;
 
     /* Dimensions */
@@ -38,11 +39,22 @@
 .card {
     pointer-events: auto;
     cursor: pointer;
-    position: absolute;
     background-color: var(--card-color-background);
+    position: absolute;
     user-select: none;
     box-shadow: 0 0 var(--book-shadow-radius) var(--book-shadow-color);
     -webkit-tap-highlight-color: transparent;
+}
+
+.card svg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+}
+
+.card svg path {
+    fill: var(--card-color-background-graphics);
 }
 
 .card .preview-frame {
@@ -52,6 +64,7 @@
     border-radius: var(--card-preview-border-radius);
     overflow: hidden;
     border: var(--card-preview-border) solid var(--card-info-color);
+    background-color: var(--color-preview-outer);
 }
 
 .card .colors {

@@ -370,6 +370,12 @@ Card.prototype.createDownload = function() {
 Card.prototype.createElement = function(previewFrame) {
     const element = document.createElement("div");
 
+    new CardBackground(
+        element,
+        this.WIDTH,
+        this.HEIGHT,
+        new Random(Random.prototype.makeSeed(this.body.hash() / 0xFF)));
+
     element.className = this.CLASS;
     element.appendChild(previewFrame);
     element.appendChild(this.createColors());

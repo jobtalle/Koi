@@ -1,7 +1,7 @@
 :root {
     --code-button-color: var(--color-code-10);
     --code-button-padding: 32px;
-    --code-button-margin: 20px;
+    --code-button-margin: 16px;
     --code-button-radius: var(--card-border-radius);
     --code-shadow-radius: var(--book-shadow-radius);
     --code-shadow-color: var(--book-shadow-color);
@@ -44,7 +44,7 @@
 }
 
 #code .view button {
-    width: auto;
+    width: 50%;
     background-color: var(--code-button-color);
     padding: var(--code-button-padding);
     margin-top: var(--code-button-margin);
