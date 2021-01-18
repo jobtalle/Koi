@@ -1,7 +1,7 @@
 :root {
     /* Colors */
     --card-color-background: #866764;
-    --card-color-background-graphics: #7a5d5b;
+    --card-color-background-graphics: #7e605e;
     --card-color-drop-target: #ffffff55;
 
     /* Dimensions */
@@ -43,6 +43,7 @@
     position: absolute;
     user-select: none;
     box-shadow: 0 0 var(--book-shadow-radius) var(--book-shadow-color);
+    overflow: hidden;
     -webkit-tap-highlight-color: transparent;
 }
 

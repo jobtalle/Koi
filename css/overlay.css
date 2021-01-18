@@ -33,19 +33,10 @@
     100% {margin-top: calc(-1 * var(--overlay-arrow-spacing))}
 }
 
-@keyframes arrow-bounce-left-up {
-    0% {
-        margin-left: calc(var(--overlay-arrow-spacing));
-        margin-top: calc(var(--overlay-arrow-spacing));
-    }
-    50% {
-        margin-left: calc((var(--overlay-arrow-spacing) + var(--overlay-arrow-raise)));
-        margin-top: calc((var(--overlay-arrow-spacing) + var(--overlay-arrow-raise)));
-    }
-    100% {
-        margin-left: calc(var(--overlay-arrow-spacing));
-        margin-top: calc(var(--overlay-arrow-spacing));
-    }
+@keyframes arrow-bounce-up {
+    0% {margin-top: calc(var(--overlay-arrow-spacing))}
+    50% {margin-top: calc((var(--overlay-arrow-spacing) + var(--overlay-arrow-raise)))}
+    100% {margin-top: calc(var(--overlay-arrow-spacing))}
 }
 
 #overlay .pointer {
@@ -97,10 +88,10 @@
     transform: scale(var(--overlay-arrow-scale), 1) rotate(-135deg);
 }
 
-.overlay-arrow.left-up {
-    left: 100%;
+.overlay-arrow.up {
+    left: 50%;
     top: 100%;
-    animation: arrow-bounce-left-up var(--overlay-arrow-animation-time) infinite;
+    animation: arrow-bounce-up var(--overlay-arrow-animation-time) infinite;
     animation-timing-function: ease-in-out;
-    transform: rotate(45deg) scale(1, var(--overlay-arrow-scale)) rotate(-45deg);
+    transform: scale(var(--overlay-arrow-scale), 1) rotate(45deg);
 }

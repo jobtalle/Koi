@@ -79,7 +79,7 @@ TutorialCards.prototype.pointToDropTarget = function(koi) {
  * @param {Koi} koi The koi object
  */
 TutorialCards.prototype.pointToBookButton = function(koi) {
-    this.overlay.createArrow(koi.gui.cards.buttonBook.element, "left-up");
+    this.overlay.createArrow(koi.gui.cards.buttonBook.element, "up");
 };
 
 /**

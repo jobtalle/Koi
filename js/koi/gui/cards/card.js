@@ -374,7 +374,7 @@ Card.prototype.createElement = function(previewFrame) {
         element,
         this.WIDTH,
         this.HEIGHT,
-        new Random(Random.prototype.makeSeed(this.body.hash() / 0xFF)));
+        new Random(Random.prototype.makeSeed(this.body.age / 0xFFFF)));
 
     element.className = this.CLASS;
     element.appendChild(previewFrame);

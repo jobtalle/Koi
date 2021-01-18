@@ -10,10 +10,13 @@ const CardBackground = function(element, width, height, random) {
     element.appendChild(this.createBackground(width, height, random));
 };
 
-CardBackground.prototype.HEIGHT = new Sampler(.3, .5);
-CardBackground.prototype.SWAY = new Sampler(-.7, .7);
-CardBackground.prototype.SHIFT_Y = .1;
+CardBackground.prototype.HEIGHT = new Sampler(.5, .75);
+CardBackground.prototype.SWAY = new SamplerSigmoid(-.4, .4, 3);
+CardBackground.prototype.SWAY_DEFAULT = .3;
+CardBackground.prototype.SHIFT_Y = .07;
 CardBackground.prototype.BLADE_WIDTH = 20;
+CardBackground.prototype.BASE_HEIGHT = .1;
+CardBackground.prototype.DAMPING = .7;
 
 /**
  * Create the background image
@@ -25,28 +28,32 @@ CardBackground.prototype.BLADE_WIDTH = 20;
 CardBackground.prototype.createBackground = function(width, height, random) {
     const background = SVG.createElement();
     const base = height * (1 + this.SHIFT_Y);
-    const path = ["M", 0, base];
+    const path = ["M", 0, base + this.BASE_HEIGHT, "L", 0, base];
+    const bladeCount = Math.round(width / this.BLADE_WIDTH);
+    const bladeWidth = width / bladeCount;
+    const defaultSign = random.getFloat() > .5 ? -1 : 1;
 
-    SVG.setViewBox(background, 0, 0, width, height);
-
-    for (let x = this.BLADE_WIDTH * .5; x < width + this.BLADE_WIDTH; x += this.BLADE_WIDTH) {
-        const bladeHeight = this.HEIGHT.sample(random.getFloat()) * height;
-        const sway = this.SWAY.sample(random.getFloat());
+    for (let blade = 0; blade < bladeCount; ++blade) {
+        const x = (blade + .5) * bladeWidth;
+        const progress = (blade + .5) / bladeCount;
+        const heightFactor = (2 * progress - 1) * (2 * progress - 1);
+        const bladeHeight = this.HEIGHT.sample(random.getFloat()) * height * (heightFactor * this.DAMPING + 1 - this.DAMPING);
+        const sway = this.SWAY.sample(random.getFloat()) + ((blade & 1) * 2 - 1) * defaultSign * this.SWAY_DEFAULT;
 
         path.push(
             "Q",
-            x - this.BLADE_WIDTH * .5,
+            x - bladeWidth * .5,
             base - bladeHeight,
             x + sway * bladeHeight,
             base - bladeHeight,
             "Q",
             x,
             base - bladeHeight,
-            x + this.BLADE_WIDTH * .5,
+            x + bladeWidth * .5,
             base);
     }
 
-    path.push("Z");
+    path.push("L", width, base + this.BASE_HEIGHT, "Z");
 
     background.appendChild(SVG.createPath(path));
 
