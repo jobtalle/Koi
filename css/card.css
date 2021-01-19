@@ -26,6 +26,9 @@
     --card-info-slant: -18deg;
     --card-info-padding-right: 6px;
     --card-info-text-color: #0c0c0c;
+    --card-code-icon-radius: 32px;
+    --card-code-icon-margin: 8px;
+    --card-code-opacity: 0.5;
 }
 
 .card-shape {
@@ -157,11 +160,21 @@
 
 .card button {
     width: 100%;
+    height: calc(2 * var(--card-code-icon-radius));
+    margin-top: var(--card-code-icon-margin);
     pointer-events: auto;
+    position: relative;
+    opacity: var(--card-code-opacity);
+    display: flex;
 }
 
 .card button:active {
-    background-color: white;
+    opacity: 1;
+}
+
+.card button svg {
+    width: calc(2 * var(--card-code-icon-radius));
+    height: calc(2 * var(--card-code-icon-radius));
 }
 
 @keyframes fish-preview-x {
@@ -200,4 +213,8 @@
 
 #drop-target.hidden {
     bottom: calc(-1 * var(--card-height));
+}
+
+#code-icon {
+    fill: var(--card-info-color);
 }

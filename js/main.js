@@ -204,6 +204,8 @@ if (gl &&
     new FishIconDefs(
         document.getElementById("fish-icon-defs"),
         new Random(Random.prototype.makeSeed(Koi.prototype.COLOR_BACKGROUND.r)));
+    new CodeIconDefs(
+        document.getElementById("code-icon-defs"));
 }
 else
     onFailure();
