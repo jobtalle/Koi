@@ -165,7 +165,6 @@
     pointer-events: auto;
     position: relative;
     opacity: var(--card-code-opacity);
-    display: flex;
 }
 
 .card button:active {
@@ -173,8 +172,10 @@
 }
 
 .card button svg {
-    width: calc(2 * var(--card-code-icon-radius));
-    height: calc(2 * var(--card-code-icon-radius));
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
 }
 
 @keyframes fish-preview-x {
