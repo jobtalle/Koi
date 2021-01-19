@@ -88,7 +88,6 @@ CodeWriter.prototype.write = function() {
     context.closePath();
     context.fill();
 
-    // TODO: Combine arcs to reduce breaks
     this.iterate((color, radiusInner, radiusOuter, aStart, aEnd, base) => {
         const fillColor = colors[color % colorCount];
 

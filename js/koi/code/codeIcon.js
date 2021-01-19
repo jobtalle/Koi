@@ -14,8 +14,7 @@ CodeIcon.prototype = Object.create(CodeIconConstants.prototype);
  */
 CodeIcon.prototype.createIcon = function() {
     const icon = SVG.createElement();
-    // const circle = SVG.createCircle(this.RADIUS, this.RADIUS, this.RADIUS);
-    const circle = SVG.createRect(0, 0, this.RADIUS * 2, this.RADIUS * 2);
+    const circle = SVG.createCircle(this.RADIUS, this.RADIUS, this.RADIUS);
 
     SVG.setViewBox(icon, 0, 0, this.RADIUS * 2, this.RADIUS * 2);
     SVG.setPattern(circle, this.ID);
