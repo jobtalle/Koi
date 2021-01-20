@@ -81,35 +81,37 @@ Drop.prototype.dropFile = function(file, target) {
         const image = new Image();
 
         image.onload = () => {
-            const body = new CodeReader(image).read();
+            if (!this.gui.cards.hand.isFull()) {
+                const body = new CodeReader(image).read();
 
-            if (body) {
-                const buffer = new BinBuffer();
-                let unique = true;
+                if (body) {
+                    const buffer = new BinBuffer();
+                    let unique = true;
 
-                body.pattern.serialize(buffer);
+                    body.pattern.serialize(buffer);
 
-                this.gui.cards.koi.forEveryFishBody(body => {
-                    const tBuffer = new BinBuffer();
+                    this.gui.cards.koi.forEveryFishBody(body => {
+                        const tBuffer = new BinBuffer();
 
-                    body.pattern.serialize(tBuffer);
+                        body.pattern.serialize(tBuffer);
 
-                    if (tBuffer.equalTo(buffer))
-                        unique = false;
-                });
+                        if (tBuffer.equalTo(buffer))
+                            unique = false;
+                    });
 
-                if (unique) {
-                    body.initializeSpine(new Vector2(), new Vector2(1, 0));
+                    if (unique) {
+                        body.initializeSpine(new Vector2(), new Vector2(1, 0));
 
-                    const card = new Card(body, target, 0);
+                        const card = new Card(body, target, 0);
 
-                    card.initialize(
-                        this.systems.preview,
-                        this.systems.atlas,
-                        this.systems.bodies,
-                        this.systems.randomSource);
+                        card.initialize(
+                            this.systems.preview,
+                            this.systems.atlas,
+                            this.systems.bodies,
+                            this.systems.randomSource);
 
-                    this.gui.cards.add(card);
+                        this.gui.cards.add(card);
+                    }
                 }
             }
         };
