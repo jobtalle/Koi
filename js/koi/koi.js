@@ -65,6 +65,7 @@ Koi.prototype.COLOR_BACKGROUND = Color.fromCSS("--color-earth");
 Koi.prototype.PHASE_SPEED = .005;
 Koi.prototype.TOUCH_WATER_RADIUS = .1;
 Koi.prototype.TOUCH_WATER_INTENSITY = .5;
+Koi.prototype.TOUCH_WATER_VOLUME = .7;
 
 /**
  * Serialize the koi
@@ -298,6 +299,7 @@ Koi.prototype.touchStart = function(x, y) {
         if (this.constellation.contains(wx, wy)) {
             this.touchWater(wx, wy);
             this.constellation.chase(wx, wy);
+            this.audio.effectFishUp.play(2 * wx / this.constellation.width - 1, this.TOUCH_WATER_VOLUME);
         }
 
         this.mover.startTouch(wx, wy);
