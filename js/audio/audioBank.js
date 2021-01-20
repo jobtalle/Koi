@@ -16,6 +16,15 @@ const AudioBank = function(engine) {
     this.effectFishMoveBig = new AudioEffect(
         engine,
         this.enumerateSources("audio/ogg/SFX_BigFishMove_", 1, 8, ".ogg"));
+    this.effectFishTailSmall = new AudioEffect(
+        engine,
+        this.enumerateSources("audio/ogg/SFX_SmallUnderwaterMovement_", 1, 10, ".ogg"));
+    this.effectFishTailBig = new AudioEffect(
+        engine,
+        this.enumerateSources("audio/ogg/SFX_BigUnderwaterMovement_", 1, 9, ".ogg"));
+    this.effectFishTailFast = new AudioEffect(
+        engine,
+        this.enumerateSources("audio/ogg/SFX_FastUnderwaterMovement_", 1, 8, ".ogg"));
     this.effectGust = new AudioEffect(
         engine,
         this.enumerateSources("audio/ogg/SFX_WindGust_", 1, 5, ".ogg"));

@@ -11,7 +11,7 @@ const Pond = function(constraint, onBreed, onMutate, canBreed = true) {
     this.onBreed = onBreed;
     this.onMutate = onMutate;
     this.canBreed = canBreed;
-    this.fish = []; // TODO: Rename to fish
+    this.fish = [];
 };
 
 Pond.prototype.CHASE_RADIUS = 1;
@@ -23,18 +23,18 @@ Pond.prototype.CHASE_FORCE = 0.17;
  */
 Pond.prototype.serialize = function(buffer) {
     const relativePositions = new Array(this.fish.length);
-    let validFishes = 0;
+    let validFish = 0;
 
     for (let fish = 0; fish < this.fish.length; ++fish) {
         const position = this.constraint.getRelativePosition(this.fish[fish].position);
 
         if (position)
-            ++validFishes;
+            ++validFish;
 
         relativePositions[fish] = position;
     }
 
-    buffer.writeUint16(validFishes);
+    buffer.writeUint16(validFish);
 
     for (let fish = 0; fish < this.fish.length; ++fish) {
         if (relativePositions[fish]) {
@@ -162,6 +162,7 @@ Pond.prototype.pick = function(x, y, whitelist) {
  * @param {Mutations} mutations The mutations object, or null if mutation is disabled
  * @param {Boolean} forceMutation True if at least one mutation must occur when possible during breeding
  * @param {Water} water A water plane to disturb
+ * @param {AudioBank} audio Game audio
  * @param {Constellation} constellation The constellation containing all ponds
  * @param {Boolean} raining True if it's raining
  * @param {Random} random A randomizer
@@ -173,6 +174,7 @@ Pond.prototype.update = function(
     mutations,
     forceMutation,
     water,
+    audio,
     constellation,
     raining,
     random) {
@@ -182,7 +184,7 @@ Pond.prototype.update = function(
         for (let b = a; b-- > 0;)
             fish.interact(this.fish[b], random);
 
-        if (fish.update(this.constraint, water, raining, random))
+        if (fish.update(this.constraint, water, audio, constellation, raining, random))
             this.removeFish(a, atlas);
         else {
             if (constellation.getFishCount() < Koi.prototype.FISH_CAPACITY - 1 &&

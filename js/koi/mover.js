@@ -28,7 +28,6 @@ Mover.prototype.AIR_INTENSITY = .15;
 Mover.prototype.AIR_HEIGHT = .5;
 Mover.prototype.AIR_INTERVAL = 1;
 Mover.prototype.FOREGROUND_DISPLACEMENT_RADIUS = Mover.prototype.AIR_RADIUS;
-Mover.prototype.BIG_THRESHOLD = 2;
 Mover.prototype.GRANULAR_VOLUME = .2;
 Mover.prototype.GRANULAR_INTENSITY_THRESHOLD = .1;
 Mover.prototype.GRANULAR_INTERVAL = 0.75;
@@ -257,7 +256,7 @@ Mover.prototype.startTouch = function(x, y) {
  * @param {Number} pan The pan in the range [-1, 1]
  */
 Mover.prototype.playInteractionSound = function(fish, pan) {
-    if (fish.getWeight() > this.BIG_THRESHOLD)
+    if (fish.body.isHeavy())
         this.audio.effectFishMoveBig.play(this.audio.effectFishMoveBig.engine.transformPan(pan));
     else
         this.audio.effectFishMoveSmall.play(this.audio.effectFishMoveSmall.engine.transformPan(pan));

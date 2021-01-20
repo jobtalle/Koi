@@ -407,6 +407,7 @@ Koi.prototype.update = function() {
         !this.tutorial || this.tutorial.allowMutation ? this.mutations : null,
         this.tutorial ? this.tutorial.forceMutation : false,
         this.water,
+        this.audio,
         this.weather.state.isRaining(),
         this.random);
     this.weather.update(this.air, this.water, this.audio, this.foreground.plants.plantMap, this.random);

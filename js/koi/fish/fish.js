@@ -141,14 +141,6 @@ Fish.prototype.serialize = function(buffer) {
 };
 
 /**
- * Get the weight of the fish
- * @returns {Number} The weight in kilograms
- */
-Fish.prototype.getWeight = function() {
-    return this.body.getWeight(this.body.size);
-};
-
-/**
  * Move the fish to a given position
  * @param {Vector2} position The position to move to
  */
@@ -372,11 +364,19 @@ Fish.prototype.canMate = function() {
  * Update the fish
  * @param {Constraint} constraint A constraint
  * @param {Water} water A water plane to disturb
+ * @param {AudioBank} audio Game audio
+ * @param {Constellation} constellation The Constellation
  * @param {Boolean} raining True if it's raining
  * @param {Random} random A randomizer
  * @returns {Boolean} A boolean indicating whether the fish left the scene
  */
-Fish.prototype.update = function(constraint, water, raining, random) {
+Fish.prototype.update = function(
+    constraint,
+    water,
+    audio,
+    constellation,
+    raining,
+    random) {
     if (this.constrain(constraint))
         return true;
 
@@ -432,7 +432,15 @@ Fish.prototype.update = function(constraint, water, raining, random) {
 
     this.positionPrevious.set(this.position);
     this.position.add(this.velocity.multiply(adjustedSpeed));
-    this.body.update(this.position, this.direction, adjustedSpeed, true, water, random);
+    this.body.update(
+        this.position,
+        this.direction,
+        adjustedSpeed,
+        true,
+        water,
+        audio,
+        constellation,
+        random);
 
     return false;
 };

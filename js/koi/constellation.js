@@ -359,6 +359,7 @@ Constellation.prototype.makeMeshDepth = function(gl) {
  * @param {Mutations} mutations The mutations object, or null if mutation is disabled
  * @param {Boolean} forceMutation True if at least one mutation must occur when possible during breeding
  * @param {Water} water A water plane to disturb
+ * @param {AudioBank} audio Game audio
  * @param {Boolean} raining True if it's raining
  * @param {Random} random A randomizer
  */
@@ -369,11 +370,12 @@ Constellation.prototype.update = function(
     mutations,
     forceMutation,
     water,
+    audio,
     raining,
     random) {
-    this.small.update(atlas, patterns, randomSource, mutations, forceMutation, water, this, raining, random);
-    this.big.update(atlas, patterns, randomSource, mutations, forceMutation, water, this, raining, random);
-    this.river.update(atlas, patterns, randomSource, mutations, forceMutation, water, this, raining, random);
+    this.small.update(atlas, patterns, randomSource, mutations, forceMutation, water, audio, this, raining, random);
+    this.big.update(atlas, patterns, randomSource, mutations, forceMutation, water, audio, this, raining, random);
+    this.river.update(atlas, patterns, randomSource, mutations, forceMutation, water, audio, this, raining, random);
 };
 
 /**
