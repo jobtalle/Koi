@@ -10,5 +10,7 @@ Make sure [node.js](https://www.nodejs.org) and [python 3](https://www.python.or
 | --- | ---- |
 | Windows (32 bit) | `npm run build-win-32` |
 | Windows (64 bit) | `npm run build-win-64` |
+| Linux (64 bit) | `npm run build-linux-64` |
+| Mac (64 bit) | `npm run build-mac-64` |
 
 Additionally, `npm run compress` can be called to compress HTML, CSS and Javscript content without building binaries. The compressed HTML file `release.html` will be created in the project root.
