@@ -59,7 +59,7 @@ if (gl &&
             new CodeViewer(document.getElementById("code"), storage));
         const systems = new Systems(gl, new Random(2893), wrapper.clientWidth, wrapper.clientHeight);
         const sessionBuffer = tutorial ? storage.getBuffer("session") : null;
-        let lastDate = null;
+        let lastTime = null;
         let koi = null;
         let loaded = true;
         let mouseLeft = false;
@@ -124,15 +124,13 @@ if (gl &&
             newSession();
 
         // Trigger the animation frame loop
-        lastDate = new Date();
+        lastTime = performance.now();
 
-        const loop = () => {
+        const loop = time => {
             if (loaded) {
-                const date = new Date();
+                koi.render(.001 * (time - lastTime));
 
-                koi.render(.001 * (date - lastDate));
-
-                lastDate = date;
+                lastTime = time;
 
                 requestAnimationFrame(loop);
             }
