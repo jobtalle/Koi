@@ -92,7 +92,8 @@ const CardRequirements = [
     ],
     [
         new CardRequirement(new PatternFootprint([
-            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_BROWN)
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_BROWN),
+            new LayerFootprint(LayerSpots.prototype.ID, Palette.INDEX_WHITE)
         ])),
         null,
         null,
