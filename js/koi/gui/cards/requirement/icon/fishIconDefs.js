@@ -30,13 +30,13 @@ FishIconDefs.prototype.SPOTS_B = [
 ];
 FishIconDefs.prototype.STRIPES_A = [
     new Vector3(.5, .16, .3),
-    new Vector3(.7, .21, .5),
+    new Vector3(.65, .21, .5),
     new Vector3(.5, .16, .7)
 ];
 FishIconDefs.prototype.STRIPES_B = [
     new Vector3(.4, .11, .2),
-    new Vector3(.65, .16, .4),
-    new Vector3(.65, .16, .6),
+    new Vector3(.6, .16, .4),
+    new Vector3(.6, .16, .6),
     new Vector3(.4, .11, .8)
 ];
 FishIconDefs.prototype.RIDGE_A = new Vector2(.5, .9);
