@@ -13,7 +13,7 @@
     "google-closure-compiler": "^20210106.0.0"
   },
   "scripts": {
-    "compress": "python squish.py\\squish.py index.html release.html",
+    "compress": "python squish.py/squish.py index.html release.html",
     "build-win-32": "npm run compress && electron-packager . KoiFarm --platform=win32 --arch=ia32 --icon=./favicon.ico --appCopyright=\"Copyright Job Talle 2021\" --ignore=\"^/js|^/css|^/squish\\.py|^/node_modules|^/\\.idea|index\\.html|README\\.md|favicon\\.icns|LICENSE|package-lock\\.json\"",
     "build-win-64": "npm run compress && electron-packager . KoiFarm --platform=win32 --arch=x64 --icon=./favicon.ico --appCopyright=\"Copyright Job Talle 2021\" --ignore=\"^/js|^/css|^/squish\\.py|^/node_modules|^/\\.idea|index\\.html|README\\.md|favicon\\.icns|LICENSE|package-lock\\.json\"",
     "build-linux-64": "npm run compress && electron-packager . KoiFarm --platform=linux --arch=x64 --icon=./favicon.ico --appCopyright=\"Copyright Job Talle 2021\" --ignore=\"^/js|^/css|^/squish\\.py|^/node_modules|^/\\.idea|index\\.html|README\\.md|favicon\\.icns|LICENSE|package-lock\\.json\"",
