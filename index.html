@@ -1,7 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Koi farm</title>
+    <title>Koi Farm</title>
+    <style>
+        @font-face {
+            font-family: "Grandstander";
+            src: url("font/Grandstander.ttf");
+        }
+
+        @font-face {
+            font-family: "Grandstander";
+            src: url("font/GrandstanderItalic.ttf");
+            font-style: italic;
+        }
+    </style>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" type="text/css" href="css/colors.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
@@ -11,6 +23,9 @@
     <link rel="stylesheet" type="text/css" href="css/book.css">
     <link rel="stylesheet" type="text/css" href="css/buttons.css">
     <link rel="stylesheet" type="text/css" href="css/overlay.css">
+    <link rel="stylesheet" type="text/css" href="css/drop.css">
+    <link rel="stylesheet" type="text/css" href="css/code.css">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <meta charset="utf-8">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="viewport" content="width=device-width height=device-height initial-scale=0.5 user-scalable=no">
@@ -19,6 +34,8 @@
 <div id="wrapper">
     <canvas id="renderer"></canvas>
     <div id="gui"></div>
+    <div id="code"></div>
+    <div id="drop"></div>
     <div id="no-portrait">
         <div class="message">
             <p>Please switch to portrait mode</p>
@@ -31,22 +48,11 @@
             <div id="loader-bar-inner"></div>
         </div>
     </div>
-    <div id="logs" style="position: absolute; left:0; top:0; color:white;"></div>
-<!--    <script>-->
-<!--        const olog = console.log;-->
-<!--        console.log = message => {-->
-<!--            document.getElementById("logs").innerText = message;-->
-
-<!--            olog(message);-->
-<!--        };-->
-
-<!--        console.warn = console.error = console.log;-->
-<!--    </script>-->
 </div>
 <svg xmlns="http://www.w3.org/2000/svg">
     <defs id="fish-icon-defs"></defs>
+    <defs id="code-icon-defs"></defs>
 </svg>
-
 <script src="js/styleUtils.js"></script>
 
 <script src="js/loader.js"></script>
@@ -82,7 +88,9 @@
 <script src="js/render/randomSource.js"></script>
 <script src="js/render/reflections.js"></script>
 <script src="js/render/shore.js"></script>
+<script src="js/render/imageMaker.js"></script>
 <script src="js/render/preview.js"></script>
+<script src="js/render/still.js"></script>
 <script src="js/render/blit.js"></script>
 <script src="js/render/atlas.js"></script>
 <script src="js/render/shadows.js"></script>
@@ -100,6 +108,7 @@
 <script src="js/render/distanceField.js"></script>
 <script src="js/render/drops.js"></script>
 <script src="js/render/flying.js"></script>
+<script src="js/render/fishBackground.js"></script>
 <script src="js/render/systems.js"></script>
 
 <script src="js/koi/numericManipulator.js"></script>
@@ -141,7 +150,6 @@
 <script src="js/koi/blueprint/blueprintPattern.js"></script>
 <script src="js/koi/blueprint/blueprintBody.js"></script>
 <script src="js/koi/blueprint/blueprint.js"></script>
-<script src="js/koi/blueprint/blueprints.js"></script>
 
 <script src="js/koi/spawner/spawnerState.js"></script>
 <script src="js/koi/spawner/spawner.js"></script>
@@ -236,6 +244,14 @@
 <script src="js/koi/foreground/biome.js"></script>
 <script src="js/koi/foreground/foreground.js"></script>
 
+<script src="js/koi/code/code.js"></script>
+<script src="js/koi/code/codeReader.js"></script>
+<script src="js/koi/code/codeWriter.js"></script>
+<script src="js/koi/code/codeViewer.js"></script>
+<script src="js/koi/code/codeIconConstants.js"></script>
+<script src="js/koi/code/codeIconDefs.js"></script>
+<script src="js/koi/code/codeIcon.js"></script>
+
 <script src="js/koi/gui/svg.js"></script>
 <script src="js/koi/gui/gui.js"></script>
 
@@ -256,12 +272,15 @@
 <script src="js/koi/gui/cards/buttons/cardBookButton.js"></script>
 
 <script src="js/koi/gui/cards/cards.js"></script>
+<script src="js/koi/gui/cards/cardBackground.js"></script>
 <script src="js/koi/gui/cards/card.js"></script>
 <script src="js/koi/gui/cards/cardHand.js"></script>
 <script src="js/koi/gui/cards/cardPage.js"></script>
 <script src="js/koi/gui/cards/cardBook.js"></script>
 
 <script src="js/koi/gui/overlay/overlay.js"></script>
+
+<script src="js/koi/drop.js"></script>
 
 <script src="js/koi/pond.js"></script>
 <script src="js/koi/constellation.js"></script>

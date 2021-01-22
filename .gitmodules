@@ -1,0 +1,3 @@
+[submodule "squish.py"]
+	path = squish.py
+	url = https://github.com/jobtalle/squish.py

@@ -12,6 +12,7 @@ const LayerFootprint = function(id, paletteIndex) {
 LayerFootprint.PALETTE_ANY = -1;
 LayerFootprint.PALETTE_UNIQUE = -2;
 LayerFootprint.PALETTE_UNIQUE_LAYER = -3;
+LayerFootprint.PALETTE_SHARED = -4;
 
 /**
  * Count the number of occurrences of a given value in an array
@@ -40,11 +41,17 @@ LayerFootprint.prototype.matches = function(layer, other = null, colors = null) 
     if (this.id !== layer.id)
         return false;
 
-    if (other && this.paletteIndex === LayerFootprint.PALETTE_UNIQUE_LAYER) {
+    if (this.paletteIndex === LayerFootprint.PALETTE_UNIQUE_LAYER) {
         if (!other)
             return true;
 
-        return this.paletteIndex !== other.paletteIndex;
+        return layer.paletteIndex !== other.paletteIndex;
+    }
+    else if (this.paletteIndex === LayerFootprint.PALETTE_SHARED) {
+        if (!other)
+            return false;
+
+        return layer.paletteIndex === other.paletteIndex;
     }
 
     if (colors && this.paletteIndex === LayerFootprint.PALETTE_UNIQUE)

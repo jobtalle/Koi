@@ -57,6 +57,22 @@ BinBuffer.prototype.fromByteArray = function(array) {
 };
 
 /**
+ * Check whether this buffer is equal to another buffer
+ * @param {BinBuffer} other The other buffer
+ * @returns {Boolean} True if the buffers have the same contents
+ */
+BinBuffer.prototype.equalTo = function(other) {
+    if (this.bytes.length !== other.bytes.length)
+        return false;
+
+    for (let byte = 0, byteCount = this.bytes.length; byte < byteCount; ++byte)
+        if (this.bytes[byte] !== other.bytes[byte])
+            return false;
+
+    return true;
+};
+
+/**
  * Read the next byte from this buffer
  * @returns {Number} The next byte in this buffer
  */

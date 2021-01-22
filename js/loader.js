@@ -46,7 +46,9 @@ Loader.Requirement.prototype.satisfy = function() {
 Loader.prototype.LANG_START = "START";
 Loader.prototype.LANG_CONTINUE = "CONTINUE";
 Loader.prototype.LANG_NEW = "NEW";
+Loader.prototype.LANG_CONFIRM = "CONFIRM";
 Loader.prototype.CLASS_FINISHED = "finished";
+Loader.prototype.CLASS_BUTTON_CONFIRM = "confirm";
 
 /**
  * Indicate that a previous game has been loaded
@@ -93,13 +95,19 @@ Loader.prototype.createButtonStart = function() {
 Loader.prototype.createButtonNew = function() {
     const element = document.createElement("button");
 
-    element.appendChild(document.createTextNode(language.get(this.LANG_NEW)));
+    element.innerText = language.get(this.LANG_NEW);
     element.onclick = () => {
-        if (this.onNewGame) {
-            this.onNewGame();
-            this.onFinish();
+        if (element.classList.contains(this.CLASS_BUTTON_CONFIRM)) {
+            if (this.onNewGame) {
+                this.onNewGame();
+                this.onFinish();
 
-            this.hide();
+                this.hide();
+            }
+        }
+        else {
+            element.classList.add(this.CLASS_BUTTON_CONFIRM);
+            element.innerText = language.get(this.LANG_CONFIRM);
         }
     };
 

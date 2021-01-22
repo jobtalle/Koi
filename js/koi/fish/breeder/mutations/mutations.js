@@ -22,11 +22,47 @@ Mutations.prototype.deserialize = function(buffer) {
 };
 
 /**
- * Create the list of possible mutations
- * @returns {Mutation[]} An array containing all possible mutations
+ * Create all color related mutations
+ * @returns {Mutation[]} The mutations
  */
-Mutations.prototype.createMutations = function() {
+Mutations.prototype.createMutationsColor = function() {
     return [
+        // Two golden koi become orange
+        new Mutation(
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_GOLD)
+            ]),
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_GOLD)
+            ]),
+            [
+                new BlueprintLayerBase(Palette.INDEX_ORANGE)
+            ],
+            .2
+        ),
+        // Two orange koi become red
+        new Mutation(
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_ORANGE)
+            ]),
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_ORANGE)
+            ]),
+            [
+                new BlueprintLayerBase(Palette.INDEX_RED)
+            ],
+            .1
+        )
+    ];
+};
+
+/**
+ * Create all spots pattern related mutations
+ * @returns {Mutation[]} The mutations
+ */
+Mutations.prototype.createMutationsSpots = function() {
+    return [
+        // Two solid but different colored fish can become one color + spots of the other color
         new Mutation(
             new PatternFootprint([
                 new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_UNIQUE_LAYER)
@@ -55,13 +91,14 @@ Mutations.prototype.createMutations = function() {
             ],
             .2
         ),
+        // Spotted fish + solid color can become an extra layer of spots
         new Mutation(
             new PatternFootprint([
-                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_UNIQUE_LAYER),
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_UNIQUE),
                 new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_UNIQUE)
             ]),
             new PatternFootprint([
-                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_UNIQUE_LAYER)
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_UNIQUE)
             ]),
             [
                 Mutation.BLUEPRINT_LAYER_MOTHER,
@@ -85,5 +122,98 @@ Mutations.prototype.createMutations = function() {
             ],
             .2
         )
+    ];
+};
+
+/**
+ * Create all stripes pattern related mutations
+ * @returns {Mutation[]} The mutations
+ */
+Mutations.prototype.createMutationsStripes = function() {
+    return [
+        // Two spots layered fish with the same colors may become stripes
+        new Mutation(
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_SHARED),
+                new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_SHARED)
+            ]),
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_SHARED),
+                new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_SHARED)
+            ]),
+            [
+                Mutation.BLUEPRINT_LAYER_MOTHER,
+                new BlueprintLayerStripes(
+                    // Palette index
+                    Mutation.createPaletteReference(true, 0),
+                    // Scale
+                    new Sampler(108, 148),
+                    // Distortion
+                    new Sampler(108, 148),
+                    // Roughness
+                    new Sampler(108, 148),
+                    // Threshold
+                    new Sampler(108, 148),
+                    // Slant
+                    new Sampler(108, 148),
+                    // Suppression
+                    new Sampler(108, 148),
+                    // Focus
+                    new Sampler(108, 148),
+                    // Power
+                    new Sampler(108, 148))
+            ],
+            .1
+        )
+    ];
+};
+
+/**
+ * Create all ridge pattern related mutations
+ * @returns {Mutation[]} The mutations
+ */
+Mutations.prototype.createMutationsRidge = function() {
+    return [
+        // A spotted and a striped fish create a ridged fish
+        new Mutation(
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_SHARED),
+                new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_SHARED)
+            ]),
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_SHARED),
+                new LayerFootprint(LayerStripes.prototype.ID, LayerFootprint.PALETTE_SHARED)
+            ]),
+            [
+                Mutation.BLUEPRINT_LAYER_MOTHER,
+                new BlueprintLayerRidge(
+                    // Palette index
+                    Mutation.createPaletteReference(true, 0),
+                    // Scale
+                    new Sampler(108, 148),
+                    // Power
+                    new Sampler(108, 148),
+                    // Threshold
+                    new Sampler(108, 148),
+                    // Focus
+                    new Sampler(108, 148),
+                    // Focus power
+                    new Sampler(108, 148))
+            ],
+            .15
+        )
+    ];
+};
+
+/**
+ * Create the list of possible mutations
+ * @returns {Mutation[]} An array containing all possible mutations
+ */
+Mutations.prototype.createMutations = function() {
+    return [
+        ...this.createMutationsColor(),
+        ...this.createMutationsSpots(),
+        ...this.createMutationsStripes(),
+        ...this.createMutationsRidge()
     ];
 };

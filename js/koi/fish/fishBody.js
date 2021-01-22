@@ -49,6 +49,7 @@ const FishBody = function(
     this.finPhase = 0;
     this.spacing = 0;
     this.inverseSpacing = 0;
+    this.tailAudioCountdown = 0;
 
     this.calculateSpacing();
 };
@@ -67,19 +68,25 @@ FishBody.prototype.WAVE_INTENSITY_MULTIPLIER = 2;
 FishBody.prototype.WAVE_TURBULENCE = .4;
 FishBody.prototype.FIN_PHASE_SPEED = .4;
 FishBody.prototype.SIZE_MIN = .1;
-FishBody.prototype.SAMPLER_LENGTH = new SamplerPower(.62, 1.3, 3);
-FishBody.prototype.SAMPLER_RADIUS = new SamplerPlateau(.1, .13, .18, 4);
+FishBody.prototype.SAMPLER_LENGTH = new SamplerPower(.62, 1.3, 2.5);
+FishBody.prototype.SAMPLER_RADIUS = new SamplerPlateau(.1, .13, .18, 1);
 FishBody.prototype.SAMPLER_OFFSPRING_COUNT = new SamplerPlateau(1, 3, 8, 2.5);
 FishBody.prototype.SAMPLER_MATING_FREQUENCY = new SamplerPower(300 * .1, 4500 * .1, .3); // TODO: Reduced for debugging
 FishBody.prototype.SAMPLER_GROWTH_MULTIPLIER = new SamplerPower(50, 100, 4);
-FishBody.prototype.SAMPLER_SPRING_START = new SamplerPlateau(.15, .85, .95, 1.5);
-FishBody.prototype.SAMPLER_SPRING_END = new SamplerPlateau(.05, .6, .7, 1.5);
+FishBody.prototype.SAMPLER_SPRING_START = new Sampler(.4, .85);
+FishBody.prototype.SAMPLER_SPRING_END = new Sampler(.3, .6);
 FishBody.prototype.SPINE_LOOP_FLEXIBILITY = new SamplerPower(0, 2.3, .16);
 FishBody.prototype.SPINE_LOOP_ANGLE_AMPLITUDE = .07;
 FishBody.prototype.SPINE_LOOP_PHASE_AMPLITUDE = .6;
 FishBody.prototype.SPRING_POWER = 1.7;
 FishBody.prototype.OFFSPRING_VERTEBRA = .4;
 FishBody.prototype.KILOGRAMS_PER_AREA = 22;
+FishBody.prototype.HEAVY_THRESHOLD = 2.3;
+FishBody.prototype.FAST_THRESHOLD = .045;
+FishBody.prototype.TAIL_AUDIO_THRESHOLD = .08;
+FishBody.prototype.TAIL_AUDIO_RAMP = .025;
+FishBody.prototype.TAIL_AUDIO_VOLUME_MIN = .4;
+FishBody.prototype.TAIL_AUDIO_COOLDOWN = 40;
 
 /**
  * Deserialize a fish body
@@ -138,13 +145,21 @@ FishBody.prototype.serialize = function(buffer) {
 };
 
 /**
- * Get a hash byte of this fish
+ * Get a hash byte of this fish body
  * @returns {Number} The byte value
  */
 FishBody.prototype.hash = function() {
     const ageHash = ((this.age & 0xFF) ^ ((this.age >> 8) & 0xFF));
 
     return this.length ^ this.radius ^ this.growthSpeed ^ this.matingFrequency ^ this.offspringCount ^ ageHash;
+};
+
+/**
+ * Check whether this fish is considered heavy
+ * @returns {Boolean}
+ */
+FishBody.prototype.isHeavy = function() {
+    return this.getWeight() > this.HEAVY_THRESHOLD;
 };
 
 /**
@@ -184,12 +199,11 @@ FishBody.prototype.getOffspringCount = function() {
 
 /**
  * Get the weight of the fish
- * @param {Number} size The fish size in the range [0, 1]
  * @returns {Number} The weight
  */
-FishBody.prototype.getWeight = function(size) {
-    const axisLength = this.lengthSampled * .5 * size;
-    const axisRadius = this.radiusSampled * size;
+FishBody.prototype.getWeight = function() {
+    const axisLength = this.lengthSampled * .5 * this.size;
+    const axisRadius = this.radiusSampled * this.size;
 
     if (imperial)
         return Units.toPounds(Math.PI * axisLength * axisRadius * this.KILOGRAMS_PER_AREA);
@@ -250,9 +264,17 @@ FishBody.prototype.assignFins = function(fins, spineLength) {
 /**
  * Disturb water while swimming
  * @param {Water} water A water plane to disturb
+ * @param {AudioBank} audio Game audio
+ * @param {Constellation} constellation The Constellation
+ * @param {Number} speed The fish speed
  * @param {Random} random A randomizer
  */
-FishBody.prototype.disturbWater = function(water, random) {
+FishBody.prototype.disturbWater = function(
+    water,
+    audio,
+    constellation,
+    speed,
+    random) {
     const tailIndex = this.spine.length - 2;
     const dx = this.spine[tailIndex].x - this.spinePrevious[tailIndex].x;
     const dy = this.spine[tailIndex].y - this.spinePrevious[tailIndex].y;
@@ -268,6 +290,28 @@ FishBody.prototype.disturbWater = function(water, random) {
             this.spine[tailIndex].y,
             this.WAVE_RADIUS,
             intensity * (random.getFloat() * this.WAVE_TURBULENCE + (1 - this.WAVE_TURBULENCE)));
+
+        if (this.tailAudioCountdown === 0 && tailSpeed > this.TAIL_AUDIO_THRESHOLD) {
+            const x = this.spine[tailIndex].x;
+
+            if (x > 0 && x < constellation.width) {
+                const pan = 2 * this.spine[tailIndex].x / constellation.width - 1;
+                const volume = this.TAIL_AUDIO_VOLUME_MIN +
+                    Math.min(1, (tailSpeed - this.TAIL_AUDIO_THRESHOLD) / this.TAIL_AUDIO_RAMP) *
+                    (1 - this.TAIL_AUDIO_VOLUME_MIN);
+
+                this.tailAudioCountdown = this.TAIL_AUDIO_COOLDOWN;
+
+                if (speed > this.FAST_THRESHOLD)
+                    audio.effectFishTailFast.play(pan, volume);
+                else {
+                    if (this.isHeavy())
+                        audio.effectFishTailBig.play(pan, volume);
+                    else
+                        audio.effectFishTailSmall.play(pan, volume);
+                }
+            }
+        }
     }
 };
 
@@ -383,6 +427,8 @@ FishBody.prototype.calculateSpacing = function() {
  * @param {Number} speed The fish speed
  * @param {Boolean} [updateAge] A boolean indicated whether the body should age this update
  * @param {Water} [water] A water plane to disturb
+ * @param {AudioBank} [audio] Game audio
+ * @param {Constellation} [constellation] The Constellation
  * @param {Random} [random] A randomizer, required when water is supplied
  */
 FishBody.prototype.update = function(
@@ -391,9 +437,14 @@ FishBody.prototype.update = function(
     speed,
     updateAge = false,
     water = null,
+    audio = null,
+    constellation = null,
     random = null) {
     if (updateAge && this.age !== 0xFFFF)
         this.size = this.samplerSize.sample(++this.age / 0xFFFF);
+
+    if (this.tailAudioCountdown !== 0)
+        --this.tailAudioCountdown;
 
     this.storePreviousState();
     this.spine[0].set(head);
@@ -446,7 +497,7 @@ FishBody.prototype.update = function(
         this.finPhase += Math.PI + Math.PI;
 
     if (water)
-        this.disturbWater(water, random);
+        this.disturbWater(water, audio, constellation, speed, random);
 };
 
 /**
@@ -574,7 +625,7 @@ FishBody.prototype.animateSpineLoop = function(
     const dx = xEnd - xStart;
     const dy = yEnd - yStart;
     const d = Math.sqrt(dx * dx + dy * dy);
-    const direction = Math.asin(dy / d);
+    const direction = -Math.atan2(dy, dx) + Math.PI;
     const shift = .5 * (d - (this.spine.length - 1) * this.spacing);
 
     this.spine[0].x = xStart + shift * dx / d;

@@ -46,7 +46,7 @@ Weather.prototype.WIND_INTENSITY_THUNDERSTORM = .2;
 Weather.prototype.RAIN_SPEED_DRIZZLE = .08;
 Weather.prototype.RAIN_SPEED_RAIN = .09;
 Weather.prototype.RAIN_SPEED_THUNDERSTORM = .1;
-Weather.prototype.RAIN_AMOUNT_DRIZZLE = .06;
+Weather.prototype.RAIN_AMOUNT_DRIZZLE = .03;
 Weather.prototype.RAIN_AMOUNT_RAIN = .09;
 Weather.prototype.RAIN_AMOUNT_THUNDERSTORM = .15;
 

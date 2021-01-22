@@ -9,7 +9,13 @@ const Foreground = function(
     gl,
     constellation,
     random) {
-    const slots = new Slots(constellation.width, constellation.height + this.Y_OVERFLOW, constellation, random);
+    const slots = new Slots(
+        this.X_PADDING,
+        this.Y_SHIFT,
+        constellation.width - 2 * this.X_PADDING,
+        constellation.height + this.Y_OVERFLOW - this.Y_SHIFT,
+        constellation,
+        random);
     const biome = new Biome(constellation, slots.width, slots.height, random);
 
     this.gl = gl;
@@ -19,6 +25,8 @@ const Foreground = function(
 };
 
 Foreground.prototype.Y_SCALE = .74;
+Foreground.prototype.X_PADDING = .03;
+Foreground.prototype.Y_SHIFT = .2;
 Foreground.prototype.Y_OVERFLOW = .3;
 
 /**

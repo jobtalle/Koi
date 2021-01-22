@@ -44,9 +44,9 @@ WeatherState.prototype.TRANSITION_MATRIX = [
         0     // Thunderstorm
     ],
     [         // Transitions from overcast weather
-        0.3,  // Sunny
-        0.25, // Overcast
-        0.2,  // Drizzle
+        0.4,  // Sunny
+        0.2,  // Overcast
+        0.15, // Drizzle
         0.15, // Rain
         0.1   // Thunderstorm
     ],
@@ -257,4 +257,12 @@ WeatherState.prototype.update = function(audio, random) {
  */
 WeatherState.prototype.isRaining = function() {
     return this.state === this.ID_RAIN || this.state === this.ID_THUNDERSTORM;
+};
+
+/**
+ * Check whether it's slightly raining
+ * @returns {Boolean} True if it's slightly raining
+ */
+WeatherState.prototype.isDrizzle = function() {
+    return this.state === this.ID_DRIZZLE;
 };

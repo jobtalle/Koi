@@ -10,12 +10,13 @@ const Card = function(body, position, angle = 0) {
     this.position = position;
     this.positionPrevious = position.copy();
     this.angle = this.anglePrevious = angle;
-    this.name = this.createName();
     this.previewAnimation = this.createPreviewAnimation();
     this.previewFrame = this.createPreviewFrame(this.previewAnimation);
     this.previewURL = null;
-    this.element = this.createElement(this.name, this.previewFrame);
+    this.element = this.createElement(this.previewFrame);
     this.initialized = false;
+    this.codeViewer = null;
+    this.systems = null;
 
     this.updatePosition();
 };
@@ -23,8 +24,14 @@ const Card = function(body, position, angle = 0) {
 Card.prototype.CLASS = "card-shape card";
 Card.prototype.CLASS_PREVIEW_FRAME = "preview-frame";
 Card.prototype.CLASS_PREVIEW_ANIMATION = "preview-animation";
-Card.prototype.CLASS_NAME = "name";
+Card.prototype.CLASS_COLORS = "colors";
+Card.prototype.CLASS_COLOR = "color";
+Card.prototype.CLASS_COLORS_WRAPPER = "colors-wrapper";
+Card.prototype.CLASS_COLOR_FILL = "fill-";
 Card.prototype.CLASS_INFO = "info";
+Card.prototype.CLASS_INFO_PROPERTY = "property";
+Card.prototype.CLASS_INFO_TEXT = "text";
+Card.prototype.CLASS_INFO_BACKGROUND = "background";
 Card.prototype.CLASS_INFO_LABEL = "label";
 Card.prototype.CLASS_INFO_VALUE = "value";
 Card.prototype.WIDTH = StyleUtils.getInt("--card-width");
@@ -33,12 +40,10 @@ Card.prototype.RATIO = Card.prototype.WIDTH / Card.prototype.HEIGHT;
 Card.prototype.LANG_WEIGHT = "INFO_WEIGHT";
 Card.prototype.LANG_LENGTH = "INFO_LENGTH";
 Card.prototype.LANG_AGE = "INFO_AGE";
-Card.prototype.LANG_MINUTE = "INFO_MINUTE";
-Card.prototype.LANG_MINUTES = "INFO_MINUTES";
-Card.prototype.LANG_HOUR = "INFO_HOUR";
 Card.prototype.LANG_FRY = "INFO_FRY";
 Card.prototype.LANG_UNIT_WEIGHT = "UNIT_WEIGHT";
 Card.prototype.LANG_UNIT_LENGTH = "UNIT_LENGTH";
+Card.prototype.LANG_UNIT_TIME = "UNIT_TIME";
 Card.prototype.REQUIREMENT_WEIGHT = 5;
 
 /**
@@ -59,6 +64,22 @@ Card.deserialize = function(buffer, position = new Vector2(), angle = 0) {
  */
 Card.prototype.serialize = function(buffer) {
     this.body.serialize(buffer);
+};
+
+/**
+ * Set the code viewer
+ * @param {CodeViewer} codeViewer The code viewer
+ */
+Card.prototype.setCodeViewer = function(codeViewer) {
+    this.codeViewer = codeViewer;
+};
+
+/**
+ * Set the systems
+ * @param {Systems} systems The render systems
+ */
+Card.prototype.setSystems = function(systems) {
+    this.systems = systems;
 };
 
 /**
@@ -105,25 +126,8 @@ Card.prototype.initialize = function(
             requirement.satisfy();
     });
 
-    if (createdTexture) {
-        atlas.returnRegion(this.body.pattern.region);
-
-        this.body.pattern.region = null;
-    }
-
-    this.setName(Palette.makeName(this.body.pattern.base, this.body.pattern.layers));
-};
-
-/**
- * Set the name of the fish, should be executed only once
- * @param {String} name The name of the fish
- */
-Card.prototype.setName = function(name) {
-    const element = document.createElement("h2");
-
-    element.appendChild(document.createTextNode(name));
-
-    this.name.appendChild(element);
+    if (createdTexture)
+        this.body.pattern.free(atlas);
 };
 
 /**
@@ -210,18 +214,6 @@ Card.prototype.transformSlot = function(slotWidth) {
 };
 
 /**
- * Create the name field
- * @returns {HTMLDivElement} The name element
- */
-Card.prototype.createName = function() {
-    const element = document.createElement("div");
-
-    element.className = this.CLASS_NAME;
-
-    return element;
-};
-
-/**
  * Create the preview animation element
  * @returns {HTMLDivElement} The preview animation element
  */
@@ -252,10 +244,12 @@ Card.prototype.createPreviewFrame = function(previewAnimation) {
  * Create an element describing a fish property
  * @param {String} name The property name
  * @param {String} value The property value
- * @returns {HTMLParagraphElement} The property element
+ * @returns {HTMLElement} The property element
  */
 Card.prototype.createProperty = function(name, value) {
-    const element = document.createElement("p");
+    const element = document.createElement("div");
+    const background = document.createElement("div");
+    const text = document.createElement("div");
     const spanLabel = document.createElement("span");
     const spanValue = document.createElement("span");
 
@@ -265,8 +259,49 @@ Card.prototype.createProperty = function(name, value) {
     spanValue.className = this.CLASS_INFO_VALUE;
     spanValue.appendChild(document.createTextNode(value));
 
-    element.appendChild(spanLabel);
-    element.appendChild(spanValue);
+    background.className = this.CLASS_INFO_BACKGROUND;
+
+    text.className = this.CLASS_INFO_TEXT;
+    text.appendChild(spanLabel);
+    text.appendChild(spanValue);
+
+    element.className = this.CLASS_INFO_PROPERTY;
+    element.appendChild(background);
+    element.appendChild(text);
+
+    return element;
+};
+
+/**
+ * Create a color element
+ * @param {Number} paletteIndex The palette index for this color
+ * @returns {HTMLDivElement} The color element
+ */
+Card.prototype.createColor = function(paletteIndex) {
+    const element = document.createElement("div");
+
+    element.className = this.CLASS_COLOR;
+    element.classList.add(this.CLASS_COLOR_FILL + Palette.COLOR_NAMES[paletteIndex]);
+
+    return element;
+}
+
+/**
+ * Create the colors element
+ * @returns {HTMLDivElement} The colors element
+ */
+Card.prototype.createColors = function() {
+    const element = document.createElement("div");
+    const colorsWrapper = document.createElement("div");
+
+    colorsWrapper.className = this.CLASS_COLORS_WRAPPER;
+    colorsWrapper.appendChild(this.createColor(this.body.pattern.base.paletteIndex));
+
+    for (const layer of this.body.pattern.layers)
+        colorsWrapper.appendChild(this.createColor(layer.paletteIndex));
+
+    element.className = this.CLASS_COLORS;
+    element.appendChild(colorsWrapper);
 
     return element;
 };
@@ -282,7 +317,7 @@ Card.prototype.createInfo = function() {
     element.className = this.CLASS_INFO;
     element.appendChild(this.createProperty(
         language.get(this.LANG_WEIGHT),
-        this.body.getWeight(this.body.size).toFixed(2) + " " + language.get(this.LANG_UNIT_WEIGHT)));
+        this.body.getWeight().toFixed(2) + " " + language.get(this.LANG_UNIT_WEIGHT)));
     element.appendChild(this.createProperty(
         language.get(this.LANG_LENGTH),
         (this.body.getLength()).toFixed(1).toString() + " " + language.get(this.LANG_UNIT_LENGTH)));
@@ -291,35 +326,62 @@ Card.prototype.createInfo = function() {
         element.appendChild(this.createProperty(
             language.get(this.LANG_AGE),
             language.get(this.LANG_FRY)));
-    else if (Math.round(ageMinutes) < 2)
-        element.appendChild(this.createProperty(
-            language.get(this.LANG_AGE),
-            Math.round(ageMinutes).toString() + " " + language.get(this.LANG_MINUTE)));
     else if (ageMinutes > 60)
         element.appendChild(this.createProperty(
             language.get(this.LANG_AGE),
-            "> 1 " + language.get(this.LANG_HOUR)));
+            "> 60 " + language.get(this.LANG_UNIT_TIME)));
     else
         element.appendChild(this.createProperty(
             language.get(this.LANG_AGE),
-            Math.round(ageMinutes).toString() + " " + language.get(this.LANG_MINUTES)));
+            Math.round(ageMinutes).toString() + " " + language.get(this.LANG_UNIT_TIME)));
 
     return element;
 };
 
 /**
+ * Create the download button
+ * @returns {HTMLButtonElement} The download button
+ */
+Card.prototype.createDownload = function() {
+    const button = document.createElement("button");
+
+    new CodeIcon(button);
+
+    button.addEventListener("mousedown", event => {
+        event.stopImmediatePropagation();
+    });
+
+    button.onclick = () => {
+        this.codeViewer.view(new CodeWriter(
+            this.body,
+            this.systems.still,
+            this.systems.atlas,
+            this.systems.bodies,
+            this.systems.randomSource).write());
+    };
+
+    return button;
+};
+
+/**
  * Create an HTML element for this card
- * @param {HTMLElement} name The name element
  * @param {HTMLElement} previewFrame The preview frame element
  * @returns {HTMLElement} The card element
  */
-Card.prototype.createElement = function(name, previewFrame) {
+Card.prototype.createElement = function(previewFrame) {
     const element = document.createElement("div");
 
+    new CardBackground(
+        element,
+        this.WIDTH,
+        this.HEIGHT,
+        new Random(Random.prototype.makeSeed(this.body.age / 0xFFFF)));
+
     element.className = this.CLASS;
-    element.appendChild(name);
     element.appendChild(previewFrame);
+    element.appendChild(this.createColors());
     element.appendChild(this.createInfo());
+    element.appendChild(this.createDownload());
 
     return element;
 };

@@ -1,17 +1,16 @@
 {
   "INCLUDE": [
-    "names/western.json",
     "units/imperial.json"
   ],
   "START": "Start",
   "CONTINUE": "Continue",
   "NEW": "New pond",
+  "CONFIRM": "Are you sure?",
+  "SAVE": "Save",
+  "COPY": "Copy",
   "INFO_WEIGHT": "Weight",
   "INFO_LENGTH": "Length",
   "INFO_AGE": "Age",
-  "INFO_MINUTE": "minute",
-  "INFO_MINUTES": "minutes",
-  "INFO_HOUR": "hour",
   "INFO_FRY": "Fry",
   "TUTORIAL_MOVE_FISH": "Move the fish by pressing it and dragging it across the screen.",
   "TUTORIAL_MOVE_POND_1": "Put a fish into the small pond.",

@@ -54,13 +54,17 @@ if (gl &&
         const storage = window["require"] ? new StorageFile() : new StorageLocal();
         const tutorial = storage.get("tutorial") !== null;
         const wrapper = document.getElementById("wrapper");
-        const gui = new GUI(document.getElementById("gui"));
+        const gui = new GUI(
+            document.getElementById("gui"),
+            new CodeViewer(document.getElementById("code"), storage));
+        const systems = new Systems(gl, new Random(2893), wrapper.clientWidth, wrapper.clientHeight);
         const sessionBuffer = tutorial ? storage.getBuffer("session") : null;
-        const systems = new Systems(gl, new Random(session.environmentSeed), wrapper.clientWidth, wrapper.clientHeight);
-        let lastDate = null;
+        let lastTime = null;
         let koi = null;
         let loaded = true;
         let mouseLeft = false;
+
+        new Drop(gui, systems, document.getElementById("drop"), canvas);
 
         canvas.width = wrapper.clientWidth;
         canvas.height = wrapper.clientHeight;
@@ -120,15 +124,13 @@ if (gl &&
             newSession();
 
         // Trigger the animation frame loop
-        lastDate = new Date();
+        lastTime = performance.now();
 
-        const loop = () => {
+        const loop = time => {
             if (loaded) {
-                const date = new Date();
+                koi.render(.001 * (time - lastTime));
 
-                koi.render(.001 * (date - lastDate));
-
-                lastDate = date;
+                lastTime = time;
 
                 requestAnimationFrame(loop);
             }
@@ -169,6 +171,8 @@ if (gl &&
         });
 
         canvas.addEventListener("mouseleave", () => {
+            koi.mouseLeave();
+
             mouseLeft = true;
         });
 
@@ -198,6 +202,8 @@ if (gl &&
     new FishIconDefs(
         document.getElementById("fish-icon-defs"),
         new Random(Random.prototype.makeSeed(Koi.prototype.COLOR_BACKGROUND.r)));
+    new CodeIconDefs(
+        document.getElementById("code-icon-defs"));
 }
 else
     onFailure();

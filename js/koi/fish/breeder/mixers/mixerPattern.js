@@ -69,6 +69,24 @@ MixerPattern.prototype.mix = function(
     const shapeFins = new MixerLayerShapeFin(this.mother.shapeFin, this.father.shapeFin).mix(random);
     const layers = [];
 
+    if (mutations) {
+        for (const mutation of mutations.mutations) if (mutation.mutates(
+            this.mother,
+            this.father,
+            forceMutation,
+            random)) {
+            onMutate(mutation);
+
+            return mutation.apply(
+                this.mother,
+                this.father,
+                shapeBody,
+                shapeFins,
+                this.mixLayers.bind(this),
+                random);
+        }
+    }
+
     if (this.patternsEqual(this.mother, this.father)) {
         base = new MixerLayerBase(this.mother.base, this.father.base).mix(random);
 
@@ -76,24 +94,6 @@ MixerPattern.prototype.mix = function(
             layers.push(this.mixLayers(this.mother.layers[layer], this.father.layers[layer], random));
     }
     else {
-        if (mutations) {
-            for (const mutation of mutations.mutations) if (mutation.mutates(
-                this.mother,
-                this.father,
-                forceMutation,
-                random)) {
-                onMutate(mutation);
-
-                return mutation.apply(
-                    this.mother,
-                    this.father,
-                    shapeBody,
-                    shapeFins,
-                    this.mixLayers.bind(this),
-                    random);
-            }
-        }
-
         // TODO: Dominance?
         if (random.getFloat() < .5) {
             base = this.mother.base.copy();

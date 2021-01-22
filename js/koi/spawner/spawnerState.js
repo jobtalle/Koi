@@ -12,12 +12,200 @@ const SpawnerState = function(time = this.CHECK_FREQUENCY - 1, school = 0, spawn
 };
 
 SpawnerState.prototype.CHECK_FREQUENCY = 30;
-SpawnerState.prototype.BLUEPRINT_INITIAL = Blueprints.baseWhite;
 SpawnerState.prototype.BLUEPRINTS = [
-    Blueprints.baseWhite,
-    Blueprints.baseBlack,
-    Blueprints.baseGold
+    // White
+    new Blueprint(
+        // School size
+        new SamplerPlateau(1, 2, 5, 1),
+        // Body
+        new BlueprintBody(
+            // Length
+            new Sampler(150, 180),
+            // Radius
+            new Sampler(200, 235),
+            // Growth speed
+            new Sampler(130, 170),
+            // Mating frequency
+            new Sampler(150, 160),
+            // Offspring count
+            new Sampler(130, 170),
+            // Age
+            new Sampler(20000, 25000),
+            // Fins
+            new BlueprintFins(),
+            // Tail
+            new BlueprintTail(
+                // Length
+                new Sampler(100, 140),
+                // Skew
+                new Sampler(150, 220)),
+            // Pattern
+            new BlueprintPattern(
+                // Base
+                new BlueprintLayerBase(Palette.INDEX_WHITE),
+                // Body shape
+                new BlueprintLayerShapeBody(
+                    // Center power
+                    new Sampler(50, 100),
+                    // Radius power
+                    new Sampler(170, 200),
+                    // Eye position
+                    new Sampler(50, 100)),
+                // Fin shape
+                new BlueprintLayerShapeFin(
+                    // Roundness
+                    new Sampler(200, 250)),
+                // Layers
+                []
+            )
+        )
+    ),
+    // Black
+    new Blueprint(
+        // School size
+        new SamplerPlateau(2, 4, 10, 1.7),
+        // Body
+        new BlueprintBody(
+            // Length
+            new Sampler(150, 180),
+            // Radius
+            new Sampler(200, 235),
+            // Growth speed
+            new Sampler(130, 170),
+            // Mating frequency
+            new Sampler(150, 160),
+            // Offspring count
+            new Sampler(130, 170),
+            // Age
+            new Sampler(20000, 25000),
+            // Fins
+            new BlueprintFins(),
+            // Tail
+            new BlueprintTail(
+                // Length
+                new Sampler(100, 140),
+                // Skew
+                new Sampler(150, 220)),
+            // Pattern
+            new BlueprintPattern(
+                // Base
+                new BlueprintLayerBase(Palette.INDEX_BLACK),
+                // Body shape
+                new BlueprintLayerShapeBody(
+                    // Center power
+                    new Sampler(50, 100),
+                    // Radius power
+                    new Sampler(170, 200),
+                    // Eye position
+                    new Sampler(50, 100)),
+                // Fin shape
+                new BlueprintLayerShapeFin(
+                    // Roundness
+                    new Sampler(200, 250)),
+                // Layers
+                []
+            )
+        )
+    ),
+    // Gold
+    new Blueprint(
+        // School size
+        new SamplerPlateau(1, 2, 5, 1),
+        // Body
+        new BlueprintBody(
+            // Length
+            new Sampler(20, 40),
+            // Radius
+            new Sampler(200, 235),
+            // Growth speed
+            new Sampler(130, 170),
+            // Mating frequency
+            new Sampler(150, 160),
+            // Offspring count
+            new Sampler(130, 170),
+            // Age
+            new Sampler(20000, 25000),
+            // Fins
+            new BlueprintFins(),
+            // Tail
+            new BlueprintTail(
+                // Length
+                new Sampler(100, 140),
+                // Skew
+                new Sampler(150, 220)),
+            // Pattern
+            new BlueprintPattern(
+                // Base
+                new BlueprintLayerBase(Palette.INDEX_GOLD),
+                // Body shape
+                new BlueprintLayerShapeBody(
+                    // Center power
+                    new Sampler(50, 100),
+                    // Radius power
+                    new Sampler(170, 200),
+                    // Eye position
+                    new Sampler(50, 100)),
+                // Fin shape
+                new BlueprintLayerShapeFin(
+                    // Roundness
+                    new Sampler(200, 250)),
+                // Layers
+                []
+            )
+        )
+    ),
+    // Brown
+    new Blueprint(
+        // School size
+        new SamplerPlateau(1, 3, 5, 1),
+        // Body
+        new BlueprintBody(
+            // Length
+            new Sampler(200, 230),
+            // Radius
+            new Sampler(50, 70),
+            // Growth speed
+            new Sampler(20, 40),
+            // Mating frequency
+            new Sampler(200, 225),
+            // Offspring count
+            new Sampler(170, 190),
+            // Age
+            new Sampler(20000, 25000),
+            // Fins
+            new BlueprintFins(),
+            // Tail
+            new BlueprintTail(
+                // Length
+                new Sampler(220, 250),
+                // Skew
+                new Sampler(200, 220)),
+            // Pattern
+            new BlueprintPattern(
+                // Base
+                new BlueprintLayerBase(Palette.INDEX_BROWN),
+                // Body shape
+                new BlueprintLayerShapeBody(
+                    // Center power
+                    new Sampler(80, 140),
+                    // Radius power
+                    new Sampler(180, 210),
+                    // Eye position
+                    new Sampler(20, 30)),
+                // Fin shape
+                new BlueprintLayerShapeFin(
+                    // Roundness
+                    new Sampler(50, 60)),
+                // Layers
+                []
+            )
+        )
+    )
 ];
+SpawnerState.prototype.BLUEPRINT_INITIAL = SpawnerState.prototype.BLUEPRINTS[0];
+SpawnerState.prototype.BLUEPRINTS_TUTORIAL = [
+    SpawnerState.prototype.BLUEPRINTS[0],
+    SpawnerState.prototype.BLUEPRINTS[1]];
 
 /**
  * Deserialize the spawner state
@@ -92,6 +280,7 @@ SpawnerState.prototype.spawnInitial = function(
  * @param {SpawnerBehavior} behavior The current behavior
  * @param {Constellation} constellation The constellation
  * @param {Atlas} atlas The atlas to render newly spawned patterns on
+ * @param {WeatherState} weatherState The weather state
  * @param {RandomSource} randomSource A random source
  * @param {Number} limit The maximum number of fish that may exist in the river
  * @param {Number} overhead The overhead to the maximum number of fish in the constellation
@@ -101,6 +290,7 @@ SpawnerState.prototype.update = function(
     behavior,
     constellation,
     atlas,
+    weatherState,
     randomSource,
     limit,
     overhead,
@@ -120,7 +310,7 @@ SpawnerState.prototype.update = function(
             --this.school;
         }
         else {
-            this.spawning = behavior.getBlueprint(random);
+            this.spawning = behavior.getBlueprint(weatherState, random);
 
             if (this.spawning && constellation.river.getFishCount() < limit)
                 this.school = behavior.getSchoolSize(this.spawning, random);

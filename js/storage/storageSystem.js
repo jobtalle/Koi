@@ -3,7 +3,7 @@
  * @constructor
  */
 const StorageSystem = function() {
-
+    this.hasClipboard = navigator.clipboard["write"] && window["ClipboardItem"];
 };
 
 /**
@@ -47,5 +47,29 @@ StorageSystem.prototype.getBuffer = function(key) {
  * @param {String} key The key of the item
  */
 StorageSystem.prototype.remove = function(key) {
+
+};
+
+/**
+ * Copy an image to the clipboard
+ * @param {Blob} blob The image blob data
+ */
+StorageSystem.prototype.imageToClipboard = function(blob) {
+    if (!this.hasClipboard)
+        return;
+
+    navigator.clipboard["write"]([
+        new window["ClipboardItem"]({
+            [blob.type]: blob
+        })
+    ]);
+};
+
+/**
+ * Save an image
+ * @param {Blob} blob The image blob data
+ * @param {String} name The file name
+ */
+StorageSystem.prototype.imageToFile = function(blob, name) {
 
 };

@@ -11,7 +11,7 @@ const Pond = function(constraint, onBreed, onMutate, canBreed = true) {
     this.onBreed = onBreed;
     this.onMutate = onMutate;
     this.canBreed = canBreed;
-    this.fishes = [];
+    this.fish = [];
 };
 
 Pond.prototype.CHASE_RADIUS = 1;
@@ -22,25 +22,25 @@ Pond.prototype.CHASE_FORCE = 0.17;
  * @param {BinBuffer} buffer A buffer to serialize to
  */
 Pond.prototype.serialize = function(buffer) {
-    const relativePositions = new Array(this.fishes.length);
-    let validFishes = 0;
+    const relativePositions = new Array(this.fish.length);
+    let validFish = 0;
 
-    for (let fish = 0; fish < this.fishes.length; ++fish) {
-        const position = this.constraint.getRelativePosition(this.fishes[fish].position);
+    for (let fish = 0; fish < this.fish.length; ++fish) {
+        const position = this.constraint.getRelativePosition(this.fish[fish].position);
 
         if (position)
-            ++validFishes;
+            ++validFish;
 
         relativePositions[fish] = position;
     }
 
-    buffer.writeUint16(validFishes);
+    buffer.writeUint16(validFish);
 
-    for (let fish = 0; fish < this.fishes.length; ++fish) {
+    for (let fish = 0; fish < this.fish.length; ++fish) {
         if (relativePositions[fish]) {
             relativePositions[fish].serialize(buffer);
 
-            this.fishes[fish].serialize(buffer);
+            this.fish[fish].serialize(buffer);
         }
     }
 };
@@ -54,7 +54,7 @@ Pond.prototype.serialize = function(buffer) {
  */
 Pond.prototype.deserialize = function(buffer, atlas, randomSource) {
     for (let fish = 0, fishCount = buffer.readUint16(); fish < fishCount; ++fish)
-        this.fishes.push(Fish.deserialize(
+        this.fish.push(Fish.deserialize(
             buffer,
             this.constraint.getAbsolutePosition(this.constraint.deserializeRelativePosition(buffer)),
             atlas,
@@ -62,11 +62,11 @@ Pond.prototype.deserialize = function(buffer, atlas, randomSource) {
 };
 
 /**
- * Get the number of fishes in this pond
- * @returns {Number} The number of fishes in this pond
+ * Get the number of fish in this pond
+ * @returns {Number} The number of fish in this pond
  */
 Pond.prototype.getFishCount = function() {
-    return this.fishes.length;
+    return this.fish.length;
 };
 
 /**
@@ -77,7 +77,7 @@ Pond.prototype.getFishCount = function() {
 Pond.prototype.chase = function(x, y) {
     const origin = new Vector2(x, y);
 
-    for (const fish of this.fishes) {
+    for (const fish of this.fish) {
         const dx = fish.position.x - x;
         const dy = fish.position.y - y;
 
@@ -92,16 +92,16 @@ Pond.prototype.chase = function(x, y) {
  * @param {Atlas} atlas The texture atlas
  */
 Pond.prototype.replaceConstraint = function(constraint, atlas) {
-    const relativePositions = new Array(this.fishes.length);
+    const relativePositions = new Array(this.fish.length);
 
-    for (let fish = this.fishes.length; fish-- > 0;) {
-        relativePositions[fish] = this.constraint.getRelativePosition(this.fishes[fish].position);
+    for (let fish = this.fish.length; fish-- > 0;) {
+        relativePositions[fish] = this.constraint.getRelativePosition(this.fish[fish].position);
         // TODO: Arc path positions sometimes don't translate properly!
         if (relativePositions[fish]) {
             const newPosition = constraint.getAbsolutePosition(relativePositions[fish])
 
             if (newPosition)
-                this.fishes[fish].moveTo(newPosition);
+                this.fish[fish].moveTo(newPosition);
             else
                 this.removeFish(fish, atlas);
         }
@@ -117,7 +117,7 @@ Pond.prototype.replaceConstraint = function(constraint, atlas) {
  * @param {Fish} fish A fish
  */
 Pond.prototype.addFish = function(fish) {
-    this.fishes.splice(0, 0, fish);
+    this.fish.splice(0, 0, fish);
 };
 
 /**
@@ -126,8 +126,8 @@ Pond.prototype.addFish = function(fish) {
  * @param {Atlas} atlas The texture atlas
  */
 Pond.prototype.removeFish = function(index, atlas) {
-    this.fishes[index].free(atlas);
-    this.fishes.splice(index, 1);
+    this.fish[index].free(atlas);
+    this.fish.splice(index, 1);
 };
 
 /**
@@ -141,11 +141,11 @@ Pond.prototype.pick = function(x, y, whitelist) {
     if (!this.constraint.contains(x, y))
         return null;
 
-    for (let fish = this.fishes.length; fish-- > 0;) if (this.fishes[fish].body.atPosition(x, y)) {
-        if (!whitelist || whitelist.indexOf(this.fishes[fish]) !== -1) {
-            const picked = this.fishes[fish];
+    for (let fish = this.fish.length; fish-- > 0;) if (this.fish[fish].body.atPosition(x, y)) {
+        if (!whitelist || whitelist.indexOf(this.fish[fish]) !== -1) {
+            const picked = this.fish[fish];
 
-            this.fishes.splice(fish, 1);
+            this.fish.splice(fish, 1);
 
             return picked;
         }
@@ -162,6 +162,7 @@ Pond.prototype.pick = function(x, y, whitelist) {
  * @param {Mutations} mutations The mutations object, or null if mutation is disabled
  * @param {Boolean} forceMutation True if at least one mutation must occur when possible during breeding
  * @param {Water} water A water plane to disturb
+ * @param {AudioBank} audio Game audio
  * @param {Constellation} constellation The constellation containing all ponds
  * @param {Boolean} raining True if it's raining
  * @param {Random} random A randomizer
@@ -173,16 +174,17 @@ Pond.prototype.update = function(
     mutations,
     forceMutation,
     water,
+    audio,
     constellation,
     raining,
     random) {
-    for (let a = this.fishes.length; a-- > 0;) {
-        const fish = this.fishes[a];
+    for (let a = this.fish.length; a-- > 0;) {
+        const fish = this.fish[a];
 
         for (let b = a; b-- > 0;)
-            fish.interact(this.fishes[b], random);
+            fish.interact(this.fish[b], random);
 
-        if (fish.update(this.constraint, water, raining, random))
+        if (fish.update(this.constraint, water, audio, constellation, raining, random))
             this.removeFish(a, atlas);
         else {
             if (constellation.getFishCount() < Koi.prototype.FISH_CAPACITY - 1 &&
@@ -234,6 +236,6 @@ Pond.prototype.update = function(
  * @param {Number} time The interpolation factor
  */
 Pond.prototype.render = function(bodies, time) {
-    for (const fish of this.fishes)
+    for (const fish of this.fish)
         fish.render(bodies, time);
 };

@@ -38,7 +38,7 @@ CardBook.prototype.CLASS_INVISIBLE = "invisible";
 CardBook.prototype.HIDE_TIME = StyleUtils.getFloat("--book-hide-time");
 CardBook.prototype.PADDING_TOP = .05;
 CardBook.prototype.PADDING_PAGE = .02;
-CardBook.prototype.PADDING_CARD = .05;
+CardBook.prototype.PADDING_CARD = .035;
 CardBook.prototype.HEIGHT = .65;
 CardBook.prototype.PAGE_COUNT = CardRequirements.length;
 
@@ -92,7 +92,7 @@ CardBook.Flip.prototype.getScale = function(time) {
  */
 CardBook.prototype.deserialize = function(buffer, cards) {
     this.unlocked = buffer.readUint8();
-    this.unlocked = 0;
+    this.unlocked = 100; // TODO: Debug
 
     for (const page of this.pages)
         page.deserialize(buffer, cards);

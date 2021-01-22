@@ -3,7 +3,7 @@
  * @constructor
  */
 const StorageLocal = function() {
-
+    StorageSystem.call(this);
 };
 
 StorageLocal.prototype = Object.create(StorageSystem.prototype);
@@ -55,4 +55,26 @@ StorageLocal.prototype.getBuffer = function(key) {
  */
 StorageLocal.prototype.remove = function(key) {
     window["localStorage"].removeItem(key);
+};
+
+/**
+ * Save an image
+ * @param {Blob} blob The image blob data
+ * @param {String} name The file name
+ */
+StorageLocal.prototype.imageToFile = function(blob, name) {
+    const a = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+
+    a.href = url;
+    a.download = name;
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }, 0);
 };

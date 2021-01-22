@@ -24,6 +24,20 @@ Color.prototype.copy = function() {
 };
 
 /**
+ * Get the distance to another color
+ * @param {Color} other The other color
+ * @returns {Number} The distance in the range [0, 2]
+ */
+Color.prototype.distance = function(other) {
+    const dr = other.r - this.r;
+    const dg = other.g - this.g;
+    const db = other.b - this.b;
+    const da = other.a - this.a;
+
+    return Math.sqrt(dr * dr + dg * dg + db * db + da * da);
+};
+
+/**
  * Create an interpolated version of a color that lies between this color and a given color
  * @param {Color} other The other color
  * @param {Number} f The interpolation factor in the range [0, 1]

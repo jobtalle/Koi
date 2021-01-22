@@ -73,6 +73,9 @@ Pattern.prototype.serialize = function(buffer) {
  * @param {Atlas} atlas The texture atlas
  */
 Pattern.prototype.free = function(atlas) {
-    if (this.region)
+    if (this.region) {
         atlas.returnRegion(this.region);
+
+        this.region = null;
+    }
 };

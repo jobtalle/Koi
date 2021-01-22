@@ -1,17 +1,16 @@
 {
   "INCLUDE": [
-    "names/western.json",
     "units/metric.json"
   ],
   "START": "Start",
   "CONTINUE": "Ga verder",
   "NEW": "Nieuwe vijver",
+  "CONFIRM": "Weet je het zeker?",
+  "SAVE": "Opslaan",
+  "COPY": "Kopiëren",
   "INFO_WEIGHT": "Gewicht",
   "INFO_LENGTH": "Lengte",
   "INFO_AGE": "Leeftijd",
-  "INFO_MINUTE": "minuut",
-  "INFO_MINUTES": "minuten",
-  "INFO_HOUR": "uur",
   "INFO_FRY": "Baby",
   "TUTORIAL_MOVE_FISH": "Verplaats de vis door de vis aan te raken en te verslepen.",
   "TUTORIAL_MOVE_POND_1": "Plaats een vis in de kleine vijver.",

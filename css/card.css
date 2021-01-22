@@ -1,25 +1,34 @@
 :root {
     /* Colors */
     --card-color-background: #866764;
+    --card-color-background-graphics: #7e605e;
     --card-color-drop-target: #ffffff55;
-    --card-color-background-dark: #37657e;
-    --card-color-background-light: var(--color-water-shallow);
 
     /* Dimensions */
     --card-width: 250px;
     --card-height: 350px;
     --card-preview-width: 200px;
     --card-preview-height: 120px;
-    --card-preview-margin: calc((var(--card-width) - var(--card-preview-width)) * 0.5);
+    --card-preview-margin: calc((var(--card-width) - var(--card-preview-width) - 2 * var(--card-preview-border)) * 0.5);
     --card-preview-columns: 6;
     --card-preview-rows: 10;
     --card-preview-fps: 60;
+    --card-preview-border-radius: 6px;
+    --card-preview-border: 2px;
     --card-border-radius: 12px;
     --card-drop-target-raise: -0.26;
+    --card-colors-size: 20px;
+    --card-colors-raise: 0.5;
+    --card-colors-overlap: 0.25;
+    --card-colors-gradient: 280%;
     --card-info-spacing: 14px;
-    --card-name-margin: 2px;
-    --card-name-padding: 3px;
-    --card-name-margin-leading: 6px;
+    --card-info-color: #d7d4c8;
+    --card-info-slant: -18deg;
+    --card-info-padding-right: 6px;
+    --card-info-text-color: #0c0c0c;
+    --card-code-icon-radius: 32px;
+    --card-code-icon-margin: 8px;
+    --card-code-opacity: 0.5;
 }
 
 .card-shape {
@@ -33,70 +42,140 @@
 .card {
     pointer-events: auto;
     cursor: pointer;
-    position: absolute;
     background-color: var(--card-color-background);
+    position: absolute;
     user-select: none;
     box-shadow: 0 0 var(--book-shadow-radius) var(--book-shadow-color);
+    overflow: hidden;
     -webkit-tap-highlight-color: transparent;
+}
+
+.card svg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+}
+
+.card svg path {
+    fill: var(--card-color-background-graphics);
 }
 
 .card .preview-frame {
     width: var(--card-preview-width);
     height: var(--card-preview-height);
     margin: var(--card-preview-margin);
-    border-top: none;
-    border-bottom-left-radius: var(--card-border-radius);
-    border-bottom-right-radius: var(--card-border-radius);
-    background: linear-gradient(var(--card-color-background-light), var(--card-color-background-dark));
+    border-radius: var(--card-preview-border-radius);
     overflow: hidden;
+    border: var(--card-preview-border) solid var(--card-info-color);
+    background-color: var(--color-preview-outer);
 }
 
-.card .name {
-    width: calc(var(--card-preview-width) - 2 * var(--card-name-padding));
-    margin: var(--card-preview-margin);
-    margin-bottom: calc(-1 * var(--card-preview-margin));
-    padding: var(--card-name-padding);
-    background-color: #ffffffaa;
-    border-top-left-radius: var(--card-border-radius);
-    border-top-right-radius: var(--card-border-radius);
+.card .colors {
+    margin-top: calc(-1 * var(--card-preview-margin) - var(--card-colors-raise) * var(--card-colors-size));
+    margin-left: var(--card-preview-margin);
+    margin-right: calc(var(--card-preview-margin) + var(--card-colors-size) * 0.5);
 }
 
-.card .name h2 {
-    font-family: sans-serif;
-    font-weight: normal;
-    font-size: 20px;
-    margin: var(--card-name-margin);
-    margin-left: var(--card-name-margin-leading);
+.card .colors .colors-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.card .colors .colors-wrapper .color {
+    width: var(--card-colors-size);
+    height: var(--card-colors-size);
+    margin-left: calc(-1 * var(--card-colors-overlap) * var(--card-colors-size));
+    border-radius: 50%;
+    border: var(--card-preview-border) solid var(--card-info-color);
+    box-sizing: border-box;
+}
+
+.card .colors .colors-wrapper .color.fill-white {
+    background: radial-gradient(circle at top right, var(--color-fish-white), black var(--card-colors-gradient));
+}
+
+.card .colors .colors-wrapper .color.fill-black {
+    background: radial-gradient(circle at top right, var(--color-fish-black), black var(--card-colors-gradient));
+}
+
+.card .colors .colors-wrapper .color.fill-gold {
+    background: radial-gradient(circle at top right, var(--color-fish-gold), black var(--card-colors-gradient));
+}
+
+.card .colors .colors-wrapper .color.fill-orange {
+    background: radial-gradient(circle at top right, var(--color-fish-orange), black var(--card-colors-gradient));
+}
+
+.card .colors .colors-wrapper .color.fill-red {
+    background: radial-gradient(circle at top right, var(--color-fish-red), black var(--card-colors-gradient));
+}
+
+.card .colors .colors-wrapper .color.fill-brown {
+    background: radial-gradient(circle at top right, var(--color-fish-brown), black var(--card-colors-gradient));
 }
 
 .card .info {
     width: calc(100% - 2 * var(--card-preview-margin));
     margin: var(--card-preview-margin);
+    margin-bottom: 0;
 }
 
-.card .info p {
+.card .info .property {
     margin-top: calc(var(--card-info-spacing) / 4);
     margin-bottom: calc(var(--card-info-spacing) / 4);
-    padding: calc(var(--card-info-spacing) / 4);
     font-size: 20px;
-    font-family: sans-serif;
-    background: linear-gradient(to right, transparent, white);
+    position: relative;
 }
 
-.card .info p .label {
-    font-weight: bold;
+.card .info .property .text {
+    padding: calc(var(--card-info-spacing) / 4);
+    color: var(--card-info-text-color);
 }
 
-.card .info p .label::after {
+.card .info .property .text .label {
+    color: var(--card-info-color);
+}
+
+.card .info .property .text .label::after {
     content: ":";
 }
 
-.card .info p .value {
+.card .info .property .text .value {
     float: right;
+    padding-right: var(--card-info-padding-right);
 }
 
-.card .info p .value::after {
-    font-style: italic;
+.card .info .property .background {
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    position: absolute;
+    background: linear-gradient(to right, transparent, var(--card-info-color));
+    transform: skew(var(--card-info-slant));
+    z-index: -1;
+}
+
+.card button {
+    width: 100%;
+    height: calc(2 * var(--card-code-icon-radius));
+    margin-top: var(--card-code-icon-margin);
+    pointer-events: auto;
+    position: relative;
+    opacity: var(--card-code-opacity);
+}
+
+.card button:active {
+    opacity: 1;
+}
+
+.card button svg {
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
 }
 
 @keyframes fish-preview-x {
@@ -135,4 +214,8 @@
 
 #drop-target.hidden {
     bottom: calc(-1 * var(--card-height));
+}
+
+#code-icon {
+    fill: var(--card-info-color);
 }

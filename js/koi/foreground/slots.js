@@ -1,19 +1,27 @@
 /**
  * The slots on a scene on which things can be placed
+ * @param {Number} xStart The X start
+ * @param {Number} yStart The Y start
  * @param {Number} width The scene width
  * @param {Number} height The scene height
  * @param {Constellation} constellation A constellation to place slots on
  * @param {Random} random A randomizer
  * @constructor
  */
-const Slots = function(width, height, constellation, random) {
+const Slots = function(
+    xStart,
+    yStart,
+    width,
+    height,
+    constellation,
+    random) {
     this.width = Math.ceil(width / this.RESOLUTION);
     this.height = Math.ceil(height / this.RESOLUTION);
     this.slots = new Array(this.width * this.height);
 
     for (let y = 0; y < this.height; ++y) for (let x = 0; x < this.width; ++x) {
-        const slotX = (x + random.getFloat() * this.RANDOM_RANGE) * this.RESOLUTION;
-        const slotY = (y + random.getFloat() * this.RANDOM_RANGE) * this.RESOLUTION;
+        const slotX = xStart + (x + random.getFloat() * this.RANDOM_RANGE) * this.RESOLUTION;
+        const slotY = yStart + (y + random.getFloat() * this.RANDOM_RANGE) * this.RESOLUTION;
 
         if (constellation.contains(slotX, slotY))
             this.slots[x + y * this.width] = null;
@@ -22,7 +30,7 @@ const Slots = function(width, height, constellation, random) {
     }
 };
 
-Slots.prototype.RESOLUTION = .18;
+Slots.prototype.RESOLUTION = .19;
 Slots.prototype.RANDOM_RANGE = .8;
 
 /**

@@ -16,7 +16,7 @@
     --book-hide-time: 0.5s;
     --book-button-padding: 16px;
     --page-button-padding: 10px;
-    --page-button-page-shift: 0.65;
+    --page-button-page-shift: 0.75;
     --page-button-color-enabled: #75a757;
     --page-button-color-disabled: gray;
     --page-button-color-unfulfilled: #a43333;
@@ -123,7 +123,7 @@
 
 #button-book {
     position: absolute;
-    left: var(--book-button-padding);
+    right: var(--book-button-padding);
     top: var(--book-button-padding);
 }
 

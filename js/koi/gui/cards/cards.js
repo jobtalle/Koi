@@ -1,10 +1,12 @@
 /**
  * The cards visible on the GUI
  * @param {HTMLDivElement} element The root element for the GUI
+ * @param {CodeViewer} codeViewer The code viewer
  * @constructor
  */
-const Cards = function(element) {
+const Cards = function(element, codeViewer) {
     this.element = element;
+    this.codeViewer = codeViewer;
     this.dropTarget = this.createDropTarget();
     this.buttonBook = new CardBookButton(this.toggleBook.bind(this));
     this.book = new CardBook(element.clientWidth, element.clientHeight, this, () => {
@@ -216,7 +218,7 @@ Cards.prototype.convertToFish = function(x, y) {
 
         fish.moveTo(new Vector2(worldX * 2 - origin.x, worldY * 2 - origin.y));
 
-        this.koi.systems.atlas.write(this.grabbed.body.pattern, this.koi.randomSource);
+        this.koi.systems.atlas.write(this.grabbed.body.pattern, this.koi.systems.randomSource);
         this.koi.mover.pickUp(fish, worldX, worldY);
 
         return true;
@@ -324,6 +326,9 @@ Cards.prototype.release = function() {
  * @param {Boolean} [initialize] True if the card must be initialized
  */
 Cards.prototype.registerCard = function(card, addToGUI = true, initialize = false) {
+    card.setCodeViewer(this.codeViewer);
+    card.setSystems(this.koi.systems);
+
     card.element.addEventListener("mousedown", event => {
         if (event.button === 0)
             this.grabCard(
@@ -357,7 +362,7 @@ Cards.prototype.registerCard = function(card, addToGUI = true, initialize = fals
             this.koi.systems.preview,
             this.koi.systems.atlas,
             this.koi.systems.bodies,
-            this.koi.randomSource);
+            this.koi.systems.randomSource);
 };
 
 /**

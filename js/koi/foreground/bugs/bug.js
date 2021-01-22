@@ -39,6 +39,8 @@ Bug.prototype.SPOT_PROXIMITY_DISTANCE = 1.8;
 Bug.prototype.IDLE_TIME = new SamplerPower(20, 60, 2.5);
 Bug.prototype.IDLE_CHANCE_ROTATE = .75;
 Bug.prototype.IDLE_CHANCE_HOP = Bug.prototype.IDLE_CHANCE_ROTATE + .15;
+Bug.prototype.DRIZZLE_CHANCE_ROTATE = .92;
+Bug.prototype.DRIZZLE_CHANCE_HOP = Bug.prototype.DRIZZLE_CHANCE_ROTATE + .05;
 Bug.prototype.ANGLE_APPROACH = .6;
 Bug.prototype.AIM_DELTA = .8;
 
@@ -177,7 +179,7 @@ Bug.prototype.leave = function(
  * @param {BugPathMaker} pathMaker A path maker
  * @param {Number} width The scene width in meters
  * @param {Number} height The scene height in meters
- * @param {Boolean} adverseWeather True if the weather conditions are bad
+ * @param {WeatherState} weatherState True if the weather conditions are bad
  * @param {Random} random A randomizer
  * @returns {Boolean} True if the bug may be deleted
  */
@@ -185,7 +187,7 @@ Bug.prototype.update = function(
     pathMaker,
     width,
     height,
-    adverseWeather,
+    weatherState,
     random) {
     this.positionPrevious.set(this.position);
     this.flexPrevious.set(this.flex);
@@ -259,17 +261,29 @@ Bug.prototype.update = function(
             break;
         case this.STATE_IDLE:
             if (--this.wait === 0) {
-                if (this.body.resistant || !adverseWeather) {
+                if (this.body.resistant || !weatherState.isRaining()) {
                     const r = random.getFloat();
 
-                    if (r < this.IDLE_CHANCE_ROTATE)
-                        this.rotate(random);
-                    else if (r < this.IDLE_CHANCE_HOP) {
-                        if (!this.hop(pathMaker, random))
+                    if (!this.body.resistant && weatherState.isDrizzle()) {
+                        if (r < this.DRIZZLE_CHANCE_ROTATE)
+                            this.rotate(random);
+                        else if (r < this.DRIZZLE_CHANCE_HOP) {
+                            if (!this.hop(pathMaker, random))
+                                this.leave(pathMaker, random);
+                        }
+                        else
+                            this.leave(pathMaker, random);
+                    }
+                    else {
+                        if (r < this.IDLE_CHANCE_ROTATE)
+                            this.rotate(random);
+                        else if (r < this.IDLE_CHANCE_HOP) {
+                            if (!this.hop(pathMaker, random))
+                                this.wander(pathMaker, random);
+                        }
+                        else
                             this.wander(pathMaker, random);
                     }
-                    else
-                        this.wander(pathMaker, random);
                 }
                 else
                     this.leave(pathMaker, random);

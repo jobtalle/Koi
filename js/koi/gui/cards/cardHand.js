@@ -27,7 +27,7 @@ CardHand.prototype.EXTRA_ANGLE = -.03;
 CardHand.prototype.HIDE_HEIGHT = 1;
 CardHand.prototype.CLASS_DROP_TARGET_HIDDEN = "hidden";
 CardHand.prototype.DROP_TARGET_TRIGGER_DISTANCE = Card.prototype.WIDTH * .25;
-CardHand.prototype.CAPACITY = 16;
+CardHand.prototype.CAPACITY = 7;
 CardHand.prototype.FAN_PORTION_MAX = 1;
 
 /**

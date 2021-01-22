@@ -22,7 +22,7 @@ TutorialCards.prototype.PHASE_CREATE_CARD = 2;
 TutorialCards.prototype.PHASE_OPEN_BOOK = 3;
 TutorialCards.prototype.PHASE_STORE_CARD = 4;
 TutorialCards.prototype.PHASE_UNLOCK = 5;
-TutorialCards.prototype.MUTATIONS_REQUIRED = 3;
+TutorialCards.prototype.MUTATIONS_REQUIRED = 2;
 TutorialCards.prototype.LANG_CREATE_CARD = "TUTORIAL_CREATE_CARD";
 TutorialCards.prototype.LANG_OPEN_BOOK_STORE = "TUTORIAL_OPEN_BOOK_STORE";
 TutorialCards.prototype.LANG_STORE_CARD = "TUTORIAL_STORE_CARD";
@@ -79,7 +79,7 @@ TutorialCards.prototype.pointToDropTarget = function(koi) {
  * @param {Koi} koi The koi object
  */
 TutorialCards.prototype.pointToBookButton = function(koi) {
-    this.overlay.createArrow(koi.gui.cards.buttonBook.element, "left-up");
+    this.overlay.createArrow(koi.gui.cards.buttonBook.element, "up");
 };
 
 /**

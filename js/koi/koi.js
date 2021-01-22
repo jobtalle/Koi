@@ -41,7 +41,6 @@ const Koi = function(
     this.air = null;
     this.constellationMeshWater = null;
     this.constellationMeshDepth = null;
-    this.randomSource = null;
     this.reflections = null;
     this.weather = null;
     this.weatherFilterChanged = false;
@@ -66,6 +65,7 @@ Koi.prototype.COLOR_BACKGROUND = Color.fromCSS("--color-earth");
 Koi.prototype.PHASE_SPEED = .005;
 Koi.prototype.TOUCH_WATER_RADIUS = .1;
 Koi.prototype.TOUCH_WATER_INTENSITY = .5;
+Koi.prototype.TOUCH_WATER_VOLUME = .7;
 
 /**
  * Serialize the koi
@@ -85,7 +85,7 @@ Koi.prototype.serialize = function(buffer) {
  */
 Koi.prototype.deserialize = function(buffer) {
     try {
-        this.constellation.deserialize(buffer, this.systems.atlas, this.randomSource);
+        this.constellation.deserialize(buffer, this.systems.atlas, this.systems.randomSource);
         this.spawner.setState(SpawnerState.deserialize(buffer));
         this.weather.setState(WeatherState.deserialize(buffer));
         this.mutations.deserialize(buffer);
@@ -98,6 +98,24 @@ Koi.prototype.deserialize = function(buffer) {
 
         throw error;
     }
+};
+
+/**
+ * Iterate over every fish body in the game
+ * @param {Function} f A callback function to call for every fish body
+ */
+Koi.prototype.forEveryFishBody = function(f) {
+    for (const fish of this.constellation.small.fish)
+        f(fish.body);
+
+    for (const fish of this.constellation.river.fish)
+        f(fish.body);
+
+    for (const fish of this.constellation.big.fish)
+        f(fish.body);
+
+    for (const card of this.gui.cards.cards)
+        f(card.body);
 };
 
 /**
@@ -139,7 +157,7 @@ Koi.prototype.onUnlock = function() {
  * Perform first time initialization
  */
 Koi.prototype.initialize = function() {
-    this.spawner.spawnInitial(this.systems.atlas, this.randomSource, this.random);
+    this.spawner.spawnInitial(this.systems.atlas, this.systems.randomSource, this.random);
 };
 
 /**
@@ -147,9 +165,6 @@ Koi.prototype.initialize = function() {
  */
 Koi.prototype.createRenderables = function() {
     const environmentRandomizer = new Random(this.environmentSeed);
-
-    // Create the random source
-    this.randomSource = new RandomSource(this.systems.gl, environmentRandomizer);
 
     // Create constellation meshes
     this.constellationMeshWater = this.constellation.makeMeshWater(this.systems.gl);
@@ -182,7 +197,7 @@ Koi.prototype.createRenderables = function() {
         this.systems.blit,
         this.systems.width,
         this.systems.height,
-        this.randomSource,
+        this.systems.randomSource,
         this.scale);
     this.foreground = new Foreground(
         this.systems.gl,
@@ -242,7 +257,6 @@ Koi.prototype.createRenderables = function() {
  * Free all renderable objects
  */
 Koi.prototype.freeRenderables = function() {
-    this.randomSource.free();
     this.shadowBuffer.free();
     this.background.free();
     this.foreground.free();
@@ -285,6 +299,7 @@ Koi.prototype.touchStart = function(x, y) {
         if (this.constellation.contains(wx, wy)) {
             this.touchWater(wx, wy);
             this.constellation.chase(wx, wy);
+            this.audio.effectFishUp.play(2 * wx / this.constellation.width - 1, this.TOUCH_WATER_VOLUME);
         }
 
         this.mover.startTouch(wx, wy);
@@ -307,6 +322,14 @@ Koi.prototype.touchMove = function(x, y, entered = false) {
         y,
         entered,
         this.tutorial ? this.tutorial.handEnabled : true);
+};
+
+/**
+ * The mouse has left the window
+ */
+Koi.prototype.mouseLeave = function() {
+    if (!this.mover.move)
+        this.touchEnd();
 };
 
 /**
@@ -357,6 +380,9 @@ Koi.prototype.updateAudio = function() {
     this.audio.ambientWaterTop.update(this.UPDATE_RATE);
     this.audio.ambientWaterLow.update(this.UPDATE_RATE);
     this.audio.ambientWind.update(this.UPDATE_RATE);
+
+    if (!this.weather.state.isRaining())
+        this.audio.ambientBirds.update(this.UPDATE_RATE);
 };
 
 /**
@@ -375,14 +401,15 @@ Koi.prototype.update = function() {
             this.tutorial = null;
     }
 
-    this.spawner.update(this.UPDATE_RATE, this.systems.atlas, this.randomSource, this.random);
+    this.spawner.update(this.systems.atlas, this.weather.state, this.systems.randomSource, this.random);
     this.constellation.update(
         this.systems.atlas,
         this.systems.patterns,
-        this.randomSource,
+        this.systems.randomSource,
         !this.tutorial || this.tutorial.allowMutation ? this.mutations : null,
         this.tutorial ? this.tutorial.forceMutation : false,
         this.water,
+        this.audio,
         this.weather.state.isRaining(),
         this.random);
     this.weather.update(this.air, this.water, this.audio, this.foreground.plants.plantMap, this.random);

@@ -15,12 +15,13 @@ const LayerShapeBody = function(centerPower, radiusPower, eyePosition) {
 
 LayerShapeBody.prototype = Object.create(Layer.prototype);
 
-LayerShapeBody.prototype.SHADE_POWER = 1.8;
-LayerShapeBody.prototype.LIGHT_POWER = 0.5;
-LayerShapeBody.prototype.AMBIENT = 0.5;
+LayerShapeBody.prototype.SHADE_POWER = 1.65;
+LayerShapeBody.prototype.LIGHT_POWER = 0.7;
+LayerShapeBody.prototype.AMBIENT = 0.44;
 LayerShapeBody.prototype.SAMPLER_CENTER_POWER = new SamplerPlateau(.5, .6, 1, 2);
 LayerShapeBody.prototype.SAMPLER_RADIUS_POWER = new SamplerPlateau(.6, .7, 1.2, 1);
 LayerShapeBody.prototype.SAMPLER_EYE_POSITION = new Sampler(.07, .115);
+LayerShapeBody.prototype.COLOR_SHADE = Color.fromCSS("--color-fish-shade");
 
 LayerShapeBody.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
@@ -43,6 +44,7 @@ uniform mediump float shadePower;
 uniform mediump float lightPower;
 uniform mediump float ambient;
 uniform mediump vec2 size;
+uniform lowp vec3 shadeColor;
 
 varying mediump vec2 iUv;
 
@@ -69,7 +71,7 @@ void main() {
     if (eyeDist < EYE_RADIUS_PUPIL)
       gl_FragColor = vec4(vec3(EYE_SHADE_PUPIL), 1.0);
     else
-      gl_FragColor = vec4(vec3(shade) * (1.0 - ambient) + ambient, 1.0);
+      gl_FragColor = vec4(mix(shadeColor, vec3(1.0 - ambient), shade) + ambient, 1.0);
   }
 }
 `;
@@ -132,6 +134,7 @@ LayerShapeBody.prototype.createShader = function(gl) {
         [
             new Shader.Constant("shadePower", "f", [this.SHADE_POWER]),
             new Shader.Constant("lightPower", "f", [this.LIGHT_POWER]),
-            new Shader.Constant("ambient", "f", [this.AMBIENT])
+            new Shader.Constant("ambient", "f", [this.AMBIENT]),
+            new Shader.Constant("shadeColor", "f", this.COLOR_SHADE.toArrayRGB())
         ]);
 };

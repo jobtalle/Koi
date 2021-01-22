@@ -79,9 +79,6 @@ Waves.prototype.propagate = function(water, influencePainter) {
     water.flip();
     water.getFront().target();
 
-    this.gl.clearColor(0.5, 0.5, 0, 0);
-    this.gl.clear(this.gl.COLOR_BUFFER_BIT);
-
     this.gl.uniform2f(this.program["uSize"], water.width, water.height);
 
     this.gl.activeTexture(this.gl.TEXTURE0);

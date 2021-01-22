@@ -15,4 +15,5 @@ button {
     padding: 0;
     color: white;
     font-size: 18pt;
+    font-family: inherit;
 }
