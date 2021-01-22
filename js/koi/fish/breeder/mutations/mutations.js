@@ -91,6 +91,22 @@ Mutations.prototype.createMutationsSpots = function() {
             ],
             .2
         ),
+        // Two fish with different base colors and different spot colors can swap spot colors
+        new Mutation(
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_UNIQUE),
+                new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_UNIQUE)
+            ]),
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_UNIQUE),
+                new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_UNIQUE)
+            ]),
+            [
+                Mutation.BLUEPRINT_LAYER_MOTHER,
+                Mutation.BLUEPRINT_LAYER_FATHER
+            ],
+            .15
+        ),
         // Spotted fish + solid color can become an extra layer of spots
         new Mutation(
             new PatternFootprint([
