@@ -21,6 +21,8 @@ const GUI = function(element, codeViewer) {
 GUI.prototype.ID_CARDS = "cards";
 GUI.prototype.ID_OVERLAY = "overlay";
 GUI.prototype.KEYS_BOOK = [" ", "b"];
+GUI.prototype.KEYS_PAGE_LEFT = ["ArrowLeft", "a"];
+GUI.prototype.KEYS_PAGE_RIGHT = ["ArrowRight", "d"];
 
 /**
  * Serialize the GUI
@@ -46,6 +48,12 @@ GUI.prototype.serialize = function(buffer) {
 GUI.prototype.keyDown = function(key) {
     if (this.KEYS_BOOK.indexOf(key) !== -1)
         this.cards.toggleBook();
+    else if (this.cards.bookEnabled && this.cards.bookVisible) {
+        if (this.KEYS_PAGE_LEFT.indexOf(key) !== -1)
+            this.cards.book.buttonPageLeft.element.click();
+        else if (this.KEYS_PAGE_RIGHT.indexOf(key) !== -1)
+            this.cards.book.buttonPageRight.element.click();
+    }
 };
 
 /**
