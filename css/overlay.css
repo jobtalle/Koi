@@ -13,6 +13,7 @@
     --overlay-arrow-animation-time: 0.7s;
     --overlay-text-width: 65%;
     --overlay-text-top: 16px;
+    --overlay-text-margin: 5%;
 }
 
 @keyframes pointer-pulse {
@@ -60,6 +61,11 @@
     font-size: 32px;
     border-radius: 16px;
     border: 2px solid black;
+}
+
+#overlay .text p {
+    margin-left: var(--overlay-text-margin);
+    margin-right: var(--overlay-text-margin);
 }
 
 .overlay-highlight {
