@@ -63,6 +63,9 @@ CodeReader.prototype.createBuffer = function(quadBits) {
  * @returns {FishBody|null} A fish body, or null if deserialization failed
  */
 CodeReader.prototype.read = function() {
+    if (!this.pixels)
+        return null;
+
     const quadBits = [];
     let failure = false;
 
