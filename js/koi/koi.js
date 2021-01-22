@@ -280,6 +280,14 @@ Koi.prototype.touchWater = function(x, y) {
 };
 
 /**
+ * A key is pressed
+ * @param {String} key The key
+ */
+Koi.prototype.keyDown = function(key) {
+    this.gui.keyDown(key);
+};
+
+/**
  * Start a touch event
  * @param {Number} x The X position in pixels
  * @param {Number} y The Y position in pixels

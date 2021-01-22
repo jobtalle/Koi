@@ -9,6 +9,7 @@ const Cards = function(element, codeViewer) {
     this.codeViewer = codeViewer;
     this.dropTarget = this.createDropTarget();
     this.buttonBook = new CardBookButton(this.toggleBook.bind(this));
+    this.bookEnabled = false;
     this.book = new CardBook(element.clientWidth, element.clientHeight, this, () => {
         if (this.koi)
             this.koi.onUnlock();
@@ -74,10 +75,12 @@ Cards.prototype.serialize = function(buffer) {
  * Toggle the book
  */
 Cards.prototype.toggleBook = function() {
-    if (this.bookVisible)
-        this.hide();
-    else
-        this.show();
+    if (this.bookEnabled) {
+        if (this.bookVisible)
+            this.hide();
+        else
+            this.show();
+    }
 };
 
 /**
@@ -85,6 +88,7 @@ Cards.prototype.toggleBook = function() {
  */
 Cards.prototype.enableBookButton = function() {
     this.element.appendChild(this.buttonBook.element);
+    this.bookEnabled = true;
 };
 
 /**

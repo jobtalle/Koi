@@ -20,6 +20,7 @@ const GUI = function(element, codeViewer) {
 
 GUI.prototype.ID_CARDS = "cards";
 GUI.prototype.ID_OVERLAY = "overlay";
+GUI.prototype.KEYS_BOOK = [" ", "b"];
 
 /**
  * Serialize the GUI
@@ -36,6 +37,15 @@ GUI.prototype.deserialize = function(buffer) {
  */
 GUI.prototype.serialize = function(buffer) {
     this.cards.serialize(buffer);
+};
+
+/**
+ * A key is pressed
+ * @param {String} key The key
+ */
+GUI.prototype.keyDown = function(key) {
+    if (this.KEYS_BOOK.indexOf(key) !== -1)
+        this.cards.toggleBook();
 };
 
 /**
