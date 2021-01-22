@@ -57,13 +57,16 @@ TutorialCards.prototype.onMutate = function() {
  */
 TutorialCards.prototype.onStoreCard = function(card) {
     this.cardStored = true;
+
+    if (this.phase === this.PHASE_UNLOCK)
+        this.unlocked = true;
 };
 
 /**
  * A function that is called when the card book unlocks a page
  */
 TutorialCards.prototype.onUnlock = function() {
-    this.unlocked = true;
+
 };
 
 /**
