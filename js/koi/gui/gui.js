@@ -23,6 +23,7 @@ GUI.prototype.ID_OVERLAY = "overlay";
 GUI.prototype.KEYS_BOOK = [" ", "b"];
 GUI.prototype.KEYS_PAGE_LEFT = ["ArrowLeft", "a"];
 GUI.prototype.KEYS_PAGE_RIGHT = ["ArrowRight", "d"];
+GUI.prototype.KEYS_EXIT = ["Escape", "Backspace"];
 
 /**
  * Serialize the GUI
@@ -46,7 +47,7 @@ GUI.prototype.serialize = function(buffer) {
  * @param {String} key The key
  */
 GUI.prototype.keyDown = function(key) {
-    if (this.KEYS_BOOK.indexOf(key) !== -1)
+    if (this.KEYS_BOOK.indexOf(key) !== -1 || (this.cards.bookVisible && this.KEYS_EXIT.indexOf(key) !== -1))
         this.cards.toggleBook();
     else if (this.cards.bookEnabled && this.cards.bookVisible) {
         if (this.KEYS_PAGE_LEFT.indexOf(key) !== -1)
