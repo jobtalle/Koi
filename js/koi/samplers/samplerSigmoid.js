@@ -6,9 +6,9 @@
  * @constructor
  */
 const SamplerSigmoid = function(min, max, power) {
-    this.power = power;
-
     Sampler.call(this, min, max);
+
+    this.power = power;
 };
 
 SamplerSigmoid.prototype = Object.create(Sampler.prototype);
@@ -20,7 +20,7 @@ SamplerSigmoid.prototype = Object.create(Sampler.prototype);
  */
 SamplerSigmoid.prototype.sample = function(x) {
     if (x < .5)
-        return this.min + (this.max - this.min) * .5 * Math.pow(x + x, this.power);
+        return this.min + this.getDomain() * .5 * Math.pow(x + x, this.power);
     else
-        return this.min + (this.max - this.min) * (1 - .5 * Math.pow(2 - x - x, this.power));
+        return this.min + this.getDomain() * (1 - .5 * Math.pow(2 - x - x, this.power));
 };

@@ -6,9 +6,9 @@
  * @constructor
  */
 const SamplerPower = function(min, max, power) {
-    this.power = power;
-
     Sampler.call(this, min, max);
+
+    this.power = power;
 };
 
 SamplerPower.prototype = Object.create(Sampler.prototype);
@@ -19,5 +19,5 @@ SamplerPower.prototype = Object.create(Sampler.prototype);
  * @returns {Number} A number in the range [min, max]
  */
 SamplerPower.prototype.sample = function(x) {
-    return this.min + (this.max - this.min) * Math.pow(x, this.power);
+    return this.min + this.getDomain() * Math.pow(x, this.power);
 };
