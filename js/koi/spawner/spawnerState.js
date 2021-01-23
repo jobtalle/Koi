@@ -60,6 +60,8 @@ SpawnerState.prototype.BLUEPRINTS = [
                     // Dips
                     new Sampler(110, 160),
                     // Dip power
+                    new Sampler(110, 160),
+                    // Roundness
                     new Sampler(110, 160)),
                 // Layers
                 []
@@ -113,6 +115,8 @@ SpawnerState.prototype.BLUEPRINTS = [
                     // Dips
                     new Sampler(110, 160),
                     // Dip power
+                    new Sampler(110, 160),
+                    // Roundness
                     new Sampler(110, 160)),
                 // Layers
                 []
@@ -164,8 +168,10 @@ SpawnerState.prototype.BLUEPRINTS = [
                     // Inset
                     new Sampler(110, 160),
                     // Dips
-                    new Sampler(110, 160),
+                    new Sampler(160, 190),
                     // Dip power
+                    new Sampler(110, 160),
+                    // Roundness
                     new Sampler(110, 160)),
                 // Layers
                 []
@@ -219,6 +225,8 @@ SpawnerState.prototype.BLUEPRINTS = [
                     // Dips
                     new Sampler(110, 160),
                     // Dip power
+                    new Sampler(110, 160),
+                    // Roundness
                     new Sampler(110, 160)),
                 // Layers
                 []

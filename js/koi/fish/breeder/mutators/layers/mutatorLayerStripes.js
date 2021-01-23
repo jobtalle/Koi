@@ -15,9 +15,9 @@ MutatorLayerStripes.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(-6, 0, 6, 1
 MutatorLayerStripes.prototype.SAMPLER_SLANT = new SamplerPlateau(-4, 0, 4, 2);
 MutatorLayerStripes.prototype.SAMPLER_ROUGHNESS = new SamplerPlateau(-7, 0, 7, 1.5);
 MutatorLayerStripes.prototype.SAMPLER_DISTORTION = new SamplerPlateau(-6, 0, 6, 1);
-MutatorLayerStripes.prototype.SAMPLER_SUPPRESSION = new SamplerPlateau(-9, 0, 9, 2);
-MutatorLayerStripes.prototype.SAMPLER_FOCUS = new SamplerPlateau(-5, 0, 5, 3);
-MutatorLayerStripes.prototype.SAMPLER_POWER = new SamplerPlateau(-5, 0, 5, 2.7);
+MutatorLayerStripes.prototype.SAMPLER_SUPPRESSION = new SamplerPlateau(-9, 0, 9, 1.2);
+MutatorLayerStripes.prototype.SAMPLER_FOCUS = new SamplerPlateau(-5, 0, 5, 1.4);
+MutatorLayerStripes.prototype.SAMPLER_POWER = new SamplerPlateau(-5, 0, 5, 1.3);
 
 /**
  * Mutate the layer

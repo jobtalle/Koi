@@ -10,10 +10,10 @@ const MutatorLayerRidge = function(layer) {
 MutatorLayerRidge.prototype = Object.create(Mutator.prototype);
 MutatorLayerRidge.prototype.SAMPLER_ANCHOR_DISTANCE = new SamplerPower(0, 3, 4);
 MutatorLayerRidge.prototype.SAMPLER_X_DISTANCE = new SamplerPower(0, .6, 4);
-MutatorLayerRidge.prototype.SAMPLER_SCALE = new SamplerPlateau(-9, 0, 9, 1.5);
-MutatorLayerRidge.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(-6.5, 0, 6.5, 2);
-MutatorLayerRidge.prototype.SAMPLER_FOCUS = new SamplerPlateau(-7, 0, 7, 4);
-MutatorLayerRidge.prototype.SAMPLER_FOCUS_POWER = new SamplerPlateau(-6, 0, 6, 2.6);
+MutatorLayerRidge.prototype.SAMPLER_SCALE = new SamplerPlateau(-9, 0, 9, .5);
+MutatorLayerRidge.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(-6.5, 0, 6.5, .8);
+MutatorLayerRidge.prototype.SAMPLER_FOCUS = new SamplerPlateau(-7, 0, 7, .9);
+MutatorLayerRidge.prototype.SAMPLER_FOCUS_POWER = new SamplerPlateau(-6, 0, 6, 1);
 
 /**
  * Mutate the layer
