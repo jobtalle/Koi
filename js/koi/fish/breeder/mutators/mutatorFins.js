@@ -10,16 +10,16 @@ const MutatorFins = function(fins) {
 MutatorFins.prototype = Object.create(Mutator.prototype);
 MutatorFins.prototype.FIN_RANGES = [
     [
-        new Range(.1, .3)
+        new Bounds(.1, .3)
     ],
     [
-        new Range(.1, .3),
-        new Range(.5, .7)
+        new Bounds(.1, .3),
+        new Bounds(.5, .7)
     ],
     [
-        new Range(.1, .25),
-        new Range(.35, .6),
-        new Range(.7, .9)
+        new Bounds(.1, .25),
+        new Bounds(.35, .6),
+        new Bounds(.7, .9)
     ]
 ];
 

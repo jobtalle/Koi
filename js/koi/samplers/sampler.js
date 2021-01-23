@@ -5,10 +5,10 @@
  * @constructor
  */
 const Sampler = function(min, max) {
-    Range.call(this, min, max);
+    Bounds.call(this, min, max);
 };
 
-Sampler.prototype = Object.create(Range.prototype);
+Sampler.prototype = Object.create(Bounds.prototype);
 
 /**
  * The default linear sample function
