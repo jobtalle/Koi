@@ -16,4 +16,5 @@ button {
     color: white;
     font-size: 18pt;
     font-family: inherit;
+    user-select: none;
 }

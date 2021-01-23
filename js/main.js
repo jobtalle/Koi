@@ -176,7 +176,11 @@ if (gl &&
             mouseLeft = true;
         });
 
-        window.onkeydown = event => koi.keyDown(event.key);
+        window.onkeydown = event => {
+            if (koi.keyDown(event.key))
+                event.preventDefault();
+        };
+
         window.onbeforeunload = () => {
             gui.cancelAction();
             koi.touchEnd();

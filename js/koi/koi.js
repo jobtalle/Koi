@@ -282,9 +282,10 @@ Koi.prototype.touchWater = function(x, y) {
 /**
  * A key is pressed
  * @param {String} key The key
+ * @returns {Boolean} True if a key event has been handled
  */
 Koi.prototype.keyDown = function(key) {
-    this.gui.keyDown(key);
+    return this.gui.keyDown(key);
 };
 
 /**
@@ -533,6 +534,8 @@ Koi.prototype.render = function(deltaTime) {
         this.constellation.width,
         this.constellation.height,
         time);
+
+    // this.systems.quad.render(this.systems.atlas.renderTarget.texture);
 };
 
 /**

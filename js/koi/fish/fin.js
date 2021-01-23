@@ -21,14 +21,14 @@ const Fin = function(at, radius, sign = 1) {
     this.pattern = null;
 };
 
-Fin.prototype.ANCHOR_INSET = .95;
+Fin.prototype.ANCHOR_INSET = .85;
 Fin.prototype.SKEW = .1;
 Fin.prototype.WAVE_SKEW = .2;
 Fin.prototype.X_SCALE = .6;
 Fin.prototype.SPRING = .4;
 Fin.prototype.PHASE_SHIFT = 2;
 Fin.prototype.DEPTH_FACTOR = .4;
-Fin.prototype.SAMPLER_RADIUS = new Sampler(.5, 2.2);
+Fin.prototype.SAMPLER_RADIUS = new Sampler(1, 2.4);
 
 /**
  * Deserialize a fin

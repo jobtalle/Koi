@@ -53,8 +53,14 @@ SpawnerState.prototype.BLUEPRINTS = [
                     new Sampler(50, 100)),
                 // Fin shape
                 new BlueprintLayerShapeFin(
-                    // Roundness
-                    new Sampler(200, 250)),
+                    // Angle
+                    new Sampler(200, 250),
+                    // Inset
+                    new Sampler(110, 160),
+                    // Dips
+                    new Sampler(110, 160),
+                    // Dip power
+                    new Sampler(110, 160)),
                 // Layers
                 []
             )
@@ -100,8 +106,14 @@ SpawnerState.prototype.BLUEPRINTS = [
                     new Sampler(50, 100)),
                 // Fin shape
                 new BlueprintLayerShapeFin(
-                    // Roundness
-                    new Sampler(200, 250)),
+                    // Angle
+                    new Sampler(200, 250),
+                    // Inset
+                    new Sampler(110, 160),
+                    // Dips
+                    new Sampler(110, 160),
+                    // Dip power
+                    new Sampler(110, 160)),
                 // Layers
                 []
             )
@@ -147,8 +159,14 @@ SpawnerState.prototype.BLUEPRINTS = [
                     new Sampler(50, 100)),
                 // Fin shape
                 new BlueprintLayerShapeFin(
-                    // Roundness
-                    new Sampler(200, 250)),
+                    // Angle
+                    new Sampler(200, 250),
+                    // Inset
+                    new Sampler(110, 160),
+                    // Dips
+                    new Sampler(110, 160),
+                    // Dip power
+                    new Sampler(110, 160)),
                 // Layers
                 []
             )
@@ -194,8 +212,14 @@ SpawnerState.prototype.BLUEPRINTS = [
                     new Sampler(20, 30)),
                 // Fin shape
                 new BlueprintLayerShapeFin(
-                    // Roundness
-                    new Sampler(50, 60)),
+                    // Angle
+                    new Sampler(200, 250),
+                    // Inset
+                    new Sampler(110, 160),
+                    // Dips
+                    new Sampler(110, 160),
+                    // Dip power
+                    new Sampler(110, 160)),
                 // Layers
                 []
             )
