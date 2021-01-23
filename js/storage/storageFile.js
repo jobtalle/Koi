@@ -18,7 +18,7 @@ if (window["require"]) {
     let directory = StorageFile.prototype.DIRECTORY;
 
     if (os["platform"]() === "darwin")
-        directory = "~/Library/Application Support/koifarm/" + directory;
+        directory = os["homedir"]() + "/Library/Application Support/koifarm/" + directory;
 
     const makeDirectory = () => {
         if (!fs["existsSync"](directory))
