@@ -20,7 +20,7 @@ const LayerShapeFin = function(angle, inset, dips, dipPower, roundness) {
 LayerShapeFin.prototype = Object.create(Layer.prototype);
 LayerShapeFin.prototype.SAMPLER_ANGLE = new SamplerPower(Math.PI * .35, Math.PI * .45, .5);
 LayerShapeFin.prototype.SAMPLER_INSET = new SamplerPower(.03, .17, .7);
-LayerShapeFin.prototype.SAMPLER_DIPS = new SamplerPower(.25, 4, 3);
+LayerShapeFin.prototype.SAMPLER_DIPS = new SamplerPower(.25, 3, 2.3);
 LayerShapeFin.prototype.SAMPLER_DIP_POWER = new SamplerPower(.5, 2, .7);
 LayerShapeFin.prototype.SAMPLER_ROUNDNESS = new SamplerPower(.05, .25, .6);
 

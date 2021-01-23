@@ -58,7 +58,7 @@ SpawnerState.prototype.BLUEPRINTS = [
                     // Inset
                     new Sampler(110, 160),
                     // Dips
-                    new Sampler(110, 160),
+                    new Sampler(30, 60),
                     // Dip power
                     new Sampler(110, 160),
                     // Roundness

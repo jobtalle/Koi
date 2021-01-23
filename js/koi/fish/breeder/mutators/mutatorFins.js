@@ -1,6 +1,6 @@
 /**
  * Mutate a set of fins in place
- * @param {Fin[]} fins The fins
+ * @param {Fins} fins The fins
  * @constructor
  */
 const MutatorFins = function(fins) {
@@ -14,5 +14,6 @@ MutatorFins.prototype = Object.create(Mutator.prototype);
  * @param {Random} random A randomizer
  */
 MutatorFins.prototype.mutate = function(random) {
-    // TODO: Mutate
+    for (const fin of this.fins.fins)
+        new MutatorFin(fin).mutate(random);
 };

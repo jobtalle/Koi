@@ -1,7 +1,7 @@
 /**
  * A fish body
  * @param {Pattern} pattern A body pattern
- * @param {Fin[]} fins The fins
+ * @param {Fins} fins The fins
  * @param {Tail} tail The tail
  * @param {Number} length The body length
  * @param {Number} radius The body radius
@@ -22,7 +22,8 @@ const FishBody = function(
     offspringCount,
     age = 0) {
     this.pattern = pattern;
-    this.fins = this.makeAllFins(fins);
+    this.fins = fins;
+    this.finInstances = fins.makeAll();
     this.tail = tail;
     this.length = length;
     this.lengthSampled = this.SAMPLER_LENGTH.sample(length / 0xFF);
@@ -54,8 +55,6 @@ const FishBody = function(
     this.calculateSpacing();
 };
 
-FishBody.prototype.FIN_PAIRS_MIN = 0;
-FishBody.prototype.FIN_PAIRS_MAX = 8;
 FishBody.prototype.RESOLUTION = .12;
 FishBody.prototype.SWIM_AMPLITUDE = 11;
 FishBody.prototype.SWIM_SPEED = 6;
@@ -102,17 +101,9 @@ FishBody.deserialize = function(buffer, atlas = null, randomSource = null) {
     if (atlas)
         atlas.write(pattern, randomSource);
 
-    const fins = new Array(buffer.readUint8());
-
-    if (!(fins.length >= FishBody.prototype.FIN_PAIRS_MIN && fins.length <= FishBody.prototype.FIN_PAIRS_MAX))
-        throw new RangeError();
-
-    for (let fin = 0; fin < fins.length; ++fin)
-        fins[fin] = Fin.deserialize(buffer);
-
     return new FishBody(
         pattern,
-        fins,
+        Fins.deserialize(buffer),
         Tail.deserialize(buffer),
         buffer.readUint8(),
         buffer.readUint8(),
@@ -128,12 +119,7 @@ FishBody.deserialize = function(buffer, atlas = null, randomSource = null) {
  */
 FishBody.prototype.serialize = function(buffer) {
     this.pattern.serialize(buffer);
-
-    buffer.writeUint8(this.fins.length >> 1);
-
-    for (let fin = 0, finCount = this.fins.length >> 1; fin < finCount; ++fin)
-        this.fins[fin].serialize(buffer);
-
+    this.fins.serialize(buffer);
     this.tail.serialize(buffer);
 
     buffer.writeUint8(this.length);
@@ -228,17 +214,6 @@ FishBody.prototype.getOffspringPositionPrevious = function() {
 };
 
 /**
- * Make all fins by mirroring the initial fins
- * @param {Fin[]} fins All fins
- */
-FishBody.prototype.makeAllFins = function(fins) {
-    for (let fin = 0, finCount = fins.length; fin < finCount; ++fin)
-        fins.push(fins[fin].copyMirrored());
-
-    return fins;
-};
-
-/**
  * Assign fins to an array matching the vertebrae
  * @param {Fin[]} fins All fins
  * @param {Number} spineLength The length of the spine
@@ -247,7 +222,7 @@ FishBody.prototype.makeAllFins = function(fins) {
 FishBody.prototype.assignFins = function(fins, spineLength) {
     const spineFins = new Array(spineLength).fill(null);
 
-    for (const fin of this.fins) {
+    for (const fin of this.finInstances) {
         const index = fin.getVertebraIndex(spineLength);
 
         if (!spineFins[index])
@@ -330,7 +305,7 @@ FishBody.prototype.moveTo = function(position) {
 
     this.storePreviousState();
 
-    for (const fin of this.fins)
+    for (const fin of this.finInstances)
         fin.shift(dx, dy);
 
     this.tail.shift(dx, dy);
@@ -506,7 +481,7 @@ FishBody.prototype.update = function(
  * @param {Number} time The interpolation factor
  */
 FishBody.prototype.render = function(bodies, time) {
-    for (const fin of this.fins)
+    for (const fin of this.finInstances)
         fin.render(bodies, time);
 
     const indexOffsetFin = bodies.buffer.getVertexCount();

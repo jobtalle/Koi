@@ -1,7 +1,7 @@
 /**
- * Mix two fin arrays
- * @param {Fin[]} mother The mother fins
- * @param {Fin[]} father The father fins
+ * Mix two fin sets
+ * @param {Fins} mother The mother fins
+ * @param {Fins} father The father fins
  * @constructor
  */
 const MixerFins = function(mother, father) {
@@ -14,13 +14,13 @@ MixerFins.prototype = Object.create(Mixer.prototype);
 /**
  * Create a new set of fins that combines properties from both parents
  * @param {Random} random A randomizer
- * @returns {Fin[]} The mixed fin array
+ * @returns {Fins} The mixed fins
  */
 MixerFins.prototype.mix = function(random) { // TODO: mix
     const fins = [];
 
-    for (let fin = 0; fin < this.mother.length * .5; ++fin)
-        fins.push(new Fin(this.mother[fin].at, this.mother[fin].radius));
+    for (let fin = 0; fin < this.mother.fins.length * .5; ++fin)
+        fins.push(new MixerFin(this.mother.fins[fin], this.father.fins[fin]).mix(random));
 
-    return fins;
+    return new Fins(fins);
 };
