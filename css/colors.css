@@ -36,8 +36,12 @@
     /* Bug colors */
     --color-bug-butterfly-yellow: #d7c89b;
     --color-bug-butterfly-yellow-edge: #f6cda2;
+    --color-bug-butterfly-orange: #deb63b;
+    --color-bug-butterfly-orange-edge: #ff967c;
     --color-bug-butterfly-blue: #bdd7f3;
     --color-bug-butterfly-blue-edge: #87abdb;
+    --color-bug-butterfly-black: #6b7556;
+    --color-bug-butterfly-black-edge: #474747;
     --color-bug-butterfly-thunder: #4f4e56;
     --color-bug-butterfly-thunder-edge: #d64657;
 
