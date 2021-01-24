@@ -8,8 +8,8 @@ const MutatorFin = function(fin) {
 };
 
 MutatorFin.prototype = Object.create(Mutator.prototype);
-MutatorFin.prototype.SAMPLER_AT = new SamplerPlateau(-10, 0, 10, .5);
-MutatorFin.prototype.SAMPLER_RADIUS = new SamplerPlateau(-11, 0, 11, .8);
+MutatorFin.prototype.SAMPLER_AT = new SamplerPlateau(-20, 0, 20, .5);
+MutatorFin.prototype.SAMPLER_RADIUS = new SamplerPlateau(-25, 0, 25, .8);
 
 /**
  * Mutate the fin

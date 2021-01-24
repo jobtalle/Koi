@@ -10,12 +10,12 @@ const MutatorLayerSpots = function(layer) {
 MutatorLayerSpots.prototype = Object.create(Mutator.prototype);
 MutatorLayerSpots.prototype.SAMPLER_ANCHOR_DISTANCE = new SamplerPower(0, 2.5, 5);
 MutatorLayerSpots.prototype.SAMPLER_X_DISTANCE = new SamplerPower(0, 2, 4);
-MutatorLayerSpots.prototype.SAMPLER_SCALE = new SamplerPlateau(-7, 0, 7, .7);
-MutatorLayerSpots.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(-10, 0, 10, 1);
-MutatorLayerSpots.prototype.SAMPLER_STRETCH = new SamplerPlateau(-8, 0, 8, .7);
-MutatorLayerSpots.prototype.SAMPLER_X_FOCUS = new SamplerPlateau(-8, 0, 8, .5);
-MutatorLayerSpots.prototype.SAMPLER_Y_FOCUS = new SamplerPlateau(-9, 0, 9, .5);
-MutatorLayerSpots.prototype.SAMPLER_POWER = new SamplerPlateau(-9, 0, 9, 1.1);
+MutatorLayerSpots.prototype.SAMPLER_SCALE = new SamplerPlateau(-11, 0, 11, .6);
+MutatorLayerSpots.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(-20, 0, 20, 1);
+MutatorLayerSpots.prototype.SAMPLER_STRETCH = new SamplerPlateau(-13, 0, 13, .7);
+MutatorLayerSpots.prototype.SAMPLER_X_FOCUS = new SamplerPlateau(-11, 0, 11, .3);
+MutatorLayerSpots.prototype.SAMPLER_Y_FOCUS = new SamplerPlateau(-11, 0, 11, .3);
+MutatorLayerSpots.prototype.SAMPLER_POWER = new SamplerPlateau(-10, 0, 10, .8);
 
 /**
  * Mutate the layer

@@ -8,7 +8,7 @@ const MutatorTail = function(tail) {
 };
 
 MutatorTail.prototype = Object.create(Mutator.prototype);
-MutatorTail.prototype.SAMPLER_LENGTH = new SamplerPlateau(-15, 0, 15, 1);
+MutatorTail.prototype.SAMPLER_LENGTH = new SamplerPlateau(-25, 0, 25, 1);
 MutatorTail.prototype.SAMPLER_SKEW = MutatorTail.prototype.SAMPLER_LENGTH;
 
 /**

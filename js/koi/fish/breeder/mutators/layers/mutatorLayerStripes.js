@@ -10,14 +10,14 @@ const MutatorLayerStripes = function(layer) {
 MutatorLayerStripes.prototype = Object.create(Mutator.prototype);
 MutatorLayerStripes.prototype.SAMPLER_ANCHOR_DISTANCE = new SamplerPower(0, 4, 5);
 MutatorLayerStripes.prototype.SAMPLER_X_DISTANCE = new SamplerPower(0, .6, 4);
-MutatorLayerStripes.prototype.SAMPLER_SCALE = new SamplerPlateau(-8, 0, 8, 1);
-MutatorLayerStripes.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(-6, 0, 6, 1.4);
-MutatorLayerStripes.prototype.SAMPLER_SLANT = new SamplerPlateau(-4, 0, 4, 2);
-MutatorLayerStripes.prototype.SAMPLER_ROUGHNESS = new SamplerPlateau(-7, 0, 7, 1.5);
-MutatorLayerStripes.prototype.SAMPLER_DISTORTION = new SamplerPlateau(-6, 0, 6, 1);
-MutatorLayerStripes.prototype.SAMPLER_SUPPRESSION = new SamplerPlateau(-9, 0, 9, 1.2);
-MutatorLayerStripes.prototype.SAMPLER_FOCUS = new SamplerPlateau(-5, 0, 5, 1.4);
-MutatorLayerStripes.prototype.SAMPLER_POWER = new SamplerPlateau(-5, 0, 5, 1.3);
+MutatorLayerStripes.prototype.SAMPLER_SCALE = new SamplerPlateau(-14, 0, 14, .3);
+MutatorLayerStripes.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(-12, 0, 12, .4);
+MutatorLayerStripes.prototype.SAMPLER_SLANT = new SamplerPlateau(-10, 0, 10, .2);
+MutatorLayerStripes.prototype.SAMPLER_ROUGHNESS = new SamplerPlateau(-11, 0, 11, .8);
+MutatorLayerStripes.prototype.SAMPLER_DISTORTION = new SamplerPlateau(-11, 0, 11, .1);
+MutatorLayerStripes.prototype.SAMPLER_SUPPRESSION = new SamplerPlateau(-13, 0, 13, .7);
+MutatorLayerStripes.prototype.SAMPLER_FOCUS = new SamplerPlateau(-12, 0, 12, .8);
+MutatorLayerStripes.prototype.SAMPLER_POWER = new SamplerPlateau(-13, 0, 13, .8);
 
 /**
  * Mutate the layer

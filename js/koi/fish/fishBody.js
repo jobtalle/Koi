@@ -69,9 +69,9 @@ FishBody.prototype.FIN_PHASE_SPEED = .4;
 FishBody.prototype.FIN_FRONT_AT = new Sampler(.1, .3);
 FishBody.prototype.FIN_BACK_AT = new Sampler(.5, .7);
 FishBody.prototype.SIZE_MIN = .1;
-FishBody.prototype.SAMPLER_LENGTH = new SamplerPower(.6, 1.3, 1);
+FishBody.prototype.SAMPLER_LENGTH = new SamplerPower(.6, 1.2, 1);
 FishBody.prototype.SAMPLER_RADIUS = new SamplerPlateau(.1, .13, .21, 1.5);
-FishBody.prototype.SAMPLER_OFFSPRING_COUNT = new SamplerPlateau(1, 3, 8, .5);
+FishBody.prototype.SAMPLER_OFFSPRING_COUNT = new SamplerPlateau(1, 3.3, 8, .1);
 FishBody.prototype.SAMPLER_MATING_FREQUENCY = new SamplerPower(300 * .1, 4500 * .1, .3); // TODO: Reduced for debugging
 FishBody.prototype.SAMPLER_GROWTH_MULTIPLIER = new SamplerPower(50, 100, 4);
 FishBody.prototype.SAMPLER_SPRING_START = new Sampler(.4, .85);
@@ -87,7 +87,7 @@ FishBody.prototype.FAST_THRESHOLD = .045;
 FishBody.prototype.TAIL_AUDIO_THRESHOLD = .08;
 FishBody.prototype.TAIL_AUDIO_RAMP = .025;
 FishBody.prototype.TAIL_AUDIO_VOLUME_MIN = .4;
-FishBody.prototype.TAIL_AUDIO_COOLDOWN = 40;
+FishBody.prototype.TAIL_AUDIO_COOLDOWN = 30;
 
 /**
  * Deserialize a fish body
