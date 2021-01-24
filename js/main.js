@@ -56,7 +56,8 @@ if (gl &&
         const wrapper = document.getElementById("wrapper");
         const gui = new GUI(
             document.getElementById("gui"),
-            new CodeViewer(document.getElementById("code"), storage));
+            new CodeViewer(document.getElementById("code"), storage),
+            audio);
         const systems = new Systems(gl, new Random(2893), wrapper.clientWidth, wrapper.clientHeight);
         const sessionBuffer = tutorial ? storage.getBuffer("session") : null;
         let lastTime = null;

@@ -35,6 +35,21 @@ const AudioBank = function(engine) {
         new AudioEffect(
             engine,
             this.enumerateSources("audio/ogg/SFX_GrassInteract_", 1, 22, ".ogg")));
+    this.effectClick = new AudioEffect(
+        engine,
+        ["audio/ogg/SFX_Click.ogg", "audio/ogg/SFX_Click.ogg", "audio/ogg/SFX_Click.ogg"]); // TODO: Really fix this
+    this.effectNegative = new AudioEffect(
+        engine,
+        ["audio/ogg/SFX_Negative.ogg", "audio/ogg/SFX_Negative.ogg", "audio/ogg/SFX_Negative.ogg"]);
+    this.effectBookInteract = new AudioEffect(
+        engine,
+        this.enumerateSources("audio/ogg/SFX_BookInteract_", 1, 6, ".ogg"));
+    this.effectCardInteract = new AudioEffect(
+        engine,
+        this.enumerateSources("audio/ogg/SFX_CardInteract_", 1, 5, ".ogg"));
+    this.effectPageTurn = new AudioEffect(
+        engine,
+        this.enumerateSources("audio/ogg/SFX_PageTurn_", 1, 6, ".ogg"));
 
     this.ambientWaterTop = new AudioEffectPeriodic(
         1,

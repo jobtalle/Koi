@@ -3,10 +3,11 @@
  * @param {Number} width The screen width in pixels
  * @param {Number} height The screen height in pixels
  * @param {Cards} cards The cards object
+ * @param {AudioBank} audio Game audio
  * @param {Function} onUnlock A function to call when a new page is unlocked
  * @constructor
  */
-const CardBook = function(width, height, cards, onUnlock) {
+const CardBook = function(width, height, cards, audio, onUnlock) {
     this.spine = this.createSpine();
     this.element = this.createElement(this.spine);
     this.width = width;
@@ -18,6 +19,7 @@ const CardBook = function(width, height, cards, onUnlock) {
     this.buttonPageLeft = new CardPageButton(false, this.flipRight.bind(this));
     this.buttonPageRight = new CardPageButton(true, this.flipLeft.bind(this));
     this.cards = cards;
+    this.audio = audio;
     this.onUnlock = onUnlock;
     this.unlocked = 0;
     this.invisibleTimeout = null;
@@ -193,13 +195,19 @@ CardBook.prototype.nextFlipLocked = function() {
 CardBook.prototype.flipRight = function() {
     if (this.flips.length !== 0 && this.flipDirection === -1) {
         this.reverse();
+        this.audio.effectClick.play();
 
         return;
     }
 
-    if (this.page === this.flips.length * 2)
-        return;
+    if (this.page === this.flips.length * 2) {
+        this.audio.effectNegative.play();
 
+        return;
+    }
+
+    this.audio.effectClick.play();
+    this.audio.effectPageTurn.play();
     this.pages[this.page - (this.flips.length + 1) * 2].show(this.cards);
 
     this.flips.push(new CardBook.Flip());
@@ -214,13 +222,19 @@ CardBook.prototype.flipRight = function() {
 CardBook.prototype.flipLeft = function() {
     if (this.flips.length !== 0 && this.flipDirection === 1) {
         this.reverse();
+        this.audio.effectClick.play();
 
         return;
     }
 
-    if (this.page + 2 === this.PAGE_COUNT - this.flips.length * 2 || this.nextFlipLocked())
-        return;
+    if (this.page + 2 === this.PAGE_COUNT - this.flips.length * 2 || this.nextFlipLocked()) {
+        this.audio.effectNegative.play();
 
+        return;
+    }
+
+    this.audio.effectClick.play();
+    this.audio.effectPageTurn.play();
     this.pages[this.page + this.flips.length * 2 + 3].show(this.cards);
 
     this.flips.push(new CardBook.Flip());

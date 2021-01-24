@@ -2,9 +2,10 @@
  * The HTML gui
  * @param {HTMLElement} element The root element for the GUI
  * @param {CodeViewer} codeViewer The code viewer
+ * @param {AudioBank} audio Game audio
  * @constructor
  */
-const GUI = function(element, codeViewer) {
+const GUI = function(element, codeViewer, audio) {
     const elementCards = document.createElement("div");
     const elementOverlay = document.createElement("div");
 
@@ -14,7 +15,7 @@ const GUI = function(element, codeViewer) {
     element.appendChild(elementCards);
     element.appendChild(elementOverlay);
 
-    this.cards = new Cards(elementCards, codeViewer);
+    this.cards = new Cards(elementCards, codeViewer, audio);
     this.overlay = new Overlay(elementOverlay);
 };
 

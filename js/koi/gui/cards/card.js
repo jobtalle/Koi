@@ -17,6 +17,7 @@ const Card = function(body, position, angle = 0) {
     this.initialized = false;
     this.codeViewer = null;
     this.systems = null;
+    this.audio = null;
 
     this.updatePosition();
 };
@@ -80,6 +81,14 @@ Card.prototype.setCodeViewer = function(codeViewer) {
  */
 Card.prototype.setSystems = function(systems) {
     this.systems = systems;
+};
+
+/**
+ * Set the game audio
+ * @param {AudioBank} audio Game audio
+ */
+Card.prototype.setAudio = function(audio) {
+    this.audio = audio;
 };
 
 /**
@@ -352,12 +361,15 @@ Card.prototype.createDownload = function() {
     });
 
     button.onclick = () => {
+        this.audio.effectClick.play();
+
         this.codeViewer.view(new CodeWriter(
             this.body,
             this.systems.still,
             this.systems.atlas,
             this.systems.bodies,
-            this.systems.randomSource).write());
+            this.systems.randomSource).write(),
+            this.audio);
     };
 
     return button;

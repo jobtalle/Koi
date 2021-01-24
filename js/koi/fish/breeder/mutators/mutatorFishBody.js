@@ -16,7 +16,7 @@ MutatorFishBody.prototype.SAMPLER_LENGTH = new SamplerPlateau(-18, 0, 18, .5);
 MutatorFishBody.prototype.SAMPLER_RADIUS = new SamplerPlateau(-18, 0, 18, .3);
 MutatorFishBody.prototype.SAMPLER_GROWTH_SPEED = new SamplerPlateau(-14, 0, 14, .5);
 MutatorFishBody.prototype.SAMPLER_MATING_FREQUENCY = new SamplerPlateau(-12, 0, 12, .5);
-MutatorFishBody.prototype.SAMPLER_OFFSPRING_COUNT = new SamplerPlateau(-16, 0, 16, .1);
+MutatorFishBody.prototype.SAMPLER_OFFSPRING_COUNT = new SamplerPlateau(-34, 0, 34, .1);
 
 /**
  * Mutate the fish body

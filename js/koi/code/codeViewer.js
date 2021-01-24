@@ -21,13 +21,16 @@ CodeViewer.prototype.LANG_COPY = "COPY";
 /**
  * Create the copy button
  * @param {HTMLCanvasElement} image The fish code image
+ * @param {AudioBank} audio Game audio
  * @returns {HTMLButtonElement} The copy button
  */
-CodeViewer.prototype.createButtonCopy = function(image) {
+CodeViewer.prototype.createButtonCopy = function(image, audio) {
     const button = document.createElement("button");
 
     button.appendChild(document.createTextNode(language.get(this.LANG_COPY)));
     button.onclick = () => {
+        audio.effectClick.play();
+
         image.toBlob(blob => this.storage.imageToClipboard(blob));
 
         this.hide();
@@ -39,13 +42,16 @@ CodeViewer.prototype.createButtonCopy = function(image) {
 /**
  * Create the download button
  * @param {HTMLCanvasElement} image The fish code image
+ * @param {AudioBank} audio Game audio
  * @returns {HTMLButtonElement} The download button
  */
-CodeViewer.prototype.createButtonDownload = function(image) {
+CodeViewer.prototype.createButtonDownload = function(image, audio) {
     const button = document.createElement("button");
 
     button.appendChild(document.createTextNode(language.get(this.LANG_SAVE)));
     button.onclick = () => {
+        audio.effectClick.play();
+
         image.toBlob(blob => this.storage.imageToFile(blob, this.DEFAULT_NAME));
 
         this.hide();
@@ -57,17 +63,18 @@ CodeViewer.prototype.createButtonDownload = function(image) {
 /**
  * Create a view
  * @param {HTMLCanvasElement} image The fish code image
+ * @param {AudioBank} audio Game audio
  * @returns {HTMLDivElement} The view element
  */
-CodeViewer.prototype.createView = function(image) {
+CodeViewer.prototype.createView = function(image, audio) {
     const element = document.createElement("div");
 
     element.className = this.CLASS_VIEW;
     element.appendChild(image);
-    element.appendChild(this.createButtonDownload(image));
+    element.appendChild(this.createButtonDownload(image, audio));
 
     if (this.storage.hasClipboard)
-        element.appendChild(this.createButtonCopy(image));
+        element.appendChild(this.createButtonCopy(image, audio));
 
     element.addEventListener("mousedown", event => event.stopImmediatePropagation());
 
@@ -88,11 +95,12 @@ CodeViewer.prototype.hide = function() {
 /**
  * View a code
  * @param {HTMLCanvasElement} image The fish code image
+ * @param {Audio} audio Game audio
  */
-CodeViewer.prototype.view = function(image) {
+CodeViewer.prototype.view = function(image, audio) {
     if (this.current)
         this.element.removeChild(this.current);
 
-    this.element.appendChild(this.current = this.createView(image));
+    this.element.appendChild(this.current = this.createView(image, audio));
     this.element.classList.add(this.CLASS_ACTIVE);
 };
