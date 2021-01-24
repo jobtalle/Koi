@@ -9,9 +9,6 @@ const Fins = function(front, back) {
     this.back = back;
 };
 
-Fins.prototype.BOUNDS_FRONT = new Bounds(.1, .3);
-Fins.prototype.BOUNDS_BACK = new Bounds(.5, .75);
-
 /**
  * Deserialize the fins
  * @param {BinBuffer} buffer A buffer to deserialize from

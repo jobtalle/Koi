@@ -40,7 +40,7 @@ const FishBody = function(
     this.size = this.samplerSize.sample(this.age / 0xFFFF);
     this.spine = new Array(Math.ceil(this.lengthSampled / this.RESOLUTION));
     this.tailOffset = this.spine.length - 1;
-    this.finGroups = this.assignFins(this.finInstances, this.spine.length);
+    this.finGroups = this.assignFins(this.spine.length);
     this.spinePrevious = new Array(this.spine.length);
     this.springs = this.makeSprings(
         this.SAMPLER_SPRING_START.sample(this.radius / 0xFF),
@@ -66,10 +66,12 @@ FishBody.prototype.WAVE_INTENSITY_MIN = .05;
 FishBody.prototype.WAVE_INTENSITY_MULTIPLIER = 2;
 FishBody.prototype.WAVE_TURBULENCE = .4;
 FishBody.prototype.FIN_PHASE_SPEED = .4;
+FishBody.prototype.FIN_FRONT_AT = new Sampler(.1, .3);
+FishBody.prototype.FIN_BACK_AT = new Sampler(.5, .7);
 FishBody.prototype.SIZE_MIN = .1;
-FishBody.prototype.SAMPLER_LENGTH = new SamplerPower(.62, 1.3, 2.5);
-FishBody.prototype.SAMPLER_RADIUS = new SamplerPlateau(.1, .13, .18, 1);
-FishBody.prototype.SAMPLER_OFFSPRING_COUNT = new SamplerPlateau(1, 3, 8, 2.5);
+FishBody.prototype.SAMPLER_LENGTH = new SamplerPower(.6, 1.3, 1);
+FishBody.prototype.SAMPLER_RADIUS = new SamplerPlateau(.1, .13, .21, 1.5);
+FishBody.prototype.SAMPLER_OFFSPRING_COUNT = new SamplerPlateau(1, 3, 8, .5);
 FishBody.prototype.SAMPLER_MATING_FREQUENCY = new SamplerPower(300 * .1, 4500 * .1, .3); // TODO: Reduced for debugging
 FishBody.prototype.SAMPLER_GROWTH_MULTIPLIER = new SamplerPower(50, 100, 4);
 FishBody.prototype.SAMPLER_SPRING_START = new Sampler(.4, .85);
@@ -215,23 +217,21 @@ FishBody.prototype.getOffspringPositionPrevious = function() {
 
 /**
  * Assign fins to an array matching the vertebrae
- * @param {Fin[]} fins All fins
  * @param {Number} spineLength The length of the spine
  * @returns {Fin[][]} An array containing an array of fins per vertebrae
  */
-FishBody.prototype.assignFins = function(fins, spineLength) {
+FishBody.prototype.assignFins = function(spineLength) {
     const spineFins = new Array(spineLength).fill(null);
+    const indexFront = this.fins.front.getVertebraIndex(spineLength, this.FIN_FRONT_AT);
+    const indexBack = this.fins.back.getVertebraIndex(spineLength, this.FIN_BACK_AT);
 
-    for (const fin of fins) {
-        const index = fin.getVertebraIndex(spineLength);
+    spineFins[indexFront] = [this.finInstances[0], this.finInstances[1]];
+    spineFins[indexBack] = [this.finInstances[2], this.finInstances[3]];
 
-        if (!spineFins[index])
-            spineFins[index] = [];
-
-        spineFins[index].push(fin);
-
-        fin.connect(this.pattern, this.pattern.shapeBody.sample(index / (spineLength - 1)) * this.radiusSampled);
-    }
+    this.finInstances[0].connect(this.pattern, this.pattern.shapeBody.sample(indexFront / (spineLength - 1)) * this.radiusSampled);
+    this.finInstances[1].connect(this.pattern, this.pattern.shapeBody.sample(indexFront / (spineLength - 1)) * this.radiusSampled);
+    this.finInstances[2].connect(this.pattern, this.pattern.shapeBody.sample(indexBack / (spineLength - 1)) * this.radiusSampled);
+    this.finInstances[3].connect(this.pattern, this.pattern.shapeBody.sample(indexBack / (spineLength - 1)) * this.radiusSampled);
 
     return spineFins;
 };

@@ -67,10 +67,11 @@ Fin.prototype.copyMirrored = function() {
 /**
  * Get the index of the vertebra this fin is connected to
  * @param {Number} spineLength The length of the spine to assign this fin to
+ * @param {Sampler} sampler The position sampler
  * @returns {Number} The vertebrae index to connect the fin to
  */
-Fin.prototype.getVertebraIndex = function(spineLength) {
-    return Math.max(1, Math.round(spineLength * this.at / 0xFF));
+Fin.prototype.getVertebraIndex = function(spineLength, sampler) {
+    return Math.max(1, Math.round(spineLength * sampler.sample(this.at / 0xFF)));
 };
 
 /**

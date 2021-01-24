@@ -1,9 +1,12 @@
 /**
  * A blueprint for a random set of fins
+ * @param {BlueprintFin} front The front fin
+ * @param {BlueprintFin} back The back fin
  * @constructor
  */
-const BlueprintFins = function() {
-
+const BlueprintFins = function(front, back) {
+    this.front = front;
+    this.back = back;
 };
 
 /**
@@ -12,8 +15,7 @@ const BlueprintFins = function() {
  * @returns {Fins} A set of fins
  */
 BlueprintFins.prototype.spawn = function(random) {
-    // TODO: Randomize
     return new Fins(
-        new Fin(40, 128, 1),
-        new Fin(128, 80, 1));
+        this.front.spawn(random),
+        this.back.spawn(random));
 };
