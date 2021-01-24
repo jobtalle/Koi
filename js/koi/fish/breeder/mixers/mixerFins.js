@@ -18,8 +18,9 @@ MixerFins.prototype = Object.create(Mixer.prototype);
  */
 MixerFins.prototype.mix = function(random) {
     const fins = [];
+    const finCount = random.getFloat() < .5 ? this.mother.fins.length : this.father.fins.length;
 
-    for (let fin = 0; fin < Math.min(this.mother.fins.length, this.father.fins.length); ++fin) {
+    for (let fin = 0; fin < finCount; ++fin) {
         const mother = fin < this.mother.fins.length ? this.mother.fins[fin] : null;
         const father = fin < this.father.fins.length ? this.father.fins[fin] : null;
 

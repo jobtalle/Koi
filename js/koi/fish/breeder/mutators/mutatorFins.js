@@ -18,7 +18,7 @@ MutatorFins.prototype.FIN_RANGES = [
     [
         new Bounds(.1, .25),
         new Bounds(.4, .5),
-        new Bounds(.7, .95)
+        new Bounds(.82, .95)
     ]
 ];
 
