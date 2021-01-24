@@ -27,8 +27,8 @@
     /* Fish colors */
     --color-fish-white: #E1E0C4;
     --color-fish-black: #414345;
-    --color-fish-gold: #eaa247;
-    --color-fish-orange: #cd6142;
+    --color-fish-gold: #E4A746;
+    --color-fish-orange: #E56E42;
     --color-fish-red: #db3030;
     --color-fish-brown: var(--color-rock-top);
     --color-fish-shade: #13232b;
@@ -46,10 +46,10 @@
     --color-bug-butterfly-thunder-edge: #d64657;
 
     /* Code colors */
-    --color-code-00: #fdd373;
-    --color-code-01: var(--color-fish-gold);
-    --color-code-10: var(--color-fish-orange);
-    --color-code-11: var(--color-fish-red);
+    --color-code-00: #FDD373;
+    --color-code-01: #EAA247;
+    --color-code-10: #CD6142;
+    --color-code-11: #DB3030;
 
     /* GUI colors */
     --color-preview-outer: #325c73;

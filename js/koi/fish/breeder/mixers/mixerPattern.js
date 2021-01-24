@@ -20,6 +20,8 @@ MixerPattern.prototype = Object.create(Mixer.prototype);
  */
 MixerPattern.prototype.mixLayers = function(mother, father, random) {
     switch (mother.id) {
+        case LayerBase.prototype.ID:
+            return new MixerLayerBase(mother, father).mix(random);
         case LayerSpots.prototype.ID:
             return new MixerLayerSpots(mother, father).mix(random);
         case LayerRidge.prototype.ID:

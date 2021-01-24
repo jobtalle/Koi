@@ -51,7 +51,7 @@ Mutations.prototype.createMutationsColor = function() {
             [
                 new BlueprintLayerBase(Palette.INDEX_RED)
             ],
-            .1
+            .15
         )
     ];
 };
@@ -89,7 +89,7 @@ Mutations.prototype.createMutationsSpots = function() {
                     new Sampler(160, 170)
                 )
             ],
-            .2
+            .25
         ),
         // Two fish with different base colors and different spot colors can swap spot colors
         new Mutation(
@@ -105,7 +105,7 @@ Mutations.prototype.createMutationsSpots = function() {
                 Mutation.BLUEPRINT_LAYER_MOTHER,
                 Mutation.BLUEPRINT_LAYER_FATHER
             ],
-            .15
+            .2
         ),
         // Spotted fish + solid color can become an extra layer of spots
         new Mutation(
@@ -136,7 +136,24 @@ Mutations.prototype.createMutationsSpots = function() {
                     new Sampler(160, 170)
                 )
             ],
-            .2
+            .25
+        ),
+        // Two spotted fish with the same base color can become two spots layers
+        new Mutation(
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_SHARED),
+                new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_UNIQUE_LAYER)
+            ]),
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_SHARED),
+                new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_UNIQUE_LAYER)
+            ]),
+            [
+                Mutation.BLUEPRINT_LAYER_MIX,
+                Mutation.BLUEPRINT_LAYER_FATHER,
+                Mutation.BLUEPRINT_LAYER_MOTHER_PREVIOUS
+            ],
+            .25
         )
     ];
 };

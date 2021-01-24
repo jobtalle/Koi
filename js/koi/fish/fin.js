@@ -21,7 +21,7 @@ const Fin = function(at, radius, sign = 1) {
     this.pattern = null;
 };
 
-Fin.prototype.ANCHOR_INSET = .85;
+Fin.prototype.ANCHOR_INSET = .88;
 Fin.prototype.SKEW = .1;
 Fin.prototype.WAVE_SKEW = .2;
 Fin.prototype.X_SCALE = .6;
