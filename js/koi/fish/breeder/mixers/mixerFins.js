@@ -17,20 +17,7 @@ MixerFins.prototype = Object.create(Mixer.prototype);
  * @returns {Fins} The mixed fins
  */
 MixerFins.prototype.mix = function(random) {
-    const fins = [];
-    const finCount = random.getFloat() < .5 ? this.mother.fins.length : this.father.fins.length;
-
-    for (let fin = 0; fin < finCount; ++fin) {
-        const mother = fin < this.mother.fins.length ? this.mother.fins[fin] : null;
-        const father = fin < this.father.fins.length ? this.father.fins[fin] : null;
-
-        if (mother && father)
-            fins.push(new MixerFin(mother, father).mix(random));
-        else if (mother)
-            fins.push(mother.copy());
-        else
-            fins.push(father.copy());
-    }
-
-    return new Fins(fins);
+    return new Fins(
+        new MixerFin(this.mother.front, this.father.front).mix(random),
+        new MixerFin(this.mother.back, this.father.back).mix(random));
 };

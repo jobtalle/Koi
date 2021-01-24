@@ -1,14 +1,16 @@
 /**
  * The fins
- * @param {Fin[]} fins All fins for this fins
+ * @param {Fin} front The front fin
+ * @param {Fin} back The back fin
  * @constructor
  */
-const Fins = function(fins) {
-    this.fins = fins;
+const Fins = function(front, back) {
+    this.front = front;
+    this.back = back;
 };
 
-Fins.prototype.FIN_PAIRS_MIN = 2;
-Fins.prototype.FIN_PAIRS_MAX = 3;
+Fins.prototype.BOUNDS_FRONT = new Bounds(.1, .3);
+Fins.prototype.BOUNDS_BACK = new Bounds(.5, .75);
 
 /**
  * Deserialize the fins
@@ -16,15 +18,7 @@ Fins.prototype.FIN_PAIRS_MAX = 3;
  * @returns {Fins} The fins
  */
 Fins.deserialize = function(buffer) {
-    const fins = new Array(buffer.readUint8());
-
-    if (!(fins.length >= Fins.prototype.FIN_PAIRS_MIN && fins.length <= Fins.prototype.FIN_PAIRS_MAX))
-        throw new RangeError();
-
-    for (let fin = 0; fin < fins.length; ++fin)
-        fins[fin] = Fin.deserialize(buffer);
-
-    return new Fins(fins);
+    return new Fins(Fin.deserialize(buffer), Fin.deserialize(buffer));
 };
 
 /**
@@ -32,10 +26,8 @@ Fins.deserialize = function(buffer) {
  * @param {BinBuffer} buffer A buffer to serialize to
  */
 Fins.prototype.serialize = function(buffer) {
-    buffer.writeUint8(this.fins.length);
-
-    for (let fin = 0, finCount = this.fins.length; fin < finCount; ++fin)
-        this.fins[fin].serialize(buffer);
+    this.front.serialize(buffer);
+    this.back.serialize(buffer);
 };
 
 /**
@@ -43,10 +35,10 @@ Fins.prototype.serialize = function(buffer) {
  * @returns {Fin[]} fins All fins
  */
 Fins.prototype.makeAll = function() {
-    const fins = this.fins.slice();
-
-    for (let fin = 0, finCount = this.fins.length; fin < finCount; ++fin)
-        fins.push(this.fins[fin].copyMirrored());
-
-    return fins;
+    return [
+        this.front,
+        this.front.copyMirrored(),
+        this.back,
+        this.back.copyMirrored()
+    ];
 };

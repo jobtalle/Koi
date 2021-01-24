@@ -18,6 +18,6 @@ MutatorFin.prototype.SAMPLER_RADIUS = new SamplerPlateau(-11, 0, 11, .8);
  * @param {Random} random A randomizer
  */
 MutatorFin.prototype.mutate = function(atMin, atMax, random) {
-    this.fin.at = this.mutateUint8(this.fin.at, this.SAMPLER_AT, random.getFloat());
+    this.fin.at = Math.max(atMin, Math.min(atMax, this.mutateUint8(this.fin.at, this.SAMPLER_AT, random.getFloat())));
     this.fin.radius = this.mutateUint8(this.fin.radius, this.SAMPLER_RADIUS, random.getFloat());
 };

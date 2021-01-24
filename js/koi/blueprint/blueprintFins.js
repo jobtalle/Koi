@@ -13,8 +13,7 @@ const BlueprintFins = function() {
  */
 BlueprintFins.prototype.spawn = function(random) {
     // TODO: Randomize
-    return new Fins([
+    return new Fins(
         new Fin(40, 128, 1),
-        new Fin(128, 80, 1)
-    ]);
+        new Fin(128, 80, 1));
 };

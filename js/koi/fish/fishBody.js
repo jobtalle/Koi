@@ -40,7 +40,7 @@ const FishBody = function(
     this.size = this.samplerSize.sample(this.age / 0xFFFF);
     this.spine = new Array(Math.ceil(this.lengthSampled / this.RESOLUTION));
     this.tailOffset = this.spine.length - 1;
-    this.finGroups = this.assignFins(fins, this.spine.length);
+    this.finGroups = this.assignFins(this.finInstances, this.spine.length);
     this.spinePrevious = new Array(this.spine.length);
     this.springs = this.makeSprings(
         this.SAMPLER_SPRING_START.sample(this.radius / 0xFF),
@@ -222,7 +222,7 @@ FishBody.prototype.getOffspringPositionPrevious = function() {
 FishBody.prototype.assignFins = function(fins, spineLength) {
     const spineFins = new Array(spineLength).fill(null);
 
-    for (const fin of this.finInstances) {
+    for (const fin of fins) {
         const index = fin.getVertebraIndex(spineLength);
 
         if (!spineFins[index])
