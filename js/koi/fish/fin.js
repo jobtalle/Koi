@@ -49,6 +49,14 @@ Fin.prototype.serialize = function(buffer) {
 };
 
 /**
+ * Copy this fin
+ * @returns {Fin} A copy of this fin
+ */
+Fin.prototype.copy = function() {
+    return new Fin(this.at, this.radius);
+};
+
+/**
  * Make a mirrored copy of this fin
  * @returns {Fin} The copy
  */

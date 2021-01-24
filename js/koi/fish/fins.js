@@ -7,7 +7,7 @@ const Fins = function(fins) {
     this.fins = fins;
 };
 
-Fins.prototype.FIN_PAIRS_MIN = 1;
+Fins.prototype.FIN_PAIRS_MIN = 2;
 Fins.prototype.FIN_PAIRS_MAX = 3;
 
 /**
