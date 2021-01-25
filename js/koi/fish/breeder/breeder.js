@@ -32,14 +32,8 @@ Breeder.prototype.breed = function(
     random) {
     const offspring = new Array(this.mother.body.getOffspringCount());
 
-    const localOnMutate = mutation => {
-        mutations = null;
-
-        onMutate(mutation);
-    };
-
     for (let fish = 0, fishCount = offspring.length; fish < fishCount; ++fish) {
-        const newFish = this.mixer.mix(patterns, mutations, forceMutation, localOnMutate, random);
+        const newFish = this.mixer.mix(patterns, mutations, forceMutation, onMutate, random);
 
         new MutatorFish(newFish).mutate(random);
 
