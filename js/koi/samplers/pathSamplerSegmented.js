@@ -9,7 +9,7 @@ const PathSamplerSegmented = function(path, precision = this.PRECISION) {
     this.points = [path.getStart()];
     this.lengths = [this.length];
 
-    let lastSample = this.points[0];
+    let lastSample = path.getStart();
     const sample = lastSample.copy();
 
     for (let t = 0; t < 1; t += this.EPSILON) {
