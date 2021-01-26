@@ -5,7 +5,7 @@
  * @constructor
  */
 const Path3Sampler = function(path, precision = this.PRECISION) {
-    PathSampler.call(this);
+    PathSampler.call(this, path);
 
     this.points = [path.getStart()];
     this.lengths = [this.length];
@@ -39,19 +39,11 @@ Path3Sampler.prototype = Object.create(PathSampler.prototype);
 Path3Sampler.prototype.PRECISION = .05;
 
 /**
- * Get the start of this path
- * @returns {Vector3} The starting point
- */
-Path3Sampler.prototype.getStart = function() {
-    return this.points[0];
-};
-
-/**
  * Sample the path at a certain length
- * @param {Vector3} vector The vector to store the sample in
+ * @param {Object} vector The vector to store the sample in
  * @param {Number} at The distance from the starting point, no higher than the path length
  */
-Path3Sampler.prototype.sample = function(vector, at) {
+Path3Sampler.prototype.sampleSegmented = function(vector, at) {
     let startIndex = 0;
 
     // TODO: Optimize by guessing

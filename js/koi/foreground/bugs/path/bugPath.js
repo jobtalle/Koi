@@ -47,7 +47,7 @@ BugPath.prototype.move = function(delta) {
  * @returns {Vector2} The start coordinate
  */
 BugPath.prototype.getStart = function() {
-    return this.path.getStart();
+    return this.path.getPath().getStart();
 };
 
 /**

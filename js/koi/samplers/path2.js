@@ -1,16 +1,13 @@
 /**
  * A 2D path
+ * @param {Vector2} start The start point
+ * @param {Vector2} end The end point
+ * @param {Boolean} [linear] True if the path samples linearly, false by default
+ * @param {Number} [linearLength] If the path is linear, the exact length
  * @constructor
  */
-const Path2 = function() {
-
+const Path2 = function(start, end, linear = false, linearLength = 0) {
+    Path.call(this, start, end, linear, linearLength);
 };
 
-/**
- * Sample the path
- * @param {Vector2} vector The vector to store the sample in
- * @param {Number} t The distance on the path in the range [0, 1]
- */
-Path2.prototype.sample = function(vector, t) {
-
-};
+Path2.prototype = Object.create(Path.prototype);

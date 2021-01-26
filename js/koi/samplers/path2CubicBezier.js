@@ -7,6 +7,8 @@
  * @constructor
  */
 const Path2CubicBezier = function(a, b, c, d) {
+    Path2.call(this, a, b);
+
     this.a = a;
     this.b = b;
     this.c = c;
