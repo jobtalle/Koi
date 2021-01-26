@@ -96,10 +96,7 @@ Plants.prototype.modelCattail = function(
         flexSampler));
 
     this.modelStalk(
-        x,
-        0,
-        x + directionCos * height,
-        directionSin * height,
+        new Path2Linear(new Vector2(x, 0), new Vector2(x + directionCos * height, directionSin * height)),
         y,
         this.CATTAIL_STALK_RADIUS * height,
         this.CATTAIL_STALK_RADIUS_POWER,

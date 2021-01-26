@@ -35,10 +35,7 @@ Plants.prototype.modelShrubbery = function(
         random);
 
     this.modelStalk(
-        x,
-        0,
-        x,
-        3,
+        new Path2Linear(new Vector2(x, 0), new Vector2(x, 3)),
         y,
         .05,
         .5,

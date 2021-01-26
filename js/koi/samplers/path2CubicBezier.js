@@ -19,7 +19,7 @@ Path2CubicBezier.prototype = Object.create(Path2.prototype);
 
 /**
  * Sample the spline
- * @param {Vector2} vector The vector to store the sample in
+ * @param {Object} vector The vector to store the sample in
  * @param {Number} t The distance on the curve in the range [0, 1]
  */
 Path2CubicBezier.prototype.sample = function(vector, t) {

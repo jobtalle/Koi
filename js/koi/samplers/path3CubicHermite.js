@@ -30,7 +30,7 @@ Path3CubicHermite.prototype.interpolate = function(a, b, c, d, t) {
 
 /**
  * Sample the path
- * @param {Vector3} vector The vector to store the sample in
+ * @param {Object} vector The vector to store the sample in
  * @param {Number} t The distance on the path in the range [0, 1]
  */
 Path3CubicHermite.prototype.sample = function(vector, t) {

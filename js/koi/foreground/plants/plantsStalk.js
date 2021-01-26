@@ -2,10 +2,7 @@ Plants.prototype.STALK_RESOLUTION = .3;
 
 /**
  * Model a stalk
- * @param {Number} x1 The X origin
- * @param {Number} z1 The Y origin
- * @param {Number} x2 The X target
- * @param {Number} z2 The Z target
+ * @param {Path2} path The path to model the stalk along
  * @param {Number} y The Y position
  * @param {Number} radius The stalk radius
  * @param {Number} radiusPower A power to apply to the radius
@@ -18,10 +15,7 @@ Plants.prototype.STALK_RESOLUTION = .3;
  * @param {Number[]} indices The index array
  */
 Plants.prototype.modelStalk = function(
-    x1,
-    z1,
-    x2,
-    z2,
+    path,
     y,
     radius,
     radiusPower,
@@ -33,18 +27,18 @@ Plants.prototype.modelStalk = function(
     vertices,
     indices) {
     const firstIndex = this.getFirstIndex(vertices);
-    const dx = x2 - x1;
-    const dz = z2 - z1;
-    const length = Math.sqrt(dx * dx + dz * dz);
-    const nx = -dz / length;
-    const nz = dx / length;
-    const segments = Math.max(2, Math.round(length / this.STALK_RESOLUTION) + 1);
+    const sampler = new Path2Sampler(path);
+    const sample = new Vector2();
+    const direction = new Vector2();
+    const segments = Math.max(2, Math.round(sampler.getLength() / this.STALK_RESOLUTION) + 1);
 
     for (let segment = 0; segment < segments - 1; ++segment) {
         const f = segment / (segments - 1);
-        const x = x1 + dx * f;
-        const z = z1 + dz * f;
         const r = radius * Math.pow(1 - f, radiusPower);
+        const at = f * sampler.getLength();
+
+        sampler.sample(sample, at);
+        sampler.sampleDirection(direction, at);
 
         if (segment === 0) {
             if (colorBase === color)
@@ -65,9 +59,9 @@ Plants.prototype.modelStalk = function(
                 color.b * shade);
 
         vertices.push(
-            x + nx * r,
+            sample.x - direction.y * r,
             y,
-            z + nz * r,
+            sample.y + direction.x * r,
             0,
             0,
             uv.x,
@@ -85,9 +79,9 @@ Plants.prototype.modelStalk = function(
                 color.b);
 
         vertices.push(
-            x - nx * r,
+            sample.x + direction.y * r,
             y,
-            z - nz * r,
+            sample.y - direction.x * r,
             0,
             0,
             uv.x,
@@ -112,9 +106,9 @@ Plants.prototype.modelStalk = function(
         color.r * (1 - (1 - shade) * .5),
         color.g * (1 - (1 - shade) * .5),
         color.b * (1 - (1 - shade) * .5),
-        x2,
+        path.getEnd().x,
         y,
-        z2,
+        path.getEnd().y,
         0,
         0,
         uv.x,
