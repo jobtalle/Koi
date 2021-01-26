@@ -18,11 +18,11 @@ Plants.prototype.modelShrubbery = function(
     indices) {
     const uv = this.makeUV(x, y, random);
     const flexSampler = new FlexSampler(x, 0, new SamplerPower(0, .1, 1.8), 3);
+    const pathSampler = new Path2Sampler(
+        new Path2QuadraticBezier(new Vector2(x, 0), new Vector2(x, 2), new Vector2(x + 1, 3)));
     const leafSet = new LeafSet(
-        x,
-        0,
-        x,
-        3,
+        pathSampler,
+        new Bounds(0, 1),
         1,
         .3, // density
         .5, // min angle
@@ -30,12 +30,12 @@ Plants.prototype.modelShrubbery = function(
         .8, // root length
         .35, // top length
         .6, // leaf width
-        .04, // flex min
-        .22, // flex max
+        .08, // flex min
+        .4, // flex max
         random);
 
     this.modelStalk(
-        new Path2Linear(new Vector2(x, 0), new Vector2(x, 3)),
+        pathSampler,
         y,
         .05,
         .5,

@@ -10,8 +10,7 @@ Plants.prototype.CATTAIL_STALK_RADIUS = .02;
 Plants.prototype.CATTAIL_STALK_RADIUS_POWER = .7;
 Plants.prototype.CATTAIL_STALK_SHADE = .7;
 Plants.prototype.CATTAIL_LEAVES_DISTRIBUTION_POWER = 1.5;
-Plants.prototype.CATTAIL_LEAVES_START = .1;
-Plants.prototype.CATTAIL_LEAVES_END = .55;
+Plants.prototype.CATTAIL_LEAVES_BOUNDS = new Bounds(.1, .55);
 Plants.prototype.CATTAIL_LEAVES_DENSITY = .36;
 Plants.prototype.CATTAIL_LEAVES_ANGLE_MIN = .8;
 Plants.prototype.CATTAIL_LEAVES_ANGLE_MAX = 1.5;
@@ -51,17 +50,15 @@ Plants.prototype.modelCattail = function(
     const capsuleStart = height * this.CATTAIL_CAPSULE_START;
     const capsuleEnd = height * this.CATTAIL_CAPSULE_END;
     const capsuleSpot = capsuleStart + (capsuleEnd - capsuleStart) * this.CATTAIL_CAPSULE_SPOT.sample(random.getFloat());
-    const leafStart = height * this.CATTAIL_LEAVES_START;
-    const leafEnd = height * this.CATTAIL_LEAVES_END;
     const direction = Math.PI * .5 + (random.getFloat() * 2 - 1) * this.CATTAIL_ANGLE_RADIUS;
     const directionCos = Math.cos(direction);
     const directionSin = Math.sin(direction);
     const flexSampler = new FlexSampler(x, 0, this.CATTAIL_FLEX, height);
+    const pathSampler = new Path2Sampler(
+        new Path2Linear(new Vector2(x, 0), new Vector2(x + directionCos * height, directionSin * height)));
     const leafSet = new LeafSet(
-        x + directionCos * leafStart,
-        directionSin * leafStart,
-        x + directionCos * leafEnd,
-        directionSin * leafEnd,
+        pathSampler,
+        this.CATTAIL_LEAVES_BOUNDS,
         this.CATTAIL_LEAVES_DISTRIBUTION_POWER,
         this.CATTAIL_LEAVES_DENSITY,
         this.CATTAIL_LEAVES_ANGLE_MIN,
@@ -96,7 +93,7 @@ Plants.prototype.modelCattail = function(
         flexSampler));
 
     this.modelStalk(
-        new Path2Linear(new Vector2(x, 0), new Vector2(x + directionCos * height, directionSin * height)),
+        pathSampler,
         y,
         this.CATTAIL_STALK_RADIUS * height,
         this.CATTAIL_STALK_RADIUS_POWER,

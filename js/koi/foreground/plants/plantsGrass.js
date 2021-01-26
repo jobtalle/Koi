@@ -49,9 +49,10 @@ Plants.prototype.modelGrass = function(
     for (let i = 0; i < this.GRASS_BLADES; ++i) {
         const height = this.GRASS_HEIGHT.sample(random.getFloat());
         const angle = Math.PI * .5 + ((i / (this.GRASS_BLADES - 1)) * 2 - 1) * this.GRASS_FAN.sample(random.getFloat());
+        const path = new Path2Linear(new Vector2(x, 0), new Vector2(x + Math.cos(angle) * height, Math.sin(angle) * height));
 
         this.modelStalk(
-            new Path2Linear(new Vector2(x, 0), new Vector2(x + Math.cos(angle) * height, Math.sin(angle) * height)),
+            new Path2Sampler(path),
             y + this.GRASS_Y_SHIFT.sample(random.getFloat()),
             this.GRASS_RADIUS * height,
             this.GRASS_RADIUS_POWER,

@@ -2,7 +2,7 @@ Plants.prototype.STALK_RESOLUTION = .3;
 
 /**
  * Model a stalk
- * @param {Path2} path The path to model the stalk along
+ * @param {Path2Sampler} pathSampler The path sampler to model the stalk along
  * @param {Number} y The Y position
  * @param {Number} radius The stalk radius
  * @param {Number} radiusPower A power to apply to the radius
@@ -15,7 +15,7 @@ Plants.prototype.STALK_RESOLUTION = .3;
  * @param {Number[]} indices The index array
  */
 Plants.prototype.modelStalk = function(
-    path,
+    pathSampler,
     y,
     radius,
     radiusPower,
@@ -27,18 +27,17 @@ Plants.prototype.modelStalk = function(
     vertices,
     indices) {
     const firstIndex = this.getFirstIndex(vertices);
-    const sampler = new Path2Sampler(path);
     const sample = new Vector2();
     const direction = new Vector2();
-    const segments = Math.max(2, Math.round(sampler.getLength() / this.STALK_RESOLUTION) + 1);
+    const segments = Math.max(2, Math.round(pathSampler.getLength() / this.STALK_RESOLUTION) + 1);
 
     for (let segment = 0; segment < segments - 1; ++segment) {
         const f = segment / (segments - 1);
         const r = radius * Math.pow(1 - f, radiusPower);
-        const at = f * sampler.getLength();
+        const at = f * pathSampler.getLength();
 
-        sampler.sample(sample, at);
-        sampler.sampleDirection(direction, at);
+        pathSampler.sample(sample, at);
+        pathSampler.sampleDirection(direction, at);
 
         if (segment === 0) {
             if (colorBase === color)
@@ -106,9 +105,9 @@ Plants.prototype.modelStalk = function(
         color.r * (1 - (1 - shade) * .5),
         color.g * (1 - (1 - shade) * .5),
         color.b * (1 - (1 - shade) * .5),
-        path.getEnd().x,
+        pathSampler.getPath().getEnd().x,
         y,
-        path.getEnd().y,
+        pathSampler.getPath().getEnd().y,
         0,
         0,
         uv.x,
