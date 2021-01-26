@@ -1,18 +1,16 @@
 /**
  * A cubic bezier curve
- * @param {Vector2} a The start point
- * @param {Vector2} b The first control point
- * @param {Vector2} c The second control point
- * @param {Vector2} d The end point
+ * @param {Vector2} start The start point
+ * @param {Vector2} c1 The first control point
+ * @param {Vector2} c2 The second  control point
+ * @param {Vector2} end The end point
  * @constructor
  */
-const Path2CubicBezier = function(a, b, c, d) {
-    Path2.call(this, a, b);
+const Path2CubicBezier = function(start, c1, c2, end) {
+    Path2.call(this, start, end);
 
-    this.a = a;
-    this.b = b;
-    this.c = c;
-    this.d = d;
+    this.c1 = c1;
+    this.c2 = c2;
 };
 
 Path2CubicBezier.prototype = Object.create(Path2.prototype);
@@ -29,6 +27,6 @@ Path2CubicBezier.prototype.sample = function(vector, t) {
     const t2 = t * t;
     const t3 = t2 * t;
 
-    vector.x = it3 * this.a.x + 3 * it2 * t * this.b.x + 3 * it * t2 * this.c.x + t3 * this.d.x;
-    vector.y = it3 * this.a.y + 3 * it2 * t * this.b.y + 3 * it * t2 * this.c.y + t3 * this.d.y;
+    vector.x = it3 * this.getStart().x + 3 * it2 * t * this.c1.x + 3 * it * t2 * this.c2.x + t3 * this.getEnd().x;
+    vector.y = it3 * this.getStart().y + 3 * it2 * t * this.c1.y + 3 * it * t2 * this.c2.y + t3 * this.getEnd().y;
 };
