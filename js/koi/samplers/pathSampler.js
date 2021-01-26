@@ -5,10 +5,9 @@
  */
 const PathSampler = function(path) {
     this.path = path;
-    this.length = path.isLinear() ? path.getLinearLength() : 0;
+    this.segmented = path.isLinear() ? null : new PathSamplerSegmented(path);
+    this.length = path.isLinear() ? path.getLinearLength() : this.segmented.getLength();
 };
-
-PathSampler.prototype.EPSILON = .005;
 
 /**
  * Get the path of this sampler
@@ -41,7 +40,7 @@ PathSampler.prototype.sampleLinear = function(vector, at) {
  * @param {Number} at The distance from the starting point, no higher than the path length
  */
 PathSampler.prototype.sampleSegmented = function(vector, at) {
-
+    this.segmented.sample(vector, at);
 };
 
 /**
