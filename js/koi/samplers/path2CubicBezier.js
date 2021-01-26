@@ -6,19 +6,21 @@
  * @param {Vector2} d The end point
  * @constructor
  */
-const CubicBezier = function(a, b, c, d) {
+const Path2CubicBezier = function(a, b, c, d) {
     this.a = a;
     this.b = b;
     this.c = c;
     this.d = d;
 };
 
+Path2CubicBezier.prototype = Object.create(Path2.prototype);
+
 /**
  * Sample the spline
  * @param {Vector2} vector The vector to store the sample in
  * @param {Number} t The distance on the curve in the range [0, 1]
  */
-CubicBezier.prototype.sample = function(vector, t) {
+Path2CubicBezier.prototype.sample = function(vector, t) {
     const it = 1 - t;
     const it2 = it * it;
     const it3 = it2 * it;

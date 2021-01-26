@@ -9,6 +9,7 @@ Plants.prototype.CATTAIL_HEIGHT_POWER = 1.5;
 Plants.prototype.CATTAIL_STALK_RADIUS = .02;
 Plants.prototype.CATTAIL_STALK_RADIUS_POWER = .7;
 Plants.prototype.CATTAIL_STALK_SHADE = .7;
+Plants.prototype.CATTAIL_LEAVES_DISTRIBUTION_POWER = 1.5;
 Plants.prototype.CATTAIL_LEAVES_START = .1;
 Plants.prototype.CATTAIL_LEAVES_END = .55;
 Plants.prototype.CATTAIL_LEAVES_DENSITY = .36;
@@ -61,6 +62,7 @@ Plants.prototype.modelCattail = function(
         directionSin * leafStart,
         x + directionCos * leafEnd,
         directionSin * leafEnd,
+        this.CATTAIL_LEAVES_DISTRIBUTION_POWER,
         this.CATTAIL_LEAVES_DENSITY,
         this.CATTAIL_LEAVES_ANGLE_MIN,
         this.CATTAIL_LEAVES_ANGLE_MAX,

@@ -1,19 +1,20 @@
 /**
- * A linear cubic hermite sampler
- * @param {CubicHermite} cubicHermite A cubic hermite spline
- * @param {Number} precision The length of linear segments
+ * A 3D path sampler
+ * @param {Path3} path The path to sample
+ * @param {Number} [precision] The length of linear segments
  * @constructor
  */
-const CubicHermiteSampler = function(cubicHermite, precision) {
-    this.length = 0;
-    this.points = [cubicHermite.getStart()];
+const Path3Sampler = function(path, precision = this.PRECISION) {
+    PathSampler.call(this);
+
+    this.points = [path.getStart()];
     this.lengths = [this.length];
 
     let lastSample = this.points[0];
     const sample = lastSample.copy();
 
     for (let t = 0; t < 1; t += this.EPSILON) {
-        cubicHermite.sample(sample, t);
+        path.sample(sample, t);
 
         const dx = sample.x - lastSample.x;
         const dy = sample.y - lastSample.y;
@@ -29,19 +30,28 @@ const CubicHermiteSampler = function(cubicHermite, precision) {
         }
     }
 
-    this.points.push(cubicHermite.getEnd());
-    this.length += cubicHermite.getEnd().copy().subtract(lastSample).length();
+    this.points.push(path.getEnd());
+    this.length += path.getEnd().copy().subtract(lastSample).length();
     this.lengths.push(this.length);
 };
 
-CubicHermiteSampler.prototype.EPSILON = .005;
+Path3Sampler.prototype = Object.create(PathSampler.prototype);
+Path3Sampler.prototype.PRECISION = .05;
+
+/**
+ * Get the start of this path
+ * @returns {Vector3} The starting point
+ */
+Path3Sampler.prototype.getStart = function() {
+    return this.points[0];
+};
 
 /**
  * Sample the path at a certain length
  * @param {Vector3} vector The vector to store the sample in
  * @param {Number} at The distance from the starting point, no higher than the path length
  */
-CubicHermiteSampler.prototype.sample = function(vector, at) {
+Path3Sampler.prototype.sample = function(vector, at) {
     let startIndex = 0;
 
     // TODO: Optimize by guessing
@@ -59,12 +69,4 @@ CubicHermiteSampler.prototype.sample = function(vector, at) {
     vector.x += dx * traveled;
     vector.y += dy * traveled;
     vector.z += dz * traveled;
-};
-
-/**
- * Get the start of this curve
- * @returns {Vector3} The starting point
- */
-CubicHermiteSampler.prototype.getStart = function() {
-    return this.points[0];
 };

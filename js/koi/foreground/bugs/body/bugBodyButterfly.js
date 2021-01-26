@@ -91,7 +91,7 @@ BugBodyButterfly.prototype.model = function(
     colorWingsEdge) {
     const sample = new Vector2();
 
-    const bezier = new CubicBezier(
+    const path = new Path2CubicBezier(
         new Vector2(
             0,
             bodyHeight * .5),
@@ -109,7 +109,7 @@ BugBodyButterfly.prototype.model = function(
         const color = step === 0 || step === this.STEPS - 1 ? colorWings : colorWingsEdge;
         const t = step / (this.STEPS - 1);
 
-        bezier.sample(sample, t);
+        path.sample(sample, t);
 
         vertices.push(
             sample.x, sample.y,

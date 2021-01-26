@@ -59,7 +59,15 @@ Planter.prototype.plant = function(plants, vertices, indices) {
         const beachFactor = 1 - Math.min(1, minRocks / this.BEACH_MAX);
         const cattailFactor = this.getCattailFactor(shoreDistance, beachFactor);
 
-        if (this.random.getFloat() < cattailFactor * this.CATTAIL_CHANCE)
+        if (this.random.getFloat() < .01)
+            plants.modelShrubbery(
+                slot.x,
+                slot.y,
+                1,
+                this.random,
+                vertices,
+                indices);
+        else if (this.random.getFloat() < cattailFactor * this.CATTAIL_CHANCE)
             bugSpots.push(...plants.modelCattail(
                 slot.x,
                 slot.y,

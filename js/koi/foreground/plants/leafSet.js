@@ -4,6 +4,7 @@
  * @param {Number} z1 The Z origin
  * @param {Number} x2 The X target
  * @param {Number} z2 The Z target
+ * @param {Number} distributionPower The distribution power
  * @param {Number} density The amounts of leaves per distance
  * @param {Number} minAngle The minimum branching angle
  * @param {Number} maxAngle The maximum branching angle
@@ -20,6 +21,7 @@ const LeafSet = function(
     z1,
     x2,
     z2,
+    distributionPower,
     density,
     minAngle,
     maxAngle,
@@ -43,14 +45,20 @@ const LeafSet = function(
     this.flexMax = flexMax;
 
     const distance = Math.sqrt(this.dx * this.dx + this.dz * this.dz);
+    const leafCount = Math.round(distance / density);
+    const leafSpacing = 1 / leafCount;
 
-    this.leaves = new Array(Math.round(distance / density));
+    this.leaves = new Array(leafCount);
 
-    for (let leaf = 0; leaf < this.leaves.length; ++leaf)
-        this.leaves[leaf] = random.getFloat() * distance;
+    for (let leaf = 0; leaf < leafCount; ++leaf)
+        this.leaves[leaf] = Math.pow(
+            (leaf + random.getFloat() * (1 - this.MIN_PADDING)) * leafSpacing,
+            distributionPower);
 
     this.leaves.sort((a, b) => b - a);
 };
+
+LeafSet.prototype.MIN_PADDING = .2;
 
 /**
  * Model the leaves in this set
