@@ -10,7 +10,7 @@ const MutatorLayerShapeFin = function(layer) {
 MutatorLayerShapeFin.prototype = Object.create(Mutator.prototype);
 MutatorLayerShapeFin.prototype.SAMPLER_ANGLE = new SamplerPlateau(-12, 0, 12, .3);
 MutatorLayerShapeFin.prototype.SAMPLER_INSET = new SamplerPlateau(-9, 0, 9, .3);
-MutatorLayerShapeFin.prototype.SAMPLER_DIPS = new SamplerPlateau(-14, 0, 14, .3);
+MutatorLayerShapeFin.prototype.SAMPLER_DIPS = new SamplerPlateau(-30, 0, 30, .3);
 MutatorLayerShapeFin.prototype.SAMPLER_DIP_POWER = new SamplerPlateau(-11, 0, 11, .3);
 MutatorLayerShapeFin.prototype.SAMPLER_ROUNDNESS = new SamplerPlateau(-13, 0, 13, .3);
 

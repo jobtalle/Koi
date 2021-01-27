@@ -6,6 +6,8 @@
  * @constructor
  */
 const PlantMap = function(width, height, slotResolution) {
+    this.width = width;
+    this.height = height;
     this.xCells = Math.ceil(width / this.RESOLUTION);
     this.yCells = Math.ceil(height / this.RESOLUTION);
     this.cells = new Array(this.xCells * this.yCells).fill(0);

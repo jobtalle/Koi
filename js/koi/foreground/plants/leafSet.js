@@ -1,45 +1,36 @@
 /**
  * A set of leaves to place on a stalk
  * @param {Path2Sampler} pathSampler The path to place leaves on
- * @param {Bounds} bounds The bounds of the path region to place leaves in
- * @param {Number} distributionPower The distribution power
+ * @param {Sampler} placementSampler A sampler for leaf positions along the path
  * @param {Number} density The amounts of leaves per distance
  * @param {Sampler} angleSampler The angle offset sampler
- * @param {Number} lengthRoot The leaf length at the root
- * @param {Number} lengthTip The leaf length at the tip
+ * @param {Sampler} lengthSampler The leaf length sampler
  * @param {Number} width The leaf width factor
- * @param {Number} flexMin The minimum flex amount
- * @param {Number} flexMax The maximum flex amount
+ * @param {Sampler} flexSampler The flex amount sampler
  * @param {Random} random A randomizer
  * @constructor
  */
 const LeafSet = function(
     pathSampler,
-    bounds,
-    distributionPower,
+    placementSampler,
     density,
     angleSampler,
-    lengthRoot,
-    lengthTip,
+    lengthSampler,
     width,
-    flexMin,
-    flexMax,
+    flexSampler,
     random) {
     this.pathSampler = pathSampler;
     this.angleSampler = angleSampler;
-    this.lengthRoot = lengthRoot;
-    this.lengthTip = lengthTip;
+    this.lengthSampler = lengthSampler;
     this.width = width;
-    this.flexMin = flexMin;
-    this.flexMax = flexMax;
+    this.flexSampler = flexSampler;
 
-    const leafCount = Math.round(pathSampler.getLength() * bounds.getDomain() / density);
+    const leafCount = Math.round(pathSampler.getLength() * placementSampler.getDomain() / density);
 
     this.leaves = new Array(leafCount);
 
     for (let leaf = 0; leaf < leafCount; ++leaf)
-        this.leaves[leaf] = bounds.map(
-            Math.pow((leaf + random.getFloat() * (1 - this.MIN_PADDING)) / leafCount, distributionPower));
+        this.leaves[leaf] = placementSampler.sample((leaf + random.getFloat() * (1 - this.MIN_PADDING)) / leafCount);
 
     this.leaves.sort((a, b) => b - a);
 };
@@ -75,9 +66,9 @@ LeafSet.prototype.model = function(
         this.pathSampler.sampleDirection(direction, distance * this.pathSampler.getLength());
 
         const flexVector = flexSampler.sample(sample.x, sample.y);
-        const length = this.lengthRoot + (this.lengthTip - this.lengthRoot) * distance;
+        const length = this.lengthSampler.sample(distance);
         const angle = direction.angle() + angleDirection * this.angleSampler.sample(random.getFloat());
-        const flex = this.flexMin + (this.flexMax - this.flexMin) * random.getFloat();
+        const flex = this.flexSampler.sample(random.getFloat());
         const flexDirection = random.getFloat() < .5 ? -1 : 1;
 
         angleDirection = -angleDirection;
