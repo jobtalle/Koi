@@ -64,6 +64,7 @@ Planter.prototype.plant = function(plants, vertices, indices) {
                 slot.x,
                 slot.y,
                 1,
+                new Sampler(Math.PI * .2, Math.PI * .8),
                 this.random,
                 vertices,
                 indices);

@@ -48,11 +48,13 @@ PathSamplerSegmented.prototype.getLength = function() {
  * @param {Number} at The distance from the starting point, no higher than the path length
  */
 PathSamplerSegmented.prototype.sample = function(vector, at) {
-    let startIndex = 0;
+    let startIndex = Math.min(this.lengths.length - 2, Math.floor(this.lengths.length * at / this.getLength()));
 
-    // TODO: Optimize by guessing
     while (this.lengths[startIndex + 1] < at)
         ++startIndex;
+
+    while (this.lengths[startIndex] > at)
+        --startIndex;
 
     const pointDistance = this.lengths[startIndex + 1] - this.lengths[startIndex];
     const distance = at - this.lengths[startIndex];

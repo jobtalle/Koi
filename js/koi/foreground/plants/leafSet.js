@@ -38,9 +38,8 @@ const LeafSet = function(
     this.leaves = new Array(leafCount);
 
     for (let leaf = 0; leaf < leafCount; ++leaf)
-        this.leaves[leaf] = Math.pow(
-            (leaf + random.getFloat() * (1 - this.MIN_PADDING)) / leafCount,
-            distributionPower) * bounds.getDomain() + bounds.min;
+        this.leaves[leaf] = bounds.map(
+            Math.pow((leaf + random.getFloat() * (1 - this.MIN_PADDING)) / leafCount, distributionPower));
 
     this.leaves.sort((a, b) => b - a);
 };

@@ -7,6 +7,7 @@ Plants.prototype.SHRUBBERY_STALK_SHADE = .65;
  * @param {Number} x The X origin
  * @param {Number} y The Y origin
  * @param {Number} size A size factor in the range [0, 1]
+ * @param {Sampler} angle A sample for the angles
  * @param {Random} random A randomizer
  * @param {Number[]} vertices The vertex array
  * @param {Number[]} indices The index array
@@ -15,6 +16,7 @@ Plants.prototype.modelShrubbery = function(
     x,
     y,
     size,
+    angle,
     random,
     vertices,
     indices) {
