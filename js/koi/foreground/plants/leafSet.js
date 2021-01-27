@@ -4,8 +4,7 @@
  * @param {Bounds} bounds The bounds of the path region to place leaves in
  * @param {Number} distributionPower The distribution power
  * @param {Number} density The amounts of leaves per distance
- * @param {Number} minAngle The minimum branching angle
- * @param {Number} maxAngle The maximum branching angle
+ * @param {Sampler} angleSampler The angle offset sampler
  * @param {Number} lengthRoot The leaf length at the root
  * @param {Number} lengthTip The leaf length at the tip
  * @param {Number} width The leaf width factor
@@ -19,8 +18,7 @@ const LeafSet = function(
     bounds,
     distributionPower,
     density,
-    minAngle,
-    maxAngle,
+    angleSampler,
     lengthRoot,
     lengthTip,
     width,
@@ -28,8 +26,7 @@ const LeafSet = function(
     flexMax,
     random) {
     this.pathSampler = pathSampler;
-    this.minAngle = minAngle;
-    this.maxAngle = maxAngle;
+    this.angleSampler = angleSampler;
     this.lengthRoot = lengthRoot;
     this.lengthTip = lengthTip;
     this.width = width;
@@ -80,8 +77,7 @@ LeafSet.prototype.model = function(
 
         const flexVector = flexSampler.sample(sample.x, sample.y);
         const length = this.lengthRoot + (this.lengthTip - this.lengthRoot) * distance;
-        const angle = direction.angle() + angleDirection *
-            (this.minAngle + (this.maxAngle - this.minAngle) * random.getFloat());
+        const angle = direction.angle() + angleDirection * this.angleSampler.sample(random.getFloat());
         const flex = this.flexMin + (this.flexMax - this.flexMin) * random.getFloat();
         const flexDirection = random.getFloat() < .5 ? -1 : 1;
 

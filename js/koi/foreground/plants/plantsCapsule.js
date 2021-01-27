@@ -4,10 +4,8 @@ Plants.prototype.CAPSULE_RADIUS_POWER = .25;
 
 /**
  * Model a capsule shape
- * @param {Number} x1 The X origin
- * @param {Number} z1 The Z origin
- * @param {Number} x2 The X target
- * @param {Number} z2 The Z target
+ * @param {Path2Sampler} pathSampler The path to model the capsule on
+ * @param {Bounds} bounds The bounds to model the stalk on
  * @param {Number} y The Y position
  * @param {Number} radius The capsule radius
  * @param {Vector2} uv The air UV
@@ -18,10 +16,8 @@ Plants.prototype.CAPSULE_RADIUS_POWER = .25;
  * @param {Number[]} indices The index array
  */
 Plants.prototype.modelCapsule = function(
-    x1,
-    z1,
-    x2,
-    z2,
+    pathSampler,
+    bounds,
     y,
     radius,
     uv,
@@ -32,20 +28,21 @@ Plants.prototype.modelCapsule = function(
     indices) {
 
     const firstIndex = this.getFirstIndex(vertices);
-    const dx = x2 - x1;
-    const dz = z2 - z1;
-    const length = Math.sqrt(dx * dx + dz * dz);
-    const nx = -dz / length;
-    const nz = dx / length;
-    const segments = Math.max(this.CAPSULE_SEGMENTS_MIN, Math.round(length / this.CAPSULE_RESOLUTION) + 1);
+    const segments = Math.max(
+        this.CAPSULE_SEGMENTS_MIN,
+        Math.round(pathSampler.getLength() * bounds.getDomain() / this.CAPSULE_RESOLUTION) + 1);
+    const sample = new Vector2();
+    const direction = new Vector2();
+
+    pathSampler.sample(sample, pathSampler.getLength() * bounds.min);
 
     vertices.push(
         color.r * .5 * (shade + 1),
         color.g * .5 * (shade + 1),
         color.b * .5 * (shade + 1),
-        x1,
+        sample.x,
         y,
-        z1,
+        sample.y,
         0,
         0,
         uv.x,
@@ -57,17 +54,20 @@ Plants.prototype.modelCapsule = function(
 
     for (let segment = 1; segment < segments - 1; ++segment) {
         const f = segment / (segments - 1);
-        const x = x1 + dx * f;
-        const z = z1 + dz * f;
+        const at = pathSampler.getLength() * bounds.map(f);
+
+        pathSampler.sample(sample, at);
+        pathSampler.sampleDirection(direction, at);
+
         const r = radius * Math.pow(Math.cos(Math.PI * (f - .5)), this.CAPSULE_RADIUS_POWER);
 
         vertices.push(
             color.r * shade,
             color.g * shade,
             color.b * shade,
-            x + nx * r,
+            sample.x - direction.y * r,
             y,
-            z + nz * r,
+            sample.y + direction.x * r,
             0,
             0,
             uv.x,
@@ -76,9 +76,9 @@ Plants.prototype.modelCapsule = function(
             color.r,
             color.g,
             color.b,
-            x - nx * r,
+            sample.x + direction.y * r,
             y,
-            z - nz * r,
+            sample.y - direction.x * r,
             0,
             0,
             uv.x,
@@ -94,13 +94,15 @@ Plants.prototype.modelCapsule = function(
                 firstIndex + (segment << 1) - 1);
     }
 
+    pathSampler.sample(sample, pathSampler.getLength() * bounds.max);
+
     vertices.push(
         color.r * .5 * (shade + 1),
         color.g * .5 * (shade + 1),
         color.b * .5 * (shade + 1),
-        x2,
+        sample.x,
         y,
-        z2,
+        sample.y,
         0,
         0,
         uv.x,

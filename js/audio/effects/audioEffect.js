@@ -7,15 +7,17 @@
 const AudioEffect = function(engine, sources) {
     this.singleSource = typeof sources === "string";
     this.engine = engine;
-    this.variations = this.singleSource ? 1 : sources.length;
+    this.variations = this.singleSource ? 2 : sources.length;
     this.elements = new Array(this.variations);
     this.tracks = new Array(this.variations).fill(null);
     this.playbackRate = 1;
 
     if (this.singleSource) {
-        const requirement = loader.createRequirement(this.REQUIREMENT_WEIGHT);
+        const requirement1 = loader.createRequirement(this.REQUIREMENT_WEIGHT);
+        const requirement2 = loader.createRequirement(this.REQUIREMENT_WEIGHT);
 
-        this.elements[0] = this.createElement(sources, requirement.satisfy.bind(requirement));
+        this.elements[0] = this.createElement(sources, requirement1.satisfy.bind(requirement1));
+        this.elements[1] = this.createElement(sources, requirement2.satisfy.bind(requirement2));
     }
     else for (let source = 0; source < this.variations; ++source) {
         const requirement = loader.createRequirement(this.REQUIREMENT_WEIGHT);

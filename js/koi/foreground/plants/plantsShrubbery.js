@@ -1,4 +1,6 @@
+Plants.prototype.SHRUBBERY_COLOR_STALK = Color.fromCSS("--color-shrubbery-stalk");
 Plants.prototype.SHRUBBERY_COLOR_LEAF = Color.fromCSS("--color-shrubbery-leaf");
+Plants.prototype.SHRUBBERY_STALK_SHADE = .65;
 
 /**
  * Model a shrubbery
@@ -22,14 +24,13 @@ Plants.prototype.modelShrubbery = function(
         new Path2QuadraticBezier(new Vector2(x, 0), new Vector2(x, 2), new Vector2(x + 1, 3)));
     const leafSet = new LeafSet(
         pathSampler,
-        new Bounds(0, 1),
-        1,
+        new Bounds(.1, 1),
+        1.2, // Distribution power
         .3, // density
-        .5, // min angle
-        1, // max angle
+        new Sampler(.5, 1.3), // Angle
         .8, // root length
         .35, // top length
-        .6, // leaf width
+        .7, // leaf width
         .08, // flex min
         .4, // flex max
         random);
@@ -40,9 +41,9 @@ Plants.prototype.modelShrubbery = function(
         .05,
         .5,
         uv,
-        this.CATTAIL_COLOR_STALK,
-        this.CATTAIL_COLOR_STALK,
-        this.CATTAIL_STALK_SHADE,
+        this.SHRUBBERY_COLOR_STALK,
+        this.SHRUBBERY_COLOR_STALK,
+        this.SHRUBBERY_STALK_SHADE,
         flexSampler,
         vertices,
         indices);

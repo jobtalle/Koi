@@ -24,7 +24,7 @@ const WeatherState = function(
     this.initialized = false;
 };
 
-WeatherState.prototype.STATE_TIME = 400;
+WeatherState.prototype.STATE_TIME = 600;
 WeatherState.prototype.CRICKET_TIME = 350;
 WeatherState.prototype.CRICKET_COUNT = 4;
 WeatherState.prototype.ID_SUNNY = 0;
