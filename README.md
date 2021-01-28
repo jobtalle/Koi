@@ -1,6 +1,8 @@
 # Koi Farm
 A Koi breeding game. Get it [on steam](https://store.steampowered.com/app/1518810/Koi_Farm) or [on itch.io](https://jobtalle.itch.io/koifarm).
 
+Koi Farm has been licensed under the [CC-BY-NC-SA](LICENSE.md) license.
+
 ## Building
 HTML, CSS and Javascript content is compressed using [squish.py](https://github.com/jobtalle/squish.py), which is included in this repository as a submodule. Before building, ensure that this library has been cloned as well.
 
