@@ -8,7 +8,7 @@ const MutatorFin = function(fin) {
 };
 
 MutatorFin.prototype = Object.create(Mutator.prototype);
-MutatorFin.prototype.SAMPLER_AT = new SamplerPlateau(-20, 0, 20, .5);
+MutatorFin.prototype.SAMPLER_AT = new SamplerPlateau(-34, 0, 34, .5);
 MutatorFin.prototype.SAMPLER_RADIUS = new SamplerPlateau(-25, 0, 25, .8);
 
 /**
