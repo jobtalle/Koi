@@ -1,15 +1,17 @@
 /**
  * A planter that places plant species in slots according to a biome
  * @param {Slots} slots The slots to fill
+ * @param {HiddenSlots} hiddenSlots The hidden slots
  * @param {Biome} biome The biome
  * @param {PlantMap} plantMap A plant map to populate
  * @param {Random} random The randomizer
  * @constructor
  */
-const Planter = function(slots, biome, plantMap, random) {
+const Planter = function(slots, hiddenSlots, biome, plantMap, random) {
     slots.sort();
 
     this.slots = slots;
+    this.hiddenSlots = hiddenSlots;
     this.biome = biome;
     this.plantMap = plantMap;
     this.random = random;
@@ -26,6 +28,7 @@ Planter.prototype.SHRUBBERY_CHANCE = 1;
 Planter.prototype.SHRUBBERY_DIST_MIN = .9;
 Planter.prototype.SHRUBBERY_DIST_MAX = 2;
 Planter.prototype.SHRUBBERY_DENSITY = .5;
+Planter.prototype.SHRUBBERY_HIDDEN_SIZE = new SamplerPower(.7, 1, 2);
 
 /**
  * Get the cattail factor
@@ -84,6 +87,16 @@ Planter.prototype.directionToWater = function(x, y) {
 Planter.prototype.plant = function(plants, vertices, indices) {
     const bugSpots = [];
     const occupation = new Occupation(this.plantMap.width, this.plantMap.height, this.SHRUBBERY_DENSITY);
+
+    for (const slot of this.hiddenSlots.slots)
+        plants.modelShrubbery(
+            slot.x,
+            slot.y,
+            this.SHRUBBERY_HIDDEN_SIZE.sample(this.random.getFloat()),
+            this.directionToWater(slot.x, slot.y),
+            this.random,
+            vertices,
+            indices);
 
     for (const slot of this.slots.slots) if (slot) {
         const shoreDistance = this.biome.sampleSDF(slot.x, slot.y);

@@ -1,13 +1,21 @@
 Plants.prototype.SHRUBBERY_COLOR_STALK = Color.fromCSS("--color-shrubbery-stalk");
 Plants.prototype.SHRUBBERY_COLOR_LEAF = Color.fromCSS("--color-shrubbery-leaf");
 Plants.prototype.SHRUBBERY_STALK_SHADE = .65;
+Plants.prototype.SHRUBBERY_STALK_RADIUS = .05;
+Plants.prototype.SHRUBBERY_STALK_RADIUS_POWER = .5;
 Plants.prototype.SHRUBBERY_LENGTH = new SamplerPower(2, 4, 1.5);
 Plants.prototype.SHRUBBERY_CONTROL_HEIGHT = .8;
-Plants.prototype.SHRUBBERY_STALK_RADIUS = .05;
 Plants.prototype.SHRUBBERY_LENGTH_MULTIPLIER = new Sampler(.4, 1);
 Plants.prototype.SHRUBBERY_DIRECTION = new SamplerPlateau(Math.PI * .4, Math.PI * .5, Math.PI * .6, .1);
 Plants.prototype.SHRUBBERY_DIRECTION_AMPLITUDE = Math.PI * .07;
 Plants.prototype.SHRUBBERY_DIRECTION_REVERSE_CHANCE = .07;
+Plants.prototype.SHRUBBERY_FLEX = new SamplerPower(0, .1, 1.8);
+Plants.prototype.SHRUBBERY_LEAF_ANGLE = new Sampler(1.1, 1.3);
+Plants.prototype.SHRUBBERY_LEAF_WIDTH = .66;
+Plants.prototype.SHRUBBERY_LEAF_FLEX = new Sampler(.08, .2);
+Plants.prototype.SHRUBBERY_LEAF_LENGTH = new Sampler(.8, .35);
+Plants.prototype.SHRUBBERY_LEAF_DENSITY = .25;
+Plants.prototype.SHRUBBERY_LEAF_DISTRIBUTION = new SamplerPower(.1, 1, 1.1);
 
 /**
  * Model a shrubbery
@@ -18,7 +26,6 @@ Plants.prototype.SHRUBBERY_DIRECTION_REVERSE_CHANCE = .07;
  * @param {Random} random A randomizer
  * @param {Number[]} vertices The vertex array
  * @param {Number[]} indices The index array
- * @param {Number} [radius] The stalk radius
  */
 Plants.prototype.modelShrubbery = function(
     x,
@@ -27,15 +34,14 @@ Plants.prototype.modelShrubbery = function(
     waterDirection,
     random,
     vertices,
-    indices,
-    radius = this.SHRUBBERY_STALK_RADIUS) {
+    indices) {
     if (random.getFloat() < this.SHRUBBERY_DIRECTION_REVERSE_CHANCE)
         waterDirection = -waterDirection;
 
     const direction = this.SHRUBBERY_DIRECTION.sample(random.getFloat()) - waterDirection * this.SHRUBBERY_DIRECTION_AMPLITUDE;
     const uv = this.makeUV(x, y, random);
     const sizeMultiplier = this.SHRUBBERY_LENGTH_MULTIPLIER.sample(size);
-    const flexSampler = new FlexSampler(x, 0, new SamplerPower(0, .1, 1.8), this.SHRUBBERY_LENGTH.max * sizeMultiplier);
+    const flexSampler = new FlexSampler(x, 0, this.SHRUBBERY_FLEX, this.SHRUBBERY_LENGTH.max * sizeMultiplier);
     const length = this.SHRUBBERY_LENGTH.sample(random.getFloat()) * sizeMultiplier;
     const end = new Vector2(x + Math.cos(direction) * length, Math.sin(direction) * length);
     const controlPoint = new Vector2(x, end.y * this.SHRUBBERY_CONTROL_HEIGHT);
@@ -46,19 +52,19 @@ Plants.prototype.modelShrubbery = function(
             end));
     const leafSet = new LeafSet(
         pathSampler,
-        new SamplerPower(.1, 1, 1.1),
-        .27, // density
-        new Sampler(1.1, 1.3), // Leaf angle
-        new Sampler(.8, .35), // root length
-        .6, // leaf width
-        new Sampler(.08, .2), // flex
+        this.SHRUBBERY_LEAF_DISTRIBUTION,
+        this.SHRUBBERY_LEAF_DENSITY,
+        this.SHRUBBERY_LEAF_ANGLE,
+        this.SHRUBBERY_LEAF_LENGTH,
+        this.SHRUBBERY_LEAF_WIDTH,
+        this.SHRUBBERY_LEAF_FLEX,
         random);
 
     this.modelStalk(
         pathSampler,
         y,
-        radius,
-        .5,
+        this.SHRUBBERY_STALK_RADIUS,
+        this.SHRUBBERY_STALK_RADIUS_POWER,
         uv,
         this.SHRUBBERY_COLOR_STALK,
         this.SHRUBBERY_COLOR_STALK,

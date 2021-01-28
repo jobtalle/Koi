@@ -3,6 +3,7 @@
  * @param {WebGLRenderingContext} gl A WebGL rendering context
  * @param {Constellation} constellation The constellation
  * @param {Slots} slots The slots to place objects on
+ * @param {HiddenSlots} hiddenSlots The hidden slots
  * @param {Biome} biome The biome
  * @param {Random} random A randomizer
  * @constructor
@@ -11,6 +12,7 @@ const Plants = function(
     gl,
     constellation,
     slots,
+    hiddenSlots,
     biome,
     random) {
     const vertices = [];
@@ -18,7 +20,7 @@ const Plants = function(
 
     this.plantMap = new PlantMap(constellation.width, constellation.height, Slots.prototype.RESOLUTION);
 
-    const planter = new Planter(slots, biome, this.plantMap, random)
+    const planter = new Planter(slots, hiddenSlots, biome, this.plantMap, random)
 
     this.bugSpots = planter.plant(this, vertices, indices);
     this.mesh = this.makeMesh(gl, vertices, indices, constellation);

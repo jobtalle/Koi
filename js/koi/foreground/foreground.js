@@ -16,11 +16,17 @@ const Foreground = function(
         constellation.height + this.Y_OVERFLOW - this.Y_SHIFT,
         constellation,
         random);
+    const padding = constellation.big.constraint.position.x - constellation.big.constraint.radius;
+    const hiddenSlots = new HiddenSlots(
+        constellation,
+        this.HIDDEN_SPACING,
+        new Sampler(padding, padding * this.HIDDEN_SPREAD),
+        random);
     const biome = new Biome(constellation, slots.width, slots.height, random);
 
     this.gl = gl;
     this.rocks = new Rocks(gl, constellation, slots, this.Y_SCALE, biome, random);
-    this.plants = new Plants(gl, constellation, slots, biome, random);
+    this.plants = new Plants(gl, constellation, slots, hiddenSlots, biome, random);
     this.bugs = new Bugs(gl, constellation, biome, this.plants.bugSpots);
 };
 
@@ -28,6 +34,8 @@ Foreground.prototype.Y_SCALE = .74;
 Foreground.prototype.X_PADDING = .03;
 Foreground.prototype.Y_SHIFT = .2;
 Foreground.prototype.Y_OVERFLOW = .3;
+Foreground.prototype.HIDDEN_SPACING = 1;
+Foreground.prototype.HIDDEN_SPREAD = 3.5;
 
 /**
  * Displace things
