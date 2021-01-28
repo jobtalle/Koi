@@ -187,7 +187,7 @@ BugPathMaker.prototype.makeEntrance = function(random) {
     const exitVector = this.getExitVector(origin);
 
     return new BugPath([
-        new BugPathNode(target.position, target),
+        new BugPathNode(target.position.copy(), target),
         this.makeApproachNode(target.position, random),
         ...this.trace(origin, exitVector, random)].reverse());
 };
@@ -207,7 +207,7 @@ BugPathMaker.prototype.makeWander = function(
     direction,
     skipApproach,
     random) {
-    const start = [new BugPathNode(origin)];
+    const start = [new BugPathNode(origin.copy())];
 
     if (!skipApproach)
         start.push(this.makeApproachNode(origin, random));
@@ -229,7 +229,7 @@ BugPathMaker.prototype.makeLeave = function(
     direction,
     random) {
     return new BugPath([
-        new BugPathNode(origin),
+        new BugPathNode(origin.copy()),
         this.makeApproachNode(origin, random),
         ...this.trace(origin.vector2(), direction, random, false)]);
 };
@@ -261,7 +261,7 @@ BugPathMaker.prototype.makeHop = function(
     const spot = this.occupySpot(inRange[Math.floor(random.getFloat() * inRange.length)]);
 
     return new BugPath([
-        new BugPathNode(origin),
+        new BugPathNode(origin.copy()),
         this.makeApproachNode(origin, random),
         this.makeApproachNode(spot.position, random),
         new BugPathNode(spot.position, spot)]);

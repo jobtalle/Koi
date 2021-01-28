@@ -22,7 +22,7 @@ SpawnerState.prototype.BLUEPRINTS = [
             // Length
             new Sampler(150, 180),
             // Radius
-            new Sampler(200, 235),
+            new Sampler(180, 220),
             // Growth speed
             new Sampler(130, 170),
             // Mating frequency
@@ -32,7 +32,13 @@ SpawnerState.prototype.BLUEPRINTS = [
             // Age
             new Sampler(20000, 25000),
             // Fins
-            new BlueprintFins(),
+            new BlueprintFins(
+                new BlueprintFin(
+                    new Sampler(110, 136),
+                    new Sampler(110, 136)),
+                new BlueprintFin(
+                    new Sampler(110, 136),
+                    new Sampler(110, 136))),
             // Tail
             new BlueprintTail(
                 // Length
@@ -53,8 +59,16 @@ SpawnerState.prototype.BLUEPRINTS = [
                     new Sampler(50, 100)),
                 // Fin shape
                 new BlueprintLayerShapeFin(
+                    // Angle
+                    new Sampler(200, 250),
+                    // Inset
+                    new Sampler(110, 160),
+                    // Dips
+                    new Sampler(30, 60),
+                    // Dip power
+                    new Sampler(110, 160),
                     // Roundness
-                    new Sampler(200, 250)),
+                    new Sampler(110, 160)),
                 // Layers
                 []
             )
@@ -67,7 +81,7 @@ SpawnerState.prototype.BLUEPRINTS = [
         // Body
         new BlueprintBody(
             // Length
-            new Sampler(150, 180),
+            new Sampler(120, 160),
             // Radius
             new Sampler(200, 235),
             // Growth speed
@@ -79,7 +93,13 @@ SpawnerState.prototype.BLUEPRINTS = [
             // Age
             new Sampler(20000, 25000),
             // Fins
-            new BlueprintFins(),
+            new BlueprintFins(
+                new BlueprintFin(
+                    new Sampler(110, 136),
+                    new Sampler(110, 136)),
+                new BlueprintFin(
+                    new Sampler(110, 136),
+                    new Sampler(110, 136))),
             // Tail
             new BlueprintTail(
                 // Length
@@ -100,8 +120,16 @@ SpawnerState.prototype.BLUEPRINTS = [
                     new Sampler(50, 100)),
                 // Fin shape
                 new BlueprintLayerShapeFin(
+                    // Angle
+                    new Sampler(200, 250),
+                    // Inset
+                    new Sampler(110, 160),
+                    // Dips
+                    new Sampler(110, 160),
+                    // Dip power
+                    new Sampler(110, 160),
                     // Roundness
-                    new Sampler(200, 250)),
+                    new Sampler(110, 160)),
                 // Layers
                 []
             )
@@ -126,7 +154,13 @@ SpawnerState.prototype.BLUEPRINTS = [
             // Age
             new Sampler(20000, 25000),
             // Fins
-            new BlueprintFins(),
+            new BlueprintFins(
+                new BlueprintFin(
+                    new Sampler(110, 136),
+                    new Sampler(110, 136)),
+                new BlueprintFin(
+                    new Sampler(110, 136),
+                    new Sampler(110, 136))),
             // Tail
             new BlueprintTail(
                 // Length
@@ -147,8 +181,16 @@ SpawnerState.prototype.BLUEPRINTS = [
                     new Sampler(50, 100)),
                 // Fin shape
                 new BlueprintLayerShapeFin(
+                    // Angle
+                    new Sampler(200, 250),
+                    // Inset
+                    new Sampler(110, 160),
+                    // Dips
+                    new Sampler(160, 190),
+                    // Dip power
+                    new Sampler(110, 160),
                     // Roundness
-                    new Sampler(200, 250)),
+                    new Sampler(110, 160)),
                 // Layers
                 []
             )
@@ -173,7 +215,13 @@ SpawnerState.prototype.BLUEPRINTS = [
             // Age
             new Sampler(20000, 25000),
             // Fins
-            new BlueprintFins(),
+            new BlueprintFins(
+                new BlueprintFin(
+                    new Sampler(110, 136),
+                    new Sampler(110, 136)),
+                new BlueprintFin(
+                    new Sampler(110, 136),
+                    new Sampler(110, 136))),
             // Tail
             new BlueprintTail(
                 // Length
@@ -194,8 +242,16 @@ SpawnerState.prototype.BLUEPRINTS = [
                     new Sampler(20, 30)),
                 // Fin shape
                 new BlueprintLayerShapeFin(
+                    // Angle
+                    new Sampler(200, 250),
+                    // Inset
+                    new Sampler(110, 160),
+                    // Dips
+                    new Sampler(110, 160),
+                    // Dip power
+                    new Sampler(110, 160),
                     // Roundness
-                    new Sampler(50, 60)),
+                    new Sampler(110, 160)),
                 // Layers
                 []
             )

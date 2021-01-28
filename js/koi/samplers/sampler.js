@@ -5,9 +5,10 @@
  * @constructor
  */
 const Sampler = function(min, max) {
-    this.min = min;
-    this.max = max;
+    Bounds.call(this, min, max);
 };
+
+Sampler.prototype = Object.create(Bounds.prototype);
 
 /**
  * The default linear sample function
@@ -15,5 +16,5 @@ const Sampler = function(min, max) {
  * @returns {Number} The sampled number
  */
 Sampler.prototype.sample = function(x) {
-    return this.min + (this.max - this.min) * x;
+    return this.min + this.getDomain() * x;
 };

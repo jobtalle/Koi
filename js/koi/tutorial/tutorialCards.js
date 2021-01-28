@@ -12,7 +12,7 @@ const TutorialCards = function(storage, overlay) {
     this.cardStored = false;
     this.unlocked = false;
     this.stored = false;
-    this.highlight1 = this.highlight2 = null;
+    this.highlight1 = this.highlight2 = this.highlight3 = this.highlight4 = null;
 };
 
 TutorialCards.prototype = Object.create(Tutorial.prototype);
@@ -57,13 +57,16 @@ TutorialCards.prototype.onMutate = function() {
  */
 TutorialCards.prototype.onStoreCard = function(card) {
     this.cardStored = true;
+
+    if (this.phase === this.PHASE_UNLOCK)
+        this.unlocked = true;
 };
 
 /**
  * A function that is called when the card book unlocks a page
  */
 TutorialCards.prototype.onUnlock = function() {
-    this.unlocked = true;
+
 };
 
 /**
@@ -90,9 +93,13 @@ TutorialCards.prototype.pointToUnlockables = function(koi) {
     if (!this.highlight1) {
         this.highlight1 = koi.gui.overlay.createHighlightElement();
         this.highlight2 = koi.gui.overlay.createHighlightElement();
+        this.highlight3 = koi.gui.overlay.createHighlightElement();
+        this.highlight4 = koi.gui.overlay.createHighlightElement();
 
-        koi.gui.cards.book.pages[1].slots[2].appendChild(this.highlight1);
-        koi.gui.cards.book.pages[1].slots[3].appendChild(this.highlight2);
+        koi.gui.cards.book.pages[1].slots[0].appendChild(this.highlight1);
+        koi.gui.cards.book.pages[1].slots[1].appendChild(this.highlight2);
+        koi.gui.cards.book.pages[1].slots[2].appendChild(this.highlight3);
+        koi.gui.cards.book.pages[1].slots[3].appendChild(this.highlight4);
     }
 };
 
@@ -102,8 +109,10 @@ TutorialCards.prototype.pointToUnlockables = function(koi) {
  */
 TutorialCards.prototype.markFinished = function(koi) {
     if (this.highlight1) {
-        koi.gui.cards.book.pages[1].slots[2].removeChild(this.highlight1);
-        koi.gui.cards.book.pages[1].slots[3].removeChild(this.highlight2);
+        koi.gui.cards.book.pages[1].slots[0].removeChild(this.highlight1);
+        koi.gui.cards.book.pages[1].slots[1].removeChild(this.highlight2);
+        koi.gui.cards.book.pages[1].slots[2].removeChild(this.highlight3);
+        koi.gui.cards.book.pages[1].slots[3].removeChild(this.highlight4);
     }
 
     this.storage.set("tutorial", (this.MUTATIONS_REQUIRED + 1).toString());

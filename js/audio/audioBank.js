@@ -35,6 +35,17 @@ const AudioBank = function(engine) {
         new AudioEffect(
             engine,
             this.enumerateSources("audio/ogg/SFX_GrassInteract_", 1, 22, ".ogg")));
+    this.effectClick = new AudioEffect(engine, "audio/ogg/SFX_Click.ogg");
+    this.effectNegative = new AudioEffect(engine, "audio/ogg/SFX_Negative.ogg");
+    this.effectBookInteract = new AudioEffect(
+        engine,
+        this.enumerateSources("audio/ogg/SFX_BookInteract_", 1, 6, ".ogg"));
+    this.effectCardInteract = new AudioEffect(
+        engine,
+        this.enumerateSources("audio/ogg/SFX_CardInteract_", 1, 5, ".ogg"));
+    this.effectPageTurn = new AudioEffect(
+        engine,
+        this.enumerateSources("audio/ogg/SFX_PageTurn_", 1, 6, ".ogg"));
 
     this.ambientWaterTop = new AudioEffectPeriodic(
         1,
@@ -48,9 +59,7 @@ const AudioBank = function(engine) {
             this.enumerateSources("audio/ogg/AMB_WaterLow_", 1, 4, ".ogg")));
     this.ambientWind = new AudioEffectPeriodic(
         1,
-        new AudioEffect(
-            engine,
-            ["audio/ogg/AMB_Wind.ogg", "audio/ogg/AMB_Wind.ogg"]));
+        new AudioEffect(engine, "audio/ogg/AMB_Wind.ogg"));
     this.ambientBirds = new AudioEffectPeriodic(
         1,
         new AudioEffect(
@@ -64,71 +73,43 @@ const AudioBank = function(engine) {
         this.enumerateSources("audio/ogg/AMB_Thunder_", 1, 4, ".ogg"));
     this.ambientRainLight = new AudioEffectPeriodicBounded(
         2,
-        new AudioEffect(
-            engine,
-            ["audio/ogg/AMB_Rain_Start.ogg"]),
-        new AudioEffect(
-            engine,
-            ["audio/ogg/AMB_Rain_Loop.ogg", "audio/ogg/AMB_Rain_Loop.ogg"]), // TODO: Allow overlapping sound
-        new AudioEffect(
-            engine,
-            ["audio/ogg/AMB_Rain_Stop.ogg"]));
+        new AudioEffect(engine, "audio/ogg/AMB_Rain_Start.ogg"),
+        new AudioEffect(engine, "audio/ogg/AMB_Rain_Loop.ogg"),
+        new AudioEffect(engine, "audio/ogg/AMB_Rain_Stop.ogg"));
     this.ambientRainHeavy = new AudioEffectPeriodicBounded(
         2,
-        new AudioEffect(
-            engine,
-            ["audio/ogg/AMB_RainHeavy_Start.ogg"]),
-        new AudioEffect(
-            engine,
-            ["audio/ogg/AMB_RainHeavy_Loop.ogg", "audio/ogg/AMB_RainHeavy_Loop.ogg"]), // TODO: Allow overlapping sound
-        new AudioEffect(
-            engine,
-            ["audio/ogg/AMB_RainHeavy_Stop.ogg"]));
+        new AudioEffect(engine, "audio/ogg/AMB_RainHeavy_Start.ogg"),
+        new AudioEffect(engine, "audio/ogg/AMB_RainHeavy_Loop.ogg"),
+        new AudioEffect(engine, "audio/ogg/AMB_RainHeavy_Stop.ogg"));
     this.ambientCrickets = [
         new AudioEffectPeriodicBounded(
             3,
-            new AudioEffect(
-                engine,
-                ["audio/ogg/AMB_CricketsA_Start.ogg"]),
+            new AudioEffect(engine, "audio/ogg/AMB_CricketsA_Start.ogg"),
             new AudioEffect(
                 engine,
                 this.enumerateSources("audio/ogg/AMB_CricketsA_Loop_", 1, 4, ".ogg")),
-            new AudioEffect(
-                engine,
-                ["audio/ogg/AMB_CricketsA_Stop.ogg"])),
+            new AudioEffect(engine, "audio/ogg/AMB_CricketsA_Stop.ogg")),
         new AudioEffectPeriodicBounded(
             3,
-            new AudioEffect(
-                engine,
-                ["audio/ogg/AMB_CricketsB_Start.ogg"]),
+            new AudioEffect(engine, "audio/ogg/AMB_CricketsB_Start.ogg"),
             new AudioEffect(
                 engine,
                 this.enumerateSources("audio/ogg/AMB_CricketsB_Loop_", 1, 4, ".ogg")),
-            new AudioEffect(
-                engine,
-                ["audio/ogg/AMB_CricketsB_Stop.ogg"])),
+            new AudioEffect(engine, "audio/ogg/AMB_CricketsB_Stop.ogg")),
         new AudioEffectPeriodicBounded(
             3,
-            new AudioEffect(
-                engine,
-                ["audio/ogg/AMB_CricketsC_Start.ogg"]),
+            new AudioEffect(engine, "audio/ogg/AMB_CricketsC_Start.ogg"),
             new AudioEffect(
                 engine,
                 this.enumerateSources("audio/ogg/AMB_CricketsC_Loop_", 1, 4, ".ogg")),
-            new AudioEffect(
-                engine,
-                ["audio/ogg/AMB_CricketsC_Stop.ogg"])),
+            new AudioEffect(engine, "audio/ogg/AMB_CricketsC_Stop.ogg")),
         new AudioEffectPeriodicBounded(
             3,
-            new AudioEffect(
-                engine,
-                ["audio/ogg/AMB_CricketsD_Start.ogg"]),
+            new AudioEffect(engine, "audio/ogg/AMB_CricketsD_Start.ogg"),
             new AudioEffect(
                 engine,
                 this.enumerateSources("audio/ogg/AMB_CricketsD_Loop_", 1, 4, ".ogg")),
-            new AudioEffect(
-                engine,
-                ["audio/ogg/AMB_CricketsD_Stop.ogg"]))
+            new AudioEffect(engine, "audio/ogg/AMB_CricketsD_Stop.ogg"))
     ];
 };
 

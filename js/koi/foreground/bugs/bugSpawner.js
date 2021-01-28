@@ -11,6 +11,8 @@ const BugSpawner = function(constellation) {
 BugSpawner.prototype.MAX_AREA_PER_BUG = 20;
 BugSpawner.prototype.SPAWN_FREQUENCY = 30;
 BugSpawner.prototype.INITIAL_COUNT = .4;
+BugSpawner.prototype.WARM_BUG_CHANCE = .04;
+BugSpawner.prototype.BLACK_BUG_CHANCE = .05;
 BugSpawner.prototype.LOST_RAIN_BUG_CHANCE = .12;
 BugSpawner.prototype.MAX_BUGS_MULTIPLIER = {
     [WeatherState.prototype.ID_SUNNY]: 1,
@@ -38,7 +40,10 @@ BugSpawner.prototype.makeBody = function(gl, weatherState, random) {
     switch (weatherState.state) {
         default:
         case weatherState.ID_SUNNY:
-            return new BugBodyButterflySunny(gl, random);
+            if (random.getFloat() < this.WARM_BUG_CHANCE)
+                return new BugBodyButterflyWarm(gl, random);
+            else
+                return new BugBodyButterflySunny(gl, random);
         case weatherState.ID_OVERCAST:
             if (random.getFloat() < this.LOST_RAIN_BUG_CHANCE)
                 return new BugBodyButterflyRainy(gl, random);
@@ -46,7 +51,10 @@ BugSpawner.prototype.makeBody = function(gl, weatherState, random) {
                 return new BugBodyButterflySunny(gl, random);
         case weatherState.ID_DRIZZLE:
         case weatherState.ID_RAIN:
-            return new BugBodyButterflyRainy(gl, random);
+            if (random.getFloat() < this.BLACK_BUG_CHANCE)
+                return new BugBodyButterflyBlack(gl, random);
+            else
+                return new BugBodyButterflyRainy(gl, random);
         case weatherState.ID_THUNDERSTORM:
             return new BugBodyButterflyThunder(gl, random);
     }

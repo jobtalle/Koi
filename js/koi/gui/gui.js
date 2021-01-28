@@ -2,9 +2,10 @@
  * The HTML gui
  * @param {HTMLElement} element The root element for the GUI
  * @param {CodeViewer} codeViewer The code viewer
+ * @param {AudioBank} audio Game audio
  * @constructor
  */
-const GUI = function(element, codeViewer) {
+const GUI = function(element, codeViewer, audio) {
     const elementCards = document.createElement("div");
     const elementOverlay = document.createElement("div");
 
@@ -14,12 +15,16 @@ const GUI = function(element, codeViewer) {
     element.appendChild(elementCards);
     element.appendChild(elementOverlay);
 
-    this.cards = new Cards(elementCards, codeViewer);
+    this.cards = new Cards(elementCards, codeViewer, audio);
     this.overlay = new Overlay(elementOverlay);
 };
 
 GUI.prototype.ID_CARDS = "cards";
 GUI.prototype.ID_OVERLAY = "overlay";
+GUI.prototype.KEYS_BOOK = [" ", "b"];
+GUI.prototype.KEYS_PAGE_LEFT = ["ArrowLeft", "a"];
+GUI.prototype.KEYS_PAGE_RIGHT = ["ArrowRight", "d"];
+GUI.prototype.KEYS_EXIT = ["Escape", "Backspace"];
 
 /**
  * Serialize the GUI
@@ -36,6 +41,33 @@ GUI.prototype.deserialize = function(buffer) {
  */
 GUI.prototype.serialize = function(buffer) {
     this.cards.serialize(buffer);
+};
+
+/**
+ * A key is pressed
+ * @param {String} key The key
+ * @returns {Boolean} True if a key event has been handled
+ */
+GUI.prototype.keyDown = function(key) {
+    if (this.KEYS_BOOK.indexOf(key) !== -1 || (this.cards.bookVisible && this.KEYS_EXIT.indexOf(key) !== -1)) {
+        this.cards.toggleBook();
+
+        return true;
+    }
+    else if (this.cards.bookEnabled && this.cards.bookVisible) {
+        if (this.KEYS_PAGE_LEFT.indexOf(key) !== -1) {
+            this.cards.book.buttonPageLeft.element.click();
+
+            return true;
+        }
+        else if (this.KEYS_PAGE_RIGHT.indexOf(key) !== -1) {
+            this.cards.book.buttonPageRight.element.click();
+
+            return true;
+        }
+    }
+
+    return false;
 };
 
 /**

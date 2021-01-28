@@ -15,18 +15,23 @@ const Planter = function(slots, biome, plantMap, random) {
     this.random = random;
 };
 
+Planter.prototype.EPSILON = .05;
 Planter.prototype.BEACH_MAX = .1;
 Planter.prototype.GRASS_CLEARANCE = .1;
 Planter.prototype.CATTAIL_CHANCE = .14;
 Planter.prototype.CATTAIL_CHANCE_RAMP = 10;
 Planter.prototype.CATTAIL_DIST_MIN = .1;
 Planter.prototype.CATTAIL_DIST_MAX = 1.3;
+Planter.prototype.SHRUBBERY_CHANCE = 1;
+Planter.prototype.SHRUBBERY_DIST_MIN = .9;
+Planter.prototype.SHRUBBERY_DIST_MAX = 2;
+Planter.prototype.SHRUBBERY_DENSITY = .5;
 
 /**
  * Get the cattail factor
  * @param {Number} shoreDistance The distance to the nearest body of water
  * @param {Number} beachFactor The beach factor
- * @returns {Number} The cattail chance
+ * @returns {Number} The cattail factor
  */
 Planter.prototype.getCattailFactor = function(shoreDistance, beachFactor) {
     const distance = Math.min(
@@ -42,6 +47,34 @@ Planter.prototype.getCattailFactor = function(shoreDistance, beachFactor) {
 };
 
 /**
+ * Get the shrubbery factor
+ * @param {Number} shoreDistance The distance to the nearest body of water
+ * @param {Number} beachFactor The beach factor
+ * @returns {Number} The shrubbery factor
+ */
+Planter.prototype.getShrubberyFactor = function(shoreDistance, beachFactor) {
+    const shoreChance = Math.max(0, Math.min(1,
+        (shoreDistance - this.SHRUBBERY_DIST_MIN) / this.SHRUBBERY_DIST_MAX));
+
+    return shoreChance * (1 - beachFactor);
+};
+
+/**
+ * Get the direction to the nearest body of water
+ * @param {Number} x The X coordinate in meters
+ * @param {Number} y The Y coordinate in meters
+ */
+Planter.prototype.directionToWater = function(x, y) {
+    const left = this.biome.sampleSDF(x - this.EPSILON, y);
+    const right = this.biome.sampleSDF(x + this.EPSILON, y);
+
+    if (left > right)
+        return 1;
+
+    return -1;
+};
+
+/**
  * Plant all plants into slots
  * @param {Plants} plants The plants object
  * @param {Number[]} vertices The vertex array
@@ -50,6 +83,7 @@ Planter.prototype.getCattailFactor = function(shoreDistance, beachFactor) {
  */
 Planter.prototype.plant = function(plants, vertices, indices) {
     const bugSpots = [];
+    const occupation = new Occupation(this.plantMap.width, this.plantMap.height, this.SHRUBBERY_DENSITY);
 
     for (const slot of this.slots.slots) if (slot) {
         const shoreDistance = this.biome.sampleSDF(slot.x, slot.y);
@@ -58,12 +92,27 @@ Planter.prototype.plant = function(plants, vertices, indices) {
             this.biome.sampleRocksRiver(slot.x, slot.y));
         const beachFactor = 1 - Math.min(1, minRocks / this.BEACH_MAX);
         const cattailFactor = this.getCattailFactor(shoreDistance, beachFactor);
+        const shrubberyFactor = this.getShrubberyFactor(
+            shoreDistance,
+            beachFactor);
 
-        if (this.random.getFloat() < cattailFactor * this.CATTAIL_CHANCE)
+        if (!occupation.occupied(slot.x, slot.y, 1) &&
+            this.random.getFloat() < shrubberyFactor * this.SHRUBBERY_CHANCE) {
+            plants.modelShrubbery(
+                slot.x,
+                slot.y,
+                shrubberyFactor,
+                this.directionToWater(slot.x, slot.y),
+                this.random,
+                vertices,
+                indices);
+
+            occupation.occupy(slot.x, slot.y, 1);
+        }
+        else if (this.random.getFloat() < cattailFactor * this.CATTAIL_CHANCE)
             bugSpots.push(...plants.modelCattail(
                 slot.x,
                 slot.y,
-                cattailFactor,
                 this.random,
                 vertices,
                 indices));

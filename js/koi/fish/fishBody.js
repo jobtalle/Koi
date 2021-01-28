@@ -1,7 +1,7 @@
 /**
  * A fish body
  * @param {Pattern} pattern A body pattern
- * @param {Fin[]} fins The fins
+ * @param {Fins} fins The fins
  * @param {Tail} tail The tail
  * @param {Number} length The body length
  * @param {Number} radius The body radius
@@ -22,7 +22,8 @@ const FishBody = function(
     offspringCount,
     age = 0) {
     this.pattern = pattern;
-    this.fins = this.makeAllFins(fins);
+    this.fins = fins;
+    this.finInstances = fins.makeAll();
     this.tail = tail;
     this.length = length;
     this.lengthSampled = this.SAMPLER_LENGTH.sample(length / 0xFF);
@@ -39,7 +40,7 @@ const FishBody = function(
     this.size = this.samplerSize.sample(this.age / 0xFFFF);
     this.spine = new Array(Math.ceil(this.lengthSampled / this.RESOLUTION));
     this.tailOffset = this.spine.length - 1;
-    this.finGroups = this.assignFins(fins, this.spine.length);
+    this.finGroups = this.assignFins(this.spine.length);
     this.spinePrevious = new Array(this.spine.length);
     this.springs = this.makeSprings(
         this.SAMPLER_SPRING_START.sample(this.radius / 0xFF),
@@ -54,8 +55,6 @@ const FishBody = function(
     this.calculateSpacing();
 };
 
-FishBody.prototype.FIN_PAIRS_MIN = 0;
-FishBody.prototype.FIN_PAIRS_MAX = 8;
 FishBody.prototype.RESOLUTION = .12;
 FishBody.prototype.SWIM_AMPLITUDE = 11;
 FishBody.prototype.SWIM_SPEED = 6;
@@ -67,10 +66,12 @@ FishBody.prototype.WAVE_INTENSITY_MIN = .05;
 FishBody.prototype.WAVE_INTENSITY_MULTIPLIER = 2;
 FishBody.prototype.WAVE_TURBULENCE = .4;
 FishBody.prototype.FIN_PHASE_SPEED = .4;
+FishBody.prototype.FIN_FRONT_AT = new Sampler(.1, .3);
+FishBody.prototype.FIN_BACK_AT = new Sampler(.45, .7);
 FishBody.prototype.SIZE_MIN = .1;
-FishBody.prototype.SAMPLER_LENGTH = new SamplerPower(.62, 1.3, 2.5);
-FishBody.prototype.SAMPLER_RADIUS = new SamplerPlateau(.1, .13, .18, 1);
-FishBody.prototype.SAMPLER_OFFSPRING_COUNT = new SamplerPlateau(1, 3, 8, 2.5);
+FishBody.prototype.SAMPLER_LENGTH = new SamplerPower(.6, 1.2, 1.2);
+FishBody.prototype.SAMPLER_RADIUS = new SamplerPlateau(.1, .13, .21, 1.7);
+FishBody.prototype.SAMPLER_OFFSPRING_COUNT = new SamplerPower(2, 8, 1.8);
 FishBody.prototype.SAMPLER_MATING_FREQUENCY = new SamplerPower(300 * .1, 4500 * .1, .3); // TODO: Reduced for debugging
 FishBody.prototype.SAMPLER_GROWTH_MULTIPLIER = new SamplerPower(50, 100, 4);
 FishBody.prototype.SAMPLER_SPRING_START = new Sampler(.4, .85);
@@ -86,7 +87,7 @@ FishBody.prototype.FAST_THRESHOLD = .045;
 FishBody.prototype.TAIL_AUDIO_THRESHOLD = .08;
 FishBody.prototype.TAIL_AUDIO_RAMP = .025;
 FishBody.prototype.TAIL_AUDIO_VOLUME_MIN = .4;
-FishBody.prototype.TAIL_AUDIO_COOLDOWN = 40;
+FishBody.prototype.TAIL_AUDIO_COOLDOWN = 30;
 
 /**
  * Deserialize a fish body
@@ -102,17 +103,9 @@ FishBody.deserialize = function(buffer, atlas = null, randomSource = null) {
     if (atlas)
         atlas.write(pattern, randomSource);
 
-    const fins = new Array(buffer.readUint8());
-
-    if (!(fins.length >= FishBody.prototype.FIN_PAIRS_MIN && fins.length <= FishBody.prototype.FIN_PAIRS_MAX))
-        throw new RangeError();
-
-    for (let fin = 0; fin < fins.length; ++fin)
-        fins[fin] = Fin.deserialize(buffer);
-
     return new FishBody(
         pattern,
-        fins,
+        Fins.deserialize(buffer),
         Tail.deserialize(buffer),
         buffer.readUint8(),
         buffer.readUint8(),
@@ -128,12 +121,7 @@ FishBody.deserialize = function(buffer, atlas = null, randomSource = null) {
  */
 FishBody.prototype.serialize = function(buffer) {
     this.pattern.serialize(buffer);
-
-    buffer.writeUint8(this.fins.length >> 1);
-
-    for (let fin = 0, finCount = this.fins.length >> 1; fin < finCount; ++fin)
-        this.fins[fin].serialize(buffer);
-
+    this.fins.serialize(buffer);
     this.tail.serialize(buffer);
 
     buffer.writeUint8(this.length);
@@ -228,35 +216,22 @@ FishBody.prototype.getOffspringPositionPrevious = function() {
 };
 
 /**
- * Make all fins by mirroring the initial fins
- * @param {Fin[]} fins All fins
- */
-FishBody.prototype.makeAllFins = function(fins) {
-    for (let fin = 0, finCount = fins.length; fin < finCount; ++fin)
-        fins.push(fins[fin].copyMirrored());
-
-    return fins;
-};
-
-/**
  * Assign fins to an array matching the vertebrae
- * @param {Fin[]} fins All fins
  * @param {Number} spineLength The length of the spine
  * @returns {Fin[][]} An array containing an array of fins per vertebrae
  */
-FishBody.prototype.assignFins = function(fins, spineLength) {
+FishBody.prototype.assignFins = function(spineLength) {
     const spineFins = new Array(spineLength).fill(null);
+    const indexFront = this.fins.front.getVertebraIndex(spineLength, this.FIN_FRONT_AT);
+    const indexBack = this.fins.back.getVertebraIndex(spineLength, this.FIN_BACK_AT);
 
-    for (const fin of this.fins) {
-        const index = fin.getVertebraIndex(spineLength);
+    spineFins[indexFront] = [this.finInstances[0], this.finInstances[1]];
+    spineFins[indexBack] = [this.finInstances[2], this.finInstances[3]];
 
-        if (!spineFins[index])
-            spineFins[index] = [];
-
-        spineFins[index].push(fin);
-
-        fin.connect(this.pattern, this.pattern.shapeBody.sample(index / (spineLength - 1)) * this.radiusSampled);
-    }
+    this.finInstances[0].connect(this.pattern, this.pattern.shapeBody.sample(indexFront / (spineLength - 1)) * this.radiusSampled);
+    this.finInstances[1].connect(this.pattern, this.pattern.shapeBody.sample(indexFront / (spineLength - 1)) * this.radiusSampled);
+    this.finInstances[2].connect(this.pattern, this.pattern.shapeBody.sample(indexBack / (spineLength - 1)) * this.radiusSampled);
+    this.finInstances[3].connect(this.pattern, this.pattern.shapeBody.sample(indexBack / (spineLength - 1)) * this.radiusSampled);
 
     return spineFins;
 };
@@ -330,7 +305,7 @@ FishBody.prototype.moveTo = function(position) {
 
     this.storePreviousState();
 
-    for (const fin of this.fins)
+    for (const fin of this.finInstances)
         fin.shift(dx, dy);
 
     this.tail.shift(dx, dy);
@@ -506,7 +481,7 @@ FishBody.prototype.update = function(
  * @param {Number} time The interpolation factor
  */
 FishBody.prototype.render = function(bodies, time) {
-    for (const fin of this.fins)
+    for (const fin of this.finInstances)
         fin.render(bodies, time);
 
     const indexOffsetFin = bodies.buffer.getVertexCount();

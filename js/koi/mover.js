@@ -24,7 +24,8 @@ Mover.prototype.SPLASH_DROP_RADIUS = 0.13;
 Mover.prototype.SPLASH_DROP_AMPLITUDE = 0.4;
 Mover.prototype.SPLASH_DROP_DISTANCE = 0.1;
 Mover.prototype.AIR_RADIUS = 1.5;
-Mover.prototype.AIR_INTENSITY = .15;
+Mover.prototype.AIR_INTENSITY = .2;
+Mover.prototype.AIR_INTENSITY_POWER = .3;
 Mover.prototype.AIR_HEIGHT = .5;
 Mover.prototype.AIR_INTERVAL = 1;
 Mover.prototype.FOREGROUND_DISPLACEMENT_RADIUS = Mover.prototype.AIR_RADIUS;
@@ -46,7 +47,7 @@ Mover.prototype.displaceAir = function(
     distance,
     air) {
     const steps = Math.ceil(distance / this.AIR_INTERVAL);
-    const intensity = dx * this.AIR_INTENSITY;
+    const intensity = Math.sign(dx) * Math.pow(Math.abs(dx), this.AIR_INTENSITY_POWER) * this.AIR_INTENSITY;
 
     for (let step = 0; step < steps; ++step) {
         const f = step / steps;

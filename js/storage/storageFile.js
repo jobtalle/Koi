@@ -14,10 +14,15 @@ if (window["require"]) {
     const electron = window["require"]("electron");
     const url = window["require"]("url");
     const fs = window["require"]("fs");
+    const os = window["require"]("os");
+    let directory = StorageFile.prototype.DIRECTORY;
+
+    if (os["platform"]() === "darwin")
+        directory = os["homedir"]() + "/Library/Application Support/koifarm/" + directory;
 
     const makeDirectory = () => {
-        if (!fs["existsSync"](StorageFile.prototype.DIRECTORY))
-            fs["mkdirSync"](StorageFile.prototype.DIRECTORY);
+        if (!fs["existsSync"](directory))
+            fs["mkdirSync"](directory);
     };
 
     const fileExists = name => {
@@ -32,17 +37,17 @@ if (window["require"]) {
     StorageFile.prototype.set = function (key, value) {
         makeDirectory();
 
-        fs["writeFileSync"](url["pathToFileURL"](this.DIRECTORY + key + this.EXTENSION), value);
+        fs["writeFileSync"](url["pathToFileURL"](directory + key + this.EXTENSION), value);
     };
 
     StorageFile.prototype.setBuffer = function(key, value) {
         makeDirectory();
 
-        fs["writeFileSync"](url["pathToFileURL"](this.DIRECTORY + key + this.EXTENSION), value.toByteArray());
+        fs["writeFileSync"](url["pathToFileURL"](directory + key + this.EXTENSION), value.toByteArray());
     };
 
     StorageFile.prototype.get = function(key) {
-        const file = this.DIRECTORY + key + this.EXTENSION;
+        const file = directory + key + this.EXTENSION;
         let contents = null;
 
         try {
@@ -57,7 +62,7 @@ if (window["require"]) {
     };
 
     StorageFile.prototype.getBuffer = function(key) {
-        const file = this.DIRECTORY + key + this.EXTENSION;
+        const file = directory + key + this.EXTENSION;
         let contents = null;
 
         try {
@@ -72,7 +77,7 @@ if (window["require"]) {
     };
 
     StorageFile.prototype.remove = function(key) {
-        const file = this.DIRECTORY + key + this.EXTENSION;
+        const file = directory + key + this.EXTENSION;
 
         if (fileExists(file))
             fs["unlinkSync"](url["pathToFileURL"](file));

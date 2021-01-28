@@ -1,56 +1,41 @@
 /**
  * A set of leaves to place on a stalk
- * @param {Number} x1 The X origin
- * @param {Number} z1 The Z origin
- * @param {Number} x2 The X target
- * @param {Number} z2 The Z target
+ * @param {Path2Sampler} pathSampler The path to place leaves on
+ * @param {Sampler} placementSampler A sampler for leaf positions along the path
  * @param {Number} density The amounts of leaves per distance
- * @param {Number} minAngle The minimum branching angle
- * @param {Number} maxAngle The maximum branching angle
- * @param {Number} lengthRoot The leaf length at the root
- * @param {Number} lengthTip The leaf length at the tip
+ * @param {Sampler} angleSampler The angle offset sampler
+ * @param {Sampler} lengthSampler The leaf length sampler
  * @param {Number} width The leaf width factor
- * @param {Number} flexMin The minimum flex amount
- * @param {Number} flexMax The maximum flex amount
+ * @param {Sampler} flexSampler The flex amount sampler
  * @param {Random} random A randomizer
  * @constructor
  */
 const LeafSet = function(
-    x1,
-    z1,
-    x2,
-    z2,
+    pathSampler,
+    placementSampler,
     density,
-    minAngle,
-    maxAngle,
-    lengthRoot,
-    lengthTip,
+    angleSampler,
+    lengthSampler,
     width,
-    flexMin,
-    flexMax,
+    flexSampler,
     random) {
-    this.x1 = x1;
-    this.z1 = z1;
-    this.dx = x2 - x1;
-    this.dz = z2 - z1;
-    this.direction = Math.atan2(this.dz, this.dx);
-    this.minAngle = minAngle;
-    this.maxAngle = maxAngle;
-    this.lengthRoot = lengthRoot;
-    this.lengthTip = lengthTip;
+    this.pathSampler = pathSampler;
+    this.angleSampler = angleSampler;
+    this.lengthSampler = lengthSampler;
     this.width = width;
-    this.flexMin = flexMin;
-    this.flexMax = flexMax;
+    this.flexSampler = flexSampler;
 
-    const distance = Math.sqrt(this.dx * this.dx + this.dz * this.dz);
+    const leafCount = Math.round(pathSampler.getLength() * placementSampler.getDomain() / density);
 
-    this.leaves = new Array(Math.round(distance / density));
+    this.leaves = new Array(leafCount);
 
-    for (let leaf = 0; leaf < this.leaves.length; ++leaf)
-        this.leaves[leaf] = random.getFloat() * distance;
+    for (let leaf = 0; leaf < leafCount; ++leaf)
+        this.leaves[leaf] = placementSampler.sample((leaf + random.getFloat() * (1 - this.MIN_PADDING)) / leafCount);
 
     this.leaves.sort((a, b) => b - a);
 };
+
+LeafSet.prototype.MIN_PADDING = .2;
 
 /**
  * Model the leaves in this set
@@ -72,26 +57,28 @@ LeafSet.prototype.model = function(
     random,
     vertices,
     indices) {
+    const sample = new Vector2();
+    const direction = new Vector2();
     let angleDirection = random.getFloat() < .5 ? -1 : 1;
 
     for (const distance of this.leaves) {
-        const x = this.x1 + this.dx * distance;
-        const z = this.z1 + this.dz * distance;
-        const flexVector = flexSampler.sample(x, z);
-        const length = this.lengthRoot + (this.lengthTip - this.lengthRoot) * distance;
-        const angle = this.direction + angleDirection *
-            (this.minAngle + (this.maxAngle - this.minAngle) * random.getFloat());
-        const flex = this.flexMin + (this.flexMax - this.flexMin) * random.getFloat();
+        this.pathSampler.sample(sample, distance * this.pathSampler.getLength());
+        this.pathSampler.sampleDirection(direction, distance * this.pathSampler.getLength());
+
+        const flexVector = flexSampler.sample(sample.x, sample.y);
+        const length = this.lengthSampler.sample(distance);
+        const angle = direction.angle() + angleDirection * this.angleSampler.sample(random.getFloat());
+        const flex = this.flexSampler.sample(random.getFloat());
         const flexDirection = random.getFloat() < .5 ? -1 : 1;
 
         angleDirection = -angleDirection;
 
         plants.modelLeaf(
             flexVector,
-            x,
-            z,
-            x + Math.cos(angle) * length,
-            z + Math.sin(angle) * length,
+            sample.x,
+            sample.y,
+            sample.x + Math.cos(angle) * length,
+            sample.y + Math.sin(angle) * length,
             y,
             this.width,
             flex * flexDirection,

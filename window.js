@@ -8,22 +8,20 @@ function createWindow () {
       nodeIntegration: true,
       enableRemoteModule: true
     }
-  })
+  });
 
   win.removeMenu();
-  win.loadFile("release.html")
+  win.loadFile("release.html");
 }
 
-app.whenReady().then(createWindow)
+app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
+  if (process.platform !== 'darwin')
+    app.quit();
+});
 
 app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow()
-  }
-})
+  if (BrowserWindow.getAllWindows().length === 0)
+    createWindow();
+});

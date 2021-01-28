@@ -2,14 +2,17 @@
  * The cards visible on the GUI
  * @param {HTMLDivElement} element The root element for the GUI
  * @param {CodeViewer} codeViewer The code viewer
+ * @param {AudioBank} audio Game audio
  * @constructor
  */
-const Cards = function(element, codeViewer) {
+const Cards = function(element, codeViewer, audio) {
     this.element = element;
     this.codeViewer = codeViewer;
+    this.audio = audio;
     this.dropTarget = this.createDropTarget();
     this.buttonBook = new CardBookButton(this.toggleBook.bind(this));
-    this.book = new CardBook(element.clientWidth, element.clientHeight, this, () => {
+    this.bookEnabled = false;
+    this.book = new CardBook(element.clientWidth, element.clientHeight, this, audio, () => {
         if (this.koi)
             this.koi.onUnlock();
     });
@@ -74,10 +77,14 @@ Cards.prototype.serialize = function(buffer) {
  * Toggle the book
  */
 Cards.prototype.toggleBook = function() {
-    if (this.bookVisible)
-        this.hide();
-    else
-        this.show();
+    if (this.bookEnabled) {
+        if (this.bookVisible)
+            this.hide();
+        else
+            this.show();
+
+        this.audio.effectBookInteract.play();
+    }
 };
 
 /**
@@ -85,6 +92,7 @@ Cards.prototype.toggleBook = function() {
  */
 Cards.prototype.enableBookButton = function() {
     this.element.appendChild(this.buttonBook.element);
+    this.bookEnabled = true;
 };
 
 /**
@@ -120,6 +128,8 @@ Cards.prototype.toDropTarget = function(card) {
     const rectDropTarget = this.dropTarget.getBoundingClientRect();
     const x = (rectDropTarget.right + rectDropTarget.left) * .5;
     const y = (rectDropTarget.bottom + rectDropTarget.top) * .5;
+
+    this.audio.effectCardInteract.play();
 
     card.moveTo(x, y);
 };
@@ -266,6 +276,9 @@ Cards.prototype.grabCard = function(card, x, y) {
         this.removeFromBook(card);
     }
 
+    this.audio.effectCardInteract.play(
+        this.audio.effectCardInteract.engine.transformPan(2 * x / this.element.clientWidth - 1));
+
     this.grabbed = card;
     this.grabOffset.x = x - card.position.x;
     this.grabOffset.y = y - card.position.y;
@@ -314,6 +327,9 @@ Cards.prototype.release = function() {
         else
             this.hand.addCardsAfter(this.element, this.hand.add(this.grabbed));
 
+        this.audio.effectCardInteract.play(
+            this.audio.effectCardInteract.engine.transformPan(2 * this.grabbed.position.x / this.element.clientWidth - 1));
+
         this.grabbed = null;
         this.hand.show();
     }
@@ -328,6 +344,7 @@ Cards.prototype.release = function() {
 Cards.prototype.registerCard = function(card, addToGUI = true, initialize = false) {
     card.setCodeViewer(this.codeViewer);
     card.setSystems(this.koi.systems);
+    card.setAudio(this.audio);
 
     card.element.addEventListener("mousedown", event => {
         if (event.button === 0)
@@ -395,6 +412,7 @@ Cards.prototype.remove = function(card, noChild = false) {
 Cards.prototype.hide = function() {
     if (this.bookVisible) {
         this.book.hide();
+        this.audio.effectBookInteract.play();
 
         this.hideTimer = this.HIDE_TIME;
         this.bookVisible = false;

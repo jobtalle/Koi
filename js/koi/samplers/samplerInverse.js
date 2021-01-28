@@ -6,10 +6,10 @@
  * @constructor
  */
 const SamplerInverse = function(min, max, multiplier) {
-    this.multiplier = multiplier;
-    this.amplitude = (max - min) * (1 + 1 / multiplier);
-
     Sampler.call(this, min, max);
+
+    this.multiplier = multiplier;
+    this.amplitude = this.getDomain() * (1 + 1 / multiplier);
 };
 
 SamplerInverse.prototype = Object.create(Sampler.prototype);

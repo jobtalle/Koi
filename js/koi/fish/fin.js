@@ -21,14 +21,14 @@ const Fin = function(at, radius, sign = 1) {
     this.pattern = null;
 };
 
-Fin.prototype.ANCHOR_INSET = .95;
+Fin.prototype.ANCHOR_INSET = .88;
 Fin.prototype.SKEW = .1;
 Fin.prototype.WAVE_SKEW = .2;
 Fin.prototype.X_SCALE = .6;
 Fin.prototype.SPRING = .4;
 Fin.prototype.PHASE_SHIFT = 2;
 Fin.prototype.DEPTH_FACTOR = .4;
-Fin.prototype.SAMPLER_RADIUS = new Sampler(.5, 2.2);
+Fin.prototype.SAMPLER_RADIUS = new Sampler(1, 2.4);
 
 /**
  * Deserialize a fin
@@ -49,6 +49,14 @@ Fin.prototype.serialize = function(buffer) {
 };
 
 /**
+ * Copy this fin
+ * @returns {Fin} A copy of this fin
+ */
+Fin.prototype.copy = function() {
+    return new Fin(this.at, this.radius);
+};
+
+/**
  * Make a mirrored copy of this fin
  * @returns {Fin} The copy
  */
@@ -59,10 +67,11 @@ Fin.prototype.copyMirrored = function() {
 /**
  * Get the index of the vertebra this fin is connected to
  * @param {Number} spineLength The length of the spine to assign this fin to
+ * @param {Sampler} sampler The position sampler
  * @returns {Number} The vertebrae index to connect the fin to
  */
-Fin.prototype.getVertebraIndex = function(spineLength) {
-    return Math.max(1, Math.round(spineLength * this.at / 0xFF));
+Fin.prototype.getVertebraIndex = function(spineLength, sampler) {
+    return Math.max(1, Math.round(spineLength * sampler.sample(this.at / 0xFF)));
 };
 
 /**

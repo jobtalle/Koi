@@ -3,9 +3,13 @@
  * @param {Vector3[]} points The points on this spline
  * @constructor
  */
-const CubicHermite = function(points) {
+const Path3CubicHermite = function(points) {
     this.points = points;
+
+    Path3.call(this, points[0], points[points.length - 1]);
 };
+
+Path3CubicHermite.prototype = Object.create(Path3.prototype);
 
 /**
  * The interpolation formula
@@ -16,7 +20,7 @@ const CubicHermite = function(points) {
  * @param {Number} t The sample to interpolate in the range [0, 1]
  * @returns {Number} The interpolated value
  */
-CubicHermite.prototype.interpolate = function(a, b, c, d, t) {
+Path3CubicHermite.prototype.interpolate = function(a, b, c, d, t) {
     const A = .5 * (3 * b - a - 3 * c + d);
     const B = a - 2.5 * b + 2 * c - .5 * d;
     const C = .5 * (c - a);
@@ -25,11 +29,11 @@ CubicHermite.prototype.interpolate = function(a, b, c, d, t) {
 };
 
 /**
- * Sample the spline
- * @param {Vector3} vector The vector to store the sample in
- * @param {Number} t The distance on the curve in the range [0, 1]
+ * Sample the path
+ * @param {Object} vector The vector to store the sample in
+ * @param {Number} t The distance on the path in the range [0, 1]
  */
-CubicHermite.prototype.sample = function(vector, t) {
+Path3CubicHermite.prototype.sample = function(vector, t) {
     const lastPoint = this.points.length - 1;
     const i1 = Math.floor(lastPoint * t);
     const i0 = Math.max(i1 - 1, 0);
@@ -40,20 +44,4 @@ CubicHermite.prototype.sample = function(vector, t) {
     vector.x = this.interpolate(this.points[i0].x, this.points[i1].x, this.points[i2].x, this.points[i3].x, f);
     vector.y = this.interpolate(this.points[i0].y, this.points[i1].y, this.points[i2].y, this.points[i3].y, f);
     vector.z = this.interpolate(this.points[i0].z, this.points[i1].z, this.points[i2].z, this.points[i3].z, f);
-};
-
-/**
- * Get the start point of this spline
- * @returns {Vector3} The start point
- */
-CubicHermite.prototype.getStart = function() {
-    return this.points[0];
-};
-
-/**
- * Get the end point of this spline
- * @returns {Vector3} The end point
- */
-CubicHermite.prototype.getEnd = function() {
-    return this.points[this.points.length - 1];
 };

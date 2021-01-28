@@ -7,10 +7,9 @@ const BugPath = function(nodes) {
     this.nodes = nodes;
     this.at = 0;
     this.position = new Vector3();
-    this.curve = this.makeCurve();
+    this.path = this.makePath();
 };
 
-BugPath.prototype.CURVE_RESOLUTION = .05;
 BugPath.prototype.INITIAL_POSITION = new SamplerPower(0, 1, .2);
 
 /**
@@ -18,20 +17,20 @@ BugPath.prototype.INITIAL_POSITION = new SamplerPower(0, 1, .2);
  * @param {Random} random A randomizer
  */
 BugPath.prototype.setRandomPosition = function(random) {
-    this.at = this.curve.length * this.INITIAL_POSITION.sample(random.getFloat());
+    this.at = this.path.getLength() * this.INITIAL_POSITION.sample(random.getFloat());
 };
 
 /**
- * Make the curve between the nodes
- * @returns {CubicHermiteSampler} The curve connecting all nodes
+ * Make the path between the nodes
+ * @returns {Path3Sampler} The curve connecting all nodes
  */
-BugPath.prototype.makeCurve = function() {
+BugPath.prototype.makePath = function() {
     const points = [];
 
     for (const node of this.nodes)
         points.push(node.position);
 
-    return new CubicHermiteSampler(new CubicHermite(points), this.CURVE_RESOLUTION);
+    return new Path3Sampler(new Path3CubicHermite(points));
 };
 
 /**
@@ -40,7 +39,7 @@ BugPath.prototype.makeCurve = function() {
  * @returns {Boolean} True if the path has been traversed
  */
 BugPath.prototype.move = function(delta) {
-    return (this.at += delta) > this.curve.length;
+    return (this.at += delta) > this.path.getLength();
 };
 
 /**
@@ -48,7 +47,7 @@ BugPath.prototype.move = function(delta) {
  * @returns {Vector2} The start coordinate
  */
 BugPath.prototype.getStart = function() {
-    return this.curve.getStart();
+    return this.path.getPath().getStart();
 };
 
 /**
@@ -65,7 +64,7 @@ BugPath.prototype.getLastNode = function() {
  * @param {Number} [delta] The delta from the current position, zero by default
  */
 BugPath.prototype.sample = function(vector, delta = 0) {
-    this.curve.sample(vector, Math.min(this.curve.length, this.at + delta));
+    this.path.sample(vector, Math.min(this.path.getLength(), this.at + delta));
 };
 
 /**
@@ -73,5 +72,5 @@ BugPath.prototype.sample = function(vector, delta = 0) {
  * @returns {Number} The length of the bug path
  */
 BugPath.prototype.length = function() {
-    return this.curve.length;
+    return this.path.getLength();
 };

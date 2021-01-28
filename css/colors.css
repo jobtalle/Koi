@@ -23,12 +23,14 @@
     --color-cattail-leaf: #5e8136;
     --color-cattail-stalk: #a09e7a;
     --color-cattail-capsule: #eceaac;
+    --color-shrubbery-stalk: #5f7746;
+    --color-shrubbery-leaf: #3d5b2e;
 
     /* Fish colors */
     --color-fish-white: #E1E0C4;
     --color-fish-black: #414345;
-    --color-fish-gold: #eaa247;
-    --color-fish-orange: #cd6142;
+    --color-fish-gold: #E4A746;
+    --color-fish-orange: #E56E42;
     --color-fish-red: #db3030;
     --color-fish-brown: var(--color-rock-top);
     --color-fish-shade: #13232b;
@@ -36,16 +38,20 @@
     /* Bug colors */
     --color-bug-butterfly-yellow: #d7c89b;
     --color-bug-butterfly-yellow-edge: #f6cda2;
+    --color-bug-butterfly-orange: #deb63b;
+    --color-bug-butterfly-orange-edge: #ff967c;
     --color-bug-butterfly-blue: #bdd7f3;
     --color-bug-butterfly-blue-edge: #87abdb;
+    --color-bug-butterfly-black: #6b7556;
+    --color-bug-butterfly-black-edge: #474747;
     --color-bug-butterfly-thunder: #4f4e56;
     --color-bug-butterfly-thunder-edge: #d64657;
 
     /* Code colors */
-    --color-code-00: #fdd373;
-    --color-code-01: var(--color-fish-gold);
-    --color-code-10: var(--color-fish-orange);
-    --color-code-11: var(--color-fish-red);
+    --color-code-00: #FDD373;
+    --color-code-01: #EAA247;
+    --color-code-10: #CD6142;
+    --color-code-11: #DB3030;
 
     /* GUI colors */
     --color-preview-outer: #325c73;

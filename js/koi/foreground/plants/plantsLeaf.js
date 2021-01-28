@@ -1,6 +1,6 @@
 Plants.prototype.LEAF_RESOLUTION = .15;
 Plants.prototype.LEAF_SEGMENTS_MIN = 5;
-Plants.prototype.LEAF_BULGE = .5;
+Plants.prototype.LEAF_BULGE = .55;
 Plants.prototype.LEAF_SHADE = .8;
 
 /**
