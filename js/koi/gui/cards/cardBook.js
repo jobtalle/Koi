@@ -395,7 +395,12 @@ CardBook.prototype.addToBook = function(card, snap) {
  * @param {Card} card A card
  */
 CardBook.prototype.removeFromBook = function(card) {
-    this.pages[this.page].removeCard(card) || this.pages[this.page + 1].removeCard(card);
+    const last = this.page + 1 + this.flips.length;
+
+    for (let page = this.page; page <= last; ++page)
+        if (this.pages[page].removeCard(card))
+            break;
+
     this.setButtonLockedStatus();
 };
 
