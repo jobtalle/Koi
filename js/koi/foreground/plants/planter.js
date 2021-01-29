@@ -24,10 +24,9 @@ Planter.prototype.CATTAIL_CHANCE = .14;
 Planter.prototype.CATTAIL_CHANCE_RAMP = 10;
 Planter.prototype.CATTAIL_DIST_MIN = .1;
 Planter.prototype.CATTAIL_DIST_MAX = 1.3;
-Planter.prototype.SHRUBBERY_CHANCE = 1;
 Planter.prototype.SHRUBBERY_DIST_MIN = .9;
 Planter.prototype.SHRUBBERY_DIST_MAX = 2;
-Planter.prototype.SHRUBBERY_DENSITY = .5;
+Planter.prototype.SHRUBBERY_DENSITY = .68;
 Planter.prototype.SHRUBBERY_HIDDEN_SIZE = new SamplerPower(.7, 1, 2);
 
 /**
@@ -110,7 +109,7 @@ Planter.prototype.plant = function(plants, vertices, indices) {
             beachFactor);
 
         if (!occupation.occupied(slot.x, slot.y, 1) &&
-            this.random.getFloat() < shrubberyFactor * this.SHRUBBERY_CHANCE) {
+            this.random.getFloat() < shrubberyFactor) {
             plants.modelShrubbery(
                 slot.x,
                 slot.y,
