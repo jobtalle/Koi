@@ -65,7 +65,9 @@ Atlas.prototype.getSlot = function() {
  * @param {AtlasRegion} region The atlas region
  */
 Atlas.prototype.returnRegion = function(region) {
-    this.available.unshift(region.slot);
+    if (region) {
+        this.available.unshift(region.slot);
+    }
 };
 
 /**
