@@ -1,26 +1,28 @@
 /**
  * A load screen
  * @param {HTMLElement} element The container element
+ * @param {HTMLElement} elementGraphics The element to place graphics in
  * @param {HTMLElement} elementButtonStart The element to build the start button in
  * @param {HTMLElement} elementButtonNew The element to build the new game button in
- * @param {HTMLElement} elementBar The loading bar element
  * @constructor
  */
 const Loader = function(
     element,
+    elementGraphics,
     elementButtonStart,
-    elementButtonNew,
-    elementBar) {
+    elementButtonNew) {
     this.element = element;
+    this.icon = new LoaderIcon();
     this.elementButtonStart = elementButtonStart;
     this.elementButtonNew = elementButtonNew;
-    this.elementBar = elementBar;
     this.loadedPrevious = false;
     this.outstanding = 0;
     this.finished = 0;
     this.released = false;
     this.onFinish = null;
     this.onNewGame = null;
+
+    elementGraphics.appendChild(this.icon.element);
 };
 
 /**
@@ -47,8 +49,10 @@ Loader.prototype.LANG_START = "START";
 Loader.prototype.LANG_CONTINUE = "CONTINUE";
 Loader.prototype.LANG_NEW = "NEW";
 Loader.prototype.LANG_CONFIRM = "CONFIRM";
+Loader.prototype.CLASS_LOADED = "loaded";
 Loader.prototype.CLASS_FINISHED = "finished";
 Loader.prototype.CLASS_BUTTON_CONFIRM = "confirm";
+Loader.prototype.TRANSITION = StyleUtils.getFloat("--loader-fade-out");
 
 /**
  * Indicate that a previous game has been loaded
@@ -61,7 +65,8 @@ Loader.prototype.setLoadedPrevious = function() {
  * Update the loading bar element after loaded content has changed
  */
 Loader.prototype.updateBar = function() {
-    this.elementBar.style.width = (100 * this.finished / this.outstanding).toFixed(2) + "%";
+    console.log(this.finished / this.outstanding);
+    // this.elementBar.style.width = (100 * this.finished / this.outstanding).toFixed(2) + "%";
 };
 
 /**
@@ -69,6 +74,10 @@ Loader.prototype.updateBar = function() {
  */
 Loader.prototype.hide = function() {
     this.element.className = this.CLASS_FINISHED;
+
+    setTimeout(() => {
+        this.element.style.display = "none";
+    }, 1000 * this.TRANSITION);
 };
 
 /**
@@ -118,6 +127,8 @@ Loader.prototype.createButtonNew = function() {
  * Finish loading
  */
 Loader.prototype.complete = function() {
+    this.element.classList.add(this.CLASS_LOADED);
+
     this.elementButtonStart.appendChild(this.createButtonStart());
 
     if (this.loadedPrevious)
