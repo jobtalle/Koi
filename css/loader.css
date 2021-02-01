@@ -1,6 +1,6 @@
 :root {
     --loader-logo-width: 60%;
-    --loader-logo-color: white;
+    --loader-logo-color: var(--color-white);
     --loader-logo-margin: 10%;
     --loader-fade-in: 2s;
     --loader-fade-out: 1s;
@@ -65,7 +65,7 @@
     margin-bottom: var(--loader-button-margin);
     opacity: 0;
     transition: var(--loader-button-fade-in);
-    transition-timing-function: ease-out;
+    transition-timing-function: ease-in;
 }
 
 #loader.loaded .loader-button {
@@ -75,7 +75,7 @@
 .loader-button button {
     width: 100%;
     transition: 0.5s;
-    background-color: white;
+    background-color: var(--color-white);
     color: var(--loader-button-text-color);
     font-weight: bold;
     border-radius: var(--loader-button-border-radius);
@@ -83,5 +83,5 @@
 
 .loader-button button.confirm {
     background-color: var(--color-fish-red);
-    color: white;
+    color: var(--color-white);
 }

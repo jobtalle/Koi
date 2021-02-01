@@ -1,5 +1,5 @@
 :root {
-    --overlay-element-color: #fffc;
+    --overlay-element-color: #f6f6f6cc;
     --overlay-pointer-animation-time: 1s;
     --overlay-pointer-radius: 48px;
     --overlay-pointer-border: 8px;
@@ -57,10 +57,10 @@
     margin-right: auto;
     text-align: center;
     background-color: #325c73cc;
-    color: white;
+    color: var(--color-white);
     font-size: 32px;
     border-radius: 16px;
-    border: 2px solid white;
+    border: 2px solid var(--color-white);
 }
 
 #overlay .text p {
@@ -72,7 +72,7 @@
     width: 100%;
     height: 100%;
     position: absolute;
-    background-color: white;
+    background-color: var(--color-white);
     animation: highlight-pulse var(--overlay-highlight-animation-time) infinite;
     animation-timing-function: ease-in-out;
 }

@@ -34,7 +34,7 @@ body {
     }
 
     #no-portrait .message {
-        color: white;
+        color: var(--color-white);
         font-size: 50px;
         text-align: center;
     }

@@ -54,7 +54,7 @@
 }
 
 #code .view button:active {
-    background-color: white;
+    background-color: var(--color-white);
 }
 
 #code .view button.help {
@@ -76,6 +76,6 @@
 
 #code .view .help-text p {
     box-shadow: none;
-    color: white;
+    color: var(--color-white);
     text-align: center;
 }

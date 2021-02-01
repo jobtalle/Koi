@@ -56,4 +56,5 @@
     /* GUI colors */
     --color-preview-outer: #325c73;
     --color-preview-inner: var(--color-water-shallow);
+    --color-white: #f6f6f6;
 }

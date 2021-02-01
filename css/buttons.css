@@ -13,7 +13,7 @@ button {
     outline: none;
     background-color: transparent;
     padding: 0;
-    color: white;
+    color: var(--color-white);
     font-size: 18pt;
     font-family: inherit;
     user-select: none;
