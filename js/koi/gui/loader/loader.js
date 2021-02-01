@@ -65,7 +65,6 @@ Loader.prototype.setLoadedPrevious = function() {
  * Update the loading bar element after loaded content has changed
  */
 Loader.prototype.updateBar = function() {
-    console.log(this.finished / this.outstanding);
     // this.elementBar.style.width = (100 * this.finished / this.outstanding).toFixed(2) + "%";
 };
 

@@ -56,11 +56,11 @@
     margin-left: auto;
     margin-right: auto;
     text-align: center;
-    background-color: #db9c37cc;
-    color: black;
+    background-color: #325c73cc;
+    color: white;
     font-size: 32px;
     border-radius: 16px;
-    border: 2px solid black;
+    border: 2px solid white;
 }
 
 #overlay .text p {

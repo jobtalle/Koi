@@ -17,7 +17,7 @@
   "TUTORIAL_MOVE_POND_2": "Put another fish into the small pond to allow both fish to breed.",
   "TUTORIAL_BREED_WAIT": "Two fish will reproduce after being together for a while without being disturbed.",
   "TUTORIAL_BREED_TOO_MANY": "Remove fish from the small pond until only two fish remain.",
-  "TUTORIAL_CROSSBREED": "Let different species breed to create new species",
+  "TUTORIAL_CROSSBREED": "Let fish with different colors breed to create new variants.",
   "TUTORIAL_CREATE_CARD": "Move a fish to the drop target in the lower half of the screen to turn it into a storable card.",
   "TUTORIAL_OPEN_BOOK_STORE": "Open the card book to store the card.",
   "TUTORIAL_STORE_CARD": "Drag the card into one of the book slots to store it.",
