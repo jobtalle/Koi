@@ -81,8 +81,20 @@
     border-radius: var(--loader-button-border-radius);
 }
 
+.loader-button button:active {
+    background-color: var(--color-fish-black);
+    color: var(--color-white);
+    transition: 0s;
+}
+
 .loader-button button.confirm {
     background-color: var(--color-fish-black);
     color: var(--color-white);
+    transition: 0s;
+}
+
+.loader-button button.confirm:active {
+    background-color: var(--color-white);
+    color: var(--loader-button-text-color);
     transition: 0s;
 }
