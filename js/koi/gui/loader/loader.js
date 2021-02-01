@@ -52,6 +52,7 @@ Loader.prototype.LANG_CONFIRM = "CONFIRM";
 Loader.prototype.CLASS_LOADED = "loaded";
 Loader.prototype.CLASS_FINISHED = "finished";
 Loader.prototype.CLASS_BUTTON_CONFIRM = "confirm";
+Loader.prototype.BUTTON_DELAY = .37;
 Loader.prototype.TRANSITION = StyleUtils.getFloat("--loader-fade-out");
 
 /**
@@ -126,12 +127,14 @@ Loader.prototype.createButtonNew = function() {
  * Finish loading
  */
 Loader.prototype.complete = function() {
-    this.element.classList.add(this.CLASS_LOADED);
-
+    this.elementButtonStart.classList.add(this.CLASS_LOADED);
     this.elementButtonStart.appendChild(this.createButtonStart());
 
     if (this.loadedPrevious)
-        this.elementButtonNew.appendChild(this.createButtonNew());
+        setTimeout(() => {
+            this.elementButtonNew.appendChild(this.createButtonNew());
+            this.elementButtonNew.classList.add(this.CLASS_LOADED);
+        }, this.BUTTON_DELAY * 1000);
 };
 
 /**

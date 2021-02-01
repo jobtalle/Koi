@@ -68,7 +68,7 @@
     transition-timing-function: ease-in;
 }
 
-#loader.loaded .loader-button {
+.loader-button.loaded {
     opacity: 1;
 }
 
@@ -82,6 +82,7 @@
 }
 
 .loader-button button.confirm {
-    background-color: var(--color-fish-red);
+    background-color: var(--color-fish-black);
     color: var(--color-white);
+    transition: 0s;
 }
