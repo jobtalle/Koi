@@ -65,7 +65,9 @@ Atlas.prototype.getSlot = function() {
  * @param {AtlasRegion} region The atlas region
  */
 Atlas.prototype.returnRegion = function(region) {
-    this.available.unshift(region.slot);
+    if (region) {
+        this.available.unshift(region.slot);
+    }
 };
 
 /**
@@ -74,10 +76,14 @@ Atlas.prototype.returnRegion = function(region) {
  * @param {RandomSource} randomSource A random source
  */
 Atlas.prototype.write = function(pattern, randomSource) {
-    pattern.region = new AtlasRegion(this.getSlot(), this.slotSize);
+    const slot = this.getSlot();
 
-    this.renderTarget.target();
-    this.patterns.write(pattern, randomSource, pattern.region, 1 / this.renderTarget.width);
+    if (slot) {
+        pattern.region = new AtlasRegion(slot, this.slotSize);
+
+        this.renderTarget.target();
+        this.patterns.write(pattern, randomSource, pattern.region, 1 / this.renderTarget.width);
+    }
 };
 
 /**

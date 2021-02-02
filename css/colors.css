@@ -1,6 +1,6 @@
 :root {
     /* Environment colors */
-    --color-water-deep: #1a2c48;
+    --color-water-deep: #314462;
     --color-water-shallow: #7ad6d6;
     --color-water-filter: #def6ea;
     --color-water-highlight: #a9dbd1;
@@ -56,4 +56,5 @@
     /* GUI colors */
     --color-preview-outer: #325c73;
     --color-preview-inner: var(--color-water-shallow);
+    --color-white: #f6f6f6;
 }

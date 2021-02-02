@@ -3,6 +3,7 @@
     --code-button-padding: 32px;
     --code-button-margin: 16px;
     --code-button-radius: var(--card-border-radius);
+    --code-help-radius: 24px;
     --code-shadow-radius: var(--book-shadow-radius);
     --code-shadow-color: var(--book-shadow-color);
 }
@@ -32,6 +33,7 @@
     flex-direction: column;
     align-items: center;
     user-select: none;
+    position: relative;
 }
 
 #code .view * {
@@ -52,5 +54,28 @@
 }
 
 #code .view button:active {
-    background-color: white;
+    background-color: var(--color-white);
+}
+
+#code .view button.help {
+    width: calc(2 * var(--code-help-radius));
+    height: calc(2 * var(--code-help-radius));
+    border-radius: var(--code-help-radius);
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 0;
+    padding: 0;
+}
+
+#code .view .help-text {
+    box-shadow: none;
+    position: absolute;
+    bottom: 100%;
+}
+
+#code .view .help-text p {
+    box-shadow: none;
+    color: var(--color-white);
+    text-align: center;
 }

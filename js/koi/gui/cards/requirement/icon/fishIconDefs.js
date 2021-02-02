@@ -46,6 +46,31 @@ FishIconDefs.prototype.RIDGE_MAX_SHRINK = .75;
 FishIconDefs.prototype.STRIPE_CURVE_ANGLE = new Sampler(Math.PI * .3, Math.PI * .7);
 
 /**
+ * Get the colors used in card requirement icons of a certain layer type
+ * @param {Number} id The layer ID
+ * @param {Number} index The layer index
+ * @returns {Number[]} The used color indices
+ */
+FishIconDefs.prototype.getUsedColors = function(id, index) {
+    const colors = [];
+
+    for (const page of CardRequirements) for (const requirement of page) {
+        if (requirement) {
+            const footprint = requirement.footprint;
+
+            if (index < footprint.layers.length && footprint.layers[index].id === id) {
+                const color = footprint.layers[index].paletteIndex;
+
+                if (colors.indexOf(color) === -1)
+                    colors.push(color);
+            }
+        }
+    }
+
+    return colors;
+};
+
+/**
  * Create a quadratic bezier path
  * @param {Vector2[]} points The points on the path
  */
@@ -210,7 +235,9 @@ FishIconDefs.prototype.makeWildcard = function(defs) {
  * @param {HTMLElement} defs The defs element to populate
  */
 FishIconDefs.prototype.makePatternsBase = function(defs) {
-    for (let paletteIndex = 0, colors = Palette.COLORS.length; paletteIndex < colors; ++paletteIndex) {
+    const colors = this.getUsedColors(LayerBase.prototype.ID, 0);
+
+    for (const paletteIndex of colors) {
         const pattern = SVG.createPattern();
         const element = SVG.createRect(0, 0, this.WIDTH, this.HEIGHT);
 
@@ -227,12 +254,18 @@ FishIconDefs.prototype.makePatternsBase = function(defs) {
  * @param {HTMLElement} defs The defs element to populate
  * @param {String} id The ID for this layer
  * @param {Vector3[]} spots An array of spots definitions
+ * @param {Number[]} colors The used colors
  * @param {Random} random A randomizer
  */
-FishIconDefs.prototype.makePatternsSpotsLayer = function(defs, id, spots, random) {
+FishIconDefs.prototype.makePatternsSpotsLayer = function(
+    defs,
+    id,
+    spots,
+    colors,
+    random) {
     const dimensions = new Vector2(this.WIDTH, this.HEIGHT);
 
-    for (let paletteIndex = 0, colors = Palette.COLORS.length; paletteIndex < colors; ++paletteIndex) {
+    for (const paletteIndex of colors) {
         const pattern = SVG.createPattern();
 
         SVG.setId(pattern, id + paletteIndex.toString());
@@ -255,8 +288,18 @@ FishIconDefs.prototype.makePatternsSpotsLayer = function(defs, id, spots, random
  * @param {Random} random A randomizer
  */
 FishIconDefs.prototype.makePatternsSpots = function(defs, random) {
-    this.makePatternsSpotsLayer(defs, this.ID_SPOTS_A, this.SPOTS_A, random);
-    this.makePatternsSpotsLayer(defs, this.ID_SPOTS_B, this.SPOTS_B, random);
+    this.makePatternsSpotsLayer(
+        defs,
+        this.ID_SPOTS_A,
+        this.SPOTS_A,
+        this.getUsedColors(LayerSpots.prototype.ID, 1),
+        random);
+    this.makePatternsSpotsLayer(
+        defs,
+        this.ID_SPOTS_B,
+        this.SPOTS_B,
+        this.getUsedColors(LayerSpots.prototype.ID, 2),
+        random);
 };
 
 /**
@@ -264,10 +307,16 @@ FishIconDefs.prototype.makePatternsSpots = function(defs, random) {
  * @param {HTMLElement} defs The defs element to populate
  * @param {String} id The ID for this layer
  * @param {Vector2[]} stripes An array of stripe definitions
+ * @param {Number[]} colors The used colors
  * @param {Random} random A randomizer
  */
-FishIconDefs.prototype.makePatternsStripesLayer = function(defs, id, stripes, random) {
-    for (let paletteIndex = 0, colors = Palette.COLORS.length; paletteIndex < colors; ++paletteIndex) {
+FishIconDefs.prototype.makePatternsStripesLayer = function(
+    defs,
+    id,
+    stripes,
+    colors,
+    random) {
+    for (const paletteIndex of colors) {
         const pattern = SVG.createPattern();
 
         SVG.setId(pattern, id + paletteIndex.toString());
@@ -290,8 +339,18 @@ FishIconDefs.prototype.makePatternsStripesLayer = function(defs, id, stripes, ra
  * @param {Random} random A randomizer
  */
 FishIconDefs.prototype.makePatternsStripes = function(defs, random) {
-    this.makePatternsStripesLayer(defs, this.ID_STRIPES_A, this.STRIPES_A, random);
-    this.makePatternsStripesLayer(defs, this.ID_STRIPES_B, this.STRIPES_B, random);
+    this.makePatternsStripesLayer(
+        defs,
+        this.ID_STRIPES_A,
+        this.STRIPES_A,
+        this.getUsedColors(LayerStripes.prototype.ID, 1),
+        random);
+    this.makePatternsStripesLayer(
+        defs,
+        this.ID_STRIPES_B,
+        this.STRIPES_B,
+        this.getUsedColors(LayerStripes.prototype.ID, 2),
+        random);
 };
 
 /**
@@ -299,10 +358,16 @@ FishIconDefs.prototype.makePatternsStripes = function(defs, random) {
  * @param {HTMLElement} defs The defs element to populate
  * @param {String} id The ID for this layer
  * @param {Vector2} ridge The ridge size
+ * @param {Number[]} colors The used colors
  * @param {Random} random A randomizer
  */
-FishIconDefs.prototype.makePatternsRidgeLayer = function(defs, id, ridge, random) {
-    for (let paletteIndex = 0, colors = Palette.COLORS.length; paletteIndex < colors; ++paletteIndex) {
+FishIconDefs.prototype.makePatternsRidgeLayer = function(
+    defs,
+    id,
+    ridge,
+    colors,
+    random) {
+    for (const paletteIndex of colors) {
         const pattern = SVG.createPattern();
         const pathPoints = [
             new Vector2(this.WIDTH * .5, this.HEIGHT * (.5 - ridge.y * .5)),
@@ -335,6 +400,16 @@ FishIconDefs.prototype.makePatternsRidgeLayer = function(defs, id, ridge, random
  * @param {Random} random A randomizer
  */
 FishIconDefs.prototype.makePatternsRidge = function(defs, random) {
-    this.makePatternsRidgeLayer(defs, this.ID_RIDGE_A, this.RIDGE_A, random);
-    this.makePatternsRidgeLayer(defs, this.ID_RIDGE_B, this.RIDGE_B, random);
+    this.makePatternsRidgeLayer(
+        defs,
+        this.ID_RIDGE_A,
+        this.RIDGE_A,
+        this.getUsedColors(LayerRidge.prototype.ID, 1),
+        random);
+    this.makePatternsRidgeLayer(
+        defs,
+        this.ID_RIDGE_B,
+        this.RIDGE_B,
+        this.getUsedColors(LayerRidge.prototype.ID, 2),
+        random);
 };

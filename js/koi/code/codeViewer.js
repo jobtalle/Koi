@@ -14,9 +14,12 @@ const CodeViewer = function(element, storage) {
 
 CodeViewer.prototype.CLASS_VIEW = "view";
 CodeViewer.prototype.CLASS_ACTIVE = "active";
+CodeViewer.prototype.CLASS_HELP = "help";
+CodeViewer.prototype.CLASS_HELP_TEXT = "help-text";
 CodeViewer.prototype.DEFAULT_NAME = "koi.png";
 CodeViewer.prototype.LANG_SAVE = "SAVE";
 CodeViewer.prototype.LANG_COPY = "COPY";
+CodeViewer.prototype.LANG_HELP = "TUTORIAL_CODE";
 
 /**
  * Create the copy button
@@ -58,7 +61,51 @@ CodeViewer.prototype.createButtonDownload = function(image, audio) {
     };
 
     return button;
-}
+};
+
+/**
+ * Create the help text
+ * @returns {HTMLDivElement} The help text element
+ */
+CodeViewer.prototype.createHelpText = function() {
+    const element = document.createElement("div");
+    const text = document.createElement("p");
+
+    text.appendChild(document.createTextNode(language.get(this.LANG_HELP)));
+
+    element.className = this.CLASS_HELP_TEXT;
+    element.appendChild(text);
+
+    return element;
+};
+
+/**
+ * Create a help button
+ * @param {HTMLDivElement} element The element to add the help message to
+ * @param {AudioBank} audio Game audio
+ * @returns {HTMLButtonElement} The help button
+ */
+CodeViewer.prototype.createButtonHelp = function(element, audio) {
+    const button = document.createElement("button");
+    let pressed = false;
+
+    button.className = this.CLASS_HELP;
+
+    button.appendChild(document.createTextNode("?"));
+    button.onclick = () => {
+        if (pressed)
+            audio.effectNegative.play();
+        else {
+            audio.effectClick.play();
+
+            element.appendChild(this.createHelpText());
+
+            pressed = true;
+        }
+    };
+
+    return button;
+};
 
 /**
  * Create a view
@@ -70,6 +117,7 @@ CodeViewer.prototype.createView = function(image, audio) {
     const element = document.createElement("div");
 
     element.className = this.CLASS_VIEW;
+    element.appendChild(this.createButtonHelp(element, audio));
     element.appendChild(image);
     element.appendChild(this.createButtonDownload(image, audio));
 

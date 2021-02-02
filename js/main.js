@@ -7,9 +7,9 @@ const glParameters = {
 };
 const loader = new Loader(
     document.getElementById("loader"),
+    document.getElementById("loader-graphics"),
     document.getElementById("loader-button-start"),
-    document.getElementById("loader-button-new"),
-    document.getElementById("loader-bar-inner"));
+    document.getElementById("loader-button-new"));
 const canvas = document.getElementById("renderer");
 const gl =
     canvas.getContext("webgl", glParameters) ||

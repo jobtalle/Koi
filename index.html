@@ -42,11 +42,9 @@
         </div>
     </div>
     <div id="loader">
+        <div id="loader-graphics"></div>
         <div class="loader-button" id="loader-button-start"></div>
         <div class="loader-button" id="loader-button-new"></div>
-        <div id="loader-bar-outer">
-            <div id="loader-bar-inner"></div>
-        </div>
     </div>
 </div>
 <svg xmlns="http://www.w3.org/2000/svg">
@@ -55,7 +53,8 @@
 </svg>
 <script src="js/styleUtils.js"></script>
 
-<script src="js/loader.js"></script>
+<script src="js/koi/gui/loader/loader.js"></script>
+<script src="js/koi/gui/loader/loaderIcon.js"></script>
 
 <script src="js/storage/storageSystem.js"></script>
 <script src="js/storage/storageLocal.js"></script>
@@ -227,7 +226,6 @@
 <script src="js/koi/background/background.js"></script>
 
 <script src="js/koi/foreground/plants/flexSampler.js"></script>
-<script src="js/koi/foreground/plants/occupation.js"></script>
 <script src="js/koi/foreground/plants/leafSet.js"></script>
 <script src="js/koi/foreground/plants/plants.js"></script>
 <script src="js/koi/foreground/plants/plantsStalk.js"></script>
@@ -256,7 +254,9 @@
 <script src="js/koi/foreground/bugs/bugSpawner.js"></script>
 <script src="js/koi/foreground/bugs/bugs.js"></script>
 
+<script src="js/koi/foreground/occupation.js"></script>
 <script src="js/koi/foreground/slots.js"></script>
+<script src="js/koi/foreground/hiddenSlots.js"></script>
 <script src="js/koi/foreground/rocks.js"></script>
 <script src="js/koi/foreground/biome.js"></script>
 <script src="js/koi/foreground/foreground.js"></script>

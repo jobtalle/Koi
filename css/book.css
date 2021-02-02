@@ -69,7 +69,7 @@
 }
 
 #book #spine .page .overlay.left {
-    background-color: white;
+    background-color: var(--color-white);
 }
 
 #book #spine .page .overlay.right {
@@ -132,7 +132,7 @@
 }
 
 #button-book:active path.page {
-    fill: white;
+    fill: var(--color-white);
 }
 
 #button-book path.side {
@@ -167,7 +167,7 @@
 }
 
 .button-page:active path {
-    fill: white;
+    fill: var(--color-white);
 }
 
 .button-page.locked path {
