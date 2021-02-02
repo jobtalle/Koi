@@ -11,6 +11,7 @@ const LoaderIcon = function() {
 LoaderIcon.prototype.ID = "loader-icon";
 LoaderIcon.prototype.CLASS_INVISIBLE = "invisible";
 LoaderIcon.prototype.FILE = "svg/logo.svg";
+LoaderIcon.prototype.FADE_IN_DELAY = .32;
 
 /**
  * Load the SVG image
@@ -20,7 +21,10 @@ LoaderIcon.prototype.loadSVG = function() {
 
     request.onload = () => {
         this.element.innerHTML = request.responseText;
-        this.element.classList.remove(this.CLASS_INVISIBLE);
+
+        setTimeout(() => {
+            this.element.classList.remove(this.CLASS_INVISIBLE);
+        }, 1000 * this.FADE_IN_DELAY);
     };
 
     request.open("GET", this.FILE, true);
