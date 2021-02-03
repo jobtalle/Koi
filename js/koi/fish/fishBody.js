@@ -60,7 +60,6 @@ FishBody.prototype.SWIM_AMPLITUDE = 11;
 FishBody.prototype.SWIM_SPEED = 6;
 FishBody.prototype.SPEED_SWING_THRESHOLD = .01;
 FishBody.prototype.SPEED_WAVE_THRESHOLD = .055;
-FishBody.prototype.OVERLAP_PADDING = 1.8;
 FishBody.prototype.WAVE_RADIUS = .15;
 FishBody.prototype.WAVE_INTENSITY_MIN = .05;
 FishBody.prototype.WAVE_INTENSITY_MULTIPLIER = 2;
@@ -88,6 +87,7 @@ FishBody.prototype.TAIL_AUDIO_THRESHOLD = .08;
 FishBody.prototype.TAIL_AUDIO_RAMP = .025;
 FishBody.prototype.TAIL_AUDIO_VOLUME_MIN = .4;
 FishBody.prototype.TAIL_AUDIO_COOLDOWN = 30;
+FishBody.prototype.BROAD_RADIUS = 3;
 
 /**
  * Deserialize a fish body
@@ -315,27 +315,47 @@ FishBody.prototype.moveTo = function(position) {
  * Check if this fish overlaps the given position
  * @param {Number} x The X position
  * @param {Number} y The Y position
- * @returns {Boolean} A boolean indicating whether this body has been hit
+ * @param {Object} hits The array of fish passing the broad phase
+ * @param {Fish} fish The fish collisions are being checked for
+ * @returns {Boolean} True if the fish was definitely hit, false otherwise
  */
-FishBody.prototype.atPosition = function(x, y) {
-    // TODO: Use a better method which allows padding
-    // TODO: Also check fins
-    let dx = x - this.spine[0].x;
-    let dy = y - this.spine[0].y;
-    let radius = this.spacing * (this.spine.length - 1);
+FishBody.prototype.atPosition = function(x, y, hits, fish) {
+    const radius = this.spacing * (this.spine.length - 1) * .5 + this.radiusSampled * this.BROAD_RADIUS;
+    let dx = x - this.getOffspringPosition().x;
+    let dy = y - this.getOffspringPosition().y;
+    let nearestSquared = 1000;
 
     if (dx * dx + dy * dy > radius * radius)
         return false;
 
-    for (let segment = 1; segment < this.spine.length - 1; ++segment) {
+    for (let segment = 0; segment < this.spine.length - 1; ++segment) {
+        const lx = (this.spine[segment + 1].x - this.spine[segment].x) / this.spacing;
+        const ly = (this.spine[segment + 1].y - this.spine[segment].y) / this.spacing;
+
         dx = x - this.spine[segment].x;
         dy = y - this.spine[segment].y;
-        radius = this.pattern.shapeBody.sample(segment / (this.spine.length - 1)) *
-            this.radiusSampled * this.OVERLAP_PADDING;
 
-        if (dx * dx + dy * dy < radius * radius)
+        const projected = Math.max(0, Math.min(this.spacing, lx * dx + ly * dy));
+        const px = this.spine[segment].x + lx * projected;
+        const py = this.spine[segment].y + ly * projected;
+
+        dx = x - px;
+        dy = y - py;
+
+        const squared = dx * dx + dy * dy;
+
+        if (squared < this.radiusSampled * this.radiusSampled)
             return true;
+
+        if (squared < nearestSquared)
+            nearestSquared = dx * dx + dy * dy;
     }
+
+    if (nearestSquared < this.radiusSampled * this.BROAD_RADIUS * this.radiusSampled * this.BROAD_RADIUS)
+        hits.push({
+            fish: fish,
+            distance: nearestSquared
+        });
 
     return false;
 };
