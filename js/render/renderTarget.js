@@ -115,13 +115,6 @@ RenderTarget.prototype.extractTexture = function() {
 };
 
 /**
- * Retrieve pixel data for this texture
- */
-RenderTarget.prototype.downloadTexture = function() {
-    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.framebuffer);
-};
-
-/**
  * Free all resources maintained by this bufferQuad
  */
 RenderTarget.prototype.free = function() {
