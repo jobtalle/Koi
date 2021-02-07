@@ -1,5 +1,5 @@
 /**
- * A quadratic sampler
+ * A power sampler
  * @param {Number} min The minimum value
  * @param {Number} max The maximum value
  * @param {Number} power The power for value interpolation

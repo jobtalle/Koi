@@ -47,8 +47,7 @@ const Air = function(
 
 Air.prototype = Object.create(ConvolutionalBuffer.prototype);
 Air.prototype.SCALE = 4;
-Air.prototype.SPRING_MIN = .2;
-Air.prototype.SPRING_MAX = .4;
+Air.prototype.SPRING = new Sampler(.2, .4);
 
 /**
  * Add displacement to the air
@@ -74,7 +73,7 @@ Air.prototype.createSpringValues = function(count, random) {
     const springs = new Array(count);
 
     for (let i = 0; i < count; ++i)
-        springs[i] = Math.floor(256 * (this.SPRING_MIN + (this.SPRING_MAX - this.SPRING_MIN) * random.getFloat()));
+        springs[i] = Math.floor(256 * this.SPRING.sample(random.getFloat()));
 
     return springs;
 };
