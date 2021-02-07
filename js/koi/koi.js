@@ -50,6 +50,7 @@ const Koi = function(
     this.mutations = new Mutations();
     this.time = this.UPDATE_RATE;
     this.phase = 0;
+    this.touchGrassSign = 1;
 
     this.createRenderables();
 
@@ -66,6 +67,9 @@ Koi.prototype.PHASE_SPEED = .005;
 Koi.prototype.TOUCH_WATER_RADIUS = .1;
 Koi.prototype.TOUCH_WATER_INTENSITY = .5;
 Koi.prototype.TOUCH_WATER_VOLUME = .7;
+Koi.prototype.TOUCH_GRASS_RADIUS = 1;
+Koi.prototype.TOUCH_GRASS_INTENSITY = .7;
+Koi.prototype.TOUCH_GRASS_VOLUME = .4;
 
 /**
  * Serialize the koi
@@ -277,6 +281,25 @@ Koi.prototype.freeRenderables = function() {
  */
 Koi.prototype.touchWater = function(x, y) {
     this.water.addFlare(x, y, this.TOUCH_WATER_RADIUS, this.TOUCH_WATER_INTENSITY);
+
+    this.audio.effectFishUp.play(
+        this.audio.effectFishUp.engine.transformPan(2 * x / this.constellation.width - 1),
+        this.TOUCH_WATER_VOLUME);
+};
+
+/**
+ * Touch the grass at a given point
+ * @param {Number} x The X coordinate in meters
+ * @param {Number} y The Y coordinate in meters
+ */
+Koi.prototype.touchGrass = function(x, y) {
+    this.air.addDisplacement(x, y, this.TOUCH_GRASS_RADIUS, this.touchGrassSign * this.TOUCH_GRASS_INTENSITY);
+
+    this.audio.effectGrass.set(
+        this.audio.effectGrass.effect.engine.transformPan(2 * x / this.constellation.width - 1),
+        this.TOUCH_GRASS_VOLUME);
+
+    this.touchGrassSign = -this.touchGrassSign;
 };
 
 /**
@@ -308,8 +331,9 @@ Koi.prototype.touchStart = function(x, y) {
         if (this.constellation.contains(wx, wy)) {
             this.touchWater(wx, wy);
             this.constellation.chase(wx, wy);
-            this.audio.effectFishUp.play(2 * wx / this.constellation.width - 1, this.TOUCH_WATER_VOLUME);
         }
+        else
+            this.touchGrass(wx, wy);
 
         this.mover.startTouch(wx, wy);
     }
