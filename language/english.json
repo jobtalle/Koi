@@ -2,6 +2,8 @@
   "INCLUDE": [
     "units/imperial.json"
   ],
+  "TITLE_TOP": "Koi",
+  "TITLE_BOTTOM": "Farm",
   "START": "Start",
   "CONTINUE": "Continue",
   "NEW": "New pond",

@@ -17,6 +17,14 @@ const CodeWriter = function(body, still, atlas, bodies, randomSource) {
 };
 
 CodeWriter.prototype = Object.create(Code.prototype);
+CodeWriter.prototype.KEY_TITLE_TOP = "TITLE_TOP";
+CodeWriter.prototype.KEY_TITLE_BOTTOM = "TITLE_BOTTOM";
+CodeWriter.prototype.FONT_SIZE = StyleUtils.getInt("--code-font-size");
+CodeWriter.prototype.FONT_HEIGHT = StyleUtils.getInt("--code-font-height");
+CodeWriter.prototype.FONT_PADDING = StyleUtils.getInt("--code-font-padding");
+CodeWriter.prototype.FONT_SPACING_BASE = StyleUtils.getFloat("--code-font-spacing-base");
+CodeWriter.prototype.FONT_SPACING_TOP = StyleUtils.getFloat("--code-font-spacing-top");
+CodeWriter.prototype.FONT_COLOR = Color.fromCSS("--code-font-color");
 
 /**
  * Convert a body to bytes
@@ -61,7 +69,64 @@ CodeWriter.prototype.makeColors = function() {
 };
 
 /**
- * Write
+ * Write arc shaped text
+ * @param {CanvasRenderingContext2D} context The rendering context
+ * @param {String} text The text
+ * @param {Number} x The X center
+ * @param {Number} y The Y center
+ * @param {Number} radius The arc radius
+ * @param {Number} angle The arc center angle
+ */
+CodeWriter.prototype.textArc = function(
+    context,
+    text,
+    x,
+    y,
+    radius,
+    angle) {
+    let spacing = this.FONT_SPACING_TOP;
+
+    if (angle > Math.PI) {
+        radius -= this.FONT_HEIGHT;
+        spacing = this.FONT_SPACING_BASE;
+    }
+
+    radius -= this.FONT_PADDING;
+
+    const radians = context.measureText(text).width * spacing / radius;
+    let offset = (context.measureText(text[text.length - 1]).width * (spacing - 1) / radius) * .5;
+
+    context.save();
+    context.translate(x, y);
+
+    for (const letter of text) {
+        const letterRadians = context.measureText(letter).width * spacing / radius;
+        const rotationOffset = .5 * context.measureText(letter).width / radius
+
+        context.save();
+
+        if (angle > Math.PI) {
+            context.rotate(angle - .5 * radians + offset);
+            context.translate(radius, 0);
+            context.rotate(Math.PI * .5 + rotationOffset);
+        }
+        else {
+            context.rotate(angle + .5 * radians - offset);
+            context.translate(radius, 0);
+            context.rotate(Math.PI * 1.5 - rotationOffset);
+        }
+
+        context.fillText(letter, 0, 0);
+        context.restore();
+
+        offset += letterRadians;
+    }
+
+    context.restore();
+};
+
+/**
+ * Write the code
  * @returns {HTMLCanvasElement} A canvas containing the code
  */
 CodeWriter.prototype.write = function() {
@@ -115,6 +180,24 @@ CodeWriter.prototype.write = function() {
 
         return true;
     });
+
+    context.fillStyle = this.FONT_COLOR.toHex();
+    context.font = "bold " + this.FONT_SIZE.toString() + "px grandstander";
+
+    this.textArc(
+        context,
+        language.get(this.KEY_TITLE_TOP),
+        this.RADIUS,
+        this.RADIUS,
+        this.INNER_RADIUS,
+        Math.PI * 1.5);
+    this.textArc(
+        context,
+        language.get(this.KEY_TITLE_BOTTOM),
+        this.RADIUS,
+        this.RADIUS,
+        this.INNER_RADIUS,
+        Math.PI * .5);
 
     return canvas;
 };

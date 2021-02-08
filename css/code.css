@@ -6,6 +6,12 @@
     --code-help-radius: 24px;
     --code-shadow-radius: var(--book-shadow-radius);
     --code-shadow-color: var(--book-shadow-color);
+    --code-font-size: 32;
+    --code-font-height: 22;
+    --code-font-padding: 8;
+    --code-font-spacing-base: 1.1;
+    --code-font-spacing-top: 1.35;
+    --code-font-color: var(--color-white);
 }
 
 #code {

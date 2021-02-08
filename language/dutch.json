@@ -2,6 +2,8 @@
   "INCLUDE": [
     "units/metric.json"
   ],
+  "TITLE_TOP": "Koi",
+  "TITLE_BOTTOM": "Farm",
   "START": "Start",
   "CONTINUE": "Ga verder",
   "NEW": "Nieuwe vijver",

@@ -13,7 +13,7 @@ const Still = function(gl, fishBackground) {
 Still.prototype = Object.create(ImageMaker.prototype);
 Still.prototype.RADIUS = 128;
 Still.prototype.UPSCALE = 1.5;
-Still.prototype.SCALE = 220 * Still.prototype.UPSCALE;
+Still.prototype.SCALE = 188 * Still.prototype.UPSCALE;
 Still.prototype.ANGLE = 0;
 
 /**
