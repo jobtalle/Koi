@@ -9,6 +9,7 @@ Palette.INDEX_GOLD = 2;
 Palette.INDEX_ORANGE = 3;
 Palette.INDEX_RED = 4;
 Palette.INDEX_BROWN = 5;
+Palette.INDEX_LAST = Palette.INDEX_BROWN;
 Palette.COLOR_NAMES = [
     "white",
     "black",

@@ -79,7 +79,6 @@ Koi.prototype.serialize = function(buffer) {
     this.constellation.serialize(buffer);
     this.spawner.getState().serialize(buffer);
     this.weather.getState().serialize(buffer);
-    this.mutations.serialize(buffer);
 };
 
 /**
@@ -92,7 +91,6 @@ Koi.prototype.deserialize = function(buffer) {
         this.constellation.deserialize(buffer, this.systems.atlas, this.systems.randomSource);
         this.spawner.setState(SpawnerState.deserialize(buffer));
         this.weather.setState(WeatherState.deserialize(buffer));
-        this.mutations.deserialize(buffer);
         this.weatherFilterChanged = true;
 
         this.foreground.bugs.initialize(this.weather.state, this.effectsRandom);

@@ -4,10 +4,10 @@
  * @constructor
  */
 const MutatorLayerStripes = function(layer) {
-    this.layer = layer;
+    MutatorLayer.call(this, layer);
 };
 
-MutatorLayerStripes.prototype = Object.create(Mutator.prototype);
+MutatorLayerStripes.prototype = Object.create(MutatorLayer.prototype);
 MutatorLayerStripes.prototype.SAMPLER_ANCHOR_DISTANCE = new SamplerPower(0, 4, 5);
 MutatorLayerStripes.prototype.SAMPLER_X_DISTANCE = new SamplerPower(0, .6, 4);
 MutatorLayerStripes.prototype.SAMPLER_SCALE = new SamplerPlateau(-14, 0, 14, .3);
@@ -21,9 +21,12 @@ MutatorLayerStripes.prototype.SAMPLER_POWER = new SamplerPlateau(-13, 0, 13, .8)
 
 /**
  * Mutate the layer
+ * @param {Number[]} otherColors The other palette indices for this pattern
  * @param {Random} random A randomizer
  */
-MutatorLayerStripes.prototype.mutate = function(random) {
+MutatorLayerStripes.prototype.mutate = function(otherColors, random) {
+    MutatorLayer.prototype.mutate.call(this, otherColors, random);
+
     this.mutateVector3(this.layer.plane.anchor, this.SAMPLER_ANCHOR_DISTANCE, random);
     this.mutateNormalVector3(this.layer.plane.x, this.SAMPLER_X_DISTANCE, random);
 

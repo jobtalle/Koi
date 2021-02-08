@@ -6,57 +6,6 @@ const Mutations = function() {
 };
 
 /**
- * Serialize the mutations state
- * @param {BinBuffer} buffer A buffer to serialize to
- */
-Mutations.prototype.serialize = function(buffer) {
-    // TODO
-};
-
-/**
- * Deserialize the mutations state
- * @param {BinBuffer} buffer A buffer to serialize from
- */
-Mutations.prototype.deserialize = function(buffer) {
-    // TODO
-};
-
-/**
- * Create all color related mutations
- * @returns {Mutation[]} The mutations
- */
-Mutations.prototype.createMutationsColor = function() {
-    return [
-        // Two golden koi become orange
-        new Mutation(
-            new PatternFootprint([
-                new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_GOLD)
-            ]),
-            new PatternFootprint([
-                new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_GOLD)
-            ]),
-            [
-                new BlueprintLayerBase(Palette.INDEX_ORANGE)
-            ],
-            .2
-        ),
-        // Two orange koi become red
-        new Mutation(
-            new PatternFootprint([
-                new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_ORANGE)
-            ]),
-            new PatternFootprint([
-                new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_ORANGE)
-            ]),
-            [
-                new BlueprintLayerBase(Palette.INDEX_RED)
-            ],
-            .15
-        )
-    ];
-};
-
-/**
  * Create all spots pattern related mutations
  * @returns {Mutation[]} The mutations
  */
@@ -127,7 +76,7 @@ Mutations.prototype.createMutationsSpots = function() {
                     // Stretch
                     new Sampler(120, 136),
                     // Threshold
-                    new Sampler(180, 200),
+                    new Sampler(100, 160),
                     // X focus
                     new Sampler(120, 136),
                     // Y focus
@@ -244,7 +193,6 @@ Mutations.prototype.createMutationsRidge = function() {
  */
 Mutations.prototype.createMutations = function() {
     return [
-        ...this.createMutationsColor(),
         ...this.createMutationsSpots(),
         ...this.createMutationsStripes(),
         ...this.createMutationsRidge()

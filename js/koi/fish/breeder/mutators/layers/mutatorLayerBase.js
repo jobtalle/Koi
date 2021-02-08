@@ -4,15 +4,7 @@
  * @constructor
  */
 const MutatorLayerBase = function(layer) {
-    this.layer = layer;
+    MutatorLayer.call(this, layer);
 };
 
-MutatorLayerBase.prototype = Object.create(Mutator.prototype);
-
-/**
- * Mutate the layer
- * @param {Random} random A randomizer
- */
-MutatorLayerBase.prototype.mutate = function(random) {
-
-};
+MutatorLayerBase.prototype = Object.create(MutatorLayer.prototype);
