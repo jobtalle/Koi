@@ -38,8 +38,8 @@ const LayerStripes = function(
 
 LayerStripes.prototype = Object.create(Layer.prototype);
 
-LayerStripes.prototype.SAMPLER_SCALE = new SamplerPlateau(2.8, 4.3, 8.5, 5);
-LayerStripes.prototype.SAMPLER_DISTORTION = new SamplerPlateau(3, 7, 12, 4);
+LayerStripes.prototype.SAMPLER_SCALE = new SamplerPlateau(2.8, 4.3, 8.5, 3);
+LayerStripes.prototype.SAMPLER_DISTORTION = new SamplerPlateau(3, 7, 12, 2.5);
 LayerStripes.prototype.SAMPLER_ROUGHNESS = new Sampler(2, 4.3);
 LayerStripes.prototype.SAMPLER_THRESHOLD = new SamplerSigmoid(.4, .6, 1);
 LayerStripes.prototype.SAMPLER_SLANT = new SamplerPower(0, 1.6, 10);

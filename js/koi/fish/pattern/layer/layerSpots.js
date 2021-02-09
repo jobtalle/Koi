@@ -169,5 +169,6 @@ LayerSpots.prototype.createShader = function(gl) {
             "rotate",
             "color",
             "focus",
-            "power"]);
+            "power"
+        ]);
 };

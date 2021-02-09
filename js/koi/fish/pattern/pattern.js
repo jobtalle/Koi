@@ -38,6 +38,10 @@ Pattern.deserialize = function(buffer) {
                 layers.push(LayerStripes.deserialize(buffer));
 
                 break;
+            case LayerWeb.prototype.ID:
+                layers.push(LayerWeb.deserialize(buffer));
+
+                break;
             default:
                 throw new RangeError();
         }

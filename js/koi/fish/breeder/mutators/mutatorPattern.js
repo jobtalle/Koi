@@ -34,6 +34,10 @@ MutatorPattern.prototype.mutateLayer = function(layer, random) {
             new MutatorLayerStripes(layer).mutate(colors, random);
 
             break;
+        case LayerWeb.prototype.ID:
+            new MutatorLayerWeb(layer).mutate(colors, random);
+
+            break;
     }
 };
 

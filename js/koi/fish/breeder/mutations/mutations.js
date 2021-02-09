@@ -188,6 +188,38 @@ Mutations.prototype.createMutationsRidge = function() {
 };
 
 /**
+ * Create all web related mutations
+ * @returns {Mutation[]} The mutations
+ */
+Mutations.prototype.createMutationsWeb = function() {
+    return [
+        new Mutation(
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_SHARED),
+                new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_SHARED)
+            ]),
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_SHARED),
+                new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_SHARED)
+            ]),
+            [
+                Mutation.BLUEPRINT_LAYER_MOTHER,
+                new BlueprintLayerWeb(
+                    // Palette index
+                    Mutation.createPaletteReference(true, 0),
+                    // Scale
+                    new Sampler(170, 190),
+                    // Thickness
+                    new Sampler(200, 230),
+                    // Threshold
+                    new Sampler(120, 136))
+            ],
+            .02
+        )
+    ];
+};
+
+/**
  * Create the list of possible mutations
  * @returns {Mutation[]} An array containing all possible mutations
  */
@@ -195,6 +227,7 @@ Mutations.prototype.createMutations = function() {
     return [
         ...this.createMutationsSpots(),
         ...this.createMutationsStripes(),
-        ...this.createMutationsRidge()
+        ...this.createMutationsRidge(),
+        ...this.createMutationsWeb()
     ];
 };
