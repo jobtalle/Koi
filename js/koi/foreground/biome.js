@@ -14,7 +14,7 @@ const Biome = function(constellation, width, height, random) {
     this.noiseRocksRiver = this.noiseRocksPonds.createSimilar();
     this.sdfWidth = Math.ceil(width * this.SDF_RESOLUTION) + 1;
     this.sdfHeight = Math.ceil(height * this.SDF_RESOLUTION) + 1;
-    this.sdf = this.makeSDF(constellation, width, height);
+    this.sdf = this.makeSDF(constellation);
 };
 
 Biome.prototype.ROCKS_NOISE_SCALE = 1;
@@ -25,11 +25,9 @@ Biome.prototype.SDF_RESOLUTION = 3;
 /**
  * Create a SDF encoding distance to water
  * @param {Constellation} constellation The constellation
- * @param {Number} width The biome width
- * @param {Number} height The biome height
  * @returns {Number[]} The SDF
  */
-Biome.prototype.makeSDF = function(constellation, width, height) {
+Biome.prototype.makeSDF = function(constellation) {
     const sdf = new Array(this.sdfWidth * this.sdfHeight);
 
     for (let y = 0; y < this.sdfHeight; ++y) for (let x = 0; x < this.sdfWidth; ++x)
