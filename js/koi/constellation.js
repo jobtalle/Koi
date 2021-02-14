@@ -22,7 +22,7 @@ const Constellation = function(width, height, onBreed, onMutate) {
     this.fit();
 };
 
-Constellation.prototype.FACTOR_PADDING = .14;
+Constellation.prototype.FACTOR_PADDING = .15;
 Constellation.prototype.FACTOR_SMALL = .65;
 Constellation.prototype.FACTOR_RIVER = .55;
 Constellation.prototype.Y_SCALE = 1.1;
