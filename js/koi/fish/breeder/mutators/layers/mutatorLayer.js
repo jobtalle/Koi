@@ -86,8 +86,8 @@ MutatorLayer.prototype.MUTATIONS = [
         0,    // Orange
         0,    // Red
         0,    // Brown
-        0,    // Purple
-        .5    // Blue
+        .2,   // Purple
+        .3    // Blue
     ]
 ]
 
@@ -103,11 +103,9 @@ MutatorLayer.prototype.mutate = function(otherColors, random) {
     for (let next = 0; next <= Palette.INDEX_LAST; ++next) {
         chanceSum += this.MUTATIONS[this.layer.paletteIndex][next];
 
-        if (otherColors.indexOf(next) !== -1)
-            continue;
-
         if (randomValue < chanceSum) {
-            this.layer.paletteIndex = next;
+            if (otherColors.indexOf(next) === -1)
+                this.layer.paletteIndex = next;
 
             break;
         }
