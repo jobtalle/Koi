@@ -12,6 +12,7 @@ const MutatorPattern = function(pattern) {
 };
 
 MutatorPattern.prototype = Object.create(Mutator.prototype);
+MutatorPattern.prototype.LAYER_DISAPPEAR_CHANCE = .04;
 
 /**
  * Mutate a layer
@@ -63,8 +64,12 @@ MutatorPattern.prototype.enumerateColors = function(except) {
  * @param {Random} random A randomizer
  */
 MutatorPattern.prototype.mutate = function(random) {
-    for (const layer of this.pattern.layers)
-        this.mutateLayer(layer, random);
+    for (let layer = this.pattern.layers.length; layer-- > 0;) {
+        if (random.getFloat() < this.LAYER_DISAPPEAR_CHANCE)
+            this.pattern.layers.splice(layer, 1);
+        else
+            this.mutateLayer(this.pattern.layers[layer], random);
+    }
 
     this.mutateBase.mutate(this.enumerateColors(this.mutateBase.layer), random);
     this.mutateShapeBody.mutate(random);
