@@ -23,9 +23,9 @@ const LayerWeb = function(
 
 LayerWeb.prototype = Object.create(Layer.prototype);
 
-LayerWeb.prototype.SAMPLER_SCALE = new SamplerPlateau(1.5, 3, 6.5, 1);
-LayerWeb.prototype.SAMPLER_THICKNESS = new SamplerPlateau(.1, .15, .3, 2);
-LayerWeb.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(.3, .5, .7, 1);
+LayerWeb.prototype.SAMPLER_SCALE = new SamplerPlateau(1.5, 3, 6.5, .7);
+LayerWeb.prototype.SAMPLER_THICKNESS = new SamplerPlateau(.1, .15, .3, .7);
+LayerWeb.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(.3, .5, .7, .6);
 
 LayerWeb.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;

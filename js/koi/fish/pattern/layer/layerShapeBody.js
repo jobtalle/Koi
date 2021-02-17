@@ -18,8 +18,8 @@ LayerShapeBody.prototype = Object.create(Layer.prototype);
 LayerShapeBody.prototype.SHADE_POWER = 1.65;
 LayerShapeBody.prototype.LIGHT_POWER = 0.7;
 LayerShapeBody.prototype.AMBIENT = 0.44;
-LayerShapeBody.prototype.SAMPLER_CENTER_POWER = new SamplerPlateau(.5, .6, 1, 2);
-LayerShapeBody.prototype.SAMPLER_RADIUS_POWER = new SamplerPlateau(.6, .7, 1.2, 1);
+LayerShapeBody.prototype.SAMPLER_CENTER_POWER = new SamplerPlateau(.5, .6, 1, 1.2);
+LayerShapeBody.prototype.SAMPLER_RADIUS_POWER = new SamplerPlateau(.6, .7, 1.2, .7);
 LayerShapeBody.prototype.SAMPLER_EYE_POSITION = new Sampler(.07, .115);
 LayerShapeBody.prototype.COLOR_SHADE = Color.fromCSS("--color-fish-shade");
 

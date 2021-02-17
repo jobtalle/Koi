@@ -31,11 +31,11 @@ const LayerRidge = function(
 LayerRidge.prototype = Object.create(Layer.prototype);
 
 LayerRidge.prototype.DOMINANCE = .65;
-LayerRidge.prototype.SAMPLER_SCALE = new SamplerPlateau(1.8, 4, 5.5, 3);
-LayerRidge.prototype.SAMPLER_POWER = new SamplerPlateau(0.73, 2.15, 3.5, 5);
-LayerRidge.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(.3, .5, .7, 1);
-LayerRidge.prototype.SAMPLER_FOCUS = new SamplerPlateau(0, 0.5, 1, 3);
-LayerRidge.prototype.SAMPLER_FOCUS_POWER = new SamplerPower(.4, .6, 10);
+LayerRidge.prototype.SAMPLER_SCALE = new SamplerPlateau(1.8, 4, 5.5, .7);
+LayerRidge.prototype.SAMPLER_POWER = new SamplerPlateau(0.73, 2.15, 3.5, .5);
+LayerRidge.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(.3, .5, .7, .4);
+LayerRidge.prototype.SAMPLER_FOCUS = new SamplerPlateau(0, 0.5, 1, .6);
+LayerRidge.prototype.SAMPLER_FOCUS_POWER = new SamplerPower(.4, .6, 1);
 
 LayerRidge.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
