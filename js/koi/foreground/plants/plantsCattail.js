@@ -41,7 +41,10 @@ Plants.prototype.modelCattail = function(
     const directionSin = Math.sin(direction);
     const flexSampler = new FlexSampler(x, 0, this.CATTAIL_FLEX, height);
     const pathSampler = new Path2Sampler(
-        new Path2Linear(new Vector2(x, 0), new Vector2(x + directionCos * height, directionSin * height)));
+        new Path2QuadraticBezier(
+            new Vector2(x, 0),
+            new Vector2(x, directionSin * height * .5),
+            new Vector2(x + directionCos * height, directionSin * height)));
     const leafSet = new LeafSet(
         pathSampler,
         this.CATTAIL_LEAVES_PLACEMENT,

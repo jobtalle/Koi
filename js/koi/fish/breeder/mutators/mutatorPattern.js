@@ -12,7 +12,7 @@ const MutatorPattern = function(pattern) {
 };
 
 MutatorPattern.prototype = Object.create(Mutator.prototype);
-MutatorPattern.prototype.LAYER_DISAPPEAR_CHANCE = .04;
+MutatorPattern.prototype.LAYER_DISAPPEAR_CHANCE = .05;
 
 /**
  * Mutate a layer
