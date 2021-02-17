@@ -33,3 +33,11 @@
 #fish-icon-defs .brown {
     fill: var(--color-fish-brown);
 }
+
+#fish-icon-defs .purple {
+    fill: var(--color-fish-purple);
+}
+
+#fish-icon-defs .blue {
+    fill: var(--color-fish-blue);
+}

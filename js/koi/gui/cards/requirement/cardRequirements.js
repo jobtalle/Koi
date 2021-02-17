@@ -123,5 +123,52 @@ const CardRequirements = [
             new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_WHITE),
             new LayerFootprint(LayerRidge.prototype.ID, Palette.INDEX_BROWN)
         ]))
+    ],
+    [
+        null,
+        null,
+        null,
+        null
+    ],
+    [
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_PURPLE)
+        ])),
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_WHITE),
+            new LayerFootprint(LayerSpots.prototype.ID, Palette.INDEX_PURPLE),
+        ])),
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_WHITE),
+            new LayerFootprint(LayerStripes.prototype.ID, Palette.INDEX_PURPLE)
+        ])),
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_PURPLE),
+            new LayerFootprint(LayerRidge.prototype.ID, Palette.INDEX_BLACK)
+        ]))
+    ],
+    [
+        null,
+        null,
+        null,
+        null
+    ],
+    [
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_WHITE),
+            new LayerFootprint(LayerSpots.prototype.ID, Palette.INDEX_BLUE)
+        ])),
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_BLUE),
+            new LayerFootprint(LayerSpots.prototype.ID, Palette.INDEX_GOLD)
+        ])),
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_WHITE),
+            new LayerFootprint(LayerStripes.prototype.ID, Palette.INDEX_BLUE)
+        ])),
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_BLUE),
+            new LayerFootprint(LayerRidge.prototype.ID, Palette.INDEX_GOLD)
+        ]))
     ]
 ];

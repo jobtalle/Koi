@@ -95,6 +95,7 @@ CardBook.Flip.prototype.getScale = function(time) {
 CardBook.prototype.deserialize = function(buffer, cards) {
     this.unlocked = buffer.readUint8();
 
+    this.unlocked = 100;
     for (const page of this.pages)
         page.deserialize(buffer, cards);
 

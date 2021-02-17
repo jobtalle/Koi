@@ -15,7 +15,9 @@ MutatorLayer.prototype.MUTATIONS = [
         0,    // Gold
         0,    // Orange
         0,    // Red
-        0     // Brown
+        0,    // Brown
+        0,    // Purple
+        0     // Blue
     ],
     [         // Transitions from black
         0,    // White
@@ -23,7 +25,9 @@ MutatorLayer.prototype.MUTATIONS = [
         0,    // Gold
         0,    // Orange
         0,    // Red
-        0     // Brown
+        0,    // Brown
+        0,    // Purple
+        0     // Blue
     ],
     [         // Transitions from gold
         0,    // White
@@ -31,7 +35,9 @@ MutatorLayer.prototype.MUTATIONS = [
         .9,   // Gold
         .1,   // Orange
         0,    // Red
-        0     // Brown
+        0,    // Brown
+        0,    // Purple
+        0     // Blue
     ],
     [         // Transitions from orange
         0,    // White
@@ -39,7 +45,9 @@ MutatorLayer.prototype.MUTATIONS = [
         .07,  // Gold
         .87,  // Orange
         .06,  // Red
-        0     // Brown
+        0,    // Brown
+        0,    // Purple
+        0     // Blue
     ],
     [         // Transitions from red
         0,    // White
@@ -47,7 +55,9 @@ MutatorLayer.prototype.MUTATIONS = [
         0,    // Gold
         .06,  // Orange
         .94,  // Red
-        0     // Brown
+        0,    // Brown
+        0,    // Purple
+        0     // Blue
     ],
     [         // Transitions from brown
         0,    // White
@@ -55,7 +65,29 @@ MutatorLayer.prototype.MUTATIONS = [
         0,    // Gold
         0,    // Orange
         0,    // Red
-        1     // Brown
+        .8,   // Brown
+        .2,   // Purple
+        0     // Blue
+    ],
+    [         // Transitions from purple
+        0,    // White
+        0,    // Black
+        0,    // Gold
+        0,    // Orange
+        0,    // Red
+        0,    // Brown
+        .95,  // Purple
+        .05   // Blue
+    ],
+    [         // Transitions from blue
+        .5,   // White
+        0,    // Black
+        0,    // Gold
+        0,    // Orange
+        0,    // Red
+        0,    // Brown
+        0,    // Purple
+        .5    // Blue
     ]
 ]
 
