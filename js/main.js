@@ -64,6 +64,8 @@ if (gl &&
         let koi = null;
         let loaded = true;
         let mouseLeft = false;
+        let alt = false;
+        let fullscreen = false;
 
         new Drop(gui, systems, document.getElementById("drop"), canvas);
 
@@ -178,8 +180,23 @@ if (gl &&
         });
 
         window.onkeydown = event => {
-            if (koi.keyDown(event.key))
+            if (event.key === "Alt")
+                alt = true;
+            else if (event.key === "Enter") {
+                if (fullscreen)
+                    document.exitFullscreen();
+                else
+                    wrapper.requestFullscreen();
+
+                fullscreen = !fullscreen;
+            }
+            else if (koi.keyDown(event.key))
                 event.preventDefault();
+        };
+
+        window.onkeyup = event => {
+            if (event.key === "Alt")
+                alt = false;
         };
 
         window.onbeforeunload = () => {
