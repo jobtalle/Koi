@@ -9,7 +9,8 @@ const loader = new Loader(
     document.getElementById("loader"),
     document.getElementById("loader-graphics"),
     document.getElementById("loader-button-start"),
-    document.getElementById("loader-button-new"));
+    document.getElementById("loader-button-new"),
+    document.getElementById("wrapper"));
 const canvas = document.getElementById("renderer");
 const gl =
     canvas.getContext("webgl", glParameters) ||
@@ -65,7 +66,6 @@ if (gl &&
         let loaded = true;
         let mouseLeft = false;
         let alt = false;
-        let fullscreen = false;
 
         new Drop(gui, systems, document.getElementById("drop"), canvas);
 
@@ -182,14 +182,8 @@ if (gl &&
         window.onkeydown = event => {
             if (event.key === "Alt")
                 alt = true;
-            else if (event.key === "Enter") {
-                if (fullscreen)
-                    document.exitFullscreen();
-                else
-                    wrapper.requestFullscreen();
-
-                fullscreen = !fullscreen;
-            }
+            else if (event.key === "Enter")
+                loader.fullscreen.toggle();
             else if (koi.keyDown(event.key))
                 event.preventDefault();
         };

@@ -4,13 +4,15 @@
  * @param {HTMLElement} elementGraphics The element to place graphics in
  * @param {HTMLElement} elementButtonStart The element to build the start button in
  * @param {HTMLElement} elementButtonNew The element to build the new game button in
+ * @param {HTMLElement} wrapper The wrapper to toggle fullscreen on
  * @constructor
  */
 const Loader = function(
     element,
     elementGraphics,
     elementButtonStart,
-    elementButtonNew) {
+    elementButtonNew,
+    wrapper) {
     this.element = element;
     this.icon = new LoaderIcon();
     this.elementButtonStart = elementButtonStart;
@@ -21,7 +23,9 @@ const Loader = function(
     this.released = false;
     this.onFinish = null;
     this.onNewGame = null;
+    this.fullscreen = new LoaderFullscreen(wrapper);
 
+    element.appendChild(this.fullscreen.element);
     elementGraphics.appendChild(this.icon.element);
 };
 
@@ -127,6 +131,7 @@ Loader.prototype.createButtonNew = function() {
  * Finish loading
  */
 Loader.prototype.complete = function() {
+    this.fullscreen.setLoaded();
     this.elementButtonStart.classList.add(this.CLASS_LOADED);
     this.elementButtonStart.appendChild(this.createButtonStart());
 
