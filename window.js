@@ -11,6 +11,7 @@ function createWindow () {
   });
 
   win.removeMenu();
+  win.setMinimizable(false);
   win.loadFile("release.html");
 }
 
