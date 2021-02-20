@@ -10,6 +10,7 @@ const loader = new Loader(
     document.getElementById("loader-graphics"),
     document.getElementById("loader-button-start"),
     document.getElementById("loader-button-new"),
+    document.getElementById("loader-button-settings"),
     document.getElementById("wrapper"));
 const canvas = document.getElementById("renderer");
 const gl =

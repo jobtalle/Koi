@@ -4,6 +4,7 @@
  * @param {HTMLElement} elementGraphics The element to place graphics in
  * @param {HTMLElement} elementButtonStart The element to build the start button in
  * @param {HTMLElement} elementButtonNew The element to build the new game button in
+ * @param {HTMLElement} elementButtonSettings The element to build the settings button in
  * @param {HTMLElement} wrapper The wrapper to toggle fullscreen on
  * @constructor
  */
@@ -12,11 +13,13 @@ const Loader = function(
     elementGraphics,
     elementButtonStart,
     elementButtonNew,
+    elementButtonSettings,
     wrapper) {
     this.element = element;
     this.icon = new LoaderIcon();
     this.elementButtonStart = elementButtonStart;
     this.elementButtonNew = elementButtonNew;
+    this.elementButtonSettings = elementButtonSettings;
     this.loadedPrevious = false;
     this.outstanding = 0;
     this.finished = 0;
@@ -53,6 +56,7 @@ Loader.prototype.LANG_START = "START";
 Loader.prototype.LANG_CONTINUE = "CONTINUE";
 Loader.prototype.LANG_NEW = "NEW";
 Loader.prototype.LANG_CONFIRM = "CONFIRM";
+Loader.prototype.LANG_SETTINGS = "SETTINGS";
 Loader.prototype.CLASS_LOADED = "loaded";
 Loader.prototype.CLASS_FINISHED = "finished";
 Loader.prototype.CLASS_BUTTON_CONFIRM = "confirm";
@@ -128,6 +132,21 @@ Loader.prototype.createButtonNew = function() {
 };
 
 /**
+ * Create the settings button
+ * @returns {HTMLButtonElement} The settings button
+ */
+Loader.prototype.createButtonSettings = function() {
+    const element = document.createElement("button");
+
+    element.innerText = language.get(this.LANG_SETTINGS);
+    element.onclick = () => {
+
+    };
+
+    return element;
+};
+
+/**
  * Finish loading
  */
 Loader.prototype.complete = function() {
@@ -135,10 +154,21 @@ Loader.prototype.complete = function() {
     this.elementButtonStart.classList.add(this.CLASS_LOADED);
     this.elementButtonStart.appendChild(this.createButtonStart());
 
-    if (this.loadedPrevious)
+    if (this.loadedPrevious) {
         setTimeout(() => {
             this.elementButtonNew.appendChild(this.createButtonNew());
             this.elementButtonNew.classList.add(this.CLASS_LOADED);
+        }, this.BUTTON_DELAY * 1000);
+
+        setTimeout(() => {
+            this.elementButtonSettings.appendChild(this.createButtonSettings());
+            this.elementButtonSettings.classList.add(this.CLASS_LOADED);
+        }, this.BUTTON_DELAY * 2000);
+    }
+    else
+        setTimeout(() => {
+            this.elementButtonSettings.appendChild(this.createButtonSettings());
+            this.elementButtonSettings.classList.add(this.CLASS_LOADED);
         }, this.BUTTON_DELAY * 1000);
 };
 
