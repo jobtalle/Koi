@@ -48,7 +48,7 @@ LoaderFullscreen.prototype.setLoaded = function() {
  * Toggle fullscreen
  */
 LoaderFullscreen.prototype.toggle = function() {
-    if (document.fullscreen)
+    if (document.fullscreenElement)
         document.exitFullscreen();
     else
         this.wrapper.requestFullscreen();
