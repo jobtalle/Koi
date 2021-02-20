@@ -1,8 +1,8 @@
 :root {
-    --menu-box-background: var(--color-fish-black);
+    --menu-box-background: var(--color-water-deep);
     --menu-box-padding: 32px;
     --menu-box-spacing: 16px;
-    --menu-button-color: var(--color-fish-black);
+    --menu-button-color: var(--color-water-deep);
     --menu-button-border-radius: var(--loader-button-border-radius);
 }
 
