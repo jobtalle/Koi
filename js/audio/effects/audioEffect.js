@@ -62,11 +62,13 @@ AudioEffect.Track.prototype.setVolume = function(volume) {
 
 /**
  * Change the volume
- * @param {Number} change The change in volume as a factor
+ * @param {Number} previous The previous volume multiplier in the range [0, 1]
+ * @param {Number} volume The new volume multiplier in the range [0, 1]
  */
-AudioEffect.Track.prototype.changeVolume = function(change) {
-    this.nodeGain.gain.value = Math.max(0, Math.min(1,
-        this.nodeGain.gain.value + this.nodeGain.gain.value * change));
+AudioEffect.Track.prototype.changeVolume = function(previous, volume) {
+    const original = this.nodeGain.gain.value / previous;
+
+    this.nodeGain.gain.value = Math.max(0, Math.min(1, original * volume));
 };
 
 AudioEffect.prototype.REQUIREMENT_WEIGHT = 1;

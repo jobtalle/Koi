@@ -62,7 +62,7 @@ Menu.prototype.createVolumeSlider = function(audioEngine) {
     const element = document.createElement("input");
 
     element.type = "range";
-    element.min = ".1";
+    element.min = ".01";
     element.max = "1";
     element.step = ".01";
 

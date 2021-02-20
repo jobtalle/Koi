@@ -33,10 +33,8 @@ AudioEngine.prototype.setMasterVolume = function(volume) {
 
     this.volume = volume;
 
-    const change = volume - previous;
-
     for (const track of this.tracks) if (!track.element.paused)
-        track.changeVolume(change);
+        track.changeVolume(previous, volume);
 };
 
 /**
