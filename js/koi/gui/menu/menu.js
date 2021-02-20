@@ -17,7 +17,7 @@ Menu.prototype.CLASS_VISIBLE = "visible";
 Menu.prototype.LANG_TITLE = "MENU";
 Menu.prototype.LANG_VOLUME = "VOLUME";
 Menu.prototype.LANG_FULLSCREEN = "TOGGLE_FULLSCREEN";
-Menu.prototype.LANG_EXIT = "EXIT";
+Menu.prototype.LANG_EXIT = "BACK";
 Menu.prototype.KEY_VOLUME = "volume";
 
 /**
