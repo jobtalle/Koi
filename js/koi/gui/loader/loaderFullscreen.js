@@ -6,7 +6,6 @@
 const LoaderFullscreen = function(wrapper) {
     this.wrapper = wrapper;
     this.element = this.makeElement();
-    this.fullscreen = false;
 };
 
 LoaderFullscreen.prototype.CLASS = "fullscreen";
@@ -49,10 +48,8 @@ LoaderFullscreen.prototype.setLoaded = function() {
  * Toggle fullscreen
  */
 LoaderFullscreen.prototype.toggle = function() {
-    if (this.fullscreen)
+    if (document.fullscreen)
         document.exitFullscreen();
     else
         this.wrapper.requestFullscreen();
-
-    this.fullscreen = !this.fullscreen;
 };

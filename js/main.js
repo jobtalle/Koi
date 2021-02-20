@@ -62,6 +62,7 @@ if (gl &&
             audio);
         const systems = new Systems(gl, new Random(2893), wrapper.clientWidth, wrapper.clientHeight);
         const sessionBuffer = tutorial ? storage.getBuffer("session") : null;
+        const menu = new Menu(document.getElementById("menu"), loader.fullscreen, audioEngine, audio);
         let lastTime = null;
         let koi = null;
         let loaded = true;
@@ -69,6 +70,8 @@ if (gl &&
         let alt = false;
 
         new Drop(gui, systems, document.getElementById("drop"), canvas);
+
+        loader.setMenu(menu);
 
         canvas.width = wrapper.clientWidth;
         canvas.height = wrapper.clientHeight;
@@ -185,6 +188,8 @@ if (gl &&
                 alt = true;
             else if (event.key === "Enter")
                 loader.fullscreen.toggle();
+            else if (event.key === "Escape" || event.key === "m")
+                menu.toggle();
             else if (koi.keyDown(event.key))
                 event.preventDefault();
         };

@@ -35,10 +35,13 @@ const AudioEffect = function(engine, sources) {
 AudioEffect.Track = function(engine, audio) {
     const source = engine.createSourceNode(audio);
 
+    this.element = audio;
     this.nodePan = engine.createPanNode();
     this.nodeGain = engine.createGainNode();
 
     source.connect(this.nodePan).connect(this.nodeGain).connect(engine.getDestinationNode());
+
+    engine.register(this);
 };
 
 /**
@@ -55,6 +58,15 @@ AudioEffect.Track.prototype.setPan = function(pan) {
  */
 AudioEffect.Track.prototype.setVolume = function(volume) {
     this.nodeGain.gain.value = volume;
+};
+
+/**
+ * Change the volume
+ * @param {Number} change The change in volume as a factor
+ */
+AudioEffect.Track.prototype.changeVolume = function(change) {
+    this.nodeGain.gain.value = Math.max(0, Math.min(1,
+        this.nodeGain.gain.value + this.nodeGain.gain.value * change));
 };
 
 AudioEffect.prototype.REQUIREMENT_WEIGHT = 1;
@@ -96,7 +108,7 @@ AudioEffect.prototype.play = function(pan = 0, volume = 1) {
                 this.tracks[index] = new AudioEffect.Track(this.engine, this.elements[index]);
 
             this.tracks[index].setPan(pan);
-            this.tracks[index].setVolume(volume);
+            this.tracks[index].setVolume(volume * this.engine.volume);
 
             if (this.playbackRate !== 1)
                 this.elements[index].playbackRate = this.playbackRate;
@@ -115,7 +127,7 @@ AudioEffect.prototype.play = function(pan = 0, volume = 1) {
 
         ++this.variations;
 
-        return this.play(pan, volume);
+        return this.play(pan, volume * this.engine.volume);
     }
 
     return 0;

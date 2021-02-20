@@ -7,6 +7,8 @@ const AudioEngine = function(random) {
     this.context = null;
     this.initialized = false;
     this.random = random;
+    this.volume = 1;
+    this.tracks = [];
 };
 
 AudioEngine.prototype.PAN_AMPLITUDE = .7;
@@ -20,6 +22,21 @@ AudioEngine.prototype.interact = function() {
         this.context = new AudioContext();
         this.initialized = true;
     }
+};
+
+/**
+ * Set the master volume
+ * @param {Number} volume The volume in the range [0, 1]
+ */
+AudioEngine.prototype.setMasterVolume = function(volume) {
+    const previous = this.volume;
+
+    this.volume = volume;
+
+    const change = volume - previous;
+
+    for (const track of this.tracks) if (!track.element.paused)
+        track.changeVolume(change);
 };
 
 /**
@@ -64,4 +81,12 @@ AudioEngine.prototype.transformPan = function(pan) {
     return Math.sign(pan) * Math.max(
         0,
         Math.abs(pan) - this.PAN_DEAD_ZONE) * (this.PAN_AMPLITUDE / (1 - this.PAN_DEAD_ZONE));
+};
+
+/**
+ * Register an audio track
+ * @param {AudioEffect.Track} track The audio track
+ */
+AudioEngine.prototype.register = function(track) {
+    this.tracks.push(track);
 };

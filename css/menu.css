@@ -1,0 +1,72 @@
+:root {
+    --menu-box-background: var(--color-fish-black);
+    --menu-box-padding: 32px;
+    --menu-box-spacing: 16px;
+    --menu-button-color: var(--color-fish-black);
+    --menu-button-border-radius: var(--loader-button-border-radius);
+}
+
+#menu {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    display: none;
+}
+
+#menu.visible {
+    display: flex;
+}
+
+#menu-box {
+    background-color: var(--menu-box-background);
+    border-radius: var(--menu-button-border-radius);
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--menu-box-padding);
+    text-align: center;
+}
+
+#menu-box > * {
+    flex-grow: 1;
+    margin-top: var(--menu-box-spacing);
+    width: 100%;
+}
+
+#menu-box h1 {
+    color: var(--color-white);
+}
+
+#menu-box button {
+    background-color: var(--color-white);
+    color: var(--menu-button-color);
+    border-radius: var(--menu-button-border-radius);
+    font-weight: bold;
+    white-space: nowrap;
+    min-width: max-content;
+    padding-left: calc(2 * var(--menu-box-spacing));
+    padding-right: calc(2 * var(--menu-box-spacing));
+    height: 54px;
+}
+
+#menu-box button:active {
+    background-color: var(--color-fish-black);
+    color: var(--color-white);
+}
+
+#menu-box label {
+    color: var(--color-white);
+    font-size: 18px;
+    display: flex;
+}
+
+#menu-box label input {
+    width: 100%;
+    margin-left: var(--menu-box-spacing);
+}

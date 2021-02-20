@@ -12,6 +12,7 @@
     --code-font-spacing-base: 1.1;
     --code-font-spacing-top: 1.35;
     --code-font-color: var(--color-white);
+    --code-background: #00000066;
 }
 
 #code {
@@ -27,7 +28,7 @@
 }
 
 #code.active {
-    background-color: #00000066;
+    background-color: var(--code-background);
     pointer-events: auto;
 }
 

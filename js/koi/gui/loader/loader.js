@@ -26,6 +26,7 @@ const Loader = function(
     this.released = false;
     this.onFinish = null;
     this.onNewGame = null;
+    this.menu = null;
     this.fullscreen = new LoaderFullscreen(wrapper);
 
     element.appendChild(this.fullscreen.element);
@@ -62,6 +63,14 @@ Loader.prototype.CLASS_FINISHED = "finished";
 Loader.prototype.CLASS_BUTTON_CONFIRM = "confirm";
 Loader.prototype.BUTTON_DELAY = .37;
 Loader.prototype.TRANSITION = StyleUtils.getFloat("--loader-fade-out");
+
+/**
+ * Set the menu
+ * @param {Menu} menu The menu
+ */
+Loader.prototype.setMenu = function(menu) {
+    this.menu = menu;
+};
 
 /**
  * Indicate that a previous game has been loaded
@@ -140,7 +149,7 @@ Loader.prototype.createButtonSettings = function() {
 
     element.innerText = language.get(this.LANG_SETTINGS);
     element.onclick = () => {
-
+        this.menu.show();
     };
 
     return element;
@@ -154,22 +163,16 @@ Loader.prototype.complete = function() {
     this.elementButtonStart.classList.add(this.CLASS_LOADED);
     this.elementButtonStart.appendChild(this.createButtonStart());
 
-    if (this.loadedPrevious) {
+    setTimeout(() => {
+        this.elementButtonSettings.appendChild(this.createButtonSettings());
+        this.elementButtonSettings.classList.add(this.CLASS_LOADED);
+    }, this.BUTTON_DELAY * 1000);
+
+    if (this.loadedPrevious)
         setTimeout(() => {
             this.elementButtonNew.appendChild(this.createButtonNew());
             this.elementButtonNew.classList.add(this.CLASS_LOADED);
-        }, this.BUTTON_DELAY * 1000);
-
-        setTimeout(() => {
-            this.elementButtonSettings.appendChild(this.createButtonSettings());
-            this.elementButtonSettings.classList.add(this.CLASS_LOADED);
         }, this.BUTTON_DELAY * 2000);
-    }
-    else
-        setTimeout(() => {
-            this.elementButtonSettings.appendChild(this.createButtonSettings());
-            this.elementButtonSettings.classList.add(this.CLASS_LOADED);
-        }, this.BUTTON_DELAY * 1000);
 };
 
 /**
