@@ -28,7 +28,7 @@ const Fish = function(
     this.body.initializeSpine(position, direction);
 };
 
-Fish.prototype.FORCE_CONSTRAINT = .6;
+Fish.prototype.FORCE_CONSTRAINT = 1;
 Fish.prototype.FORCE_REPULSION  = .45;
 Fish.prototype.FORCE_ALIGNMENT = .05;
 Fish.prototype.FORCE_ATTRACTION = .05;
