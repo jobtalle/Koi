@@ -17,6 +17,7 @@ Menu.prototype.CLASS_VISIBLE = "visible";
 Menu.prototype.LANG_TITLE = "MENU";
 Menu.prototype.LANG_VOLUME = "VOLUME";
 Menu.prototype.LANG_FULLSCREEN = "TOGGLE_FULLSCREEN";
+Menu.prototype.LANG_QUIT = "QUIT";
 Menu.prototype.LANG_EXIT = "BACK";
 Menu.prototype.KEY_VOLUME = "volume";
 
@@ -29,6 +30,7 @@ Menu.prototype.KEY_VOLUME = "volume";
  */
 Menu.prototype.createBox = function(fullscreen, audioEngine, audio) {
     const element = document.createElement("div");
+    const quit = this.createButtonQuit();
 
     element.id = this.ID_BOX;
     element.onclick = event => event.stopPropagation();
@@ -36,6 +38,10 @@ Menu.prototype.createBox = function(fullscreen, audioEngine, audio) {
     element.appendChild(this.createTitle());
     element.appendChild(this.createVolumeSlider(audioEngine));
     element.appendChild(this.createButtonFullscreen(fullscreen, audio));
+
+    if (quit)
+        element.appendChild(quit);
+
     element.appendChild(this.createButtonExit(audio));
 
     return element;
@@ -106,9 +112,30 @@ Menu.prototype.createButtonFullscreen = function(fullscreen, audio) {
 };
 
 /**
+ * Create the quit button
+ * @returns {HTMLButtonElement|null} The quit button, or null if this is not possible
+ */
+Menu.prototype.createButtonQuit = function() {
+    if (window["require"]) {
+        const remote = window["require"]("electron")["remote"];
+        const w = remote["getCurrentWindow"]();
+        const element = document.createElement("button");
+
+        element.appendChild(document.createTextNode(language.get(this.LANG_QUIT)));
+        element.onclick = () => {
+            w["close"]();
+        };
+
+        return element;
+    }
+
+    return null;
+};
+
+/**
  * Create the exit button
- * @returns {HTMLButtonElement} The button element
  * @param {AudioBank} audio Game audio
+ * @returns {HTMLButtonElement} The button element
  */
 Menu.prototype.createButtonExit = function(audio) {
     const element = document.createElement("button");
