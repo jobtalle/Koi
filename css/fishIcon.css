@@ -45,3 +45,7 @@
 #fish-icon-defs .pink {
     fill: var(--color-fish-pink);
 }
+
+#fish-icon-defs .darkblue {
+    fill: var(--color-fish-darkblue);
+}
