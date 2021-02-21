@@ -7,9 +7,11 @@
  * @constructor
  */
 const Menu = function(element, fullscreen, audioEngine, audio) {
+    this.buttonBack = this.createButtonExit(audio);
+    this.box = this.createBox(fullscreen, audioEngine, audio);
     this.element = element;
     this.element.onclick = this.hide.bind(this);
-    this.element.appendChild(this.createBox(fullscreen, audioEngine, audio));
+    this.element.appendChild(this.box);
 };
 
 Menu.prototype.ID_BOX = "menu-box";
@@ -30,7 +32,6 @@ Menu.prototype.KEY_VOLUME = "volume";
  */
 Menu.prototype.createBox = function(fullscreen, audioEngine, audio) {
     const element = document.createElement("div");
-    const quit = this.createButtonQuit();
 
     element.id = this.ID_BOX;
     element.onclick = event => event.stopPropagation();
@@ -38,13 +39,22 @@ Menu.prototype.createBox = function(fullscreen, audioEngine, audio) {
     element.appendChild(this.createTitle());
     element.appendChild(this.createVolumeSlider(audioEngine));
     element.appendChild(this.createButtonFullscreen(fullscreen, audio));
-
-    if (quit)
-        element.appendChild(quit);
-
-    element.appendChild(this.createButtonExit(audio));
+    element.appendChild(this.buttonBack);
 
     return element;
+};
+
+/**
+ * Add the save & quit option
+ */
+Menu.prototype.addQuitOption = function() {
+    const quit = this.createButtonQuit();
+
+    if (quit) {
+        this.box.removeChild(this.buttonBack);
+        this.box.appendChild(quit);
+        this.box.appendChild(this.buttonBack);
+    }
 };
 
 /**

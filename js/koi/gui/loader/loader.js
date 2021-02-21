@@ -95,6 +95,9 @@ Loader.prototype.hide = function() {
     setTimeout(() => {
         this.element.style.display = "none";
     }, 1000 * this.TRANSITION);
+
+    if (this.menu)
+        this.menu.addQuitOption();
 };
 
 /**
