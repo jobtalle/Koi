@@ -17,7 +17,8 @@ MutatorLayer.prototype.MUTATIONS = [
         0,    // Red
         0,    // Brown
         0,    // Purple
-        0     // Blue
+        0,    // Blue
+        0     // Pink
     ],
     [         // Transitions from black
         0,    // White
@@ -27,7 +28,8 @@ MutatorLayer.prototype.MUTATIONS = [
         0,    // Red
         0,    // Brown
         0,    // Purple
-        0     // Blue
+        0,    // Blue
+        0     // Pink
     ],
     [         // Transitions from gold
         0,    // White
@@ -37,7 +39,8 @@ MutatorLayer.prototype.MUTATIONS = [
         0,    // Red
         0,    // Brown
         0,    // Purple
-        0     // Blue
+        0,    // Blue
+        0     // Pink
     ],
     [         // Transitions from orange
         0,    // White
@@ -47,17 +50,19 @@ MutatorLayer.prototype.MUTATIONS = [
         .06,  // Red
         0,    // Brown
         0,    // Purple
-        0     // Blue
+        0,    // Blue
+        0     // Pink
     ],
     [         // Transitions from red
         0,    // White
         0,    // Black
         0,    // Gold
-        .06,  // Orange
-        .94,  // Red
+        .08,  // Orange
+        .9,   // Red
         0,    // Brown
         0,    // Purple
-        0     // Blue
+        0,    // Blue
+        .02   // Pink
     ],
     [         // Transitions from brown
         0,    // White
@@ -67,7 +72,8 @@ MutatorLayer.prototype.MUTATIONS = [
         0,    // Red
         .8,   // Brown
         .2,   // Purple
-        0     // Blue
+        0,    // Blue
+        0     // Pink
     ],
     [         // Transitions from purple
         0,    // White
@@ -77,7 +83,8 @@ MutatorLayer.prototype.MUTATIONS = [
         0,    // Red
         0,    // Brown
         .95,  // Purple
-        .05   // Blue
+        .05,   // Blue
+        0     // Pink
     ],
     [         // Transitions from blue
         .5,   // White
@@ -87,7 +94,19 @@ MutatorLayer.prototype.MUTATIONS = [
         0,    // Red
         0,    // Brown
         .2,   // Purple
-        .3    // Blue
+        .3,   // Blue
+        0     // Pink
+    ],
+    [         // Transitions from pink
+        .1,   // White
+        0,    // Black
+        0,    // Gold
+        0,    // Orange
+        0,    // Red
+        0,    // Brown
+        0,    // Purple
+        0,    // Blue
+        .9    // Pink
     ]
 ]
 
