@@ -61,8 +61,8 @@ Fish.prototype.TURN_THRESHOLD = .005;
 Fish.prototype.TURN_CARRY = .95;
 Fish.prototype.TURN_FOLLOW_CHANCE = .025;
 Fish.prototype.TURN_AMPLITUDE = Math.PI * .4;
-Fish.prototype.SIZE_MATING = .2; // TODO: Reduced for debugging
-Fish.prototype.MATE_PROXIMITY_TIME = 120;
+Fish.prototype.SIZE_MATING = .33;
+Fish.prototype.MATE_PROXIMITY_TIME = 60;
 
 /**
  * Deserialize a fish
