@@ -213,7 +213,7 @@ Cards.prototype.render = function(time) {
  * @returns {Boolean} True if conversion succeeded
  */
 Cards.prototype.convertToFish = function(x, y) {
-    if (this.koi.constellation.getFishCount() < Koi.prototype.FISH_CAPACITY - 2) {
+    if (this.koi.constellation.getFishCount() < Koi.prototype.FISH_CAPACITY - 3) {
         this.hand.hide();
 
         this.remove(this.grabbed);
