@@ -88,9 +88,9 @@ MutatorLayer.prototype.MUTATIONS = [
         0,    // Orange
         0,    // Red
         0,    // Brown
-        .95,  // Purple
+        .93,  // Purple
         .05,  // Blue
-        0,    // Pink
+        .02,  // Pink
         0     // Dark blue
     ],
     [         // Transitions from blue

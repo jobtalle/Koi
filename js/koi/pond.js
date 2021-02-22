@@ -225,7 +225,7 @@ Pond.prototype.update = function(
                         random);
 
                     for (const fish of offspring) {
-                        if (constellation.getFishCount() < Koi.prototype.FISH_CAPACITY - 1)
+                        if (constellation.getFishCount() < Koi.prototype.FISH_CAPACITY - 4)
                             this.addFish(fish);
                         else
                             break;
