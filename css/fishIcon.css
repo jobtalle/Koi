@@ -49,3 +49,7 @@
 #fish-icon-defs .darkblue {
     fill: var(--color-fish-darkblue);
 }
+
+#fish-icon-defs .lightpurple {
+    fill: var(--color-fish-lightpurple);
+}

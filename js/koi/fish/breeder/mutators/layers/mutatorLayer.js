@@ -19,7 +19,8 @@ MutatorLayer.prototype.MUTATIONS = [
         0,    // Purple
         0,    // Blue
         0,    // Pink
-        0     // Dark blue
+        0,    // Dark blue
+        0     // Light purple
     ],
     [         // Transitions from black
         0,    // White
@@ -31,7 +32,8 @@ MutatorLayer.prototype.MUTATIONS = [
         0,    // Purple
         0,    // Blue
         0,    // Pink
-        0     // Dark blue
+        0,    // Dark blue
+        0     // Light purple
     ],
     [         // Transitions from gold
         0,    // White
@@ -43,7 +45,8 @@ MutatorLayer.prototype.MUTATIONS = [
         0,    // Purple
         0,    // Blue
         0,    // Pink
-        0     // Dark blue
+        0,    // Dark blue
+        0     // Light purple
     ],
     [         // Transitions from orange
         0,    // White
@@ -55,7 +58,8 @@ MutatorLayer.prototype.MUTATIONS = [
         0,    // Purple
         0,    // Blue
         0,    // Pink
-        0     // Dark blue
+        0,    // Dark blue
+        0     // Light purple
     ],
     [         // Transitions from red
         0,    // White
@@ -67,7 +71,8 @@ MutatorLayer.prototype.MUTATIONS = [
         0,    // Purple
         0,    // Blue
         .02,  // Pink
-        0     // Dark blue
+        0,    // Dark blue
+        0     // Light purple
     ],
     [         // Transitions from brown
         0,    // White
@@ -79,7 +84,8 @@ MutatorLayer.prototype.MUTATIONS = [
         .2,   // Purple
         0,    // Blue
         0,    // Pink
-        0     // Dark blue
+        0,    // Dark blue
+        0     // Light purple
     ],
     [         // Transitions from purple
         0,    // White
@@ -88,10 +94,11 @@ MutatorLayer.prototype.MUTATIONS = [
         0,    // Orange
         0,    // Red
         0,    // Brown
-        .93,  // Purple
+        .9,   // Purple
         .05,  // Blue
         .02,  // Pink
-        0     // Dark blue
+        0,    // Dark blue
+        .03   // Light purple
     ],
     [         // Transitions from blue
         .3,   // White
@@ -103,7 +110,8 @@ MutatorLayer.prototype.MUTATIONS = [
         .1,   // Purple
         .5,   // Blue
         0,    // Pink
-        .1    // Dark blue
+        .1,   // Dark blue
+        0     // Light purple
     ],
     [         // Transitions from pink
         .1,   // White
@@ -115,7 +123,8 @@ MutatorLayer.prototype.MUTATIONS = [
         0,    // Purple
         0,    // Blue
         .9,   // Pink
-        0     // Dark blue
+        0,    // Dark blue
+        0     // Light purple
     ],
     [         // Transitions from dark blue
         0,    // White
@@ -127,7 +136,21 @@ MutatorLayer.prototype.MUTATIONS = [
         0,    // Purple
         .15,  // Blue
         0,    // Pink
-        .85   // Dark blue
+        .85,  // Dark blue
+        0     // Light purple
+    ],
+    [         // Transitions from light purple
+        0,    // White
+        0,    // Black
+        0,    // Gold
+        0,    // Orange
+        0,    // Red
+        0,    // Brown
+        .1,   // Purple
+        0,    // Blue
+        0,    // Pink
+        0,    // Dark blue
+        .9    // Light purple
     ]
 ]
 

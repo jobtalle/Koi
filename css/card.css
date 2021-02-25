@@ -132,6 +132,10 @@
     background: radial-gradient(circle at top right, var(--color-fish-darkblue), black var(--card-colors-gradient));
 }
 
+.card .colors .colors-wrapper .color.fill-lightpurple {
+    background: radial-gradient(circle at top right, var(--color-fish-lightpurple), black var(--card-colors-gradient));
+}
+
 .card .info {
     width: calc(100% - 2 * var(--card-preview-margin));
     margin: var(--card-preview-margin);

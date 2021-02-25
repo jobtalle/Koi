@@ -13,7 +13,8 @@ Palette.INDEX_PURPLE = 6;
 Palette.INDEX_BLUE = 7;
 Palette.INDEX_PINK = 8;
 Palette.INDEX_DARKBLUE = 9;
-Palette.INDEX_LAST = Palette.INDEX_DARKBLUE;
+Palette.INDEX_LIGHTPURPLE = 10;
+Palette.INDEX_LAST = Palette.INDEX_LIGHTPURPLE;
 Palette.COLOR_NAMES = [
     "white",
     "black",
@@ -24,7 +25,8 @@ Palette.COLOR_NAMES = [
     "purple",
     "blue",
     "pink",
-    "darkblue"
+    "darkblue",
+    "lightpurple"
 ];
 Palette.COLORS = [
     Color.fromCSS("--color-fish-white"),
@@ -36,5 +38,6 @@ Palette.COLORS = [
     Color.fromCSS("--color-fish-purple"),
     Color.fromCSS("--color-fish-blue"),
     Color.fromCSS("--color-fish-pink"),
-    Color.fromCSS("--color-fish-darkblue")
+    Color.fromCSS("--color-fish-darkblue"),
+    Color.fromCSS("--color-fish-lightpurple")
 ];
