@@ -283,8 +283,6 @@ Mover.prototype.pickUp = function(fish, x, y, waterPlane = null, random = null) 
 
         this.playInteractionSound(fish, pan);
 
-        console.log(fish); // TODO: For debugging only
-
         this.createBodySplash(fish.body, waterPlane, random);
     }
 
