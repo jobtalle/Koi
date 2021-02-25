@@ -33,7 +33,7 @@ const Foreground = function(
 Foreground.prototype.Y_SCALE = .74;
 Foreground.prototype.X_PADDING = .03;
 Foreground.prototype.Y_SHIFT = .2;
-Foreground.prototype.Y_OVERFLOW = .4;
+Foreground.prototype.Y_OVERFLOW = .5;
 Foreground.prototype.HIDDEN_SPACING = 1.2;
 Foreground.prototype.HIDDEN_SPREAD = 3.5;
 

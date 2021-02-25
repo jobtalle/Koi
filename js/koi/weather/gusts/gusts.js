@@ -16,7 +16,7 @@ Gusts.prototype.SAMPLER_HEIGHT = new Sampler(.9, 1.6);
 Gusts.prototype.SAMPLER_SLANT = new Sampler(-.3, .3);
 Gusts.prototype.SAMPLER_DISTANCE = new Sampler(.6, 1.4);
 Gusts.prototype.SAMPLER_SPEED = new Sampler(.15, .3);
-Gusts.prototype.AUDIO_THRESHOLD = .16;
+Gusts.prototype.AUDIO_THRESHOLD = .1;
 
 /**
  * Add a gust
