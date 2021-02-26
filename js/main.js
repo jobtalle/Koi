@@ -16,6 +16,7 @@ const canvas = document.getElementById("renderer");
 const gl =
     canvas.getContext("webgl", glParameters) ||
     canvas.getContext("experimental-webgl", glParameters);
+let chosenLocale = null;
 
 /**
  * Called when loading resources failed
@@ -33,15 +34,21 @@ const makeLanguage = locale => {
     switch (locale) {
         default:
         case "en":
+            chosenLocale = "en";
+
             return new Language("language/english.json");
         case "nl":
+            chosenLocale = "nl";
+
             return new Language("language/dutch.json");
         case "pl":
+            chosenLocale = "pl";
+
             return new Language("language/polish.json");
     }
 };
 
-const paramLang = searchParams.get("lang");
+const paramLang = window["localStorage"].getItem(Menu.prototype.KEY_LANGUAGE) || searchParams.get("lang");
 const language = paramLang ? makeLanguage(paramLang) : makeLanguage(navigator.language.substring(0, 2));
 let imperial = false;
 
@@ -64,7 +71,12 @@ if (gl &&
             audio);
         const systems = new Systems(gl, new Random(2893), wrapper.clientWidth, wrapper.clientHeight);
         const sessionBuffer = tutorial ? storage.getBuffer("session") : null;
-        const menu = new Menu(document.getElementById("menu"), loader.fullscreen, audioEngine, audio);
+        const menu = new Menu(
+            document.getElementById("menu"),
+            loader.fullscreen,
+            chosenLocale,
+            audioEngine,
+            audio);
         let lastTime = null;
         let koi = null;
         let loaded = true;

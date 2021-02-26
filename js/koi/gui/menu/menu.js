@@ -2,12 +2,19 @@
  * The menu
  * @param {HTMLElement} element The menu element
  * @param {LoaderFullscreen} fullscreen The fullscreen object
+ * @param {String} locale The locale string
  * @param {AudioEngine} audioEngine The audio engine
  * @param {AudioBank} audio Game audio
  * @constructor
  */
-const Menu = function(element, fullscreen, audioEngine, audio) {
+const Menu = function(
+    element,
+    fullscreen,
+    locale,
+    audioEngine,
+    audio) {
     this.buttonBack = this.createButtonExit(audio);
+    this.languageChooser = this.createLanguageChooser(locale);
     this.box = this.createBox(fullscreen, audioEngine, audio);
     this.element = element;
     this.element.onclick = this.hide.bind(this);
@@ -19,9 +26,16 @@ Menu.prototype.CLASS_VISIBLE = "visible";
 Menu.prototype.LANG_TITLE = "MENU";
 Menu.prototype.LANG_VOLUME = "VOLUME";
 Menu.prototype.LANG_FULLSCREEN = "TOGGLE_FULLSCREEN";
+Menu.prototype.LANG_LANGUAGE = "LANGUAGE";
 Menu.prototype.LANG_QUIT = "QUIT";
 Menu.prototype.LANG_EXIT = "BACK";
 Menu.prototype.KEY_VOLUME = "volume";
+Menu.prototype.KEY_LANGUAGE = "language";
+Menu.prototype.LANGUAGES = [
+    ["en", "English"],
+    ["nl", "Nederlands"],
+    ["pl", "Polskie"]
+];
 
 /**
  * Create the menu box
@@ -38,6 +52,7 @@ Menu.prototype.createBox = function(fullscreen, audioEngine, audio) {
 
     element.appendChild(this.createTitle());
     element.appendChild(this.createVolumeSlider(audioEngine));
+    element.appendChild(this.languageChooser);
     element.appendChild(this.createButtonFullscreen(fullscreen, audio));
     element.appendChild(this.buttonBack);
 
@@ -55,6 +70,8 @@ Menu.prototype.addQuitOption = function() {
         this.box.appendChild(quit);
         this.box.appendChild(this.buttonBack);
     }
+
+    this.box.removeChild(this.languageChooser);
 };
 
 /**
@@ -98,6 +115,38 @@ Menu.prototype.createVolumeSlider = function(audioEngine) {
 
     label.appendChild(document.createTextNode(language.get(this.LANG_VOLUME)));
     label.appendChild(element);
+
+    return label;
+};
+
+/**
+ * Create a language chooser
+ * @param {String} locale The locale string
+ */
+Menu.prototype.createLanguageChooser = function(locale) {
+    const label = document.createElement("label");
+    const select = document.createElement("select");
+
+    for (const language of this.LANGUAGES) {
+        const option = document.createElement("option");
+
+        option.value = language[0];
+        option.appendChild(document.createTextNode(language[1]));
+
+        if (option.value === locale)
+            option.selected = true;
+
+        select.appendChild(option);
+    }
+
+    select.onchange = () => {
+        window["localStorage"].setItem(this.KEY_LANGUAGE, select.value);
+
+        location.reload();
+    };
+
+    label.appendChild(document.createTextNode(language.get(this.LANG_LANGUAGE)));
+    label.appendChild(select);
 
     return label;
 };

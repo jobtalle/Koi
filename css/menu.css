@@ -70,3 +70,8 @@
     width: 100%;
     margin-left: var(--menu-box-spacing);
 }
+
+#menu-box label select {
+    width: 100%;
+    margin-left: var(--menu-box-spacing);
+}
