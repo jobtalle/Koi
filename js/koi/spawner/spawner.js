@@ -12,7 +12,7 @@ const Spawner = function(constellation, behavior, state = new SpawnerState()) {
     this.time = 0;
 };
 
-Spawner.prototype.SPAWN_OVERHEAD = 8;
+Spawner.prototype.SPAWN_OVERHEAD = 200;
 Spawner.prototype.SPAWN_LIMIT = 16;
 
 /**
