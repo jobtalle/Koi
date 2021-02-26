@@ -18,7 +18,7 @@ const Plants = function(
     const vertices = [];
     const indices = [];
 
-    this.plantMap = new PlantMap(constellation.width, constellation.height, Slots.prototype.RADIUS * 2);
+    this.plantMap = new PlantMap(constellation.width, constellation.height, Slots.prototype.RADIUS);
 
     const planter = new Planter(slots, hiddenSlots, biome, this.plantMap, random)
 

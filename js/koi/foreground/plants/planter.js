@@ -128,7 +128,7 @@ Planter.prototype.plant = function(plants, vertices, indices) {
                 this.random,
                 vertices,
                 indices));
-        else if (shoreDistance > this.GRASS_CLEARANCE)
+        else if (shoreDistance > this.GRASS_CLEARANCE) {
             plants.modelGrass(
                 slot.x,
                 slot.y,
@@ -138,7 +138,8 @@ Planter.prototype.plant = function(plants, vertices, indices) {
                 vertices,
                 indices);
 
-        this.plantMap.add(slot.x, slot.y);
+            this.plantMap.add(slot.x, slot.y);
+        }
     }
 
     this.plantMap.toDensity();
