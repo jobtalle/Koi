@@ -36,6 +36,8 @@ const makeLanguage = locale => {
             return new Language("language/english.json");
         case "nl":
             return new Language("language/dutch.json");
+        case "pl":
+            return new Language("language/polish.json");
     }
 };
 
