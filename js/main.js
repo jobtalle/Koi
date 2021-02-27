@@ -45,6 +45,10 @@ const makeLanguage = locale => {
             chosenLocale = "pl";
 
             return new Language("language/polish.json");
+        case "tr":
+            chosenLocale = "tr";
+
+            return new Language("language/turkish.json");
     }
 };
 

@@ -34,7 +34,8 @@ Menu.prototype.KEY_LANGUAGE = "language";
 Menu.prototype.LANGUAGES = [
     ["en", "English"],
     ["nl", "Nederlands"],
-    ["pl", "Polskie"]
+    ["pl", "Polskie"],
+    ["tr", "Türk"]
 ];
 
 /**
