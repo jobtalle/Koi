@@ -16,3 +16,5 @@ Make sure [node.js](https://www.nodejs.org) and [python 3](https://www.python.or
 | Mac (64 bit) | `npm run build-mac-64` |
 
 Additionally, `npm run compress` can be called to compress HTML, CSS and Javscript content without building binaries. The compressed HTML file `release.html` will be created in the project root. The file requires the `audio`, `font`, `svg` and `language` directories to run, as well as `favicon.ico` and `manifest.json`.
+
+Polish translations by Jakub Niklas.
