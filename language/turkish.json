@@ -1,7 +1,7 @@
 {
-  "INCLUDE": [
-    "units/metric.json"
-  ],
+  "UNIT_WEIGHT": "Kg",
+  "UNIT_LENGTH": "cm",
+  "UNIT_TIME": "dk",
   "TITLE_TOP": "Koi",
   "TITLE_BOTTOM": "Farm",
   "START": "Başla",
