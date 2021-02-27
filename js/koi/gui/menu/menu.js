@@ -35,7 +35,7 @@ Menu.prototype.LANGUAGES = [
     ["en", "English"],
     ["nl", "Nederlands"],
     ["pl", "Polskie"],
-    ["tr", "Türk"]
+    ["tr", "Türkçe"]
 ];
 
 /**
