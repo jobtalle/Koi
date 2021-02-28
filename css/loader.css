@@ -9,6 +9,11 @@
     --loader-button-border-radius: var(--card-border-radius);
     --loader-button-text-color: var(--color-shrubbery-leaf);
     --loader-button-fade-in: 1.3s;
+    --loader-fullscreen-padding: 32px;
+    --loader-fullscreen-size: 64px;
+    --loader-fullscreen-hover: 8px;
+    --loader-fullscreen-border: 8px;
+    --loader-fullscreen-corner-size: 30%;
 }
 
 #loader {
@@ -23,6 +28,63 @@
     justify-content: center;
     flex-direction: column;
     transition: var(--loader-fade-out);
+}
+
+#loader .fullscreen {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: var(--loader-fullscreen-padding);
+    width: var(--loader-fullscreen-size);
+    height: var(--loader-fullscreen-size);
+    cursor: pointer;
+    opacity: 0;
+    transition: var(--loader-button-fade-in) opacity;
+}
+
+#loader .fullscreen:hover {
+    width: calc(var(--loader-fullscreen-size) + 2 * var(--loader-fullscreen-hover));
+    height: calc(var(--loader-fullscreen-size) + 2 * var(--loader-fullscreen-hover));
+    top: calc(var(--loader-fullscreen-hover) * -1);
+    right: calc(var(--loader-fullscreen-hover) * -1);
+}
+
+#loader .fullscreen .corner {
+    position: absolute;
+    width: var(--loader-fullscreen-corner-size);
+    height: var(--loader-fullscreen-corner-size);
+}
+
+#loader .fullscreen .corner.left-top {
+    left: 0;
+    top: 0;
+    border-left: var(--loader-fullscreen-border) solid var(--color-white);
+    border-top: var(--loader-fullscreen-border) solid var(--color-white);
+}
+
+#loader .fullscreen .corner.right-top {
+    right: 0;
+    top: 0;
+    border-right: var(--loader-fullscreen-border) solid var(--color-white);
+    border-top: var(--loader-fullscreen-border) solid var(--color-white);
+}
+
+#loader .fullscreen .corner.left-bottom {
+    left: 0;
+    bottom: 0;
+    border-left: var(--loader-fullscreen-border) solid var(--color-white);
+    border-bottom: var(--loader-fullscreen-border) solid var(--color-white);
+}
+
+#loader .fullscreen .corner.right-bottom {
+    right: 0;
+    bottom: 0;
+    border-right: var(--loader-fullscreen-border) solid var(--color-white);
+    border-bottom: var(--loader-fullscreen-border) solid var(--color-white);
+}
+
+#loader .fullscreen.loaded {
+    opacity: 1;
 }
 
 #loader.finished {

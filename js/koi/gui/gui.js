@@ -17,6 +17,7 @@ const GUI = function(element, codeViewer, audio) {
 
     this.cards = new Cards(elementCards, codeViewer, audio);
     this.overlay = new Overlay(elementOverlay);
+    this.codeViewer = codeViewer;
 };
 
 GUI.prototype.ID_CARDS = "cards";
@@ -51,17 +52,20 @@ GUI.prototype.serialize = function(buffer) {
 GUI.prototype.keyDown = function(key) {
     if (this.KEYS_BOOK.indexOf(key) !== -1 || (this.cards.bookVisible && this.KEYS_EXIT.indexOf(key) !== -1)) {
         this.cards.toggleBook();
+        this.codeViewer.hide();
 
         return true;
     }
     else if (this.cards.bookEnabled && this.cards.bookVisible) {
         if (this.KEYS_PAGE_LEFT.indexOf(key) !== -1) {
             this.cards.book.buttonPageLeft.element.click();
+            this.codeViewer.hide();
 
             return true;
         }
         else if (this.KEYS_PAGE_RIGHT.indexOf(key) !== -1) {
             this.cards.book.buttonPageRight.element.click();
+            this.codeViewer.hide();
 
             return true;
         }

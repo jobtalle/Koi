@@ -33,3 +33,39 @@
 #fish-icon-defs .brown {
     fill: var(--color-fish-brown);
 }
+
+#fish-icon-defs .purple {
+    fill: var(--color-fish-purple);
+}
+
+#fish-icon-defs .blue {
+    fill: var(--color-fish-blue);
+}
+
+#fish-icon-defs .pink {
+    fill: var(--color-fish-pink);
+}
+
+#fish-icon-defs .darkblue {
+    fill: var(--color-fish-darkblue);
+}
+
+#fish-icon-defs .lightpurple {
+    fill: var(--color-fish-lightpurple);
+}
+
+#fish-icon-defs .teal {
+    fill: var(--color-fish-teal);
+}
+
+#fish-icon-defs .green {
+    fill: var(--color-fish-green);
+}
+
+#fish-icon-defs .darkgreen {
+    fill: var(--color-fish-darkgreen);
+}
+
+#fish-icon-defs .lightbrown {
+    fill: var(--color-fish-lightbrown);
+}

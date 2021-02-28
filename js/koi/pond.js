@@ -141,13 +141,25 @@ Pond.prototype.pick = function(x, y, whitelist) {
     if (!this.constraint.contains(x, y))
         return null;
 
-    for (let fish = this.fish.length; fish-- > 0;) if (this.fish[fish].body.atPosition(x, y)) {
+    const hits = [];
+
+    for (let fish = this.fish.length; fish-- > 0;) if (this.fish[fish].body.atPosition(x, y, hits, this.fish[fish])) {
         if (!whitelist || whitelist.indexOf(this.fish[fish]) !== -1) {
             const picked = this.fish[fish];
 
             this.fish.splice(fish, 1);
 
             return picked;
+        }
+    }
+
+    if (hits.length !== 0) {
+        hits.sort((a, b) => a.length - b.length);
+
+        for (const hit of hits) if (!whitelist || whitelist.indexOf(hit.fish) !== -1) {
+            this.fish.splice(this.fish.indexOf(hit.fish), 1);
+
+            return hit.fish;
         }
     }
 
@@ -213,7 +225,7 @@ Pond.prototype.update = function(
                         random);
 
                     for (const fish of offspring) {
-                        if (constellation.getFishCount() < Koi.prototype.FISH_CAPACITY - 1)
+                        if (constellation.getFishCount() < Koi.prototype.FISH_CAPACITY - 3)
                             this.addFish(fish);
                         else
                             break;

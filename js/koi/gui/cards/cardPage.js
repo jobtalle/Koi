@@ -188,7 +188,13 @@ CardPage.prototype.clear = function(cards) {
     for (let slot = 0; slot < 4; ++slot) if (this.cards[slot]) {
         cards.remove(this.cards[slot], true);
 
-        this.slots[slot].removeChild(this.cards[slot].element);
+        try {
+            this.slots[slot].removeChild(this.cards[slot].element);
+        }
+        catch (error) {
+            console.error(error);
+        }
+
         this.cards[slot] = null;
     }
 };

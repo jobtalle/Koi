@@ -20,13 +20,13 @@ const Planter = function(slots, hiddenSlots, biome, plantMap, random) {
 Planter.prototype.EPSILON = .05;
 Planter.prototype.BEACH_MAX = .1;
 Planter.prototype.GRASS_CLEARANCE = .1;
-Planter.prototype.CATTAIL_CHANCE = .14;
+Planter.prototype.CATTAIL_CHANCE = .15;
 Planter.prototype.CATTAIL_CHANCE_RAMP = 10;
 Planter.prototype.CATTAIL_DIST_MIN = .1;
 Planter.prototype.CATTAIL_DIST_MAX = 1.3;
 Planter.prototype.SHRUBBERY_DIST_MIN = .9;
 Planter.prototype.SHRUBBERY_DIST_MAX = 2;
-Planter.prototype.SHRUBBERY_DENSITY = .68;
+Planter.prototype.SHRUBBERY_DENSITY = .64;
 Planter.prototype.SHRUBBERY_HIDDEN_SIZE = new SamplerPower(.7, 1, 2);
 
 /**
@@ -128,7 +128,7 @@ Planter.prototype.plant = function(plants, vertices, indices) {
                 this.random,
                 vertices,
                 indices));
-        else if (shoreDistance > this.GRASS_CLEARANCE)
+        else if (shoreDistance > this.GRASS_CLEARANCE) {
             plants.modelGrass(
                 slot.x,
                 slot.y,
@@ -138,7 +138,8 @@ Planter.prototype.plant = function(plants, vertices, indices) {
                 vertices,
                 indices);
 
-        this.plantMap.add(slot.x, slot.y);
+            this.plantMap.add(slot.x, slot.y);
+        }
     }
 
     this.plantMap.toDensity();

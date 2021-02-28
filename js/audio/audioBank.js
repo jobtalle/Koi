@@ -61,7 +61,7 @@ const AudioBank = function(engine) {
         1,
         new AudioEffect(engine, "audio/ogg/AMB_Wind.ogg"));
     this.ambientBirds = new AudioEffectPeriodic(
-        1,
+        2,
         new AudioEffect(
             engine,
             this.enumerateSources("audio/ogg/Amb_BirdAmbience_", 1, 5, ".ogg")));

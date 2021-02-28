@@ -258,7 +258,8 @@ SpawnerState.prototype.BLUEPRINTS = [
         )
     )
 ];
-SpawnerState.prototype.BLUEPRINT_INITIAL = SpawnerState.prototype.BLUEPRINTS[0];
+SpawnerState.prototype.BLUEPRINT_INITIAL_RIVER = SpawnerState.prototype.BLUEPRINTS[0];
+SpawnerState.prototype.BLUEPRINT_INITIAL_POND = SpawnerState.prototype.BLUEPRINTS[2];
 SpawnerState.prototype.BLUEPRINTS_TUTORIAL = [
     SpawnerState.prototype.BLUEPRINTS[0],
     SpawnerState.prototype.BLUEPRINTS[1]];
@@ -317,13 +318,13 @@ SpawnerState.prototype.spawnInitial = function(
     atlas,
     randomSource,
     random) {
-    constellation.big.addFish(this.BLUEPRINT_INITIAL.spawn(
+    constellation.big.addFish(this.BLUEPRINT_INITIAL_POND.spawn(
         constellation.big.constraint.position.copy(),
         new Vector2().fromAngle(random.getFloat() * Math.PI * 2),
         atlas,
         randomSource,
         random));
-    constellation.river.addFish(this.BLUEPRINT_INITIAL.spawn(
+    constellation.river.addFish(this.BLUEPRINT_INITIAL_RIVER.spawn(
         constellation.initialSpawnPoint.copy(),
         constellation.initialSpawnDirection.copy(),
         atlas,

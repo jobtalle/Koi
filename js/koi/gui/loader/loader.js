@@ -4,24 +4,32 @@
  * @param {HTMLElement} elementGraphics The element to place graphics in
  * @param {HTMLElement} elementButtonStart The element to build the start button in
  * @param {HTMLElement} elementButtonNew The element to build the new game button in
+ * @param {HTMLElement} elementButtonSettings The element to build the settings button in
+ * @param {HTMLElement} wrapper The wrapper to toggle fullscreen on
  * @constructor
  */
 const Loader = function(
     element,
     elementGraphics,
     elementButtonStart,
-    elementButtonNew) {
+    elementButtonNew,
+    elementButtonSettings,
+    wrapper) {
     this.element = element;
     this.icon = new LoaderIcon();
     this.elementButtonStart = elementButtonStart;
     this.elementButtonNew = elementButtonNew;
+    this.elementButtonSettings = elementButtonSettings;
     this.loadedPrevious = false;
     this.outstanding = 0;
     this.finished = 0;
     this.released = false;
     this.onFinish = null;
     this.onNewGame = null;
+    this.menu = null;
+    this.fullscreen = new LoaderFullscreen(wrapper);
 
+    element.appendChild(this.fullscreen.element);
     elementGraphics.appendChild(this.icon.element);
 };
 
@@ -49,11 +57,20 @@ Loader.prototype.LANG_START = "START";
 Loader.prototype.LANG_CONTINUE = "CONTINUE";
 Loader.prototype.LANG_NEW = "NEW";
 Loader.prototype.LANG_CONFIRM = "CONFIRM";
+Loader.prototype.LANG_SETTINGS = "SETTINGS";
 Loader.prototype.CLASS_LOADED = "loaded";
 Loader.prototype.CLASS_FINISHED = "finished";
 Loader.prototype.CLASS_BUTTON_CONFIRM = "confirm";
 Loader.prototype.BUTTON_DELAY = .37;
 Loader.prototype.TRANSITION = StyleUtils.getFloat("--loader-fade-out");
+
+/**
+ * Set the menu
+ * @param {Menu} menu The menu
+ */
+Loader.prototype.setMenu = function(menu) {
+    this.menu = menu;
+};
 
 /**
  * Indicate that a previous game has been loaded
@@ -78,6 +95,9 @@ Loader.prototype.hide = function() {
     setTimeout(() => {
         this.element.style.display = "none";
     }, 1000 * this.TRANSITION);
+
+    if (this.menu)
+        this.menu.addQuitOption();
 };
 
 /**
@@ -124,17 +144,38 @@ Loader.prototype.createButtonNew = function() {
 };
 
 /**
+ * Create the settings button
+ * @returns {HTMLButtonElement} The settings button
+ */
+Loader.prototype.createButtonSettings = function() {
+    const element = document.createElement("button");
+
+    element.innerText = language.get(this.LANG_SETTINGS);
+    element.onclick = () => {
+        this.menu.show();
+    };
+
+    return element;
+};
+
+/**
  * Finish loading
  */
 Loader.prototype.complete = function() {
+    this.fullscreen.setLoaded();
     this.elementButtonStart.classList.add(this.CLASS_LOADED);
     this.elementButtonStart.appendChild(this.createButtonStart());
+
+    setTimeout(() => {
+        this.elementButtonSettings.appendChild(this.createButtonSettings());
+        this.elementButtonSettings.classList.add(this.CLASS_LOADED);
+    }, this.BUTTON_DELAY * 1000);
 
     if (this.loadedPrevious)
         setTimeout(() => {
             this.elementButtonNew.appendChild(this.createButtonNew());
             this.elementButtonNew.classList.add(this.CLASS_LOADED);
-        }, this.BUTTON_DELAY * 1000);
+        }, this.BUTTON_DELAY * 2000);
 };
 
 /**

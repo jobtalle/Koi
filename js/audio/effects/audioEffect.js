@@ -35,10 +35,13 @@ const AudioEffect = function(engine, sources) {
 AudioEffect.Track = function(engine, audio) {
     const source = engine.createSourceNode(audio);
 
+    this.element = audio;
     this.nodePan = engine.createPanNode();
     this.nodeGain = engine.createGainNode();
 
     source.connect(this.nodePan).connect(this.nodeGain).connect(engine.getDestinationNode());
+
+    engine.register(this);
 };
 
 /**
@@ -46,7 +49,7 @@ AudioEffect.Track = function(engine, audio) {
  * @param {Number} pan The pan in the range [-1, 1];
  */
 AudioEffect.Track.prototype.setPan = function(pan) {
-    this.nodePan.pan.value = pan;
+    this.nodePan.pan.value = Math.min(1, Math.max(-1, pan));
 };
 
 /**
@@ -54,7 +57,24 @@ AudioEffect.Track.prototype.setPan = function(pan) {
  * @param {Number} volume The volume in the range [0, 1]
  */
 AudioEffect.Track.prototype.setVolume = function(volume) {
-    this.nodeGain.gain.value = volume;
+    this.nodeGain.gain.value = Math.min(1, Math.max(0, volume));
+};
+
+/**
+ * Change the volume
+ * @param {Number} previous The previous volume multiplier in the range [0, 1]
+ * @param {Number} volume The new volume multiplier in the range [0, 1]
+ */
+AudioEffect.Track.prototype.changeVolume = function(previous, volume) {
+    if (volume === 0) {
+        this.element.pause();
+        this.element.currentTime = 0;
+    }
+    else {
+        const original = this.nodeGain.gain.value / previous;
+
+        this.setVolume(original * volume);
+    }
 };
 
 AudioEffect.prototype.REQUIREMENT_WEIGHT = 1;
@@ -85,7 +105,7 @@ AudioEffect.prototype.createElement = function(source, onLoad = null) {
  * @returns {Number} The duration of the effect
  */
 AudioEffect.prototype.play = function(pan = 0, volume = 1) {
-    if (!this.engine.initialized)
+    if (!this.engine.initialized || this.engine.volume === 0)
         return 0;
 
     let index = Math.floor(this.engine.random.getFloat() * this.variations);
@@ -96,7 +116,7 @@ AudioEffect.prototype.play = function(pan = 0, volume = 1) {
                 this.tracks[index] = new AudioEffect.Track(this.engine, this.elements[index]);
 
             this.tracks[index].setPan(pan);
-            this.tracks[index].setVolume(volume);
+            this.tracks[index].setVolume(volume * this.engine.volume);
 
             if (this.playbackRate !== 1)
                 this.elements[index].playbackRate = this.playbackRate;
@@ -115,7 +135,7 @@ AudioEffect.prototype.play = function(pan = 0, volume = 1) {
 
         ++this.variations;
 
-        return this.play(pan, volume);
+        return this.play(pan, volume * this.engine.volume);
     }
 
     return 0;

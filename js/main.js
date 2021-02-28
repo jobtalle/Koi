@@ -9,11 +9,14 @@ const loader = new Loader(
     document.getElementById("loader"),
     document.getElementById("loader-graphics"),
     document.getElementById("loader-button-start"),
-    document.getElementById("loader-button-new"));
+    document.getElementById("loader-button-new"),
+    document.getElementById("loader-button-settings"),
+    document.getElementById("wrapper"));
 const canvas = document.getElementById("renderer");
 const gl =
     canvas.getContext("webgl", glParameters) ||
     canvas.getContext("experimental-webgl", glParameters);
+let chosenLocale = null;
 
 /**
  * Called when loading resources failed
@@ -31,13 +34,25 @@ const makeLanguage = locale => {
     switch (locale) {
         default:
         case "en":
+            chosenLocale = "en";
+
             return new Language("language/english.json");
         case "nl":
+            chosenLocale = "nl";
+
             return new Language("language/dutch.json");
+        case "pl":
+            chosenLocale = "pl";
+
+            return new Language("language/polish.json");
+        case "tr":
+            chosenLocale = "tr";
+
+            return new Language("language/turkish.json");
     }
 };
 
-const paramLang = searchParams.get("lang");
+const paramLang = window["localStorage"].getItem(Menu.prototype.KEY_LANGUAGE) || searchParams.get("lang");
 const language = paramLang ? makeLanguage(paramLang) : makeLanguage(navigator.language.substring(0, 2));
 let imperial = false;
 
@@ -60,12 +75,21 @@ if (gl &&
             audio);
         const systems = new Systems(gl, new Random(2893), wrapper.clientWidth, wrapper.clientHeight);
         const sessionBuffer = tutorial ? storage.getBuffer("session") : null;
+        const menu = new Menu(
+            document.getElementById("menu"),
+            loader.fullscreen,
+            chosenLocale,
+            audioEngine,
+            audio);
         let lastTime = null;
         let koi = null;
         let loaded = true;
         let mouseLeft = false;
+        let alt = false;
 
         new Drop(gui, systems, document.getElementById("drop"), canvas);
+
+        loader.setMenu(menu);
 
         canvas.width = wrapper.clientWidth;
         canvas.height = wrapper.clientHeight;
@@ -104,7 +128,7 @@ if (gl &&
             if (koi)
                 koi.free();
 
-            koi = session.makeKoi(storage, systems, audio, gui, new TutorialBreeding(storage, gui.overlay));
+            koi = session.makeKoi(storage, systems, audio, gui, save, new TutorialBreeding(storage, gui.overlay));
         };
 
         // Retrieve last session if it exists
@@ -112,7 +136,7 @@ if (gl &&
             try {
                 session.deserialize(sessionBuffer);
 
-                koi = session.makeKoi(storage, systems, audio, gui, new TutorialCards(storage, gui.overlay));
+                koi = session.makeKoi(storage, systems, audio, gui, save, new TutorialCards(storage, gui.overlay));
 
                 loader.setLoadedPrevious();
             } catch (error) {
@@ -178,8 +202,19 @@ if (gl &&
         });
 
         window.onkeydown = event => {
-            if (koi.keyDown(event.key))
+            if (event.key === "Alt")
+                alt = true;
+            else if (event.key === "Enter")
+                loader.fullscreen.toggle();
+            else if (event.key === "Escape" || event.key === "m")
+                menu.toggle();
+            else if (koi.keyDown(event.key))
                 event.preventDefault();
+        };
+
+        window.onkeyup = event => {
+            if (event.key === "Alt")
+                alt = false;
         };
 
         window.onbeforeunload = () => {

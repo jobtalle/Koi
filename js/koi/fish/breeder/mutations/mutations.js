@@ -6,57 +6,6 @@ const Mutations = function() {
 };
 
 /**
- * Serialize the mutations state
- * @param {BinBuffer} buffer A buffer to serialize to
- */
-Mutations.prototype.serialize = function(buffer) {
-    // TODO
-};
-
-/**
- * Deserialize the mutations state
- * @param {BinBuffer} buffer A buffer to serialize from
- */
-Mutations.prototype.deserialize = function(buffer) {
-    // TODO
-};
-
-/**
- * Create all color related mutations
- * @returns {Mutation[]} The mutations
- */
-Mutations.prototype.createMutationsColor = function() {
-    return [
-        // Two golden koi become orange
-        new Mutation(
-            new PatternFootprint([
-                new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_GOLD)
-            ]),
-            new PatternFootprint([
-                new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_GOLD)
-            ]),
-            [
-                new BlueprintLayerBase(Palette.INDEX_ORANGE)
-            ],
-            .2
-        ),
-        // Two orange koi become red
-        new Mutation(
-            new PatternFootprint([
-                new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_ORANGE)
-            ]),
-            new PatternFootprint([
-                new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_ORANGE)
-            ]),
-            [
-                new BlueprintLayerBase(Palette.INDEX_RED)
-            ],
-            .15
-        )
-    ];
-};
-
-/**
  * Create all spots pattern related mutations
  * @returns {Mutation[]} The mutations
  */
@@ -76,7 +25,7 @@ Mutations.prototype.createMutationsSpots = function() {
                     // Palette index
                     Mutation.createPaletteReference(false, -1),
                     // Scale
-                    new Sampler(100, 130),
+                    new Sampler(80, 100),
                     // Stretch
                     new Sampler(120, 136),
                     // Threshold
@@ -107,6 +56,21 @@ Mutations.prototype.createMutationsSpots = function() {
             ],
             .2
         ),
+        // Spotted fish + solid color can become solid color + spots
+        new Mutation(
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_UNIQUE),
+                new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_UNIQUE)
+            ]),
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_UNIQUE)
+            ]),
+            [
+                Mutation.BLUEPRINT_LAYER_FATHER,
+                Mutation.BLUEPRINT_LAYER_MOTHER
+            ],
+            .11
+        ),
         // Spotted fish + solid color can become an extra layer of spots
         new Mutation(
             new PatternFootprint([
@@ -127,7 +91,7 @@ Mutations.prototype.createMutationsSpots = function() {
                     // Stretch
                     new Sampler(120, 136),
                     // Threshold
-                    new Sampler(180, 200),
+                    new Sampler(100, 160),
                     // X focus
                     new Sampler(120, 136),
                     // Y focus
@@ -163,38 +127,40 @@ Mutations.prototype.createMutationsSpots = function() {
  * @returns {Mutation[]} The mutations
  */
 Mutations.prototype.createMutationsStripes = function() {
+    const blueprintStripes = new BlueprintLayerStripes(
+        // Palette index
+        Mutation.createPaletteReference(true, 0),
+        // Scale
+        new Sampler(140, 180),
+        // Distortion
+        new Sampler(108, 148),
+        // Roughness
+        new Sampler(108, 148),
+        // Threshold
+        new Sampler(108, 148),
+        // Slant
+        new Sampler(108, 148),
+        // Suppression
+        new Sampler(30, 50),
+        // Focus
+        new Sampler(108, 148),
+        // Power
+        new Sampler(108, 148));
+
     return [
-        // Two spots layered fish with the same colors may become stripes
+        // Two spots layered fish with the same spot colors may become stripes
         new Mutation(
             new PatternFootprint([
-                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_SHARED),
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_ANY),
                 new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_SHARED)
             ]),
             new PatternFootprint([
-                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_SHARED),
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_ANY),
                 new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_SHARED)
             ]),
             [
                 Mutation.BLUEPRINT_LAYER_MOTHER,
-                new BlueprintLayerStripes(
-                    // Palette index
-                    Mutation.createPaletteReference(true, 0),
-                    // Scale
-                    new Sampler(108, 148),
-                    // Distortion
-                    new Sampler(108, 148),
-                    // Roughness
-                    new Sampler(108, 148),
-                    // Threshold
-                    new Sampler(108, 148),
-                    // Slant
-                    new Sampler(108, 148),
-                    // Suppression
-                    new Sampler(108, 148),
-                    // Focus
-                    new Sampler(108, 148),
-                    // Power
-                    new Sampler(108, 148))
+                blueprintStripes
             ],
             .1
         )
@@ -210,11 +176,11 @@ Mutations.prototype.createMutationsRidge = function() {
         // A spotted and a striped fish create a ridged fish
         new Mutation(
             new PatternFootprint([
-                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_SHARED),
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_ANY),
                 new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_SHARED)
             ]),
             new PatternFootprint([
-                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_SHARED),
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_ANY),
                 new LayerFootprint(LayerStripes.prototype.ID, LayerFootprint.PALETTE_SHARED)
             ]),
             [
@@ -239,14 +205,46 @@ Mutations.prototype.createMutationsRidge = function() {
 };
 
 /**
+ * Create all web related mutations
+ * @returns {Mutation[]} The mutations
+ */
+Mutations.prototype.createMutationsWeb = function() {
+    return [
+        new Mutation(
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_SHARED),
+                new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_SHARED)
+            ]),
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_SHARED),
+                new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_SHARED)
+            ]),
+            [
+                Mutation.BLUEPRINT_LAYER_MOTHER,
+                new BlueprintLayerWeb(
+                    // Palette index
+                    Mutation.createPaletteReference(true, 0),
+                    // Scale
+                    new Sampler(170, 190),
+                    // Thickness
+                    new Sampler(200, 230),
+                    // Threshold
+                    new Sampler(120, 136))
+            ],
+            .02
+        )
+    ];
+};
+
+/**
  * Create the list of possible mutations
  * @returns {Mutation[]} An array containing all possible mutations
  */
 Mutations.prototype.createMutations = function() {
     return [
-        ...this.createMutationsColor(),
         ...this.createMutationsSpots(),
         ...this.createMutationsStripes(),
-        ...this.createMutationsRidge()
+        ...this.createMutationsRidge(),
+        ...this.createMutationsWeb()
     ];
 };

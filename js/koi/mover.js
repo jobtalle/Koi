@@ -29,7 +29,7 @@ Mover.prototype.AIR_INTENSITY_POWER = .3;
 Mover.prototype.AIR_HEIGHT = .5;
 Mover.prototype.AIR_INTERVAL = 1;
 Mover.prototype.FOREGROUND_DISPLACEMENT_RADIUS = Mover.prototype.AIR_RADIUS;
-Mover.prototype.GRANULAR_VOLUME = .2;
+Mover.prototype.GRANULAR_VOLUME = .17;
 Mover.prototype.GRANULAR_INTENSITY_THRESHOLD = .1;
 Mover.prototype.GRANULAR_INTERVAL = 0.75;
 Mover.prototype.DRAG_POINTER_TIME = 15;
@@ -282,8 +282,6 @@ Mover.prototype.pickUp = function(fish, x, y, waterPlane = null, random = null) 
         this.audio.effectFishUp.play(this.audio.effectFishUp.engine.transformPan(pan));
 
         this.playInteractionSound(fish, pan);
-
-        console.log(fish); // TODO: For debugging only
 
         this.createBodySplash(fish.body, waterPlane, random);
     }

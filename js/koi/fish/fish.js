@@ -28,7 +28,7 @@ const Fish = function(
     this.body.initializeSpine(position, direction);
 };
 
-Fish.prototype.FORCE_CONSTRAINT = .6;
+Fish.prototype.FORCE_CONSTRAINT = 1;
 Fish.prototype.FORCE_REPULSION  = .45;
 Fish.prototype.FORCE_ALIGNMENT = .05;
 Fish.prototype.FORCE_ATTRACTION = .05;
@@ -61,8 +61,8 @@ Fish.prototype.TURN_THRESHOLD = .005;
 Fish.prototype.TURN_CARRY = .95;
 Fish.prototype.TURN_FOLLOW_CHANCE = .025;
 Fish.prototype.TURN_AMPLITUDE = Math.PI * .4;
-Fish.prototype.SIZE_MATING = .2; // TODO: Reduced for debugging
-Fish.prototype.MATE_PROXIMITY_TIME = 120;
+Fish.prototype.SIZE_MATING = .37;
+Fish.prototype.MATE_PROXIMITY_TIME = 90;
 
 /**
  * Deserialize a fish

@@ -7,8 +7,6 @@
 const Breeder = function(mother, father) {
     this.mother = mother;
     this.father = father;
-
-    this.mixer = new MixerFish(this.mother, this.father);
 };
 
 /**
@@ -33,7 +31,10 @@ Breeder.prototype.breed = function(
     const offspring = new Array(this.mother.body.getOffspringCount());
 
     for (let fish = 0, fishCount = offspring.length; fish < fishCount; ++fish) {
-        const newFish = this.mixer.mix(patterns, mutations, forceMutation, onMutate, random);
+        const mixer = random.getFloat() < .5 ?
+            new MixerFish(this.mother, this.father) :
+            new MixerFish(this.father, this.mother);
+        const newFish = mixer.mix(patterns, mutations, forceMutation, onMutate, random);
 
         new MutatorFish(newFish).mutate(random);
 

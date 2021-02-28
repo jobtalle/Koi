@@ -1,7 +1,7 @@
 :root {
     /* Environment colors */
     --color-water-deep: #314462;
-    --color-water-shallow: #7ad6d6;
+    --color-water-shallow: #81e5e5;
     --color-water-filter: #def6ea;
     --color-water-highlight: #a9dbd1;
     --color-earth: #D5C28E;
@@ -18,21 +18,30 @@
     --color-ambient-thunderstorm: #9ea6bf;
 
     /* Plant colors */
-    --color-grass-a: #8ea94e;
+    --color-grass-a: #97b54e;
     --color-grass-b: #4b812e;
     --color-cattail-leaf: #5e8136;
     --color-cattail-stalk: #a09e7a;
     --color-cattail-capsule: #eceaac;
     --color-shrubbery-stalk: #5f7746;
-    --color-shrubbery-leaf: #3d5b2e;
+    --color-shrubbery-leaf: #426630;
 
     /* Fish colors */
-    --color-fish-white: #E1E0C4;
+    --color-fish-white: #e1e0c4;
     --color-fish-black: #414345;
     --color-fish-gold: #E4A746;
     --color-fish-orange: #E56E42;
     --color-fish-red: #db3030;
     --color-fish-brown: var(--color-rock-top);
+    --color-fish-purple: #6d4160;
+    --color-fish-blue: #5f7d8c;
+    --color-fish-pink: #ec97a4;
+    --color-fish-darkblue: #415986;
+    --color-fish-lightpurple: #7c65cd;
+    --color-fish-teal: #4AB3B2;
+    --color-fish-green: var(--color-grass-a);
+    --color-fish-darkgreen: var(--color-grass-b);
+    --color-fish-lightbrown: #927872;
     --color-fish-shade: #13232b;
 
     /* Bug colors */

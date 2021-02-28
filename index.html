@@ -7,17 +7,12 @@
             font-family: "Grandstander";
             src: url("font/Grandstander.ttf");
         }
-
-        @font-face {
-            font-family: "Grandstander";
-            src: url("font/GrandstanderItalic.ttf");
-            font-style: italic;
-        }
     </style>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" type="text/css" href="css/colors.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" type="text/css" href="css/loader.css">
+    <link rel="stylesheet" type="text/css" href="css/menu.css">
     <link rel="stylesheet" type="text/css" href="css/card.css">
     <link rel="stylesheet" type="text/css" href="css/fishIcon.css">
     <link rel="stylesheet" type="text/css" href="css/book.css">
@@ -44,8 +39,10 @@
     <div id="loader">
         <div id="loader-graphics"></div>
         <div class="loader-button" id="loader-button-start"></div>
+        <div class="loader-button" id="loader-button-settings"></div>
         <div class="loader-button" id="loader-button-new"></div>
     </div>
+    <div id="menu"></div>
 </div>
 <svg xmlns="http://www.w3.org/2000/svg">
     <defs id="fish-icon-defs"></defs>
@@ -55,6 +52,7 @@
 
 <script src="js/koi/gui/loader/loader.js"></script>
 <script src="js/koi/gui/loader/loaderIcon.js"></script>
+<script src="js/koi/gui/loader/loaderFullscreen.js"></script>
 
 <script src="js/storage/storageSystem.js"></script>
 <script src="js/storage/storageLocal.js"></script>
@@ -67,6 +65,13 @@
 
 <script src="js/audio/audioEngine.js"></script>
 <script src="js/audio/audioBank.js"></script>
+
+<script src="js/koi/samplers/bounds.js"></script>
+<script src="js/koi/samplers/sampler.js"></script>
+<script src="js/koi/samplers/samplerPower.js"></script>
+<script src="js/koi/samplers/samplerInverse.js"></script>
+<script src="js/koi/samplers/samplerPlateau.js"></script>
+<script src="js/koi/samplers/samplerSigmoid.js"></script>
 
 <script src="js/render/commonShaders.js"></script>
 <script src="js/render/vector2.js"></script>
@@ -113,12 +118,6 @@
 <script src="js/koi/numericManipulator.js"></script>
 
 <script src="js/koi/samplers/palette.js"></script>
-<script src="js/koi/samplers/bounds.js"></script>
-<script src="js/koi/samplers/sampler.js"></script>
-<script src="js/koi/samplers/samplerPower.js"></script>
-<script src="js/koi/samplers/samplerInverse.js"></script>
-<script src="js/koi/samplers/samplerPlateau.js"></script>
-<script src="js/koi/samplers/samplerSigmoid.js"></script>
 <script src="js/koi/samplers/plane.js"></script>
 <script src="js/koi/samplers/path.js"></script>
 <script src="js/koi/samplers/pathSamplerSegmented.js"></script>
@@ -137,6 +136,7 @@
 <script src="js/koi/fish/pattern/layer/layerSpots.js"></script>
 <script src="js/koi/fish/pattern/layer/layerRidge.js"></script>
 <script src="js/koi/fish/pattern/layer/layerStripes.js"></script>
+<script src="js/koi/fish/pattern/layer/layerWeb.js"></script>
 <script src="js/koi/fish/pattern/layer/layerShapeBody.js"></script>
 <script src="js/koi/fish/pattern/layer/layerShapeFin.js"></script>
 <script src="js/koi/fish/pattern/layer/layerIDs.js"></script>
@@ -150,6 +150,7 @@
 <script src="js/koi/blueprint/layers/blueprintLayerSpots.js"></script>
 <script src="js/koi/blueprint/layers/blueprintLayerStripes.js"></script>
 <script src="js/koi/blueprint/layers/blueprintLayerRidge.js"></script>
+<script src="js/koi/blueprint/layers/blueprintLayerWeb.js"></script>
 <script src="js/koi/blueprint/layers/blueprintLayerShapeBody.js"></script>
 <script src="js/koi/blueprint/layers/blueprintLayerShapeFin.js"></script>
 
@@ -175,12 +176,14 @@
 <script src="js/koi/fish/breeder/mutators/mutatorFins.js"></script>
 <script src="js/koi/fish/breeder/mutators/mutatorTail.js"></script>
 
+<script src="js/koi/fish/breeder/mutators/layers/mutatorLayer.js"></script>
 <script src="js/koi/fish/breeder/mutators/layers/mutatorLayerBase.js"></script>
 <script src="js/koi/fish/breeder/mutators/layers/mutatorLayerShapeBody.js"></script>
 <script src="js/koi/fish/breeder/mutators/layers/mutatorLayerShapeFin.js"></script>
 <script src="js/koi/fish/breeder/mutators/layers/mutatorLayerSpots.js"></script>
 <script src="js/koi/fish/breeder/mutators/layers/mutatorLayerRidge.js"></script>
 <script src="js/koi/fish/breeder/mutators/layers/mutatorLayerStripes.js"></script>
+<script src="js/koi/fish/breeder/mutators/layers/mutatorLayerWeb.js"></script>
 
 <script src="js/koi/fish/breeder/mixers/mixer.js"></script>
 <script src="js/koi/fish/breeder/mixers/mixerFish.js"></script>
@@ -196,6 +199,7 @@
 <script src="js/koi/fish/breeder/mixers/layers/mixerLayerSpots.js"></script>
 <script src="js/koi/fish/breeder/mixers/layers/mixerLayerRidge.js"></script>
 <script src="js/koi/fish/breeder/mixers/layers/mixerLayerStripes.js"></script>
+<script src="js/koi/fish/breeder/mixers/layers/mixerLayerWeb.js"></script>
 
 <script src="js/koi/fish/breeder/mutations/mutation.js"></script>
 <script src="js/koi/fish/breeder/mutations/mutations.js"></script>
@@ -309,6 +313,8 @@
 <script src="js/koi/tutorial/tutorial.js"></script>
 <script src="js/koi/tutorial/tutorialBreeding.js"></script>
 <script src="js/koi/tutorial/tutorialCards.js"></script>
+
+<script src="js/koi/gui/menu/menu.js"></script>
 
 <script src="js/language.js"></script>
 <script src="js/units.js"></script>

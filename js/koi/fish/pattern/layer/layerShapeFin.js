@@ -20,7 +20,7 @@ const LayerShapeFin = function(angle, inset, dips, dipPower, roundness) {
 LayerShapeFin.prototype = Object.create(Layer.prototype);
 LayerShapeFin.prototype.SAMPLER_ANGLE = new SamplerPower(Math.PI * .35, Math.PI * .45, .5);
 LayerShapeFin.prototype.SAMPLER_INSET = new SamplerPower(.03, .17, .7);
-LayerShapeFin.prototype.SAMPLER_DIPS = new SamplerPower(.25, 3, 2.3);
+LayerShapeFin.prototype.SAMPLER_DIPS = new SamplerPower(.25, 3, 1.5);
 LayerShapeFin.prototype.SAMPLER_DIP_POWER = new SamplerPower(.5, 2, .7);
 LayerShapeFin.prototype.SAMPLER_ROUNDNESS = new SamplerPower(.05, .25, .6);
 
@@ -108,7 +108,7 @@ LayerShapeFin.prototype.serialize = function(buffer) {
 LayerShapeFin.prototype.configure = function(gl, program) {
     gl.uniform1f(program["uAngle"], this.SAMPLER_ANGLE.sample(this.angle / 0xFF));
     gl.uniform1f(program["uInset"], this.SAMPLER_INSET.sample(this.inset / 0xFF));
-    gl.uniform1f(program["uDips"], Math.max(0, Math.round(this.SAMPLER_DIPS.sample(this.dips / 0xFF)) * 2 - 1));
+    gl.uniform1f(program["uDips"], Math.max(1, Math.round(this.SAMPLER_DIPS.sample(this.dips / 0xFF)) * 2 - 1));
     gl.uniform1f(program["uDipPower"], this.SAMPLER_DIP_POWER.sample(this.dipPower / 0xFF));
     gl.uniform1f(program["uRoundness"], this.SAMPLER_ROUNDNESS.sample(this.dipPower / 0xFF));
 };

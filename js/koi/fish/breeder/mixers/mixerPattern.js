@@ -28,6 +28,8 @@ MixerPattern.prototype.mixLayers = function(mother, father, random) {
             return new MixerLayerRidge(mother, father).mix(random);
         case LayerStripes.prototype.ID:
             return new MixerLayerStripes(mother, father).mix(random);
+        case LayerWeb.prototype.ID:
+            return new MixerLayerWeb(mother, father).mix(random);
     }
 };
 

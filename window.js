@@ -6,11 +6,13 @@ function createWindow () {
     height: 960,
     webPreferences: {
       nodeIntegration: true,
-      enableRemoteModule: true
+      enableRemoteModule: true,
+      devTools: false
     }
   });
 
   win.removeMenu();
+  win.setMinimizable(false);
   win.loadFile("release.html");
 }
 

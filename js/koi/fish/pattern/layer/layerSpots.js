@@ -32,11 +32,11 @@ const LayerSpots = function(
 
 LayerSpots.prototype = Object.create(Layer.prototype);
 
-LayerSpots.prototype.SAMPLER_SCALE = new SamplerPlateau(.5, 1.8, 6, 1);
-LayerSpots.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(.25, .5, .75, 2);
-LayerSpots.prototype.SAMPLER_STRETCH = new SamplerPlateau(.37, 1, 2.5, 1);
-LayerSpots.prototype.SAMPLER_X_FOCUS = new SamplerPlateau(0, 0.4, 1, 1);
-LayerSpots.prototype.SAMPLER_Y_FOCUS = new SamplerPlateau(0, 0.5, 1, 15);
+LayerSpots.prototype.SAMPLER_SCALE = new SamplerPlateau(.5, 1.8, 6, 0.3);
+LayerSpots.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(.25, .5, .75, 0.2);
+LayerSpots.prototype.SAMPLER_STRETCH = new SamplerPlateau(.37, 1, 2.5, 0.1);
+LayerSpots.prototype.SAMPLER_X_FOCUS = new SamplerPlateau(0, 0.4, 1, 0.2);
+LayerSpots.prototype.SAMPLER_Y_FOCUS = new SamplerPlateau(0, 0.5, 1, 1);
 LayerSpots.prototype.SAMPLER_POWER = new SamplerPower(0, 1, 2);
 
 LayerSpots.prototype.SHADER_VERTEX = `#version 100
@@ -169,5 +169,6 @@ LayerSpots.prototype.createShader = function(gl) {
             "rotate",
             "color",
             "focus",
-            "power"]);
+            "power"
+        ]);
 };

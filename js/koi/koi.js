@@ -5,6 +5,7 @@
  * @param {AudioBank} audio Game audio
  * @param {GUI} gui The GUI
  * @param {Number} environmentSeed The seed for all stable systems
+ * @param {Function} save A function that saves the game
  * @param {Tutorial} tutorial The tutorial object, or null if no tutorial is active
  * @param {Random} random A randomizer
  * @constructor
@@ -15,6 +16,7 @@ const Koi = function(
     audio,
     gui,
     environmentSeed,
+    save,
     tutorial,
     random) {
     this.storage = storage;
@@ -24,6 +26,8 @@ const Koi = function(
     this.random = random;
     this.effectsRandom = new Random();
     this.environmentSeed = environmentSeed;
+    this.save = save;
+    this.saveCountdown = this.AUTOSAVE_FREQUENCY;
     this.tutorial = tutorial;
     this.scale = this.getScale(systems.width, systems.height);
     this.constellation =  new Constellation(
@@ -50,6 +54,7 @@ const Koi = function(
     this.mutations = new Mutations();
     this.time = this.UPDATE_RATE;
     this.phase = 0;
+    this.touchGrassSign = 1;
 
     this.createRenderables();
 
@@ -60,12 +65,16 @@ Koi.prototype.FRAME_TIME_MAX = 1;
 Koi.prototype.UPDATE_RATE = 1 / 14;
 Koi.prototype.SCALE_FACTOR = .051;
 Koi.prototype.SCALE_MIN = 50;
-Koi.prototype.FISH_CAPACITY = 80;
+Koi.prototype.FISH_CAPACITY = 320;
 Koi.prototype.COLOR_BACKGROUND = Color.fromCSS("--color-earth");
 Koi.prototype.PHASE_SPEED = .005;
 Koi.prototype.TOUCH_WATER_RADIUS = .1;
 Koi.prototype.TOUCH_WATER_INTENSITY = .5;
 Koi.prototype.TOUCH_WATER_VOLUME = .7;
+Koi.prototype.TOUCH_GRASS_RADIUS = 1;
+Koi.prototype.TOUCH_GRASS_INTENSITY = .7;
+Koi.prototype.TOUCH_GRASS_VOLUME = .4;
+Koi.prototype.AUTOSAVE_FREQUENCY = 2520;
 
 /**
  * Serialize the koi
@@ -75,7 +84,6 @@ Koi.prototype.serialize = function(buffer) {
     this.constellation.serialize(buffer);
     this.spawner.getState().serialize(buffer);
     this.weather.getState().serialize(buffer);
-    this.mutations.serialize(buffer);
 };
 
 /**
@@ -88,7 +96,6 @@ Koi.prototype.deserialize = function(buffer) {
         this.constellation.deserialize(buffer, this.systems.atlas, this.systems.randomSource);
         this.spawner.setState(SpawnerState.deserialize(buffer));
         this.weather.setState(WeatherState.deserialize(buffer));
-        this.mutations.deserialize(buffer);
         this.weatherFilterChanged = true;
 
         this.foreground.bugs.initialize(this.weather.state, this.effectsRandom);
@@ -277,6 +284,25 @@ Koi.prototype.freeRenderables = function() {
  */
 Koi.prototype.touchWater = function(x, y) {
     this.water.addFlare(x, y, this.TOUCH_WATER_RADIUS, this.TOUCH_WATER_INTENSITY);
+
+    this.audio.effectFishUp.play(
+        this.audio.effectFishUp.engine.transformPan(2 * x / this.constellation.width - 1),
+        this.TOUCH_WATER_VOLUME);
+};
+
+/**
+ * Touch the grass at a given point
+ * @param {Number} x The X coordinate in meters
+ * @param {Number} y The Y coordinate in meters
+ */
+Koi.prototype.touchGrass = function(x, y) {
+    this.air.addDisplacement(x, y, this.TOUCH_GRASS_RADIUS, this.touchGrassSign * this.TOUCH_GRASS_INTENSITY);
+
+    this.audio.effectGrass.set(
+        this.audio.effectGrass.effect.engine.transformPan(2 * x / this.constellation.width - 1),
+        this.TOUCH_GRASS_VOLUME);
+
+    this.touchGrassSign = -this.touchGrassSign;
 };
 
 /**
@@ -308,8 +334,9 @@ Koi.prototype.touchStart = function(x, y) {
         if (this.constellation.contains(wx, wy)) {
             this.touchWater(wx, wy);
             this.constellation.chase(wx, wy);
-            this.audio.effectFishUp.play(2 * wx / this.constellation.width - 1, this.TOUCH_WATER_VOLUME);
         }
+        else
+            this.touchGrass(wx, wy);
 
         this.mover.startTouch(wx, wy);
     }
@@ -430,6 +457,11 @@ Koi.prototype.update = function() {
 
     if ((this.phase += this.PHASE_SPEED) > 1)
         --this.phase;
+
+    if (--this.saveCountdown === 0) {
+        this.save();
+        this.saveCountdown = this.AUTOSAVE_FREQUENCY;
+    }
 };
 
 /**
