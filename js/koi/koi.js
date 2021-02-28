@@ -5,6 +5,7 @@
  * @param {AudioBank} audio Game audio
  * @param {GUI} gui The GUI
  * @param {Number} environmentSeed The seed for all stable systems
+ * @param {Function} save A function that saves the game
  * @param {Tutorial} tutorial The tutorial object, or null if no tutorial is active
  * @param {Random} random A randomizer
  * @constructor
@@ -15,6 +16,7 @@ const Koi = function(
     audio,
     gui,
     environmentSeed,
+    save,
     tutorial,
     random) {
     this.storage = storage;
@@ -24,6 +26,8 @@ const Koi = function(
     this.random = random;
     this.effectsRandom = new Random();
     this.environmentSeed = environmentSeed;
+    this.save = save;
+    this.saveCountdown = this.AUTOSAVE_FREQUENCY;
     this.tutorial = tutorial;
     this.scale = this.getScale(systems.width, systems.height);
     this.constellation =  new Constellation(
@@ -70,6 +74,7 @@ Koi.prototype.TOUCH_WATER_VOLUME = .7;
 Koi.prototype.TOUCH_GRASS_RADIUS = 1;
 Koi.prototype.TOUCH_GRASS_INTENSITY = .7;
 Koi.prototype.TOUCH_GRASS_VOLUME = .4;
+Koi.prototype.AUTOSAVE_FREQUENCY = 840;
 
 /**
  * Serialize the koi
@@ -452,6 +457,11 @@ Koi.prototype.update = function() {
 
     if ((this.phase += this.PHASE_SPEED) > 1)
         --this.phase;
+
+    if (--this.saveCountdown === 0) {
+        this.save();
+        this.saveCountdown = this.AUTOSAVE_FREQUENCY;
+    }
 };
 
 /**

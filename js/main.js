@@ -128,7 +128,7 @@ if (gl &&
             if (koi)
                 koi.free();
 
-            koi = session.makeKoi(storage, systems, audio, gui, new TutorialBreeding(storage, gui.overlay));
+            koi = session.makeKoi(storage, systems, audio, gui, save, new TutorialBreeding(storage, gui.overlay));
         };
 
         // Retrieve last session if it exists
@@ -136,7 +136,7 @@ if (gl &&
             try {
                 session.deserialize(sessionBuffer);
 
-                koi = session.makeKoi(storage, systems, audio, gui, new TutorialCards(storage, gui.overlay));
+                koi = session.makeKoi(storage, systems, audio, gui, save, new TutorialCards(storage, gui.overlay));
 
                 loader.setLoadedPrevious();
             } catch (error) {

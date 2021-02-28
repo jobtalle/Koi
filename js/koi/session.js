@@ -18,6 +18,7 @@ const Session = function(
  * @param {Systems} systems Render systems for this koi object
  * @param {AudioBank} audio Game audio
  * @param {GUI} gui The GUI
+ * @param {Function} save A function that saves the game
  * @param {Tutorial} tutorial The tutorial object, or null if no tutorial is active
  * @returns {Koi} A koi object for this session
  */
@@ -26,8 +27,9 @@ Session.prototype.makeKoi = function(
     systems,
     audio,
     gui,
+    save,
     tutorial = null) {
-    const koi = new Koi(storage, systems, audio, gui, this.environmentSeed, tutorial, this.random);
+    const koi = new Koi(storage, systems, audio, gui, this.environmentSeed, save, tutorial, this.random);
 
     if (this.buffer) {
         koi.deserialize(this.buffer);
