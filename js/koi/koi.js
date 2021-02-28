@@ -74,7 +74,7 @@ Koi.prototype.TOUCH_WATER_VOLUME = .7;
 Koi.prototype.TOUCH_GRASS_RADIUS = 1;
 Koi.prototype.TOUCH_GRASS_INTENSITY = .7;
 Koi.prototype.TOUCH_GRASS_VOLUME = .4;
-Koi.prototype.AUTOSAVE_FREQUENCY = 840;
+Koi.prototype.AUTOSAVE_FREQUENCY = 2520;
 
 /**
  * Serialize the koi

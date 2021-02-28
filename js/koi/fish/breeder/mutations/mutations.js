@@ -56,6 +56,21 @@ Mutations.prototype.createMutationsSpots = function() {
             ],
             .2
         ),
+        // Spotted fish + solid color can become solid color + spots
+        new Mutation(
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_UNIQUE),
+                new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_UNIQUE)
+            ]),
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_UNIQUE)
+            ]),
+            [
+                Mutation.BLUEPRINT_LAYER_FATHER,
+                Mutation.BLUEPRINT_LAYER_MOTHER
+            ],
+            .11
+        ),
         // Spotted fish + solid color can become an extra layer of spots
         new Mutation(
             new PatternFootprint([
