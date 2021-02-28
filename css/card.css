@@ -136,6 +136,22 @@
     background: radial-gradient(circle at top right, var(--color-fish-lightpurple), black var(--card-colors-gradient));
 }
 
+.card .colors .colors-wrapper .color.fill-teal {
+    background: radial-gradient(circle at top right, var(--color-fish-teal), black var(--card-colors-gradient));
+}
+
+.card .colors .colors-wrapper .color.fill-green {
+    background: radial-gradient(circle at top right, var(--color-fish-green), black var(--card-colors-gradient));
+}
+
+.card .colors .colors-wrapper .color.fill-darkgreen {
+    background: radial-gradient(circle at top right, var(--color-fish-darkgreen), black var(--card-colors-gradient));
+}
+
+.card .colors .colors-wrapper .color.fill-lightbrown {
+    background: radial-gradient(circle at top right, var(--color-fish-lightbrown), black var(--card-colors-gradient));
+}
+
 .card .info {
     width: calc(100% - 2 * var(--card-preview-margin));
     margin: var(--card-preview-margin);
