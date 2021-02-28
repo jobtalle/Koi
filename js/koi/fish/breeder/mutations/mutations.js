@@ -148,21 +148,6 @@ Mutations.prototype.createMutationsStripes = function() {
                 blueprintStripes
             ],
             .1
-        ),
-        new Mutation(
-            new PatternFootprint([
-                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_ANY),
-                new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_SHARED)
-            ]),
-            new PatternFootprint([
-                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_SHARED),
-                new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_SHARED)
-            ]),
-            [
-                Mutation.BLUEPRINT_LAYER_MOTHER,
-                blueprintStripes
-            ],
-            .1
         )
     ];
 };
@@ -176,11 +161,11 @@ Mutations.prototype.createMutationsRidge = function() {
         // A spotted and a striped fish create a ridged fish
         new Mutation(
             new PatternFootprint([
-                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_SHARED),
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_ANY),
                 new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_SHARED)
             ]),
             new PatternFootprint([
-                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_SHARED),
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_ANY),
                 new LayerFootprint(LayerStripes.prototype.ID, LayerFootprint.PALETTE_SHARED)
             ]),
             [
