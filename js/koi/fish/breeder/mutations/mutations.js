@@ -25,7 +25,7 @@ Mutations.prototype.createMutationsSpots = function() {
                     // Palette index
                     Mutation.createPaletteReference(false, -1),
                     // Scale
-                    new Sampler(100, 130),
+                    new Sampler(80, 100),
                     // Stretch
                     new Sampler(120, 136),
                     // Threshold
@@ -112,11 +112,46 @@ Mutations.prototype.createMutationsSpots = function() {
  * @returns {Mutation[]} The mutations
  */
 Mutations.prototype.createMutationsStripes = function() {
+    const blueprintStripes = new BlueprintLayerStripes(
+        // Palette index
+        Mutation.createPaletteReference(true, 0),
+        // Scale
+        new Sampler(140, 180),
+        // Distortion
+        new Sampler(108, 148),
+        // Roughness
+        new Sampler(108, 148),
+        // Threshold
+        new Sampler(108, 148),
+        // Slant
+        new Sampler(108, 148),
+        // Suppression
+        new Sampler(30, 50),
+        // Focus
+        new Sampler(108, 148),
+        // Power
+        new Sampler(108, 148));
+
     return [
-        // Two spots layered fish with the same colors may become stripes
+        // Two spots layered fish with the same spot colors may become stripes
         new Mutation(
             new PatternFootprint([
-                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_SHARED),
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_ANY),
+                new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_SHARED)
+            ]),
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_ANY),
+                new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_SHARED)
+            ]),
+            [
+                Mutation.BLUEPRINT_LAYER_MOTHER,
+                blueprintStripes
+            ],
+            .1
+        ),
+        new Mutation(
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_ANY),
                 new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_SHARED)
             ]),
             new PatternFootprint([
@@ -125,25 +160,7 @@ Mutations.prototype.createMutationsStripes = function() {
             ]),
             [
                 Mutation.BLUEPRINT_LAYER_MOTHER,
-                new BlueprintLayerStripes(
-                    // Palette index
-                    Mutation.createPaletteReference(true, 0),
-                    // Scale
-                    new Sampler(108, 148),
-                    // Distortion
-                    new Sampler(108, 148),
-                    // Roughness
-                    new Sampler(108, 148),
-                    // Threshold
-                    new Sampler(108, 148),
-                    // Slant
-                    new Sampler(108, 148),
-                    // Suppression
-                    new Sampler(108, 148),
-                    // Focus
-                    new Sampler(108, 148),
-                    // Power
-                    new Sampler(108, 148))
+                blueprintStripes
             ],
             .1
         )

@@ -49,7 +49,7 @@ AudioEffect.Track = function(engine, audio) {
  * @param {Number} pan The pan in the range [-1, 1];
  */
 AudioEffect.Track.prototype.setPan = function(pan) {
-    this.nodePan.pan.value = pan;
+    this.nodePan.pan.value = Math.min(1, Math.max(-1, pan));
 };
 
 /**
@@ -57,7 +57,7 @@ AudioEffect.Track.prototype.setPan = function(pan) {
  * @param {Number} volume The volume in the range [0, 1]
  */
 AudioEffect.Track.prototype.setVolume = function(volume) {
-    this.nodeGain.gain.value = volume;
+    this.nodeGain.gain.value = Math.min(1, Math.max(0, volume));
 };
 
 /**
@@ -68,7 +68,7 @@ AudioEffect.Track.prototype.setVolume = function(volume) {
 AudioEffect.Track.prototype.changeVolume = function(previous, volume) {
     const original = this.nodeGain.gain.value / previous;
 
-    this.nodeGain.gain.value = Math.max(0, Math.min(1, original * volume));
+    this.setVolume(original * volume);
 };
 
 AudioEffect.prototype.REQUIREMENT_WEIGHT = 1;
