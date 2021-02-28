@@ -66,9 +66,15 @@ AudioEffect.Track.prototype.setVolume = function(volume) {
  * @param {Number} volume The new volume multiplier in the range [0, 1]
  */
 AudioEffect.Track.prototype.changeVolume = function(previous, volume) {
-    const original = this.nodeGain.gain.value / previous;
+    if (volume === 0) {
+        this.element.pause();
+        this.element.currentTime = 0;
+    }
+    else {
+        const original = this.nodeGain.gain.value / previous;
 
-    this.setVolume(original * volume);
+        this.setVolume(original * volume);
+    }
 };
 
 AudioEffect.prototype.REQUIREMENT_WEIGHT = 1;
@@ -99,7 +105,7 @@ AudioEffect.prototype.createElement = function(source, onLoad = null) {
  * @returns {Number} The duration of the effect
  */
 AudioEffect.prototype.play = function(pan = 0, volume = 1) {
-    if (!this.engine.initialized)
+    if (!this.engine.initialized || this.engine.volume === 0)
         return 0;
 
     let index = Math.floor(this.engine.random.getFloat() * this.variations);
