@@ -13,6 +13,7 @@
   "COPY": "Copy",
   "MENU": "Menu",
   "VOLUME": "Volume",
+  "TOGGLE_GRASS_AUDIO": "Grass audio",
   "TOGGLE_FULLSCREEN": "Toggle full screen",
   "LANGUAGE": "Language",
   "QUIT": "Save & quit",

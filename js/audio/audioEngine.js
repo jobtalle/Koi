@@ -8,6 +8,7 @@ const AudioEngine = function(random) {
     this.initialized = false;
     this.random = random;
     this.volume = 1;
+    this.granular = true;
     this.tracks = [];
 };
 

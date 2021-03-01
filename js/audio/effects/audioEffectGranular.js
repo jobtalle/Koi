@@ -21,6 +21,9 @@ const AudioEffectGranular = function(interval, decay, rateSampler, effect) {
  * @param {Number} delta The amount of time passed since the last update
  */
 AudioEffectGranular.prototype.update = function(delta) {
+    if (!this.effect.engine.granular)
+        return;
+
     if (this.volume !== 0) {
         if ((this.time += delta) > this.interval) {
             this.time -= this.interval;
@@ -40,6 +43,9 @@ AudioEffectGranular.prototype.update = function(delta) {
  * @param {Number} volume The volume in the range [0, 1]
  */
 AudioEffectGranular.prototype.set = function(pan, volume) {
+    if (!this.effect.engine.granular)
+        return;
+
     this.pan = pan;
     this.volume = Math.max(this.volume, volume);
 };
