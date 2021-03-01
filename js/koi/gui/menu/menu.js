@@ -79,7 +79,7 @@ Menu.prototype.addQuitOption = function() {
         this.box.appendChild(this.buttonBack);
     }
 
-    this.box.removeChild(this.languageChooser);
+    this.languageChooser.parentNode.removeChild(this.languageChooser);
 };
 
 /**
