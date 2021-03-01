@@ -69,3 +69,7 @@
 #fish-icon-defs .lightbrown {
     fill: var(--color-fish-lightbrown);
 }
+
+#fish-icon-defs .bordeaux {
+    fill: var(--color-fish-bordeaux);
+}

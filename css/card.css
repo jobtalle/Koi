@@ -152,6 +152,10 @@
     background: radial-gradient(circle at top right, var(--color-fish-lightbrown), black var(--card-colors-gradient));
 }
 
+.card .colors .colors-wrapper .color.fill-bordeaux {
+    background: radial-gradient(circle at top right, var(--color-fish-bordeaux), black var(--card-colors-gradient));
+}
+
 .card .info {
     width: calc(100% - 2 * var(--card-preview-margin));
     margin: var(--card-preview-margin);
