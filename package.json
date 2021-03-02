@@ -4,6 +4,7 @@
   "author": "Job Talle",
   "description": "A Koi breeding game",
   "main": "window.js",
+  "chromium-args": "--in-process-gpu --disable-direct-composition --disable-transparency",
   "devDependencies": {
     "electron": "^11.2.0",
     "electron-packager": "^15.2.0"
