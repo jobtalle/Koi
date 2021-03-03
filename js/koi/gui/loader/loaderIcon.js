@@ -10,8 +10,23 @@ const LoaderIcon = function() {
 
 LoaderIcon.prototype.ID = "loader-icon";
 LoaderIcon.prototype.CLASS_INVISIBLE = "invisible";
-LoaderIcon.prototype.FILE = "svg/logo.svg";
+LoaderIcon.prototype.FILE_ENGLISH = "svg/logo-english.svg";
+LoaderIcon.prototype.FILE_JAPANESE = "svg/logo-japanese.svg";
 LoaderIcon.prototype.FADE_IN_DELAY = .32;
+
+/**
+ * Get the appropriate file for a given locale
+ * @param {String} locale The two letter locale string
+ * @returns {String} A path to a file
+ */
+LoaderIcon.prototype.getFile = function(locale) {
+    switch (locale) {
+        case "ja":
+            return this.FILE_JAPANESE;
+        default:
+            return this.FILE_ENGLISH;
+    }
+};
 
 /**
  * Load the SVG image
@@ -27,7 +42,7 @@ LoaderIcon.prototype.loadSVG = function() {
         }, 1000 * this.FADE_IN_DELAY);
     };
 
-    request.open("GET", this.FILE, true);
+    request.open("GET", this.getFile(chosenLocale), true);
     request.send();
 };
 

@@ -5,13 +5,6 @@ const glParameters = {
     premultipliedAlpha: true,
     preserveDrawingBuffer: true
 };
-const loader = new Loader(
-    document.getElementById("loader"),
-    document.getElementById("loader-graphics"),
-    document.getElementById("loader-button-start"),
-    document.getElementById("loader-button-new"),
-    document.getElementById("loader-button-settings"),
-    document.getElementById("wrapper"));
 const canvas = document.getElementById("renderer");
 const gl =
     canvas.getContext("webgl", glParameters) ||
@@ -66,6 +59,13 @@ const makeLanguage = locale => {
 
 const paramLang = window["localStorage"].getItem(Menu.prototype.KEY_LANGUAGE) || searchParams.get("lang");
 const language = paramLang ? makeLanguage(paramLang) : makeLanguage(navigator.language.substring(0, 2));
+const loader = new Loader(
+    document.getElementById("loader"),
+    document.getElementById("loader-graphics"),
+    document.getElementById("loader-button-start"),
+    document.getElementById("loader-button-new"),
+    document.getElementById("loader-button-settings"),
+    document.getElementById("wrapper"));
 let imperial = false;
 
 if (gl &&
