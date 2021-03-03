@@ -162,6 +162,10 @@
     margin-bottom: 0;
 }
 
+.card .info.japanese {
+    margin-top: calc(var(--card-preview-margin) * 0.5);
+}
+
 .card .info .property {
     margin-top: calc(var(--card-info-spacing) / 4);
     margin-bottom: calc(var(--card-info-spacing) / 4);
@@ -176,6 +180,10 @@
 
 .card .info .property .text .label {
     color: var(--card-info-color);
+}
+
+.card .info.japanese .property .text .label {
+    font-size: 15px;
 }
 
 .card .info .property .text .label::after {

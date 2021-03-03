@@ -49,6 +49,18 @@ const makeLanguage = locale => {
             chosenLocale = "tr";
 
             return new Language("language/turkish.json");
+        case "de":
+            chosenLocale = "de";
+
+            return new Language("language/german.json");
+        case "fr":
+            chosenLocale = "fr";
+
+            return new Language("language/french.json");
+        case "ja":
+            chosenLocale = "ja";
+
+            return new Language("language/japanese.json");
     }
 };
 

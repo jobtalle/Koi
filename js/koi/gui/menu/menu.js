@@ -35,6 +35,9 @@ Menu.prototype.KEY_LANGUAGE = "language";
 Menu.prototype.KEY_GRASS_AUDIO = "grass-audio";
 Menu.prototype.LANGUAGES = [
     ["en", "English"],
+    ["de", "German"],
+    ["fr", "French"],
+    ["ja", "Japanese"],
     ["nl", "Nederlands"],
     ["pl", "Polskie"],
     ["tr", "Türkçe"]

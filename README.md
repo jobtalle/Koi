@@ -20,3 +20,7 @@ Additionally, `npm run compress` can be called to compress HTML, CSS and Javscri
 Polish translations by Jakub Niklas.
 
 Turkish translations by Çağla Spellar.
+
+French translations by [@LikanaWolf](https://twitter.com/LikanaWolf).
+
+Japanese translations by Robin van der Zanden.
