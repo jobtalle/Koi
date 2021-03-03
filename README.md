@@ -17,6 +17,11 @@ Make sure [node.js](https://www.nodejs.org) and [python 3](https://www.python.or
 
 Additionally, `npm run compress` can be called to compress HTML, CSS and Javscript content without building binaries. The compressed HTML file `release.html` will be created in the project root. The file requires the `audio`, `font`, `svg` and `language` directories to run, as well as `favicon.ico` and `manifest.json`.
 
+
+Concept & promotional art by [Samma van Klaarbergen](https://www.artstation.com/samma).
+
+Logo by [@rosebolt](https://www.instagram.com/rosebolt/).
+
 Polish translations by Jakub Niklas.
 
 Turkish translations by Çağla Spellar.
@@ -24,3 +29,5 @@ Turkish translations by Çağla Spellar.
 French translations by [@LikanaWolf](https://twitter.com/LikanaWolf).
 
 Japanese translations by Robin van der Zanden.
+
+German translations by [@kaera_art](https://www.instagram.com/kaera_art/).

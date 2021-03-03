@@ -1,7 +1,7 @@
 {
-  "INCLUDE": [
-    "units/metric.json"
-  ],
+  "UNIT_WEIGHT": "Kg",
+  "UNIT_LENGTH": "cm",
+  "UNIT_TIME": "分間",
   "TITLE_TOP": "コイ",
   "TITLE_BOTTOM": "ファーム",
   "START": "スタート",
@@ -18,9 +18,9 @@
   "LANGUAGE": "言語",
   "QUIT": "セーブして終わる",
   "BACK": "戻る",
-  "INFO_WEIGHT": "コイの重さ",
-  "INFO_LENGTH": "コイの長さ",
-  "INFO_AGE": "コイの年齢",
+  "INFO_WEIGHT": "重さ",
+  "INFO_LENGTH": "長さ",
+  "INFO_AGE": "年齢",
   "INFO_FRY": "小魚",
   "TUTORIAL_MOVE_FISH": "魚を押して動かして、スクリーン上でドラッグします。",
   "TUTORIAL_MOVE_POND_1": "魚を小さい池に入れます。",

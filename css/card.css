@@ -173,17 +173,20 @@
     position: relative;
 }
 
+.card .info.japanese .property {
+    font-size: 17px;
+}
+
 .card .info .property .text {
     padding: calc(var(--card-info-spacing) / 4);
     color: var(--card-info-text-color);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
 }
 
 .card .info .property .text .label {
     color: var(--card-info-color);
-}
-
-.card .info.japanese .property .text .label {
-    font-size: 15px;
 }
 
 .card .info .property .text .label::after {
