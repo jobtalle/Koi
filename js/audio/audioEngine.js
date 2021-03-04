@@ -5,6 +5,7 @@
  */
 const AudioEngine = function(random) {
     this.context = null;
+    this.compressor = null;
     this.initialized = false;
     this.random = random;
     this.volume = 1;
@@ -21,6 +22,8 @@ AudioEngine.prototype.PAN_DEAD_ZONE = .3;
 AudioEngine.prototype.interact = function() {
     if (!this.context) {
         this.context = new AudioContext();
+        this.compressor = this.context.createDynamicsCompressor();
+        this.compressor.connect(this.context.destination);
         this.initialized = true;
     }
 };
@@ -68,7 +71,7 @@ AudioEngine.prototype.createPanNode = function() {
  * @returns {AudioDestinationNode|null} The destination node, or null if the engine is not yet active
  */
 AudioEngine.prototype.getDestinationNode = function() {
-    return this.context.destination;
+    return this.compressor;
 };
 
 /**
