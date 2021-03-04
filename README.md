@@ -27,6 +27,6 @@ Turkish translations by Çağla Spellar.
 
 French translations by [@LikanaWolf](https://twitter.com/LikanaWolf).
 
-Japanese translations by Robin van der Zanden.
+Japanese translations by [@RobinZanden](https://twitter.com/RobinZanden).
 
 German translations by [@kaera_art](https://www.instagram.com/kaera_art/).
