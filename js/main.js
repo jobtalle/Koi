@@ -29,31 +29,31 @@ const makeLanguage = locale => {
         case "en":
             chosenLocale = "en";
 
-            return new Language("language/english.json");
+            return new Language("KoiTranslations/english.json");
         case "nl":
             chosenLocale = "nl";
 
-            return new Language("language/dutch.json");
+            return new Language("KoiTranslations/dutch.json");
         case "pl":
             chosenLocale = "pl";
 
-            return new Language("language/polish.json");
+            return new Language("KoiTranslations/polish.json");
         case "tr":
             chosenLocale = "tr";
 
-            return new Language("language/turkish.json");
+            return new Language("KoiTranslations/turkish.json");
         case "de":
             chosenLocale = "de";
 
-            return new Language("language/german.json");
+            return new Language("KoiTranslations/german.json");
         case "fr":
             chosenLocale = "fr";
 
-            return new Language("language/french.json");
+            return new Language("KoiTranslations/french.json");
         case "ja":
             chosenLocale = "ja";
 
-            return new Language("language/japanese.json");
+            return new Language("KoiTranslations/japanese.json");
     }
 };
 
