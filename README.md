@@ -26,13 +26,3 @@ Concept art & promotional art by [Samma van Klaarbergen](https://www.artstation.
 Gameplay design & playtesting by [@FayerDev](https://twitter.com/FayerDev).
 
 Logo by [@rosebolt](https://www.instagram.com/rosebolt/).
-
-Polish translations by Jakub Niklas.
-
-Turkish translations by Çağla Spellar.
-
-French translations by [@LikanaWolf](https://twitter.com/LikanaWolf).
-
-Japanese translations by [@RobinZanden](https://twitter.com/RobinZanden).
-
-German translations by [@kaera_art](https://www.instagram.com/kaera_art/).
