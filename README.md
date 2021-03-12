@@ -17,6 +17,10 @@ Make sure [node.js](https://www.nodejs.org) and [python 3](https://www.python.or
 
 Additionally, `npm run compress` can be called to compress HTML, CSS and Javscript content without building binaries. The compressed HTML file `release.html` will be created in the project root. The file requires the `audio`, `font`, `svg` and `language` directories to run, as well as `favicon.ico` and `manifest.json`.
 
+## Translations
+The game is available in several languages. Translations can be found in [this repository](https://github.com/jobtalle/KoiTranslations), and new translations can be proposed there; when new translations are made, I will add them to the game.
+
+## Credits
 Concept art & promotional art by [Samma van Klaarbergen](https://www.artstation.com/samma).
 
 Gameplay design & playtesting by [@FayerDev](https://twitter.com/FayerDev).
