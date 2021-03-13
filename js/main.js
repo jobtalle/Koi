@@ -54,6 +54,14 @@ const makeLanguage = locale => {
             chosenLocale = "ja";
 
             return new Language("KoiTranslations/japanese.json");
+        case "es":
+            chosenLocale = "es";
+
+            return new Language("KoiTranslations/spanish.json");
+        case "pt":
+            chosenLocale = "pt";
+
+            return new Language("KoiTranslations/portuguese.json");
     }
 };
 

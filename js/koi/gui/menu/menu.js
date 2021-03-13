@@ -40,7 +40,9 @@ Menu.prototype.LANGUAGES = [
     ["ja", "日本語 (Japanese)"],
     ["nl", "Nederlands (Dutch)"],
     ["pl", "Polski (Polish)"],
-    ["tr", "Türkçe (Turkish)"]
+    ["tr", "Türkçe (Turkish)"],
+    ["pt", "Português (Portuguese)"],
+    ["es", "Español (Spanish)"]
 ];
 
 /**
