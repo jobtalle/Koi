@@ -332,7 +332,7 @@ Card.prototype.createInfo = function() {
         language.get(this.LANG_LENGTH),
         (this.body.getLength()).toFixed(1).toString() + " " + language.get(this.LANG_UNIT_LENGTH)));
 
-    if (chosenLocale === "ja")
+    if (chosenLocale === "ja" || chosenLocale === "zh")
         element.classList.add(this.CLASS_JAPANESE);
 
     if (ageMinutes < 1)

@@ -38,6 +38,7 @@ Menu.prototype.LANGUAGES = [
     ["de", "Deutsch (German)"],
     ["fr", "Français (French)"],
     ["ja", "日本語 (Japanese)"],
+    ["zh", "简体中文 (Simplified Chinese)"],
     ["nl", "Nederlands (Dutch)"],
     ["pl", "Polski (Polish)"],
     ["tr", "Türkçe (Turkish)"],

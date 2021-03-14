@@ -62,6 +62,10 @@ const makeLanguage = locale => {
             chosenLocale = "pt";
 
             return new Language("KoiTranslations/portuguese.json");
+        case "zh":
+            chosenLocale = "zh";
+
+            return new Language("KoiTranslations/simplifiedchinese.json");
     }
 };
 
