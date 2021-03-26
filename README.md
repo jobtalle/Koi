@@ -18,6 +18,10 @@ Additionally, `npm run compress` can be called to compress HTML, CSS and Javscri
 ## Translations
 The game is available in several languages. Translations can be found in [this repository](https://github.com/jobtalle/KoiTranslations), and new translations can be proposed there; when new translations are made, I will add them to the game.
 
+## Contributing
+
+Contributions can be proposed by submitting pull requests.
+
 ## License
 
 Koi Farm is distributed under the [Apache 2.0 with Commons Clause](LICENSE.md) license.
