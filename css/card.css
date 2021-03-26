@@ -21,7 +21,7 @@
     --card-colors-raise: 0.5;
     --card-colors-overlap: 0.25;
     --card-colors-gradient: 280%;
-    --card-info-spacing: 14px;
+    --card-info-spacing: 12px;
     --card-info-color: #d7d4c8;
     --card-info-slant: -18deg;
     --card-info-padding-right: 6px;
@@ -152,10 +152,18 @@
     background: radial-gradient(circle at top right, var(--color-fish-lightbrown), black var(--card-colors-gradient));
 }
 
+.card .colors .colors-wrapper .color.fill-bordeaux {
+    background: radial-gradient(circle at top right, var(--color-fish-bordeaux), black var(--card-colors-gradient));
+}
+
 .card .info {
     width: calc(100% - 2 * var(--card-preview-margin));
     margin: var(--card-preview-margin);
     margin-bottom: 0;
+}
+
+.card .info.japanese {
+    margin-top: calc(var(--card-preview-margin) * 0.5);
 }
 
 .card .info .property {
@@ -165,9 +173,16 @@
     position: relative;
 }
 
+.card .info.japanese .property {
+    font-size: 17px;
+}
+
 .card .info .property .text {
     padding: calc(var(--card-info-spacing) / 4);
     color: var(--card-info-text-color);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
 }
 
 .card .info .property .text .label {

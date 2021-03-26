@@ -63,15 +63,21 @@
 #menu-box label {
     color: var(--color-white);
     font-size: 18px;
-    display: flex;
+    margin-right: var(--menu-box-spacing);
 }
 
-#menu-box label input {
+#menu-box input[type=range] {
     width: 100%;
-    margin-left: var(--menu-box-spacing);
 }
 
-#menu-box label select {
+#menu-box input[type=checkbox] {
+    float: left;
+}
+
+#menu-box select {
     width: 100%;
-    margin-left: var(--menu-box-spacing);
+}
+
+#menu-box table {
+    text-align: right;
 }

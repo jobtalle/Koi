@@ -35,6 +35,7 @@ Card.prototype.CLASS_INFO_TEXT = "text";
 Card.prototype.CLASS_INFO_BACKGROUND = "background";
 Card.prototype.CLASS_INFO_LABEL = "label";
 Card.prototype.CLASS_INFO_VALUE = "value";
+Card.prototype.CLASS_JAPANESE = "japanese";
 Card.prototype.WIDTH = StyleUtils.getInt("--card-width");
 Card.prototype.HEIGHT = StyleUtils.getInt("--card-height");
 Card.prototype.RATIO = Card.prototype.WIDTH / Card.prototype.HEIGHT;
@@ -330,6 +331,9 @@ Card.prototype.createInfo = function() {
     element.appendChild(this.createProperty(
         language.get(this.LANG_LENGTH),
         (this.body.getLength()).toFixed(1).toString() + " " + language.get(this.LANG_UNIT_LENGTH)));
+
+    if (chosenLocale === "ja" || chosenLocale === "zh")
+        element.classList.add(this.CLASS_JAPANESE);
 
     if (ageMinutes < 1)
         element.appendChild(this.createProperty(

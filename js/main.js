@@ -5,13 +5,6 @@ const glParameters = {
     premultipliedAlpha: true,
     preserveDrawingBuffer: true
 };
-const loader = new Loader(
-    document.getElementById("loader"),
-    document.getElementById("loader-graphics"),
-    document.getElementById("loader-button-start"),
-    document.getElementById("loader-button-new"),
-    document.getElementById("loader-button-settings"),
-    document.getElementById("wrapper"));
 const canvas = document.getElementById("renderer");
 const gl =
     canvas.getContext("webgl", glParameters) ||
@@ -36,24 +29,55 @@ const makeLanguage = locale => {
         case "en":
             chosenLocale = "en";
 
-            return new Language("language/english.json");
+            return new Language("KoiTranslations/english.json");
         case "nl":
             chosenLocale = "nl";
 
-            return new Language("language/dutch.json");
+            return new Language("KoiTranslations/dutch.json");
         case "pl":
             chosenLocale = "pl";
 
-            return new Language("language/polish.json");
+            return new Language("KoiTranslations/polish.json");
         case "tr":
             chosenLocale = "tr";
 
-            return new Language("language/turkish.json");
+            return new Language("KoiTranslations/turkish.json");
+        case "de":
+            chosenLocale = "de";
+
+            return new Language("KoiTranslations/german.json");
+        case "fr":
+            chosenLocale = "fr";
+
+            return new Language("KoiTranslations/french.json");
+        case "ja":
+            chosenLocale = "ja";
+
+            return new Language("KoiTranslations/japanese.json");
+        case "es":
+            chosenLocale = "es";
+
+            return new Language("KoiTranslations/spanish.json");
+        case "pt":
+            chosenLocale = "pt";
+
+            return new Language("KoiTranslations/portuguese.json");
+        case "zh":
+            chosenLocale = "zh";
+
+            return new Language("KoiTranslations/simplifiedchinese.json");
     }
 };
 
 const paramLang = window["localStorage"].getItem(Menu.prototype.KEY_LANGUAGE) || searchParams.get("lang");
 const language = paramLang ? makeLanguage(paramLang) : makeLanguage(navigator.language.substring(0, 2));
+const loader = new Loader(
+    document.getElementById("loader"),
+    document.getElementById("loader-graphics"),
+    document.getElementById("loader-button-start"),
+    document.getElementById("loader-button-new"),
+    document.getElementById("loader-button-settings"),
+    document.getElementById("wrapper"));
 let imperial = false;
 
 if (gl &&

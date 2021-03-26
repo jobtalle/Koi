@@ -190,5 +190,76 @@ const CardRequirements = [
             new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_DARKBLUE),
             new LayerFootprint(LayerSpots.prototype.ID, Palette.INDEX_GOLD)
         ]))
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_TEAL)
+        ])),
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_TEAL),
+            new LayerFootprint(LayerSpots.prototype.ID, Palette.INDEX_BLACK)
+        ])),
+        null,
+        null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_GREEN)
+        ])),
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_GREEN),
+            new LayerFootprint(LayerStripes.prototype.ID, Palette.INDEX_ORANGE)
+        ])),
+        null,
+        null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_DARKGREEN)
+        ])),
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_DARKGREEN),
+            new LayerFootprint(LayerRidge.prototype.ID, Palette.INDEX_GREEN)
+        ])),
+        null,
+        null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_BROWN),
+            new LayerFootprint(LayerStripes.prototype.ID, Palette.INDEX_LIGHTBROWN)
+        ])),
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_BROWN),
+            new LayerFootprint(LayerSpots.prototype.ID, Palette.INDEX_LIGHTBROWN)
+        ])),
+        null,
+        null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_BORDEAUX)
+        ])),
+        new CardRequirement(new PatternFootprint([
+            new LayerFootprint(LayerBase.prototype.ID, Palette.INDEX_BORDEAUX),
+            new LayerFootprint(LayerRidge.prototype.ID, Palette.INDEX_RED)
+        ])),
+        null,
+        null
     ]
 ];

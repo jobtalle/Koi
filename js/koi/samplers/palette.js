@@ -18,7 +18,8 @@ Palette.INDEX_TEAL = 11;
 Palette.INDEX_GREEN = 12;
 Palette.INDEX_DARKGREEN = 13;
 Palette.INDEX_LIGHTBROWN = 14;
-Palette.INDEX_LAST = Palette.INDEX_LIGHTBROWN;
+Palette.INDEX_BORDEAUX = 15;
+Palette.INDEX_LAST = Palette.INDEX_BORDEAUX;
 Palette.COLOR_NAMES = [
     "white",
     "black",
@@ -34,7 +35,8 @@ Palette.COLOR_NAMES = [
     "teal",
     "green",
     "darkgreen",
-    "lightbrown"
+    "lightbrown",
+    "bordeaux"
 ];
 Palette.COLORS = [
     Color.fromCSS("--color-fish-white"),
@@ -51,5 +53,6 @@ Palette.COLORS = [
     Color.fromCSS("--color-fish-teal"),
     Color.fromCSS("--color-fish-green"),
     Color.fromCSS("--color-fish-darkgreen"),
-    Color.fromCSS("--color-fish-lightbrown")
+    Color.fromCSS("--color-fish-lightbrown"),
+    Color.fromCSS("--color-fish-bordeaux")
 ];

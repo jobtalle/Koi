@@ -25,17 +25,25 @@ Menu.prototype.ID_BOX = "menu-box";
 Menu.prototype.CLASS_VISIBLE = "visible";
 Menu.prototype.LANG_TITLE = "MENU";
 Menu.prototype.LANG_VOLUME = "VOLUME";
+Menu.prototype.LANG_GRASS_AUDIO = "TOGGLE_GRASS_AUDIO";
 Menu.prototype.LANG_FULLSCREEN = "TOGGLE_FULLSCREEN";
 Menu.prototype.LANG_LANGUAGE = "LANGUAGE";
 Menu.prototype.LANG_QUIT = "QUIT";
 Menu.prototype.LANG_EXIT = "BACK";
 Menu.prototype.KEY_VOLUME = "volume";
 Menu.prototype.KEY_LANGUAGE = "language";
+Menu.prototype.KEY_GRASS_AUDIO = "grass-audio";
 Menu.prototype.LANGUAGES = [
     ["en", "English"],
-    ["nl", "Nederlands"],
-    ["pl", "Polskie"],
-    ["tr", "Türkçe"]
+    ["de", "Deutsch (German)"],
+    ["fr", "Français (French)"],
+    ["ja", "日本語 (Japanese)"],
+    ["zh", "简体中文 (Simplified Chinese)"],
+    ["nl", "Nederlands (Dutch)"],
+    ["pl", "Polski (Polish)"],
+    ["tr", "Türkçe (Turkish)"],
+    ["pt", "Português (Portuguese)"],
+    ["es", "Español (Spanish)"]
 ];
 
 /**
@@ -47,13 +55,18 @@ Menu.prototype.LANGUAGES = [
  */
 Menu.prototype.createBox = function(fullscreen, audioEngine, audio) {
     const element = document.createElement("div");
+    const table = document.createElement("table");
 
     element.id = this.ID_BOX;
     element.onclick = event => event.stopPropagation();
 
     element.appendChild(this.createTitle());
-    element.appendChild(this.createVolumeSlider(audioEngine));
-    element.appendChild(this.languageChooser);
+
+    table.appendChild(this.createVolumeSlider(audioEngine));
+    table.appendChild(this.createGrassAudioToggle(audioEngine));
+    table.appendChild(this.languageChooser);
+
+    element.appendChild(table);
     element.appendChild(this.createButtonFullscreen(fullscreen, audio));
     element.appendChild(this.buttonBack);
 
@@ -72,7 +85,7 @@ Menu.prototype.addQuitOption = function() {
         this.box.appendChild(this.buttonBack);
     }
 
-    this.box.removeChild(this.languageChooser);
+    this.languageChooser.parentNode.removeChild(this.languageChooser);
 };
 
 /**
@@ -88,10 +101,25 @@ Menu.prototype.createTitle = function() {
 };
 
 /**
+ * Create a data cell element
+ * @param {HTMLElement} element The element to wrap
+ * @returns {HTMLTableDataCellElement}
+ */
+Menu.prototype.createTD = function(element) {
+    const td = document.createElement("td");
+
+    td.appendChild(element);
+
+    return td;
+};
+
+/**
  * Create the volume slider
  * @param {AudioEngine} audioEngine The audio engine
+ * @returns {HTMLTableRowElement} The table row
  */
 Menu.prototype.createVolumeSlider = function(audioEngine) {
+    const row = document.createElement("tr");
     const label = document.createElement("label");
     const element = document.createElement("input");
 
@@ -115,16 +143,55 @@ Menu.prototype.createVolumeSlider = function(audioEngine) {
     };
 
     label.appendChild(document.createTextNode(language.get(this.LANG_VOLUME)));
+
+    row.appendChild(this.createTD(label));
+    row.appendChild(this.createTD(element));
+
+    return row;
+};
+
+/**
+ * Create a grass audio toggle
+ * @param {AudioEngine} audioEngine The audio engine
+ * @returns {HTMLTableRowElement} The audio toggle
+ */
+Menu.prototype.createGrassAudioToggle = function(audioEngine) {
+    const row = document.createElement("tr");
+    const label = document.createElement("label");
+    const element = document.createElement("input");
+
+    element.type = "checkbox";
+    element.checked = true;
+
+    if (window["localStorage"].getItem(this.KEY_GRASS_AUDIO)) {
+        element.checked = window["localStorage"].getItem(this.KEY_GRASS_AUDIO) === "true";
+        audioEngine.granular = element.checked;
+    }
+    else
+        element.checked = true;
+
+    element.onchange = () => {
+        window["localStorage"].setItem(this.KEY_GRASS_AUDIO, element.checked.toString());
+
+        audioEngine.granular = element.checked;
+    };
+
+    label.appendChild(document.createTextNode(language.get(this.LANG_GRASS_AUDIO)));
     label.appendChild(element);
 
-    return label;
+    row.appendChild(this.createTD(label));
+    row.appendChild(this.createTD(element));
+
+    return row;
 };
 
 /**
  * Create a language chooser
  * @param {String} locale The locale string
+ * @returns {HTMLTableRowElement} The table row
  */
 Menu.prototype.createLanguageChooser = function(locale) {
+    const row = document.createElement("tr");
     const label = document.createElement("label");
     const select = document.createElement("select");
 
@@ -147,9 +214,11 @@ Menu.prototype.createLanguageChooser = function(locale) {
     };
 
     label.appendChild(document.createTextNode(language.get(this.LANG_LANGUAGE)));
-    label.appendChild(select);
 
-    return label;
+    row.appendChild(this.createTD(label));
+    row.appendChild(this.createTD(select));
+
+    return row;
 };
 
 /**
