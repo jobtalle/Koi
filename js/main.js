@@ -66,6 +66,10 @@ const makeLanguage = locale => {
             chosenLocale = "zh";
 
             return new Language("KoiTranslations/simplifiedchinese.json");
+        case "ru":
+            chosenLocale = "ru";
+
+            return new Language("KoiTranslations/russian.json");
     }
 };
 
