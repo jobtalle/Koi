@@ -11,7 +11,7 @@ HTML, CSS and Javascript content is compressed using [squish.py](https://github.
 Make sure [node.js](https://www.nodejs.org) and [python 3](https://www.python.org/) are installed. After calling `npm i` to install all required packages, the following commands can be used to create binaries using [electron](https://github.com/electron/electron):
 
 | Operating system | Command |
-| --- | ---- |
+| --- | --- |
 | Windows (32 bit) | `npm run build-win-32` |
 | Windows (64 bit) | `npm run build-win-64` |
 | Linux (64 bit) | `npm run build-linux-64` |
