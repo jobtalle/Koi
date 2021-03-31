@@ -44,7 +44,8 @@ Menu.prototype.LANGUAGES = [
     ["tr", "Türkçe (Turkish)"],
     ["pt", "Português (Portuguese)"],
     ["es", "Español (Spanish)"],
-    ["ru", "Руccкий (Russian)"]
+    ["ru", "Руccкий (Russian)"],
+    ["fy", "Frysk (Frisian)"]
 ];
 
 /**

@@ -70,6 +70,10 @@ const makeLanguage = locale => {
             chosenLocale = "ru";
 
             return new Language("KoiTranslations/russian.json");
+        case "fy":
+            chosenLocale = "fy";
+
+            return new Language("KoiTranslations/frisian.json");
     }
 };
 
