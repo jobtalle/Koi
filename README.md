@@ -25,7 +25,7 @@ The game is available in several languages. Translations can be found in [this r
 
 ## Contributing
 
-Contributions can be proposed by submitting pull requests.
+Contributions can be proposed by submitting pull requests. The best place to ask questions is in [the official discord](https://discord.gg/bw3ZFe63Qg), which has a dedicated channel for source code related discussions.
 
 ## License
 
