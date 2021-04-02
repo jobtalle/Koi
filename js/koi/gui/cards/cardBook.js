@@ -278,9 +278,9 @@ CardBook.prototype.update = function() {
         if (this.flips.length === 0) {
             for (let i = 0; i < this.pages.length; i++) {
                 this.pages[i].setNoFlip();
-                if ((i != this.page)&&(i != this.page+1)) {
+
+                if (i !== this.page && i !== this.page + 1)
                     this.pages[i].hide();
-                }
             }
         }
     }
