@@ -259,16 +259,30 @@ CardBook.prototype.update = function() {
         }
 
         if (this.flipDirection === 1) {
-            this.pages[this.page + 2 * flip + 1].hide();
-            this.pages[this.page + 2 * flip - 1].setNoFlip();
+            this.pages[this.page - 2 * flip + 1].hide();
+            this.pages[this.page - 2 * flip].setNoFlip();
+            this.pages[this.page - 2 * flip - 1].setNoFlip();
         }
         else {
             this.pages[this.page].hide();
+            this.pages[this.page + 1].setNoFlip();
             this.pages[this.page + 2].setNoFlip();
         }
 
         this.flips.splice(flip, 1);
         this.page -= this.flipDirection * 2;
+        
+        /** 
+         * Fixing stuck pages after all pages flip
+         */
+        if (this.flips.length === 0) {
+            for (let i = 0; i < this.pages.length; i++) {
+                this.pages[i].setNoFlip();
+                if ((i != this.page)&&(i != this.page+1)) {
+                    this.pages[i].hide();
+                }
+            }
+        }
     }
 };
 
