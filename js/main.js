@@ -240,7 +240,7 @@ if (gl &&
         window.onkeydown = event => {
             if (event.key === "Alt")
                 alt = true;
-            else if (event.key === "Enter")
+            else if (event.key === "Enter" && alt)
                 loader.fullscreen.toggle();
             else if (event.key === "Escape" || event.key === "m")
                 menu.toggle();
