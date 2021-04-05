@@ -3,7 +3,7 @@
  * @constructor
  */
 const StorageSystem = function() {
-    this.hasClipboard = navigator.clipboard["write"] && window["ClipboardItem"];
+    this.hasClipboard = navigator.clipboard && navigator.clipboard["write"] && window["ClipboardItem"];
 };
 
 /**
