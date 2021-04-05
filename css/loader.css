@@ -118,6 +118,10 @@
     fill: var(--loader-logo-color);
 }
 
+#loader.finished .loader-button button {
+    pointer-events: none;
+}
+
 .loader-button {
     width: 25%;
     height: var(--loader-button-height);
