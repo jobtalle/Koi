@@ -28,9 +28,24 @@ const Loader = function(
     this.onNewGame = null;
     this.menu = null;
     this.fullscreen = new LoaderFullscreen(wrapper);
+    this.overlayCanvas = document.createElement("canvas");
+    this.element.appendChild(this.overlayCanvas);
 
     element.appendChild(this.fullscreen.element);
     elementGraphics.appendChild(this.icon.element);
+
+    const loop = () => {
+        this.overlayCanvas.getContext("2d").clearRect(
+            0,
+            0,
+            this.overlayCanvas.width,
+            this.overlayCanvas.height);
+
+        if (this.element.className !== this.CLASS_FINISHED)
+            requestAnimationFrame(loop);
+    };
+
+    requestAnimationFrame(loop);
 };
 
 /**
@@ -91,6 +106,7 @@ Loader.prototype.updateBar = function() {
  */
 Loader.prototype.hide = function() {
     this.element.className = this.CLASS_FINISHED;
+    this.element.removeChild(this.overlayCanvas);
 
     setTimeout(() => {
         this.element.style.display = "none";
