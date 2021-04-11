@@ -39,6 +39,32 @@
     pointer-events: none;
 }
 
+#loader #loader-discord {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 400px;
+    height: 136px;
+    transition: var(--loader-fade-in);
+    transition-timing-function: ease-in;
+}
+
+#loader #loader-discord path {
+    fill: #FEFFFF;
+}
+
+#loader #loader-discord.invisible {
+    opacity: 0;
+}
+
+#loader #loader-discord:hover {
+    cursor: pointer;
+}
+
+#loader #loader-discord:hover path {
+    fill: #778BD8;
+}
+
 #loader .fullscreen {
     position: absolute;
     top: 0;

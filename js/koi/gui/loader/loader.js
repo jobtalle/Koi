@@ -20,6 +20,7 @@ const Loader = function(
     this.elementButtonStart = elementButtonStart;
     this.elementButtonNew = elementButtonNew;
     this.elementButtonSettings = elementButtonSettings;
+    this.elementDiscord = new LoaderDiscord();
     this.loadedPrevious = false;
     this.outstanding = 0;
     this.finished = 0;
@@ -32,6 +33,7 @@ const Loader = function(
     this.element.appendChild(this.overlayCanvas);
 
     element.appendChild(this.fullscreen.element);
+    element.appendChild(this.elementDiscord.element);
     elementGraphics.appendChild(this.icon.element);
 
     const loop = () => {
@@ -76,6 +78,7 @@ Loader.prototype.LANG_SETTINGS = "SETTINGS";
 Loader.prototype.CLASS_LOADED = "loaded";
 Loader.prototype.CLASS_FINISHED = "finished";
 Loader.prototype.CLASS_BUTTON_CONFIRM = "confirm";
+Loader.prototype.ID_DISCORD = "loader-discord";
 Loader.prototype.BUTTON_DELAY = .37;
 Loader.prototype.TRANSITION = StyleUtils.getFloat("--loader-fade-out");
 
