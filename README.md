@@ -31,6 +31,8 @@ Contributions can be proposed by submitting pull requests. The best place to ask
 
 Koi Farm is distributed under the [Apache 2.0 with Commons Clause](LICENSE.md) license.
 
+Audio by [3xBlast](http://3xblast.com/3xblast.com/).
+
 Concept art by [Samma van Klaarbergen](https://www.artstation.com/samma).
 
 Logo by [rosebolt](https://www.instagram.com/rosebolt/?hl=en).
