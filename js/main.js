@@ -77,7 +77,11 @@ const makeLanguage = locale => {
         case "uk":
             chosenLocale = "uk";
 
-            return new Language("KoiTranslations/ukrainian.json")
+            return new Language("KoiTranslations/ukrainian.json");
+        case "it":
+            chosenLocale = "it";
+
+            return new Language("KoiTranslations/italian.json");
     }
 };
 
