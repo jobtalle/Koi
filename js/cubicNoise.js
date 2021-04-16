@@ -9,7 +9,7 @@ const CubicNoise = function(width, height, randomizer) {
     this.width = width;
     this.height = height;
     this.randomizer = randomizer;
-    this.values = new Array((width + 2) * (height + 2));
+    this.values = new Array((width + 2) * (height + 3) + 1);
 
     for (let i = 0; i < this.values.length; ++i)
         this.values[i] = randomizer.getFloat();
@@ -53,28 +53,28 @@ CubicNoise.prototype.sample = function(x, y) {
 
     return this.interpolate(
         this.interpolate(
-            this.values[yi * this.width + xi],
-            this.values[yi * this.width + xi + 1],
-            this.values[yi * this.width + xi + 2],
-            this.values[yi * this.width + xi + 3],
+            this.values[yi * (this.width + 2) + xi],
+            this.values[yi * (this.width + 2) + xi + 1],
+            this.values[yi * (this.width + 2) + xi + 2],
+            this.values[yi * (this.width + 2) + xi + 3],
             x - xi),
         this.interpolate(
-            this.values[(yi + 1) * this.width + xi],
-            this.values[(yi + 1) * this.width + xi + 1],
-            this.values[(yi + 1) * this.width + xi + 2],
-            this.values[(yi + 1) * this.width + xi + 3],
+            this.values[(yi + 1) * (this.width + 2) + xi],
+            this.values[(yi + 1) * (this.width + 2) + xi + 1],
+            this.values[(yi + 1) * (this.width + 2) + xi + 2],
+            this.values[(yi + 1) * (this.width + 2) + xi + 3],
             x - xi),
         this.interpolate(
-            this.values[(yi + 2) * this.width + xi],
-            this.values[(yi + 2) * this.width + xi + 1],
-            this.values[(yi + 2) * this.width + xi + 2],
-            this.values[(yi + 2) * this.width + xi + 3],
+            this.values[(yi + 2) * (this.width + 2) + xi],
+            this.values[(yi + 2) * (this.width + 2) + xi + 1],
+            this.values[(yi + 2) * (this.width + 2) + xi + 2],
+            this.values[(yi + 2) * (this.width + 2) + xi + 3],
             x - xi),
         this.interpolate(
-            this.values[(yi + 3) * this.width + xi],
-            this.values[(yi + 3) * this.width + xi + 1],
-            this.values[(yi + 3) * this.width + xi + 2],
-            this.values[(yi + 3) * this.width + xi + 3],
+            this.values[(yi + 3) * (this.width + 2) + xi],
+            this.values[(yi + 3) * (this.width + 2) + xi + 1],
+            this.values[(yi + 3) * (this.width + 2) + xi + 2],
+            this.values[(yi + 3) * (this.width + 2) + xi + 3],
             x - xi),
         y - yi) * .5 + .25;
 };
