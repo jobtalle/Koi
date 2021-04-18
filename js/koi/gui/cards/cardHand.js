@@ -14,7 +14,7 @@ const CardHand = function(width, height, dropTarget) {
     this.fanCenter = new Vector2();
     this.fanAngle = 0;
     this.fanRadius = 0;
-
+    this.waitdrop = false;
     this.calculateFan(width, height);
 };
 
@@ -49,7 +49,6 @@ CardHand.prototype.deserialize = function(buffer, cards) {
         const deserialized = Card.deserialize(buffer, position, this.targets[card].z);
 
         this.cards.push(deserialized);
-
         cards.registerCard(deserialized);
     }
 };
@@ -85,7 +84,7 @@ CardHand.prototype.calculateFan = function(width, height) {
  * @returns {Boolean} True if the hand is full
  */
 CardHand.prototype.isFull = function() {
-    return this.cards.length === this.CAPACITY;
+    return (this.cards.length === this.CAPACITY) || this.waitdrop;
 };
 
 /**
@@ -189,18 +188,16 @@ CardHand.prototype.add = function(card, insert = true) {
 
         if (nearest === -1) {
             this.cards.push(card);
-
             return 1;
         }
         else {
             this.cards.splice(nearest, 0, card);
-
             return nearest + 1;
         }
     }
     else {
         this.cards.push(card);
-
+        this.waitdrop = false;
         return this.cards.length;
     }
 };
@@ -289,6 +286,7 @@ CardHand.prototype.moveDraggable = function(x, y) {
         }
     }
     else if (!this.isFull() && this.distanceToDropTarget(x, y) < this.DROP_TARGET_TRIGGER_DISTANCE) {
+        this.waitdrop = true;
         this.dropTargetVisible = true;
         this.dropTarget.classList.remove(this.CLASS_DROP_TARGET_HIDDEN);
     }
