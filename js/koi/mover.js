@@ -320,6 +320,7 @@ Mover.prototype.drop = function(
         const y = this.constellation.getPixelY(this.move.position.y, scale);
 
         if (this.gui.cards.onDropTarget(x, y)) {
+            this.gui.cards.hand.waitdrop = true;
             const card = new Card(
                 this.move.body,
                 this.move.position.copy().subtract(this.offset).multiply(scale).round());
