@@ -566,8 +566,6 @@ Koi.prototype.render = function(deltaTime) {
         this.constellation.width,
         this.constellation.height,
         time);
-
-    // this.systems.quad.render(this.systems.atlas.renderTarget.texture);
 };
 
 /**

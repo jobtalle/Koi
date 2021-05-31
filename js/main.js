@@ -177,10 +177,12 @@ if (gl &&
         const continueGame = index => {
             slot = slotNames[index];
 
+            gui.cards.enableBookButton();
+
             try {
                 session.deserialize(storage.getBuffer(slot));
 
-                koi = session.makeKoi(storage, systems, audio, gui, save, new TutorialCards(storage, gui.overlay));
+                koi = session.makeKoi(storage, systems, audio, gui, save);
             } catch (error) {
                 newSession(index);
 
