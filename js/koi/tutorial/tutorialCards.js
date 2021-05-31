@@ -7,7 +7,7 @@
 const TutorialCards = function(storage, overlay) {
     Tutorial.call(this, storage, overlay);
 
-    this.mutations = Number.parseInt(storage.get("tutorial"));
+    this.mutations = 0;
     this.pointingToDropTarget = false;
     this.cardStored = false;
     this.unlocked = false;
@@ -43,12 +43,9 @@ TutorialCards.prototype.start = function() {
  * A function that is called after a pattern mutation occurs
  */
 TutorialCards.prototype.onMutate = function() {
-    if (this.mutations < this.MUTATIONS_REQUIRED) {
-        this.storage.set("tutorial", (++this.mutations).toString());
-
-        if (this.mutations === this.MUTATIONS_REQUIRED)
+    if (this.mutations < this.MUTATIONS_REQUIRED)
+        if (++this.mutations === this.MUTATIONS_REQUIRED)
             this.start();
-    }
 };
 
 /**
@@ -114,8 +111,6 @@ TutorialCards.prototype.markFinished = function(koi) {
         koi.gui.cards.book.pages[1].slots[2].removeChild(this.highlight3);
         koi.gui.cards.book.pages[1].slots[3].removeChild(this.highlight4);
     }
-
-    this.storage.set("tutorial", (this.MUTATIONS_REQUIRED + 1).toString());
 };
 
 /**

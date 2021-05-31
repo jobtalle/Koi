@@ -90,8 +90,7 @@ const language = paramLang ? makeLanguage(paramLang) : makeLanguage(navigator.la
 const loader = new Loader(
     document.getElementById("loader"),
     document.getElementById("loader-graphics"),
-    document.getElementById("loader-button-start"),
-    document.getElementById("loader-button-new"),
+    document.getElementById("loader-slots"),
     document.getElementById("loader-button-settings"),
     document.getElementById("wrapper"));
 let imperial = false;
@@ -106,15 +105,15 @@ if (gl &&
         imperial = language.get("UNIT_LENGTH") === "ft";
 
         let session = new Session();
+        let slot = null;
+        const slotNames = ["session", "session2", "session3"];
         const storage = window["require"] ? new StorageFile() : new StorageLocal();
-        const tutorial = storage.get("tutorial") !== null;
         const wrapper = document.getElementById("wrapper");
         const gui = new GUI(
             document.getElementById("gui"),
             new CodeViewer(document.getElementById("code"), storage),
             audio);
         const systems = new Systems(gl, new Random(2893), wrapper.clientWidth, wrapper.clientHeight);
-        const sessionBuffer = tutorial ? storage.getBuffer("session") : null;
         const menu = new Menu(
             document.getElementById("menu"),
             loader.fullscreen,
@@ -152,15 +151,15 @@ if (gl &&
          * Save the game state to local storage
          */
         const save = () => {
-            storage.setBuffer("session", session.serialize(koi, gui));
+            storage.setBuffer(slot, session.serialize(koi, gui));
         };
 
         /**
          * A function that creates a new game session
+         * @param {number} index Create a new game at a given slot index
          */
-        const newSession = () => {
-            storage.remove("tutorial");
-
+        const newSession = index => {
+            slot = slotNames[index];
             session = new Session();
 
             gui.clear();
@@ -171,22 +170,29 @@ if (gl &&
             koi = session.makeKoi(storage, systems, audio, gui, save, new TutorialBreeding(storage, gui.overlay));
         };
 
-        // Retrieve last session if it exists
-        if (sessionBuffer) {
+        /**
+         * Continue an existing game
+         * @param {number} index Create a new game at a given slot index
+         */
+        const continueGame = index => {
+            slot = slotNames[index];
+
             try {
-                session.deserialize(sessionBuffer);
+                session.deserialize(storage.getBuffer(slot));
 
                 koi = session.makeKoi(storage, systems, audio, gui, save, new TutorialCards(storage, gui.overlay));
-
-                loader.setLoadedPrevious();
             } catch (error) {
-                newSession();
+                newSession(index);
 
                 console.warn(error);
             }
-        }
-        else
-            newSession();
+        };
+
+        loader.setResumables([
+            storage.getBuffer(slotNames[0]) !== null,
+            storage.getBuffer(slotNames[1]) !== null,
+            storage.getBuffer(slotNames[2]) !== null
+        ]);
 
         // Trigger the animation frame loop
         lastTime = performance.now();
@@ -248,7 +254,7 @@ if (gl &&
                 loader.fullscreen.toggle();
             else if (event.key === "Escape" || event.key === "m")
                 menu.toggle();
-            else if (koi.keyDown(event.key))
+            else if (koi && koi.keyDown(event.key))
                 event.preventDefault();
         };
 
@@ -259,11 +265,14 @@ if (gl &&
 
         window.onbeforeunload = () => {
             gui.cancelAction();
-            koi.touchEnd();
+            if (koi) {
+                koi.touchEnd();
 
-            save();
+                save();
 
-            koi.free();
+                koi.free();
+            }
+
             systems.free();
             gui.clear();
 
@@ -277,6 +286,7 @@ if (gl &&
         });
 
         loader.setNewGameCallback(newSession);
+        loader.setContinueCallback(continueGame);
     }, onFailure);
 
     // Create globally available SVG defs
