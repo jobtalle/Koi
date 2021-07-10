@@ -35,4 +35,4 @@ Audio by [3xBlast](http://3xblast.com/3xblast.com/).
 
 Concept art by [Samma van Klaarbergen](https://www.artstation.com/samma).
 
-Logo by [rosebolt](https://rosebolt.me/).
+Logo by [Eveline Dubblinga](https://rosebolt.me/).
