@@ -1,0 +1,6 @@
+# development artifacts
+node_modules
+
+# build artifacts
+KoiFarm-win32*
+release.html
