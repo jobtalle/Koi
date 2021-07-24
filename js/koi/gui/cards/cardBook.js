@@ -185,7 +185,8 @@ CardBook.prototype.reverse = function() {
  * @returns {Boolean} True if the next page flip cannot be made because it's locked
  */
 CardBook.prototype.nextFlipLocked = function() {
-    return this.unlocked <= (this.page >> 1) - this.flips.length * this.flipDirection;
+    return this.pages[this.page + 1].hasRequirements() &&
+        this.unlocked <= (this.page >> 1) - this.flips.length * this.flipDirection;
 };
 
 /**
