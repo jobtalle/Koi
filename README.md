@@ -2,7 +2,7 @@
 
 A Koi breeding game. Get it [on steam](https://store.steampowered.com/app/1518810/Koi_Farm) or [on itch.io](https://jobtalle.itch.io/koifarm).
 
-![alt text](screenshots.png "Koi Farm")
+[![alt text](screenshots.png "Koi Farm")](https://youtu.be/2JS6PEr1jUo)
 
 ## Building
 
