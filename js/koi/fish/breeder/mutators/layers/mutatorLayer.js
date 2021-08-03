@@ -90,14 +90,14 @@ MutatorLayer.prototype.MUTATIONS = [
         0,    // Brown
         0,    // Purple
         0,    // Blue
-        .019, // Pink
+        .015, // Pink
         0,    // Dark blue
         0,    // Light purple
         0,    // Teal
         0,    // Green
         0,    // Dark green
         0,    // Light brown
-        .001  // Bordeaux
+        .005  // Bordeaux
     ],
     [         // Transitions from brown
         0,    // White
