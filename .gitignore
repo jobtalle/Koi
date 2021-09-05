@@ -1,5 +1,6 @@
 # development artifacts
 node_modules
+package-lock.json
 
 # build artifacts
 KoiFarm-win32*
