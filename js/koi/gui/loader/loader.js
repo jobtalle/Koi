@@ -2,8 +2,7 @@
  * A load screen
  * @param {HTMLElement} element The container element
  * @param {HTMLElement} elementGraphics The element to place graphics in
- * @param {HTMLElement} elementButtonStart The element to build the start button in
- * @param {HTMLElement} elementButtonNew The element to build the new game button in
+ * @param {HTMLElement} elementSlots The save slots element
  * @param {HTMLElement} elementButtonSettings The element to build the settings button in
  * @param {HTMLElement} wrapper The wrapper to toggle fullscreen on
  * @constructor
@@ -11,26 +10,44 @@
 const Loader = function(
     element,
     elementGraphics,
-    elementButtonStart,
-    elementButtonNew,
+    elementSlots,
     elementButtonSettings,
     wrapper) {
     this.element = element;
     this.icon = new LoaderIcon();
-    this.elementButtonStart = elementButtonStart;
-    this.elementButtonNew = elementButtonNew;
+    this.elementSlots = elementSlots;
     this.elementButtonSettings = elementButtonSettings;
-    this.loadedPrevious = false;
+    this.elementDiscord = new LoaderDiscord();
+    this.resumables = null;
     this.outstanding = 0;
     this.finished = 0;
     this.released = false;
     this.onFinish = null;
     this.onNewGame = null;
+    this.onContinue = null;
     this.menu = null;
     this.fullscreen = new LoaderFullscreen(wrapper);
+    this.overlayCanvas = document.createElement("canvas");
+    this.element.appendChild(this.overlayCanvas);
+
+    this.slots = null;
 
     element.appendChild(this.fullscreen.element);
+    element.appendChild(this.elementDiscord.element);
     elementGraphics.appendChild(this.icon.element);
+
+    const loop = () => {
+        this.overlayCanvas.getContext("2d").clearRect(
+            0,
+            0,
+            this.overlayCanvas.width,
+            this.overlayCanvas.height);
+
+        if (this.element.className !== this.CLASS_FINISHED)
+            requestAnimationFrame(loop);
+    };
+
+    requestAnimationFrame(loop);
 };
 
 /**
@@ -53,14 +70,10 @@ Loader.Requirement.prototype.satisfy = function() {
     this.loader.finish(this.weight);
 };
 
-Loader.prototype.LANG_START = "START";
-Loader.prototype.LANG_CONTINUE = "CONTINUE";
-Loader.prototype.LANG_NEW = "NEW";
-Loader.prototype.LANG_CONFIRM = "CONFIRM";
 Loader.prototype.LANG_SETTINGS = "SETTINGS";
 Loader.prototype.CLASS_LOADED = "loaded";
 Loader.prototype.CLASS_FINISHED = "finished";
-Loader.prototype.CLASS_BUTTON_CONFIRM = "confirm";
+Loader.prototype.ID_DISCORD = "loader-discord";
 Loader.prototype.BUTTON_DELAY = .37;
 Loader.prototype.TRANSITION = StyleUtils.getFloat("--loader-fade-out");
 
@@ -75,8 +88,8 @@ Loader.prototype.setMenu = function(menu) {
 /**
  * Indicate that a previous game has been loaded
  */
-Loader.prototype.setLoadedPrevious = function() {
-    this.loadedPrevious = true;
+Loader.prototype.setResumables = function(resumables) {
+    this.resumables = resumables;
 };
 
 /**
@@ -91,6 +104,7 @@ Loader.prototype.updateBar = function() {
  */
 Loader.prototype.hide = function() {
     this.element.className = this.CLASS_FINISHED;
+    this.element.removeChild(this.overlayCanvas);
 
     setTimeout(() => {
         this.element.style.display = "none";
@@ -163,19 +177,37 @@ Loader.prototype.createButtonSettings = function() {
  */
 Loader.prototype.complete = function() {
     this.fullscreen.setLoaded();
-    this.elementButtonStart.classList.add(this.CLASS_LOADED);
-    this.elementButtonStart.appendChild(this.createButtonStart());
+
+    const onNewGame = index => {
+        this.onNewGame(index);
+        this.onFinish();
+        this.hide();
+    };
+
+    const onContinue = index => {
+        this.onContinue(index);
+        this.onFinish();
+        this.hide();
+    };
+
+    this.slots = [
+        new LoaderSlot(0, "1", onNewGame, this.resumables[0] ? onContinue : null),
+        new LoaderSlot(1, "2", onNewGame, this.resumables[1] ? onContinue : null),
+        new LoaderSlot(2, "3", onNewGame, this.resumables[2] ? onContinue : null)
+    ];
+
+    for (const slot of this.slots)
+        this.elementSlots.appendChild(slot.element);
+
+    setTimeout(() => {
+        for (const slot of this.slots)
+            slot.element.classList.add(this.CLASS_LOADED);
+    }, 100);
 
     setTimeout(() => {
         this.elementButtonSettings.appendChild(this.createButtonSettings());
         this.elementButtonSettings.classList.add(this.CLASS_LOADED);
     }, this.BUTTON_DELAY * 1000);
-
-    if (this.loadedPrevious)
-        setTimeout(() => {
-            this.elementButtonNew.appendChild(this.createButtonNew());
-            this.elementButtonNew.classList.add(this.CLASS_LOADED);
-        }, this.BUTTON_DELAY * 2000);
 };
 
 /**
@@ -205,6 +237,14 @@ Loader.prototype.setFinishCallback = function(onFinish) {
  */
 Loader.prototype.setNewGameCallback = function(onNewGame) {
     this.onNewGame = onNewGame;
+};
+
+/**
+ * Set the function to call when an existing game should continue
+ * @param {Function} onContinue A function that continues an existing game
+ */
+Loader.prototype.setContinueCallback = function(onContinue) {
+    this.onContinue = onContinue;
 };
 
 /**

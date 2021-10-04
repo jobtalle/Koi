@@ -261,5 +261,95 @@ const CardRequirements = [
         ])),
         null,
         null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
+    ],
+    [
+        null, null, null, null
     ]
 ];

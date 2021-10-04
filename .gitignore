@@ -1,0 +1,9 @@
+# development artifacts
+node_modules
+package-lock.json
+
+# build artifacts
+KoiFarm-win32*
+KoiFarm-linux-x64
+KoiFarm-darwin-x64
+release.html
