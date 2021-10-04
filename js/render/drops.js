@@ -95,30 +95,30 @@ Drops.prototype.render = function(count, window, windowWidth, transparency) {
     this.gl.depthMask(false);
 
     if (window > windowWidth) {
-        const count = Math.ceil(count * windowWidth) << 1;
+        const dropCount = Math.ceil(count * windowWidth) << 1;
 
-        if (count !== 0)
+        if (dropCount > 0)
             this.gl.drawArrays(
                 this.gl.LINES,
                 Math.floor(count * (window - windowWidth)) << 1,
-                count);
+                dropCount);
     }
     else {
-        let count = Math.ceil(count * window) << 1;
+        let dropCount = Math.ceil(count * window) << 1;
 
-        if (count !== 0)
+        if (dropCount > 0)
             this.gl.drawArrays(
                 this.gl.LINES,
                 0,
-                count);
+                dropCount);
 
-        count = Math.ceil(count * (1 - (window - windowWidth + 1))) << 1;
+        dropCount = Math.ceil(count * (1 - (window - windowWidth + 1))) << 1;
 
-        if (count !== 0)
+        if (dropCount > 0)
             this.gl.drawArrays(
                 this.gl.LINES,
                 Math.floor(count * (window - windowWidth + 1)) << 1,
-                count);
+                dropCount);
     }
 
     this.gl.depthMask(true);
