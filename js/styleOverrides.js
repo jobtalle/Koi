@@ -33,8 +33,8 @@
         this.css = css;
     };
 
-    const autumn = "css/colors/autumn.css";
-    const winter = "css/colors/winter.css";
+    const autumn = "autumn.css";
+    const winter = "winter.css";
     const overrides = [
         // Halloween
         new Override(31, 10, autumn),
