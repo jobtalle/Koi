@@ -12,20 +12,12 @@ const AudioEffect = function(engine, sources) {
     this.playbackRate = 1;
 
     if (this.singleSource) {
-        const requirement1 = loader.createRequirement(this.REQUIREMENT_WEIGHT);
-        const requirement2 = loader.createRequirement(this.REQUIREMENT_WEIGHT);
-
-        this.howls[0] = this.createElement(sources, requirement1.satisfy.bind(requirement1));
-        this.howls[1] = this.createElement(sources, requirement2.satisfy.bind(requirement2));
+        this.howls[0] = this.createElement(sources);
+        this.howls[1] = this.createElement(sources);
     }
-    else for (let source = 0; source < this.variations; ++source) {
-        const requirement = loader.createRequirement(this.REQUIREMENT_WEIGHT);
-
-        this.howls[source] = this.createElement(sources[source], requirement.satisfy.bind(requirement));
-    }
+    else for (let source = 0; source < this.variations; ++source)
+        this.howls[source] = this.createElement(sources[source]);
 };
-
-AudioEffect.prototype.REQUIREMENT_WEIGHT = 1;
 
 /**
  * Create an audio element

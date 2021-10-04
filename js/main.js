@@ -71,13 +71,6 @@ const makeLanguage = locale => {
 
 const paramLang = window["localStorage"].getItem(Menu.prototype.KEY_LANGUAGE) || searchParams.get("lang");
 const language = paramLang ? makeLanguage(paramLang) : makeLanguage(navigator.language.substring(0, 2));
-const loader = new Loader(
-    document.getElementById("loader"),
-    document.getElementById("loader-graphics"),
-    document.getElementById("loader-button-start"),
-    document.getElementById("loader-button-new"),
-    document.getElementById("loader-button-settings"),
-    document.getElementById("wrapper"));
 let imperial = false;
 
 if (gl &&
@@ -99,9 +92,10 @@ if (gl &&
             audio);
         const systems = new Systems(gl, new Random(2893), wrapper.clientWidth, wrapper.clientHeight);
         const sessionBuffer = tutorial ? storage.getBuffer("session") : null;
+        const fullscreen = new LoaderFullscreen(wrapper);
         const menu = new Menu(
             document.getElementById("menu"),
-            loader.fullscreen,
+            fullscreen,
             chosenLocale,
             audioEngine,
             audio);
@@ -112,8 +106,6 @@ if (gl &&
         let alt = false;
 
         new Drop(gui, systems, document.getElementById("drop"), canvas);
-
-        loader.setMenu(menu);
 
         canvas.width = wrapper.clientWidth;
         canvas.height = wrapper.clientHeight;
@@ -161,8 +153,6 @@ if (gl &&
                 session.deserialize(sessionBuffer);
 
                 koi = session.makeKoi(storage, systems, audio, gui, save, new TutorialCards(storage, gui.overlay));
-
-                loader.setLoadedPrevious();
             } catch (error) {
                 newSession();
 
@@ -229,7 +219,7 @@ if (gl &&
             if (event.key === "Alt")
                 alt = true;
             else if (event.key === "Enter")
-                loader.fullscreen.toggle();
+                fullscreen.toggle();
             else if (event.key === "Escape" || event.key === "m")
                 menu.toggle();
             else if (koi.keyDown(event.key))
@@ -254,13 +244,9 @@ if (gl &&
             loaded = false;
         };
 
-        loader.setFinishCallback(() => {
-            requestAnimationFrame(loop);
+        requestAnimationFrame(loop);
 
-            audioEngine.interact();
-        });
-
-        loader.setNewGameCallback(newSession);
+        audioEngine.interact();
     }, onFailure);
 
     // Create globally available SVG defs

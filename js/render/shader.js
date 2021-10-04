@@ -15,7 +15,6 @@ const Shader = function(
     attributes,
     uniforms,
     constants = null) {
-    const requirement = loader.createRequirement(this.REQUIREMENT_WEIGHT);
     const shaderVertex = gl.createShader(gl.VERTEX_SHADER);
     const shaderFragment = gl.createShader(gl.FRAGMENT_SHADER);
 
@@ -50,8 +49,6 @@ const Shader = function(
                 gl.getUniformLocation(this.program, constant.name),
                 ...constant.values);
     }
-
-    requirement.satisfy();
 };
 
 /**
