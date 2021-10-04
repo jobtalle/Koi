@@ -107,8 +107,6 @@ Card.prototype.initialize = function(
     if (this.initialized)
         return;
 
-    const requirement = loader.hasFinished() ? null : loader.createRequirement(this.REQUIREMENT_WEIGHT);
-
     this.initialized = true;
 
     let createdTexture = false;
@@ -122,18 +120,11 @@ Card.prototype.initialize = function(
     }
 
     preview.render(this.body, atlas, bodies).toBlob(blob => {
-        if (!this.initialized) {
-            if (requirement)
-                requirement.satisfy();
-
+        if (!this.initialized)
             return;
-        }
 
         this.previewURL = URL.createObjectURL(blob);
         this.previewAnimation.style.backgroundImage = "url(" + this.previewURL + ")";
-
-        if (requirement)
-            requirement.satisfy();
     });
 
     if (createdTexture)
