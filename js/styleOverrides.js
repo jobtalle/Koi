@@ -1,4 +1,7 @@
 {
+    const date = new Date();
+    const day = date.getUTCDate();
+    const month = date.getUTCMonth();
     const head = document.getElementsByTagName("head")[0];
 
     /**
@@ -17,5 +20,36 @@
         head.appendChild(link);
     };
 
-    // overrideCSS(head, "css/colors/autumn.css");
+    /**
+     * A date based override
+     * @param {number} day The day
+     * @param {number} month The month
+     * @param {string} css The CSS file to apply on this date
+     * @constructor
+     */
+    const Override = function(day, month, css) {
+        this.day = day;
+        this.month = month - 1;
+        this.css = css;
+    };
+
+    const autumn = "css/colors/autumn.css";
+    const winter = "css/colors/winter.css";
+    const overrides = [
+        // Halloween
+        new Override(31, 10, autumn),
+        new Override(1, 11, autumn),
+
+        // Christmas
+        new Override(24, 12, winter),
+        new Override(25, 12, winter),
+        new Override(26, 12, winter),
+
+        // New year
+        new Override(1, 1, winter),
+    ];
+
+    for (let override = 0, overrideCount = overrides.length; override < overrideCount; ++override)
+        if (overrides[override].day === day && overrides[override].month === month)
+            overrideCSS(head, overrides[override].css);
 }
