@@ -70,7 +70,16 @@ SpawnerState.prototype.BLUEPRINTS = [
                     // Roundness
                     new Sampler(110, 160)),
                 // Layers
-                []
+                [
+                    new BlueprintLayerSpots(
+                        Palette.INDEX_GOLD,
+                        new Sampler(108, 148),
+                        new Sampler(108, 148),
+                        new Sampler(108, 148),
+                        new Sampler(108, 148),
+                        new Sampler(108, 148),
+                        new Sampler(108, 148))
+                ]
             )
         )
     ),

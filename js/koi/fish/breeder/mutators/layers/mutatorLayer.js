@@ -48,8 +48,8 @@ MutatorLayer.prototype.MUTATIONS = [
     [         // Transitions from gold
         0,    // White
         0,    // Black
-        .9,   // Gold
-        .1,   // Orange
+        .85,   // Gold
+        .15,   // Orange
         0,    // Red
         0,    // Brown
         0,    // Purple
@@ -66,9 +66,9 @@ MutatorLayer.prototype.MUTATIONS = [
     [         // Transitions from orange
         0,    // White
         0,    // Black
-        .07,  // Gold
-        .87,  // Orange
-        .06,  // Red
+        .1,   // Gold
+        .8,   // Orange
+        .1,   // Red
         0,    // Brown
         0,    // Purple
         0,    // Blue
@@ -85,19 +85,19 @@ MutatorLayer.prototype.MUTATIONS = [
         0,    // White
         0,    // Black
         0,    // Gold
-        .08,  // Orange
-        .9,   // Red
+        0,    // Orange
+        .88,  // Red
         0,    // Brown
         0,    // Purple
         0,    // Blue
-        .015, // Pink
+        .1,   // Pink
         0,    // Dark blue
         0,    // Light purple
         0,    // Teal
         0,    // Green
         0,    // Dark green
         0,    // Light brown
-        .005  // Bordeaux
+        .02   // Bordeaux
     ],
     [         // Transitions from brown
         0,    // White
