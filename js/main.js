@@ -232,7 +232,8 @@ if (gl &&
         };
 
         session = new Session();
-        koi = session.makeKoi(storage, systems, audio, gui, save, new TutorialBreeding(storage, gui.overlay));
+        koi = session.makeKoi(storage, systems, audio, gui, save, null);
+        gui.cards.enableBookButton();
 
         requestAnimationFrame(loop);
 
