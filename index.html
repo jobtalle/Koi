@@ -19,7 +19,7 @@
     <link rel="stylesheet" type="text/css" href="css/overlay.css">
     <link rel="stylesheet" type="text/css" href="css/drop.css">
     <link rel="stylesheet" type="text/css" href="css/code.css">
-    <link rel="stylesheet" type="text/css" href="css/eventButtons.css">
+    <link rel="stylesheet" type="text/css" href="eventButtons.css">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <meta charset="utf-8">
     <meta name="mobile-web-app-capable" content="yes">
@@ -30,7 +30,10 @@
 <div id="wrapper">
     <canvas id="renderer"></canvas>
     <button id="button-reset" onclick="window['clearPond']()">Leeg vijvers</button>
-    <button id="button-help">Help</button>
+    <button id="button-help" onclick="document.getElementById('tutorial-image').style.display='flex'">Help</button>
+    <div id="tutorial-image" onclick="document.getElementById('tutorial-image').style.display='none'">
+        <div id="tutorial-contents"></div>
+    </div>
     <div id="gui"></div>
     <div id="code"></div>
     <div id="drop"></div>

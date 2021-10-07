@@ -38,3 +38,20 @@
     background-color: var(--color-white);
     color: var(--color-water-deep);
 }
+
+#tutorial-image {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+#tutorial-contents {
+    width: 800px;
+    height: 600px;
+    background-image: url("tutorial.png");
+}
