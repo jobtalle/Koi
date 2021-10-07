@@ -87,15 +87,6 @@ const makeLanguage = locale => {
 
 const paramLang = window["localStorage"].getItem(Menu.prototype.KEY_LANGUAGE) || searchParams.get("lang");
 const language = paramLang ? makeLanguage(paramLang) : makeLanguage(navigator.language.substring(0, 2));
-<<<<<<< HEAD
-=======
-const loader = new Loader(
-    document.getElementById("loader"),
-    document.getElementById("loader-graphics"),
-    document.getElementById("loader-slots"),
-    document.getElementById("loader-button-settings"),
-    document.getElementById("wrapper"));
->>>>>>> develop
 let imperial = false;
 
 if (gl &&
@@ -117,11 +108,7 @@ if (gl &&
             new CodeViewer(document.getElementById("code"), storage),
             audio);
         const systems = new Systems(gl, new Random(2893), wrapper.clientWidth, wrapper.clientHeight);
-<<<<<<< HEAD
-        const sessionBuffer = tutorial ? storage.getBuffer("session") : null;
         const fullscreen = new LoaderFullscreen(wrapper);
-=======
->>>>>>> develop
         const menu = new Menu(
             document.getElementById("menu"),
             fullscreen,
@@ -183,28 +170,19 @@ if (gl &&
         const continueGame = index => {
             slot = slotNames[index];
 
-<<<<<<< HEAD
-                koi = session.makeKoi(storage, systems, audio, gui, save, new TutorialCards(storage, gui.overlay));
-=======
+            koi = session.makeKoi(storage, systems, audio, gui, save, new TutorialCards(storage, gui.overlay));
             gui.cards.enableBookButton();
 
             try {
                 session.deserialize(storage.getBuffer(slot));
 
                 koi = session.makeKoi(storage, systems, audio, gui, save);
->>>>>>> develop
             } catch (error) {
                 newSession(index);
 
                 console.warn(error);
             }
         };
-
-        loader.setResumables([
-            storage.getBuffer(slotNames[0]) !== null,
-            storage.getBuffer(slotNames[1]) !== null,
-            storage.getBuffer(slotNames[2]) !== null
-        ]);
 
         // Trigger the animation frame loop
         lastTime = performance.now();
@@ -262,13 +240,8 @@ if (gl &&
         window.onkeydown = event => {
             if (event.key === "Alt")
                 alt = true;
-<<<<<<< HEAD
             else if (event.key === "Enter")
                 fullscreen.toggle();
-=======
-            else if (event.key === "Enter" && alt)
-                loader.fullscreen.toggle();
->>>>>>> develop
             else if (event.key === "Escape" || event.key === "m")
                 menu.toggle();
             else if (koi && koi.keyDown(event.key))
@@ -296,14 +269,11 @@ if (gl &&
             loaded = false;
         };
 
+        continueGame(0);
+
         requestAnimationFrame(loop);
 
-<<<<<<< HEAD
         audioEngine.interact();
-=======
-        loader.setNewGameCallback(newSession);
-        loader.setContinueCallback(continueGame);
->>>>>>> develop
     }, onFailure);
 
     // Create globally available SVG defs
