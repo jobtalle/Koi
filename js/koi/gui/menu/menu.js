@@ -27,6 +27,7 @@ Menu.prototype.LANG_TITLE = "MENU";
 Menu.prototype.LANG_VOLUME = "VOLUME";
 Menu.prototype.LANG_GRASS_AUDIO = "TOGGLE_GRASS_AUDIO";
 Menu.prototype.LANG_FULLSCREEN = "TOGGLE_FULLSCREEN";
+Menu.prototype.LANG_MENU = "MENU";
 Menu.prototype.LANG_LANGUAGE = "LANGUAGE";
 Menu.prototype.LANG_QUIT = "QUIT";
 Menu.prototype.LANG_EXIT = "BACK";
@@ -79,15 +80,18 @@ Menu.prototype.createBox = function(fullscreen, audioEngine, audio) {
 
 /**
  * Add the save & quit option
+ * @param {AudioBank} audio Game audio
  */
-Menu.prototype.addQuitOption = function() {
+Menu.prototype.addQuitOption = function(audio) {
     const quit = this.createButtonQuit();
 
-    if (quit) {
-        this.box.removeChild(this.buttonBack);
+    this.box.removeChild(this.buttonBack);
+    this.box.appendChild(this.createButtonMenu());
+
+    if (quit)
         this.box.appendChild(quit);
-        this.box.appendChild(this.buttonBack);
-    }
+
+    this.box.appendChild(this.buttonBack);
 
     this.languageChooser.parentNode.removeChild(this.languageChooser);
 };
@@ -239,6 +243,20 @@ Menu.prototype.createButtonFullscreen = function(fullscreen, audio) {
         fullscreen.toggle();
 
         audio.effectClick.play();
+    };
+
+    return element;
+};
+
+/**
+ * Create the back to menu button
+ */
+Menu.prototype.createButtonMenu = function() {
+    const element = document.createElement("button");
+
+    element.appendChild(document.createTextNode(language.get(this.LANG_MENU)));
+    element.onclick = () => {
+        window.location.reload();
     };
 
     return element;
