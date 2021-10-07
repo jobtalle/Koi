@@ -181,7 +181,6 @@ TutorialBreeding.prototype.update = function(koi) {
         case this.PHASE_BREED_WAIT:
             if (this.bred) {
                 this.overlay.setText(language.get(this.LANG_CROSSBREED));
-                this.storage.set("tutorial", "0");
 
                 this.allowMutation = true;
                 this.phase = this.PHASE_CROSSBREED;
@@ -209,7 +208,6 @@ TutorialBreeding.prototype.update = function(koi) {
         case this.PHASE_CROSSBREED:
             if (this.mutated) {
                 this.overlay.removeText();
-                this.storage.set("tutorial", "1");
 
                 return true;
             }

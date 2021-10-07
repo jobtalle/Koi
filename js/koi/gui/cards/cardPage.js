@@ -63,6 +63,18 @@ CardPage.prototype.serialize = function(buffer) {
 };
 
 /**
+ * Check whether this card page has any requirements
+ * @returns {Boolean} True if this page has any requirements
+ */
+CardPage.prototype.hasRequirements = function() {
+    for (let requirement = 0; requirement < 4; ++requirement)
+        if (this.requirements[requirement])
+            return true;
+
+    return false;
+};
+
+/**
  * Make the page visible
  * @param {Cards} [cards] The cards GUI, required if the page contains any cards
  */

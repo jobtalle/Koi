@@ -185,7 +185,8 @@ CardBook.prototype.reverse = function() {
  * @returns {Boolean} True if the next page flip cannot be made because it's locked
  */
 CardBook.prototype.nextFlipLocked = function() {
-    return this.unlocked <= (this.page >> 1) - this.flips.length * this.flipDirection;
+    return this.pages[this.page + 1].hasRequirements() &&
+        this.unlocked <= (this.page >> 1) - this.flips.length * this.flipDirection;
 };
 
 /**
@@ -259,16 +260,21 @@ CardBook.prototype.update = function() {
         }
 
         if (this.flipDirection === 1) {
-            this.pages[this.page + 2 * flip + 1].hide();
-            this.pages[this.page + 2 * flip - 1].setNoFlip();
+            this.pages[this.page + 1].hide();
+            this.pages[this.page].hide();
+            this.pages[this.page].setNoFlip();
+            this.pages[this.page - 1].setNoFlip();
         }
         else {
             this.pages[this.page].hide();
+            this.pages[this.page + 1].hide();
+            this.pages[this.page + 1].setNoFlip();
             this.pages[this.page + 2].setNoFlip();
         }
 
         this.flips.splice(flip, 1);
         this.page -= this.flipDirection * 2;
+        
     }
 };
 
