@@ -400,3 +400,47 @@ Constellation.prototype.render = function(
 
     bodies.render(atlas, this.width, this.height, shadows, shadows);
 };
+
+/**
+ * Clear the ponds
+ */
+Constellation.prototype.clearPonds = function(audio, mover, water, random) {
+    const maxSounds = 10;
+    let sounds = 0;
+
+    for (let fish = this.big.fish.length; fish-- > 0;) {
+        mover.createBodySplash(this.big.fish[fish].body, water, random);
+
+        this.river.addFish(this.big.fish[fish]);
+        this.river.constraint.constrain(this.big.fish[fish].position, true);
+        this.big.fish[fish].body.moveTo(this.big.fish[fish].position);
+
+        mover.createBodySplash(this.big.fish[fish].body, water, random);
+
+        if (sounds++ < maxSounds) {
+            const pan = 2 * this.big.fish[fish].position.x / this.width - 1;
+
+            mover.playInteractionSound(this.big.fish[fish], pan);
+        }
+
+        this.big.removeFish(fish, null);
+    }
+
+    for (let fish = this.small.fish.length; fish-- > 0;) {
+        mover.createBodySplash(this.small.fish[fish].body, water, random);
+
+        this.river.addFish(this.small.fish[fish]);
+        this.river.constraint.constrain(this.small.fish[fish].position, true);
+        this.small.fish[fish].body.moveTo(this.small.fish[fish].position);
+
+        mover.createBodySplash(this.small.fish[fish].body, water, random);
+
+        if (sounds++ < maxSounds) {
+            const pan = 2 * this.small.fish[fish].position.x / this.width - 1;
+
+            mover.playInteractionSound(this.small.fish[fish], pan);
+        }
+
+        this.small.removeFish(fish, null);
+    }
+};

@@ -97,14 +97,17 @@ ConstraintArcPath.prototype.makeRings = function(arcs) {
  * @param {Vector2} vector The vector to constrain
  * @returns {Boolean} A boolean indicating whether the vector could be constrained
  */
-ConstraintArcPath.prototype.constrain = function(vector) {
+ConstraintArcPath.prototype.constrain = function(vector, center = false) {
     for (let arc = 0; arc < this.arcs.length; ++arc) {
         const dx = vector.x - this.arcs[arc].center.x;
         const dy = vector.y - this.arcs[arc].center.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
         if (dx * this.arcs[arc].direction.x + dy * this.arcs[arc].direction.y >= this.arcs[arc].cone * distance) {
-            this.rings[arc].constrain(vector, dx, dy, distance);
+            if (center)
+                this.rings[arc].constrainCenter(vector, dx, dy, distance);
+            else
+                this.rings[arc].constrain(vector, dx, dy, distance);
 
             return true;
         }

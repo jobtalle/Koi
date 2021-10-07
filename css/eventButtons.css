@@ -1,0 +1,40 @@
+:root {
+    --event-button-width: 200px;
+    --event-button-offset: 30%;
+}
+
+#button-reset {
+    position: absolute;
+    top: var(--menu-box-spacing);
+    right: calc(var(--menu-box-spacing) + var(--event-button-offset));
+    width: var(--event-button-width);
+    background-color: var(--color-water-deep);
+    color: var(--color-white);
+    border-radius: var(--menu-button-border-radius);
+    font-weight: bold;
+    white-space: nowrap;
+    min-width: max-content;
+}
+
+#button-reset:hover {
+    background-color: var(--color-white);
+    color: var(--color-water-deep);
+}
+
+#button-help {
+    position: absolute;
+    top: var(--menu-box-spacing);
+    right: calc(var(--menu-box-spacing) * 2 + var(--event-button-width) + var(--event-button-offset));
+    width: var(--event-button-width);
+    background-color: var(--color-water-deep);
+    color: var(--color-white);
+    border-radius: var(--menu-button-border-radius);
+    font-weight: bold;
+    white-space: nowrap;
+    min-width: max-content;
+}
+
+#button-help:hover {
+    background-color: var(--color-white);
+    color: var(--color-water-deep);
+}

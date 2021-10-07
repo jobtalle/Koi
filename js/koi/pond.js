@@ -126,7 +126,9 @@ Pond.prototype.addFish = function(fish) {
  * @param {Atlas} atlas The texture atlas
  */
 Pond.prototype.removeFish = function(index, atlas) {
-    this.fish[index].free(atlas);
+    if (atlas)
+        this.fish[index].free(atlas);
+
     this.fish.splice(index, 1);
 };
 

@@ -10,6 +10,7 @@ const gl =
     canvas.getContext("webgl", glParameters) ||
     canvas.getContext("experimental-webgl", glParameters);
 let chosenLocale = null;
+window["clearPond"] = () => {};
 
 /**
  * Called when loading resources failed
@@ -238,6 +239,10 @@ if (gl &&
         requestAnimationFrame(loop);
 
         audioEngine.interact();
+
+        window["clearPond"] = () => {
+            koi.constellation.clearPonds(audio, koi.mover, koi.water, session.random);
+        };
     }, onFailure);
 
     // Create globally available SVG defs

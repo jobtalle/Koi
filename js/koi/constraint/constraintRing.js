@@ -38,6 +38,21 @@ ConstraintRing.prototype.constrain = function(vector, dx, dy, distance) {
 };
 
 /**
+ * Constrain a vector to make sure it is inside the constraint
+ * @param {Vector2} vector The vector to constrain
+ * @param {Number} dx The X distance to the center
+ * @param {Number} dy The Y distance to the center
+ * @param {Number} distance The distance to the ring center
+ */
+ConstraintRing.prototype.constrainCenter = function(vector, dx, dy, distance) {
+    if (distance > this.radius - this.halfWidth && distance < this.radius + this.halfWidth)
+        return;
+
+    vector.x = this.position.x + this.radius * dx / distance;
+    vector.y = this.position.y + this.radius * dy / distance;
+};
+
+/**
  * Check whether a given point is contained within this constraint
  * @param {Number} x The X position
  * @param {Number} y The Y position
