@@ -85,7 +85,7 @@ const makeLanguage = locale => {
     }
 };
 
-const paramLang = window["localStorage"].getItem(Menu.prototype.KEY_LANGUAGE) || searchParams.get("lang");
+const paramLang = "nl"; // Fixed language
 const language = paramLang ? makeLanguage(paramLang) : makeLanguage(navigator.language.substring(0, 2));
 let imperial = false;
 
@@ -100,7 +100,6 @@ if (gl &&
 
         let session = new Session();
         let slot = null;
-        const slotNames = ["session", "session2", "session3"];
         const storage = window["require"] ? new StorageFile() : new StorageLocal();
         const wrapper = document.getElementById("wrapper");
         const gui = new GUI(
@@ -145,43 +144,6 @@ if (gl &&
          */
         const save = () => {
             storage.setBuffer(slot, session.serialize(koi, gui));
-        };
-
-        /**
-         * A function that creates a new game session
-         * @param {number} index Create a new game at a given slot index
-         */
-        const newSession = index => {
-            slot = slotNames[index];
-            session = new Session();
-
-            gui.clear();
-
-            if (koi)
-                koi.free();
-
-            koi = session.makeKoi(storage, systems, audio, gui, save, new TutorialBreeding(storage, gui.overlay));
-        };
-
-        /**
-         * Continue an existing game
-         * @param {number} index Create a new game at a given slot index
-         */
-        const continueGame = index => {
-            slot = slotNames[index];
-
-            koi = session.makeKoi(storage, systems, audio, gui, save, new TutorialCards(storage, gui.overlay));
-            gui.cards.enableBookButton();
-
-            try {
-                session.deserialize(storage.getBuffer(slot));
-
-                koi = session.makeKoi(storage, systems, audio, gui, save);
-            } catch (error) {
-                newSession(index);
-
-                console.warn(error);
-            }
         };
 
         // Trigger the animation frame loop
@@ -269,7 +231,8 @@ if (gl &&
             loaded = false;
         };
 
-        continueGame(0);
+        session = new Session();
+        koi = session.makeKoi(storage, systems, audio, gui, save, new TutorialBreeding(storage, gui.overlay));
 
         requestAnimationFrame(loop);
 
