@@ -115,49 +115,6 @@ Loader.prototype.hide = function() {
 };
 
 /**
- * Create the start button
- * @returns {HTMLButtonElement} The start button
- */
-Loader.prototype.createButtonStart = function() {
-    const element = document.createElement("button");
-
-    element.appendChild(document.createTextNode(language.get(this.loadedPrevious ? this.LANG_CONTINUE : this.LANG_START)));
-    element.onclick = () => {
-        this.onFinish();
-
-        this.hide();
-    };
-
-    return element;
-};
-
-/**
- * Create the new game button
- * @returns {HTMLButtonElement} The new game button
- */
-Loader.prototype.createButtonNew = function() {
-    const element = document.createElement("button");
-
-    element.innerText = language.get(this.LANG_NEW);
-    element.onclick = () => {
-        if (element.classList.contains(this.CLASS_BUTTON_CONFIRM)) {
-            if (this.onNewGame) {
-                this.onNewGame();
-                this.onFinish();
-
-                this.hide();
-            }
-        }
-        else {
-            element.classList.add(this.CLASS_BUTTON_CONFIRM);
-            element.innerText = language.get(this.LANG_CONFIRM);
-        }
-    };
-
-    return element;
-};
-
-/**
  * Create the settings button
  * @returns {HTMLButtonElement} The settings button
  */
