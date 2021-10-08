@@ -36,6 +36,10 @@
     const autumn = "autumn.css";
     const winter = "winter.css";
     const overrides = [
+        // Cinekid
+        new Override(17, 10, autumn),
+        new Override(20, 10, autumn),
+
         // Halloween
         new Override(31, 10, autumn),
         new Override(1, 11, autumn),
