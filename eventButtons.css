@@ -51,7 +51,8 @@
 }
 
 #tutorial-contents {
-    width: 800px;
-    height: 600px;
+    width: 526px;
+    height: 650px;
     background-image: url("tutorial.png");
+    border-radius: var(--menu-button-border-radius);
 }
