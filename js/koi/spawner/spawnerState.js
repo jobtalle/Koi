@@ -205,6 +205,68 @@ SpawnerState.prototype.BLUEPRINTS = [
             )
         )
     ),
+    // White
+    new Blueprint(
+        // School size
+        new SamplerPlateau(1, 2, 5, 1),
+        // Body
+        new BlueprintBody(
+            // Length
+            new Sampler(100, 180),
+            // Radius
+            new Sampler(180, 220),
+            // Growth speed
+            new Sampler(130, 170),
+            // Mating frequency
+            new Sampler(150, 160),
+            // Offspring count
+            new Sampler(130, 170),
+            // Age
+            new Sampler(20000, 25000),
+            // Fins
+            new BlueprintFins(
+                new BlueprintFin(
+                    new Sampler(110, 136),
+                    new Sampler(110, 136)),
+                new BlueprintFin(
+                    new Sampler(110, 136),
+                    new Sampler(110, 136))),
+            // Tail
+            new BlueprintTail(
+                // Length
+                new Sampler(100, 140),
+                // Skew
+                new Sampler(150, 220)),
+            // Pattern
+            new BlueprintPattern(
+                // Base
+                new BlueprintLayerBase(Palette.INDEX_WHITE),
+                // Body shape
+                new BlueprintLayerShapeBody(
+                    // Center power
+                    new Sampler(50, 100),
+                    // Radius power
+                    new Sampler(170, 200),
+                    // Eye position
+                    new Sampler(50, 100)),
+                // Fin shape
+                new BlueprintLayerShapeFin(
+                    // Angle
+                    new Sampler(200, 250),
+                    // Inset
+                    new Sampler(110, 160),
+                    // Dips
+                    new Sampler(30, 60),
+                    // Dip power
+                    new Sampler(110, 160),
+                    // Roundness
+                    new Sampler(110, 160)),
+                // Layers
+                [
+                ]
+            )
+        )
+    ),
     // Brown
     new Blueprint(
         // School size
@@ -265,10 +327,10 @@ SpawnerState.prototype.BLUEPRINTS = [
                 []
             )
         )
-    )
+    ),
 ];
 SpawnerState.prototype.BLUEPRINT_INITIAL_RIVER = SpawnerState.prototype.BLUEPRINTS[0];
-SpawnerState.prototype.BLUEPRINT_INITIAL_POND = SpawnerState.prototype.BLUEPRINTS[2];
+SpawnerState.prototype.BLUEPRINT_INITIAL_POND = SpawnerState.prototype.BLUEPRINTS[3];
 SpawnerState.prototype.BLUEPRINT_INITIAL_SMALL = SpawnerState.prototype.BLUEPRINTS[2];
 SpawnerState.prototype.BLUEPRINTS_TUTORIAL = [
     SpawnerState.prototype.BLUEPRINTS[0],

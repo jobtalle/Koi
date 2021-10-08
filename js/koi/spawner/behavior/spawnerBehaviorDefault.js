@@ -7,8 +7,8 @@ const SpawnerBehaviorDefault = function() {
 };
 
 SpawnerBehaviorDefault.prototype = Object.create(SpawnerBehavior.prototype);
-SpawnerBehaviorDefault.prototype.SPAWN_CHANCE = .09;
-SpawnerBehaviorDefault.prototype.SPAWN_INDEX_POWER = 1.5;
+SpawnerBehaviorDefault.prototype.SPAWN_CHANCE = .14;
+SpawnerBehaviorDefault.prototype.SPAWN_INDEX_POWER = 1;
 SpawnerBehaviorDefault.prototype.BLUEPRINTS = SpawnerState.prototype.BLUEPRINTS;
 
 /**
