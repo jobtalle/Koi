@@ -19,7 +19,7 @@ const Session = function(
  * @param {AudioBank} audio Game audio
  * @param {GUI} gui The GUI
  * @param {Function} save A function that saves the game
- * @param {Tutorial} tutorial The tutorial object, or null if no tutorial is active
+ * @param {Tutorial} [tutorial] The tutorial object, or null if no tutorial is active
  * @returns {Koi} A koi object for this session
  */
 Session.prototype.makeKoi = function(

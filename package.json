@@ -6,9 +6,9 @@
   "main": "window.js",
   "chromium-args": "--in-process-gpu --disable-direct-composition --disable-transparency",
   "devDependencies": {
+    "clean-css-cli": "^4.3.0",
     "electron": "^11.2.0",
     "electron-packager": "^15.2.0",
-    "clean-css-cli": "^4.3.0",
     "google-closure-compiler": "^20210106.0.0"
   },
   "scripts": {
