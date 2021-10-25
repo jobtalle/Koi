@@ -225,10 +225,56 @@ Constellation.prototype.fit = function(atlas = null) {
  * @returns {Fish} The fish at the given position, or null if no fish exists there
  */
 Constellation.prototype.pick = function(x, y, whitelist) {
+    this.big.picked = this.small.picked = this.river.picked = false;
+
     return this.big.pick(x, y, whitelist) ||
         this.small.pick(x, y, whitelist) ||
         this.river.pick(x, y, whitelist) ||
         null;
+};
+
+/**
+ * Swap a fish to the opposite pond
+ * @param {Fish} fish The fish to swap
+ * @param {Mover} mover The mover
+ * @param {Water} water The water
+ * @param {Random} random A randomizer
+ */
+Constellation.prototype.swap = function(fish, mover, water, random) {
+    mover.createBodySplash(fish.body, water, random);
+
+    if (this.big.picked) {
+        this.small.addFish(fish);
+        this.small.constraint.constrain(fish.position, true);
+    }
+    else {
+        this.big.addFish(fish);
+        this.big.constraint.constrain(fish.position, true);
+    }
+
+    fish.body.moveTo(fish.position);
+
+    mover.createBodySplash(fish.body, water, random);
+    mover.playInteractionSound(fish, 2 * fish.position.x / this.width - 1);
+};
+
+/**
+ * Move a fish into the river
+ * @param {Fish} fish The fish to move to the river
+ * @param {Mover} mover The mover
+ * @param {Water} water The water
+ * @param {Random} random A randomizer
+ */
+Constellation.prototype.discard = function(fish, mover, water, random) {
+    mover.createBodySplash(fish.body, water, random);
+
+    this.river.addFish(fish);
+    this.river.constraint.constrain(fish.position, true);
+
+    fish.body.moveTo(fish.position);
+
+    mover.createBodySplash(fish.body, water, random);
+    mover.playInteractionSound(fish, 2 * fish.position.x / this.width - 1);
 };
 
 /**

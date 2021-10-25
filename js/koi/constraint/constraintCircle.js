@@ -52,20 +52,27 @@ ConstraintCircle.prototype.getAbsolutePosition = function(position) {
 /**
  * Constrain a vector to make sure it is inside the constraint
  * @param {Vector2} vector The vector to constrain
+ * @param {Boolean} [center] True if the vector should be constrained to the center
  * @returns {Boolean} A boolean indicating whether the vector could be constrained, always true for circles
  */
-ConstraintCircle.prototype.constrain = function(vector) {
-    const dx = vector.x - this.position.x;
-    const dy = vector.y - this.position.y;
-    const distanceSquared = dx * dx + dy * dy;
+ConstraintCircle.prototype.constrain = function(vector, center = false) {
+    if (center) {
+        vector.x = this.position.x;
+        vector.y = this.position.y;
+    }
+    else {
+        const dx = vector.x - this.position.x;
+        const dy = vector.y - this.position.y;
+        const distanceSquared = dx * dx + dy * dy;
 
-    if (distanceSquared < this.radius * this.radius)
-        return true;
+        if (distanceSquared < this.radius * this.radius)
+            return true;
 
-    const distance = Math.sqrt(distanceSquared);
+        const distance = Math.sqrt(distanceSquared);
 
-    vector.x = this.position.x + (this.radius - this.CONSTRAIN_EPSILON) * dx / distance;
-    vector.y = this.position.y + (this.radius - this.CONSTRAIN_EPSILON) * dy / distance;
+        vector.x = this.position.x + (this.radius - this.CONSTRAIN_EPSILON) * dx / distance;
+        vector.y = this.position.y + (this.radius - this.CONSTRAIN_EPSILON) * dy / distance;
+    }
 
     return true;
 };

@@ -318,8 +318,10 @@ Koi.prototype.keyDown = function(key) {
  * Start a touch event
  * @param {Number} x The X position in pixels
  * @param {Number} y The Y position in pixels
+ * @param {Boolean} control True if the control button is down
+ * @param {Boolean} shift True if the shift button is down
  */
-Koi.prototype.touchStart = function(x, y) {
+Koi.prototype.touchStart = function(x, y, control, shift) {
     const wx = this.constellation.getWorldX(x, this.scale);
     const wy = this.constellation.getWorldY(y, this.scale);
 
@@ -328,8 +330,14 @@ Koi.prototype.touchStart = function(x, y) {
         wy,
         this.tutorial ? this.tutorial.getInteractionWhitelist() : null);
 
-    if (fish)
-        this.mover.pickUp(fish, wx, wy, this.water, this.random);
+    if (fish) {
+        if (control)
+            this.constellation.swap(fish, this.mover, this.water, this.random);
+        else if (shift)
+            this.constellation.discard(fish, this.mover, this.water, this.random);
+        else
+            this.mover.pickUp(fish, wx, wy, this.water, this.random);
+    }
     else {
         if (this.constellation.contains(wx, wy)) {
             this.touchWater(wx, wy);

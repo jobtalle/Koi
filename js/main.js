@@ -125,6 +125,8 @@ if (gl &&
         let loaded = true;
         let mouseLeft = false;
         let alt = false;
+        let control = false;
+        let shift = false;
 
         new Drop(gui, systems, document.getElementById("drop"), canvas);
 
@@ -212,13 +214,13 @@ if (gl &&
         canvas.addEventListener("mousedown", event => {
             event.preventDefault();
 
-            koi.touchStart(event.clientX, event.clientY);
+            koi.touchStart(event.clientX, event.clientY, control, shift);
         });
 
         canvas.addEventListener("touchstart", event => {
             event.preventDefault();
 
-            koi.touchStart(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+            koi.touchStart(event.changedTouches[0].clientX, event.changedTouches[0].clientY, control, shift);
         });
 
         canvas.addEventListener("mousemove", event => {
@@ -252,6 +254,10 @@ if (gl &&
         window.onkeydown = event => {
             if (event.key === "Alt")
                 alt = true;
+            else if (event.key === "Control")
+                control = true;
+            else if (event.key === "Shift")
+                shift = true;
             else if (event.key === "Enter" && alt)
                 loader.fullscreen.toggle();
             else if (event.key === "Escape" || event.key === "m")
@@ -261,8 +267,20 @@ if (gl &&
         };
 
         window.onkeyup = event => {
-            if (event.key === "Alt")
-                alt = false;
+            switch (event.key) {
+                case "Alt":
+                    alt = false;
+
+                    break;
+                case "Control":
+                    control = false;
+
+                    break;
+                case "Shift":
+                    shift = false;
+
+                    break;
+            }
         };
 
         window.onbeforeunload = () => {

@@ -12,6 +12,7 @@ const Pond = function(constraint, onBreed, onMutate, canBreed = true) {
     this.onMutate = onMutate;
     this.canBreed = canBreed;
     this.fish = [];
+    this.picked = false;
 };
 
 Pond.prototype.CHASE_RADIUS = 1;
@@ -148,6 +149,7 @@ Pond.prototype.pick = function(x, y, whitelist) {
             const picked = this.fish[fish];
 
             this.fish.splice(fish, 1);
+            this.picked = true;
 
             return picked;
         }
@@ -158,6 +160,7 @@ Pond.prototype.pick = function(x, y, whitelist) {
 
         for (const hit of hits) if (!whitelist || whitelist.indexOf(hit.fish) !== -1) {
             this.fish.splice(this.fish.indexOf(hit.fish), 1);
+            this.picked = true;
 
             return hit.fish;
         }
