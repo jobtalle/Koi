@@ -151,8 +151,25 @@ Mutations.prototype.createMutationsSpots = function() {
                 Mutation.BLUEPRINT_LAYER_FATHER,
                 Mutation.BLUEPRINT_LAYER_MOTHER_PREVIOUS
             ],
-            .06
-        )
+            .05
+        ),
+        // Stripes + ridge can become combined
+        new Mutation(
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_ANY),
+                new LayerFootprint(LayerStripes.prototype.ID, LayerFootprint.PALETTE_SHARED)
+            ]),
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_ANY),
+                new LayerFootprint(LayerRidge.prototype.ID, LayerFootprint.PALETTE_SHARED)
+            ]),
+            [
+                Mutation.BLUEPRINT_LAYER_MIX,
+                Mutation.BLUEPRINT_LAYER_FATHER,
+                Mutation.BLUEPRINT_LAYER_MOTHER_PREVIOUS
+            ],
+            .04
+        ),
     ];
 };
 
