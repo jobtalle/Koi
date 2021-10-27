@@ -123,18 +123,35 @@ Mutations.prototype.createMutationsSpots = function() {
         new Mutation(
             new PatternFootprint([
                 new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_ANY),
-                new LayerFootprint(LayerWeb.prototype.ID, LayerFootprint.PALETTE_UNIQUE_LAYER)
+                new LayerFootprint(LayerWeb.prototype.ID, LayerFootprint.PALETTE_UNIQUE)
             ]),
             new PatternFootprint([
                 new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_ANY),
-                new LayerFootprint(LayerWeb.prototype.ID, LayerFootprint.PALETTE_UNIQUE_LAYER)
+                new LayerFootprint(LayerWeb.prototype.ID, LayerFootprint.PALETTE_UNIQUE)
             ]),
             [
                 Mutation.BLUEPRINT_LAYER_MIX,
                 Mutation.BLUEPRINT_LAYER_FATHER,
                 Mutation.BLUEPRINT_LAYER_MOTHER_PREVIOUS
             ],
-            .1
+            .06
+        ),
+        // Two stripes layers can become double striped
+        new Mutation(
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_ANY),
+                new LayerFootprint(LayerStripes.prototype.ID, LayerFootprint.PALETTE_UNIQUE)
+            ]),
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_ANY),
+                new LayerFootprint(LayerStripes.prototype.ID, LayerFootprint.PALETTE_UNIQUE)
+            ]),
+            [
+                Mutation.BLUEPRINT_LAYER_MIX,
+                Mutation.BLUEPRINT_LAYER_FATHER,
+                Mutation.BLUEPRINT_LAYER_MOTHER_PREVIOUS
+            ],
+            .06
         )
     ];
 };
