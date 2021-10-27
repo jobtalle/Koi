@@ -118,6 +118,23 @@ Mutations.prototype.createMutationsSpots = function() {
                 Mutation.BLUEPRINT_LAYER_MOTHER_PREVIOUS
             ],
             .25
+        ),
+        // Two web layers can become double webbed
+        new Mutation(
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_ANY),
+                new LayerFootprint(LayerWeb.prototype.ID, LayerFootprint.PALETTE_UNIQUE_LAYER)
+            ]),
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_ANY),
+                new LayerFootprint(LayerWeb.prototype.ID, LayerFootprint.PALETTE_UNIQUE_LAYER)
+            ]),
+            [
+                Mutation.BLUEPRINT_LAYER_MIX,
+                Mutation.BLUEPRINT_LAYER_FATHER,
+                Mutation.BLUEPRINT_LAYER_MOTHER_PREVIOUS
+            ],
+            .1
         )
     ];
 };
