@@ -247,9 +247,10 @@ Weather.prototype.interpolateFilter = function(transition) {
  * Render weather effects
  * @param {Drops} drops The drops renderer
  * @param {Number} time The interpolation factor
+ * @param {boolean} flashes True if flashes should render
  * @returns {Boolean} True if the filter color has changed
  */
-Weather.prototype.render = function(drops, time) {
+Weather.prototype.render = function(drops, time, flashes) {
     const transition = this.transitionPrevious + (this.transition - this.transitionPrevious) * time;
 
     this.gl.enable(this.gl.BLEND);
@@ -274,7 +275,7 @@ Weather.prototype.render = function(drops, time) {
 
     this.gl.disable(this.gl.BLEND);
 
-    if (this.lightning !== 0 && this.state.state === this.state.ID_THUNDERSTORM) {
+    if (flashes && this.lightning !== 0 && this.state.state === this.state.ID_THUNDERSTORM) {
         const lighting = this.lightningPrevious + (this.lightning - this.lightningPrevious) * time;
         const power = this.SAMPLER_LIGHTING.sample(lighting);
 
