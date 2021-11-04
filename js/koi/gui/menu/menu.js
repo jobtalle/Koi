@@ -4,6 +4,7 @@
  * @param {LoaderFullscreen} fullscreen The fullscreen object
  * @param {String} locale The locale string
  * @param {AudioEngine} audioEngine The audio engine
+ * @param {Object} externalSettings The external settings object
  * @param {AudioBank} audio Game audio
  * @constructor
  */
@@ -12,10 +13,11 @@ const Menu = function(
     fullscreen,
     locale,
     audioEngine,
+    externalSettings,
     audio) {
     this.buttonBack = this.createButtonExit(audio);
     this.languageChooser = this.createLanguageChooser(locale);
-    this.box = this.createBox(fullscreen, audioEngine, audio);
+    this.box = this.createBox(fullscreen, audioEngine, externalSettings, audio);
     this.element = element;
     this.element.onclick = this.hide.bind(this);
     this.element.appendChild(this.box);
@@ -26,6 +28,7 @@ Menu.prototype.CLASS_VISIBLE = "visible";
 Menu.prototype.LANG_TITLE = "MENU";
 Menu.prototype.LANG_VOLUME = "VOLUME";
 Menu.prototype.LANG_GRASS_AUDIO = "TOGGLE_GRASS_AUDIO";
+Menu.prototype.LANG_FLASHES = "TOGGLE_FLASHES";
 Menu.prototype.LANG_FULLSCREEN = "TOGGLE_FULLSCREEN";
 Menu.prototype.LANG_MENU = "MENU";
 Menu.prototype.LANG_LANGUAGE = "LANGUAGE";
@@ -34,6 +37,7 @@ Menu.prototype.LANG_EXIT = "BACK";
 Menu.prototype.KEY_VOLUME = "volume";
 Menu.prototype.KEY_LANGUAGE = "language";
 Menu.prototype.KEY_GRASS_AUDIO = "grass-audio";
+Menu.prototype.KEY_FLASHES = "flashes";
 Menu.prototype.LANGUAGES = [
     ["en", "English"],
     ["de", "Deutsch (German)"],
@@ -55,10 +59,15 @@ Menu.prototype.LANGUAGES = [
  * Create the menu box
  * @param {LoaderFullscreen} fullscreen The fullscreen object
  * @param {AudioEngine} audioEngine The audio engine
+ * @param {Object} externalSettings The external settings object
  * @param {AudioBank} audio Game audio
  * @returns {HTMLDivElement} The menu box
  */
-Menu.prototype.createBox = function(fullscreen, audioEngine, audio) {
+Menu.prototype.createBox = function(
+    fullscreen,
+    audioEngine,
+    externalSettings,
+    audio) {
     const element = document.createElement("div");
     const table = document.createElement("table");
 
@@ -69,6 +78,7 @@ Menu.prototype.createBox = function(fullscreen, audioEngine, audio) {
 
     table.appendChild(this.createVolumeSlider(audioEngine));
     table.appendChild(this.createGrassAudioToggle(audioEngine));
+    table.appendChild(this.createFlashToggle(externalSettings));
     table.appendChild(this.languageChooser);
 
     element.appendChild(table);
@@ -192,6 +202,42 @@ Menu.prototype.createGrassAudioToggle = function(audioEngine) {
 
     return row;
 };
+
+/**
+ * Create the thunderstorm flash toggle
+ * @param {Object} externalSettings The external settings object
+ * @returns {HTMLTableRowElement} The effect toggle
+ */
+Menu.prototype.createFlashToggle = function(externalSettings) {
+    const row = document.createElement("tr");
+    const label = document.createElement("label");
+    const element = document.createElement("input");
+
+    element.type = "checkbox";
+    element.checked = true;
+
+    if (window["localStorage"].getItem(this.KEY_FLASHES)) {
+        element.checked = window["localStorage"].getItem(this.KEY_FLASHES) === "true";
+
+        externalSettings.flash = element.checked;
+    }
+    else
+        element.checked = true;
+
+    element.onchange = () => {
+        window["localStorage"].setItem(this.KEY_FLASHES, element.checked.toString());
+
+        externalSettings.flash = element.checked;
+    };
+
+    label.appendChild(document.createTextNode(language.get(this.LANG_FLASHES)));
+    label.appendChild(element);
+
+    row.appendChild(this.createTD(label));
+    row.appendChild(this.createTD(element));
+
+    return row;
+}
 
 /**
  * Create a language chooser

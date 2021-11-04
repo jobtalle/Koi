@@ -475,8 +475,9 @@ Koi.prototype.update = function() {
 /**
  * Render the scene
  * @param {Number} deltaTime The amount of time passed since the last frame
+ * @param {Object} externalSettings The external settings object
  */
-Koi.prototype.render = function(deltaTime) {
+Koi.prototype.render = function(deltaTime, externalSettings) {
     this.time += Math.min(this.FRAME_TIME_MAX, deltaTime);
 
     while (this.time > this.UPDATE_RATE) {
@@ -562,7 +563,8 @@ Koi.prototype.render = function(deltaTime) {
     // Render weather effects
     this.weatherFilterChanged = this.weather.render(
         this.systems.drops,
-        time);
+        time,
+        externalSettings.flash);
 
     // Disable Z buffer
     this.systems.gl.disable(this.systems.gl.DEPTH_TEST);

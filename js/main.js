@@ -104,6 +104,10 @@ if (gl &&
     language.load(() => {
         imperial = language.get("UNIT_LENGTH") === "ft";
 
+        const settings = {
+            flash: true
+        };
+
         let session = new Session();
         let slot = null;
         const slotNames = ["session", "session2", "session3"];
@@ -119,6 +123,7 @@ if (gl &&
             loader.fullscreen,
             chosenLocale,
             audioEngine,
+            settings,
             audio);
         let lastTime = null;
         let koi = null;
@@ -203,7 +208,7 @@ if (gl &&
 
         const loop = time => {
             if (loaded) {
-                koi.render(.001 * (time - lastTime));
+                koi.render(.001 * (time - lastTime), settings);
 
                 lastTime = time;
 
