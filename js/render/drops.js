@@ -94,31 +94,52 @@ Drops.prototype.render = function(count, window, windowWidth, transparency) {
 
     this.gl.depthMask(false);
 
-    if (window > windowWidth) {
-        const dropCount = Math.ceil(count * windowWidth) << 1;
-
-        if (dropCount > 0)
+    if (renderSnow) {
+        if (window > windowWidth) {
+            if ((Math.ceil(count * windowWidth) << 1) > 0)
+                this.gl.drawArrays(
+                    this.gl.TRIANGLES,
+                    Math.floor(count * (window - windowWidth)) * 15,
+                    Math.ceil(count * windowWidth) * 15);
+        }
+        else {
             this.gl.drawArrays(
-                this.gl.LINES,
-                Math.floor(count * (window - windowWidth)) << 1,
-                dropCount);
+                this.gl.TRIANGLES,
+                0,
+                Math.ceil(count * window) * 15);
+            this.gl.drawArrays(
+                this.gl.TRIANGLES,
+                Math.floor(count * (window - windowWidth + 1)) * 15,
+                Math.ceil(count * (1 - (window - windowWidth + 1))) * 15);
+        }
     }
     else {
-        let dropCount = Math.ceil(count * window) << 1;
+        if (window > windowWidth) {
+            const dropCount = Math.ceil(count * windowWidth) << 1;
 
-        if (dropCount > 0)
-            this.gl.drawArrays(
-                this.gl.LINES,
-                0,
-                dropCount);
+            if (dropCount > 0)
+                this.gl.drawArrays(
+                    this.gl.LINES,
+                    Math.floor(count * (window - windowWidth)) << 1,
+                    dropCount);
+        }
+        else {
+            let dropCount = Math.ceil(count * window) << 1;
 
-        dropCount = Math.ceil(count * (1 - (window - windowWidth + 1))) << 1;
+            if (dropCount > 0)
+                this.gl.drawArrays(
+                    this.gl.LINES,
+                    0,
+                    dropCount);
 
-        if (dropCount > 0)
-            this.gl.drawArrays(
-                this.gl.LINES,
-                Math.floor(count * (window - windowWidth + 1)) << 1,
-                dropCount);
+            dropCount = Math.ceil(count * (1 - (window - windowWidth + 1))) << 1;
+
+            if (dropCount > 0)
+                this.gl.drawArrays(
+                    this.gl.LINES,
+                    Math.floor(count * (window - windowWidth + 1)) << 1,
+                    dropCount);
+        }
     }
 
     this.gl.depthMask(true);

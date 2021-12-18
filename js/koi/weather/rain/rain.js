@@ -20,20 +20,24 @@ const Rain = function(gl, constellation, random) {
             this.positions[drop] = null;
 };
 
-Rain.prototype.DROP_LENGTH = .6;
-Rain.prototype.DROP_DISTANCE = 10;
+Rain.prototype.DROP_LENGTH = renderSnow ? .05 : .6;
+Rain.prototype.DROP_DISTANCE = renderSnow ? 6 : 10;
 Rain.prototype.DROP_FALL_PORTION = 1 - Rain.prototype.DROP_LENGTH / Rain.prototype.DROP_DISTANCE;
 Rain.prototype.DROP_ALPHA = .7;
-Rain.prototype.DROP_ANGLE = Math.PI * 0.55;
-Rain.prototype.DROP_ANGLE_RADIUS = Math.PI * 0.015;
-Rain.prototype.DROP_ANGLE_SAMPLER = new SamplerPlateau(
-    Rain.prototype.DROP_ANGLE - Rain.prototype.DROP_ANGLE_RADIUS,
-    Rain.prototype.DROP_ANGLE,
-    Rain.prototype.DROP_ANGLE + Rain.prototype.DROP_ANGLE_RADIUS,
-    3);
+Rain.prototype.DROP_ANGLE = renderSnow ? Math.PI * .5 : Math.PI * .55;
+Rain.prototype.DROP_ANGLE_RADIUS = renderSnow ? Math.PI * .2 : Math.PI * 0.015;
+Rain.prototype.DROP_ANGLE_SAMPLER = renderSnow ?
+    new Sampler(
+        Rain.prototype.DROP_ANGLE - Rain.prototype.DROP_ANGLE_RADIUS,
+        Rain.prototype.DROP_ANGLE + Rain.prototype.DROP_ANGLE_RADIUS) :
+    new SamplerPlateau(
+        Rain.prototype.DROP_ANGLE - Rain.prototype.DROP_ANGLE_RADIUS,
+        Rain.prototype.DROP_ANGLE,
+        Rain.prototype.DROP_ANGLE + Rain.prototype.DROP_ANGLE_RADIUS,
+        3);
 Rain.prototype.DROP_EFFECT_RADIUS = 0.1;
 Rain.prototype.DROP_EFFECT_DISPLACEMENT = 0.175;
-Rain.prototype.CELL = .3;
+Rain.prototype.CELL = renderSnow ? .1 : .3;
 Rain.prototype.CELL_RANDOM = .8;
 Rain.prototype.CELL_OVERSHOOT_X = -Math.cos(Rain.prototype.DROP_ANGLE) * Rain.prototype.DROP_DISTANCE;
 Rain.prototype.CELL_OVERSHOOT_Y = Rain.prototype.DROP_LENGTH;
@@ -87,21 +91,65 @@ Rain.prototype.makeMesh = function(positions, width, height, random) {
         const dx = Math.cos(angle);
         const dz = Math.sin(angle);
 
-        vertices.push(
-            positions[position].x - dx * this.DROP_LENGTH,
-            positions[position].y,
-            -dz * this.DROP_LENGTH,
-            positions[position].x + dx * (this.DROP_DISTANCE - this.DROP_LENGTH),
-            dz * (this.DROP_DISTANCE - this.DROP_LENGTH),
-            this.DROP_ALPHA,
-            threshold,
-            positions[position].x,
-            positions[position].y,
-            0,
-            positions[position].x + dx * this.DROP_DISTANCE,
-            dz * this.DROP_DISTANCE,
-            0,
-            threshold);
+        if (renderSnow) {
+            const steps = 5;
+            const angleOffset = random.getFloat() * Math.PI * 2 / steps;
+
+            for (let step = 0; step < steps; ++step) {
+                const aStart = Math.PI * 2 * step / steps + angleOffset;
+                const aEnd = Math.PI * 2 * ((step + 1) % steps) / steps + angleOffset;
+
+                vertices.push(
+                    positions[position].x,
+                    positions[position].y,
+                    0,
+
+                    positions[position].x + dx * this.DROP_DISTANCE,
+                    dz * this.DROP_DISTANCE,
+
+                    this.DROP_ALPHA,
+
+                    threshold,
+
+                    positions[position].x + Math.cos(aStart) * this.DROP_LENGTH,
+                    positions[position].y,
+                    Math.sin(aStart) * this.DROP_LENGTH,
+
+                    positions[position].x + Math.cos(aStart) * this.DROP_LENGTH + dx * this.DROP_DISTANCE,
+                    Math.sin(aStart) * this.DROP_LENGTH + dz * this.DROP_DISTANCE,
+
+                    0,
+
+                    threshold,
+
+                    positions[position].x + Math.cos(aEnd) * this.DROP_LENGTH,
+                    positions[position].y,
+                    Math.sin(aEnd) * this.DROP_LENGTH,
+
+                    positions[position].x + Math.cos(aEnd) * this.DROP_LENGTH + dx * this.DROP_DISTANCE,
+                    Math.sin(aEnd) * this.DROP_LENGTH + dz * this.DROP_DISTANCE,
+
+                    0,
+
+                    threshold);
+            }
+        }
+        else
+            vertices.push(
+                positions[position].x - dx * this.DROP_LENGTH,
+                positions[position].y,
+                -dz * this.DROP_LENGTH,
+                positions[position].x + dx * (this.DROP_DISTANCE - this.DROP_LENGTH),
+                dz * (this.DROP_DISTANCE - this.DROP_LENGTH),
+                this.DROP_ALPHA,
+                threshold,
+                positions[position].x,
+                positions[position].y,
+                0,
+                positions[position].x + dx * this.DROP_DISTANCE,
+                dz * this.DROP_DISTANCE,
+                0,
+                threshold);
     }
 
     normalizer.apply(vertices);
