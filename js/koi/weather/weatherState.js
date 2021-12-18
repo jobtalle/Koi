@@ -153,7 +153,8 @@ WeatherState.prototype.transition = function(audio, random) {
         switch (statePrevious) {
             case this.ID_DRIZZLE:
             case this.ID_RAIN:
-                audio.ambientRainLight.stop();
+                if (!renderSnow)
+                    audio.ambientRainLight.stop();
 
                 break;
             case this.ID_THUNDERSTORM:
@@ -161,7 +162,9 @@ WeatherState.prototype.transition = function(audio, random) {
                 this.timeCrickets = this.CRICKET_TIME;
 
                 audio.ambientCrickets[this.cricketsIndex].play();
-                audio.ambientRainHeavy.stop();
+
+                if (!renderSnow)
+                    audio.ambientRainHeavy.stop();
 
                 break;
         }
@@ -169,11 +172,13 @@ WeatherState.prototype.transition = function(audio, random) {
         switch (this.state) {
             case this.ID_DRIZZLE:
             case this.ID_RAIN:
-                audio.ambientRainLight.play();
+                if (!renderSnow)
+                    audio.ambientRainLight.play();
 
                 break;
             case this.ID_THUNDERSTORM:
-                audio.ambientRainHeavy.play();
+                if (!renderSnow)
+                    audio.ambientRainHeavy.play();
 
                 break;
         }
@@ -195,11 +200,13 @@ WeatherState.prototype.initialize = function(audio) {
     switch (this.state) {
         case this.ID_DRIZZLE:
         case this.ID_RAIN:
-            audio.ambientRainLight.playBody();
+            if (!renderSnow)
+                audio.ambientRainLight.playBody();
 
             break;
         case this.ID_THUNDERSTORM:
-            audio.ambientRainHeavy.playBody();
+            if (!renderSnow)
+                audio.ambientRainHeavy.playBody();
 
             break;
     }
