@@ -1,3 +1,5 @@
+let renderSnow = false;
+
 {
     const date = new Date();
     const day = date.getUTCDate();
@@ -18,6 +20,9 @@
         link.media = "all";
 
         head.appendChild(link);
+
+        if (file === "winter.css")
+            renderSnow = true;
     };
 
     /**
@@ -60,6 +65,8 @@
         new Override(4, 1, winter),
         new Override(5, 1, winter),
         new Override(6, 1, winter),
+
+        new Override(18, 12, winter)
     ];
 
     for (let override = 0, overrideCount = overrides.length; override < overrideCount; ++override)
