@@ -64,9 +64,7 @@ let renderSnow = false;
         new Override(3, 1, winter),
         new Override(4, 1, winter),
         new Override(5, 1, winter),
-        new Override(6, 1, winter),
-
-        new Override(18, 12, winter)
+        new Override(6, 1, winter)
     ];
 
     for (let override = 0, overrideCount = overrides.length; override < overrideCount; ++override)

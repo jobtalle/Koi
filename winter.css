@@ -1,6 +1,7 @@
 :root {
     /* Environment colors */
-    --color-water-highlight: #ebf3f2;
+    --color-water-filter: #e9f5f5;
+    --color-water-highlight: #ffffff;
     --color-earth: #e5e5e5;
     --color-rock-top: #ffffff;
     --color-rock-side: #615455;
@@ -9,17 +10,17 @@
 
     /* Ambient color multipliers */
     --color-ambient-sunny: #ffffff;
-    --color-ambient-rain: #c0d0db;
-    --color-ambient-thunderstorm: #8e96af;
+    --color-ambient-rain: #e2e7ec;
+    --color-ambient-thunderstorm: #a4a9bb;
 
     /* Plant colors */
     --color-grass-a: #e7e8e4;
     --color-grass-b: #cdd2ce;
-    --color-cattail-leaf: #c1c9c1;
+    --color-cattail-leaf: #c1c6c9;
     --color-cattail-stalk: #a5a597;
     --color-cattail-capsule: #ecebda;
-    --color-shrubbery-stalk: #8e8e82;
-    --color-shrubbery-leaf: #9ba195;
+    --color-shrubbery-stalk: #828e8e;
+    --color-shrubbery-leaf: #959ca1;
 
     /* Bug colors */
     --color-bug-butterfly-yellow: #ffffff;
