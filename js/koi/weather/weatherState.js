@@ -246,8 +246,12 @@ WeatherState.prototype.update = function(audio, random) {
             case this.ID_SUNNY:
             case this.ID_OVERCAST:
             case this.ID_DRIZZLE:
-                if (this.timeCrickets === 0)
-                    audio.ambientOneShot.play(pan, volume);
+                if (this.timeCrickets === 0) {
+                    if (renderSnow && random.getFloat() < .15)
+                        audio.ambientChristmas.play(pan, volume * .3);
+                    else
+                        audio.ambientOneShot.play(pan, volume);
+                }
 
                 break;
         }

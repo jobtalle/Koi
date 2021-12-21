@@ -69,6 +69,7 @@ const AudioBank = function(engine, format = "wav") {
     this.ambientOneShot = new AudioEffect(
         engine,
         this.enumerateSources("audio/" + format + "/AMB_EnvironmentOneShot_", 1, 28, "." + format));
+    this.ambientChristmas = new AudioEffect(engine, "audio/" + format + "/AMB_Christmas." + format);
     this.ambientThunder = new AudioEffect(
         engine,
         this.enumerateSources("audio/" + format + "/AMB_Thunder_", 1, 4, "." + format));
