@@ -19,3 +19,13 @@ const Layer = function(
 Layer.prototype.copy = function() {
     return null;
 };
+
+/**
+ * Make a slightly mutated variant of this layer
+ * @param {Random} random A randomizer
+ * @param {number} paletteIndex The palette index for this variant
+ * @returns {Layer} This layer
+ */
+Layer.prototype.makeVariant = function(random, paletteIndex) {
+    return this;
+}

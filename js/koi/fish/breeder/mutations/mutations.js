@@ -119,6 +119,23 @@ Mutations.prototype.createMutationsSpots = function() {
             ],
             .25
         ),
+        // Two spotted fish can spawn a second layer of spots which is a mutation
+        new Mutation(
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_ANY),
+                new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_UNIQUE)
+            ]),
+            new PatternFootprint([
+                new LayerFootprint(LayerBase.prototype.ID, LayerFootprint.PALETTE_ANY),
+                new LayerFootprint(LayerSpots.prototype.ID, LayerFootprint.PALETTE_UNIQUE)
+            ]),
+            [
+                Mutation.BLUEPRINT_LAYER_MIX,
+                Mutation.BLUEPRINT_LAYER_MOTHER,
+                Mutation.BLUEPRINT_LAYER_MOTHER_VARIANT
+            ],
+            .1
+        ),
         // Two web layers can become double webbed
         new Mutation(
             new PatternFootprint([

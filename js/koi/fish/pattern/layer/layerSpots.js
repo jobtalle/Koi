@@ -38,6 +38,7 @@ LayerSpots.prototype.SAMPLER_STRETCH = new SamplerPlateau(.37, 1, 2.5, 0.1);
 LayerSpots.prototype.SAMPLER_X_FOCUS = new SamplerPlateau(0, 0.4, 1, 0.2);
 LayerSpots.prototype.SAMPLER_Y_FOCUS = new SamplerPlateau(0, 0.5, 1, 1);
 LayerSpots.prototype.SAMPLER_POWER = new SamplerPower(0, 1, 2);
+LayerSpots.prototype.SAMPLER_VARY_THRESHOLD = new Sampler(-16, 0);
 
 LayerSpots.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
@@ -112,6 +113,21 @@ LayerSpots.prototype.serialize = function(buffer) {
     buffer.writeUint8(this.xFocus);
     buffer.writeUint8(this.yFocus);
     buffer.writeUint8(this.power);
+};
+
+/**
+ * Make a slightly mutated variant of this layer
+ * @param {Random} random A randomizer
+ * @param {number} paletteIndex The palette index for this variant
+ * @returns {Layer} This layer
+ */
+LayerSpots.prototype.makeVariant = function(random, paletteIndex) {
+    this.paletteIndex = paletteIndex;
+    this.threshold = Math.max(0,
+        Math.min(255,
+            this.threshold + Math.round(this.SAMPLER_VARY_THRESHOLD.sample(random.getFloat()))))
+
+    return this;
 };
 
 /**

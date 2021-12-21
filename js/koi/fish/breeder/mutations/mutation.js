@@ -25,6 +25,7 @@ Mutation.BLUEPRINT_LAYER_MOTHER = {};
 Mutation.BLUEPRINT_LAYER_FATHER = {};
 Mutation.BLUEPRINT_LAYER_MOTHER_PREVIOUS = {};
 Mutation.BLUEPRINT_LAYER_FATHER_PREVIOUS = {};
+Mutation.BLUEPRINT_LAYER_MOTHER_VARIANT = {};
 Mutation.BLUEPRINT_PALETTE_FLAG_RELATIVE = 0x400;
 Mutation.BLUEPRINT_PALETTE_FLAG_NEGATIVE = 0x200;
 Mutation.BLUEPRINT_PALETTE_FLAG_MOTHER = 0x100;
@@ -158,6 +159,10 @@ Mutation.prototype.makeLayer = function(mother, father, index, mixLayers, random
             return this.getInputLayer(mother, index - 1).copy();
         case Mutation.BLUEPRINT_LAYER_FATHER_PREVIOUS:
             return this.getInputLayer(father, index - 1).copy();
+        case Mutation.BLUEPRINT_LAYER_MOTHER_VARIANT:
+            return this.getInputLayer(mother, index - 1).copy().makeVariant(
+                random,
+                this.getInputLayer(father, index - 1).paletteIndex);
         case Mutation.BLUEPRINT_LAYER_MIX:
             return mixLayers(this.getInputLayer(mother, index), this.getInputLayer(father, index), random);
         default:
