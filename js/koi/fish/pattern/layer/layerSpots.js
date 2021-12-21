@@ -125,7 +125,7 @@ LayerSpots.prototype.makeVariant = function(random, paletteIndex) {
     this.paletteIndex = paletteIndex;
     this.threshold = Math.max(0,
         Math.min(255,
-            this.threshold + Math.round(this.SAMPLER_VARY_THRESHOLD.sample(random.getFloat()))))
+            this.threshold + Math.round(this.SAMPLER_VARY_THRESHOLD.sample(random.getFloat()))));
 
     return this;
 };
