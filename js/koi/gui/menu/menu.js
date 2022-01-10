@@ -44,6 +44,7 @@ Menu.prototype.LANGUAGES = [
     ["fr", "Français (French)"],
     ["ja", "日本語 (Japanese)"],
     ["zh", "简体中文 (Simplified Chinese)"],
+    ["ko", "한국어 (Korean)"],
     ["nl", "Nederlands (Dutch)"],
     ["pl", "Polski (Polish)"],
     ["tr", "Türkçe (Turkish)"],
