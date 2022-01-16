@@ -53,7 +53,8 @@ Menu.prototype.LANGUAGES = [
     ["ru", "Руccкий (Russian)"],
     ["fy", "Frysk (Frisian)"],
     ["uk", "Українська (Ukrainian)"],
-    ["it", "Italiano (Italian)"]
+    ["it", "Italiano (Italian)"],
+    ["fil", "Filipino"]
 ];
 
 /**
