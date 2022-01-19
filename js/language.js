@@ -40,7 +40,7 @@ Language.prototype.load = function(onFinish, onFailure, file = this.file) {
     request.open("GET", file, true);
     request.onreadystatechange = () => {
         if (request.readyState === 4) {
-            if (request.status === 200) {
+            if (request.responseText.length > 0) {
                 const data = JSON.parse(request.responseText);
 
                 this.add(data);
