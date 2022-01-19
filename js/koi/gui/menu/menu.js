@@ -63,13 +63,15 @@ Menu.prototype.LANGUAGES = [
  * @param {AudioEngine} audioEngine The audio engine
  * @param {Object} externalSettings The external settings object
  * @param {AudioBank} audio Game audio
+ * @param {createFullscreenButton} If set to true, a fullscreen button will be created
  * @returns {HTMLDivElement} The menu box
  */
 Menu.prototype.createBox = function(
     fullscreen,
     audioEngine,
     externalSettings,
-    audio) {
+    audio,
+    createFullscreenButton) {
     const element = document.createElement("div");
     const table = document.createElement("table");
 
@@ -84,7 +86,9 @@ Menu.prototype.createBox = function(
     table.appendChild(this.languageChooser);
 
     element.appendChild(table);
-    element.appendChild(this.createButtonFullscreen(fullscreen, audio));
+    if(createFullscreenButton) {
+        element.appendChild(this.createButtonFullscreen(fullscreen, audio));
+    }
     element.appendChild(this.buttonBack);
 
     return element;
