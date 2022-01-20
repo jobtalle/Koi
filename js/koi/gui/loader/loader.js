@@ -5,6 +5,8 @@
  * @param {HTMLElement} elementSlots The save slots element
  * @param {HTMLElement} elementButtonSettings The element to build the settings button in
  * @param {HTMLElement} wrapper The wrapper to toggle fullscreen on
+ * @param {Boolean} loadDiscord If set to true, the Discord button will be shown
+ * @param {Boolean} loadFullscreen If set to true, the Fullscreen button will be shown
  * @constructor
  */
 const Loader = function(
@@ -12,7 +14,8 @@ const Loader = function(
     elementGraphics,
     elementSlots,
     elementButtonSettings,
-    wrapper) {
+    wrapper,
+    loadFullscreen) {
     this.element = element;
     this.icon = new LoaderIcon();
     this.elementSlots = elementSlots;
@@ -27,13 +30,18 @@ const Loader = function(
     this.onContinue = null;
     this.menu = null;
     this.fullscreen = new LoaderFullscreen(wrapper);
+    this.loadFullscreen = loadFullscreen;
     this.overlayCanvas = document.createElement("canvas");
     this.element.appendChild(this.overlayCanvas);
 
     this.slots = null;
 
-    element.appendChild(this.fullscreen.element);
     element.appendChild(this.elementDiscord.element);
+
+    if(loadFullscreen) {
+        element.appendChild(this.fullscreen.element);
+    }
+
     elementGraphics.appendChild(this.icon.element);
 
     const loop = () => {
@@ -133,8 +141,9 @@ Loader.prototype.createButtonSettings = function() {
  * Finish loading
  */
 Loader.prototype.complete = function() {
-    this.fullscreen.setLoaded();
-
+    if(!this.loadFullscreen) {
+        this.fullscreen.setLoaded();
+    }
     const onNewGame = index => {
         this.onNewGame(index);
         this.onFinish();

@@ -28,10 +28,13 @@ LoaderDiscord.prototype.loadSVG = function() {
         }, 1000 * this.FADE_IN_DELAY);
 
         this.element.onclick = () => {
-            if (window["require"])
+            if (window["require"]) {
                 window["require"]("electron")["shell"]["openExternal"](this.URL);
-            else
+            } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openDiscordHandler) {
+                window.webkit.messageHandlers.openDiscordHandler.postMessage({url: this.URL});
+            } else {
                 window.open(this.URL, "_blank");
+            }
         };
     };
 

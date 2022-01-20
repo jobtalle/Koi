@@ -12,6 +12,12 @@ const gl =
 let chosenLocale = null;
 
 /**
+ * Check if game is running within WKWebView on iOS.
+ */
+
+const RUNNING_ON_WEBVIEW_IOS = (window.webkit && window.webkit.messageHandlers) ? true : false;
+
+/**
  * Called when loading resources failed
  */
 const onFailure = () => {
@@ -66,6 +72,10 @@ const makeLanguage = locale => {
             chosenLocale = "zh";
 
             return new Language("KoiTranslations/simplifiedchinese.json");
+        case "ko":
+            chosenLocale = "ko";
+
+            return new Language("KoiTranslations/korean.json");
         case "ru":
             chosenLocale = "ru";
 
@@ -82,6 +92,10 @@ const makeLanguage = locale => {
             chosenLocale = "it";
 
             return new Language("KoiTranslations/italian.json");
+        case "fil":
+            chosenLocale = "fil";
+
+            return new Language("KoiTranslations/filipino.json");
     }
 };
 
@@ -92,7 +106,8 @@ const loader = new Loader(
     document.getElementById("loader-graphics"),
     document.getElementById("loader-slots"),
     document.getElementById("loader-button-settings"),
-    document.getElementById("wrapper"));
+    document.getElementById("wrapper"),
+    !RUNNING_ON_WEBVIEW_IOS);
 let imperial = false;
 
 if (gl &&
@@ -124,7 +139,8 @@ if (gl &&
             chosenLocale,
             audioEngine,
             settings,
-            audio);
+            audio,
+            !RUNNING_ON_WEBVIEW_IOS);
         let lastTime = null;
         let koi = null;
         let loaded = true;
