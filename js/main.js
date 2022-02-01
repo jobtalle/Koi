@@ -90,6 +90,10 @@ const makeLanguage = locale => {
             chosenLocale = "fil";
 
             return new Language("KoiTranslations/filipino.json");
+        case "id":
+            chosenLocale = "id";
+
+            return new Language("KoiTranslations/indonesian.json");
     }
 };
 

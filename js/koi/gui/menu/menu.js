@@ -54,7 +54,8 @@ Menu.prototype.LANGUAGES = [
     ["fy", "Frysk (Frisian)"],
     ["uk", "Українська (Ukrainian)"],
     ["it", "Italiano (Italian)"],
-    ["fil", "Filipino"]
+    ["fil", "Filipino"],
+    ["id", "Indonesian (Bahasa Indonesia)"]
 ];
 
 /**
