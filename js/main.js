@@ -324,6 +324,11 @@ if (gl &&
             loaded = false;
         };
 
+        window.addEventListener('appMovedToBackground', () => {
+            save();
+            menu.show();
+        });
+
         loader.setFinishCallback(() => {
             requestAnimationFrame(loop);
 
