@@ -19,6 +19,7 @@ const Drop = function(gui, systems, element, targetElement) {
         return false;
     });
     targetElement.addEventListener("drop", this.drop.bind(this));
+    window.addEventListener("loadImage", this.drop.bind(this));
 };
 
 Drop.prototype.CLASS_POSSIBLE = "possible";
