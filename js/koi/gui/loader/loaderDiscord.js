@@ -31,7 +31,7 @@ LoaderDiscord.prototype.loadSVG = function() {
             if (window["require"]) {
                 window["require"]("electron")["shell"]["openExternal"](this.URL);
             } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openDiscordHandler) {
-                window.webkit.messageHandlers.openDiscordHandler.postMessage({url: this.URL});
+                window.webkit.messageHandlers.openDiscordHandler.postMessage({discordURL: this.URL});
             } else {
                 window.open(this.URL, "_blank");
             }
