@@ -23,6 +23,7 @@
     --card-colors-gradient: 280%;
     --card-info-spacing: 12px;
     --card-info-color: #d7d4c8;
+    --card-info-transparant-color: rgba(215, 212, 200, 0);
     --card-info-slant: -18deg;
     --card-info-padding-right: 6px;
     --card-info-text-color: #0c0c0c;
@@ -204,7 +205,7 @@
     left: 0;
     top: 0;
     position: absolute;
-    background: linear-gradient(to right, transparent, var(--card-info-color));
+    background: linear-gradient(to right, var(--card-info-transparant-color), var(--card-info-color));
     transform: skew(var(--card-info-slant));
     z-index: -1;
 }
