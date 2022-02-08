@@ -53,6 +53,8 @@ Cards.prototype.HIDE_TIME = 10;
 Cards.prototype.FISH_DROP_DIRECTION = new Vector2(1, 0);
 Cards.prototype.ID_DROP_TARGET = "drop-target";
 Cards.prototype.CLASS_DROP_TARGET = "card-shape hidden";
+Cards.prototype.LANG_LOAD_CARD = "LOAD_CARD";
+Cards.prototype.LOAD_CARD_BUTTON_CLASS = "load-card-button";
 
 /**
  * Serialize the card collection
@@ -90,8 +92,12 @@ Cards.prototype.toggleBook = function() {
 /**
  * Enable the book button
  */
-Cards.prototype.enableBookButton = function() {
+Cards.prototype.enableBookButton = function(audio) {
     this.element.appendChild(this.buttonBook.element);
+
+    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.loadImage) {
+        this.element.appendChild(this.createLoadCardElement(audio));
+    }
     this.bookEnabled = true;
 };
 
@@ -430,3 +436,21 @@ Cards.prototype.show = function() {
         this.hidden = false;
     }
 }
+
+/**
+ * Creates the load Koi Card button
+ * @param {AudioBank} audio Game audio
+ * @returns {HTMLButtonElement} The download button
+ */
+ Cards.prototype.createLoadCardElement = function(audio) {
+    const button = document.createElement("button");
+    button.className = this.LOAD_CARD_BUTTON_CLASS;
+
+    button.appendChild(document.createTextNode(language.get(this.LANG_LOAD_CARD)));
+    button.onclick = () => {
+        audio.effectClick.play();
+        window.webkit.messageHandlers.loadImage.postMessage(null);
+        this.hide();
+    };
+    return button;
+};

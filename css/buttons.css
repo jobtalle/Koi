@@ -1,6 +1,7 @@
 :root {
     --button-width: 80px;
     --button-height: 80px;
+    --load-card-button-padding: 10px;
 }
 
 button {
@@ -17,4 +18,17 @@ button {
     font-size: 18pt;
     font-family: inherit;
     user-select: none;
+}
+
+.load-card-button {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: calc(var(--button-width) * 2);
+    background-color: var(--code-button-color);
+    box-shadow: 0 0 var(--code-shadow-radius) var(--code-shadow-color);
+    padding: 0 var(--load-card-button-padding);
+    margin-top: var(--code-button-margin);
+    margin-left: var(--code-button-margin);
+    border-radius: var(--code-button-radius);
 }

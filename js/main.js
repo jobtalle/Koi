@@ -204,7 +204,7 @@ if (gl &&
         const continueGame = index => {
             slot = slotNames[index];
 
-            gui.cards.enableBookButton();
+            gui.cards.enableBookButton(audio);
 
             try {
                 session.deserialize(storage.getBuffer(slot));

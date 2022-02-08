@@ -126,7 +126,7 @@ TutorialCards.prototype.update = function(koi) {
             else if (this.mutations === this.MUTATIONS_REQUIRED)
                 this.start();
             else {
-                koi.gui.cards.enableBookButton();
+                koi.gui.cards.enableBookButton(koi.audio);
 
                 return true;
             }
@@ -136,7 +136,7 @@ TutorialCards.prototype.update = function(koi) {
             if (koi.gui.cards.hand.cards.length > 0) {
                 this.overlay.setText(language.get(this.LANG_OPEN_BOOK_STORE));
 
-                koi.gui.cards.enableBookButton();
+                koi.gui.cards.enableBookButton(koi.audio);
 
                 this.pointToBookButton(koi);
                 this.advance();
