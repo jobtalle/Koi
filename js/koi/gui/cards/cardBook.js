@@ -45,7 +45,8 @@ CardBook.prototype.PADDING_PAGE = .02;
 CardBook.prototype.PADDING_CARD = .035;
 CardBook.prototype.HEIGHT = .65;
 CardBook.prototype.PAGE_COUNT = CardRequirements.length;
-CodeViewer.prototype.LANG_SAVE = "LOAD_IMAGE"; // TODO, what loading text?
+CardBook.prototype.LANG_LOAD_CARD = "LOAD_CARD";
+CardBook.prototype.LOAD_IMAGE_BUTTON_CLASS = "load-image-button";
 
 /**
  * A page flip action
@@ -501,8 +502,9 @@ CardBook.prototype.resize = function(width, height) {
  */
 CardBook.prototype.createLoadImageElement = function(audio) {
     const button = document.createElement("button");
+    button.className = this.LOAD_IMAGE_BUTTON_CLASS;
 
-    button.appendChild(document.createTextNode(language.get(this.LANG_LOAD)));
+    button.appendChild(document.createTextNode(language.get(this.LANG_LOAD_CARD)));
     button.onclick = () => {
         audio.effectClick.play();
 
