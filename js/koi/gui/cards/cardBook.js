@@ -28,7 +28,9 @@ const CardBook = function(width, height, cards, audio, onUnlock) {
 
     this.element.appendChild(this.buttonPageLeft.element);
     this.element.appendChild(this.buttonPageRight.element);
-
+    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.loadImage) {
+        this.element.appendChild(this.createLoadImageElement(audio));
+    }
     this.fit();
     this.setButtonLockedStatus();
 };
@@ -43,6 +45,8 @@ CardBook.prototype.PADDING_PAGE = .02;
 CardBook.prototype.PADDING_CARD = .035;
 CardBook.prototype.HEIGHT = .65;
 CardBook.prototype.PAGE_COUNT = CardRequirements.length;
+CardBook.prototype.LANG_LOAD_CARD = "LOAD_CARD";
+CardBook.prototype.LOAD_IMAGE_BUTTON_CLASS = "load-image-button";
 
 /**
  * A page flip action
@@ -487,4 +491,27 @@ CardBook.prototype.resize = function(width, height) {
     this.height = height;
 
     this.fit();
+};
+
+/**
+ * Creates the load Koi Code image button
+ * @param {AudioBank} audio Game audio
+ * @returns {HTMLButtonElement} The download button
+ * 
+ * TODO: needs styling and positioning.
+ */
+CardBook.prototype.createLoadImageElement = function(audio) {
+    const button = document.createElement("button");
+    button.className = this.LOAD_IMAGE_BUTTON_CLASS;
+
+    button.appendChild(document.createTextNode(language.get(this.LANG_LOAD_CARD)));
+    button.onclick = () => {
+        audio.effectClick.play();
+
+        if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.loadImage) {
+            window.webkit.messageHandlers.loadImage.postMessage(null);
+        }
+        this.hide();
+    };
+    return button;
 };

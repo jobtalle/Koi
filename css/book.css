@@ -187,3 +187,14 @@
 .button-page.right {
     right: calc(var(--button-width) * var(--page-button-page-shift) * -1);
 }
+
+.load-image-button {
+    position: absolute;
+    width: 50%;
+    background-color: var(--code-button-color);
+    padding: var(--code-button-padding);
+    margin-top: var(--code-button-margin);
+    border-radius: var(--code-button-radius);
+    bottom: 0;
+    right: calc(50% * -1 - var(--code-button-padding));
+}

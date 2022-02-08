@@ -55,7 +55,18 @@ CodeViewer.prototype.createButtonDownload = function(image, audio) {
     button.onclick = () => {
         audio.effectClick.play();
 
-        image.toBlob(blob => this.storage.imageToFile(blob, this.DEFAULT_NAME));
+        image.toBlob(blob => {
+            if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.saveImage) {
+                var reader = new FileReader();
+                reader.readAsDataURL(blob); 
+                reader.onloadend = function() {
+                    var base64data = reader.result;                
+                    window.webkit.messageHandlers.saveImage.postMessage({blob: base64data});
+                }
+            } else {
+                this.storage.imageToFile(blob, this.DEFAULT_NAME)
+            }
+        });
 
         this.hide();
     };
@@ -121,8 +132,12 @@ CodeViewer.prototype.createView = function(image, audio) {
     element.appendChild(image);
     element.appendChild(this.createButtonDownload(image, audio));
 
-    if (this.storage.hasClipboard)
-        element.appendChild(this.createButtonCopy(image, audio));
+    if (this.storage.hasClipboard) {
+        // Do not show the clipboard button if the image can be stored on the photo library.
+        if (!(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.saveImage)) {
+            element.appendChild(this.createButtonCopy(image, audio));
+        }
+    }
 
     element.addEventListener("mousedown", event => event.stopImmediatePropagation());
 
