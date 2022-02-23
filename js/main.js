@@ -111,6 +111,7 @@ const loader = new Loader(
     document.getElementById("loader-slots"),
     document.getElementById("loader-button-settings"),
     document.getElementById("wrapper"),
+    !RUNNING_ON_WEBVIEW_IOS,
     !RUNNING_ON_WEBVIEW_IOS);
 let imperial = false;
 

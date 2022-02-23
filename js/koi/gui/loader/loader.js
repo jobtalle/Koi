@@ -15,6 +15,7 @@ const Loader = function(
     elementSlots,
     elementButtonSettings,
     wrapper,
+    loadDiscord,
     loadFullscreen) {
     this.element = element;
     this.icon = new LoaderIcon();
@@ -38,9 +39,8 @@ const Loader = function(
 
     element.appendChild(this.elementDiscord.element);
 
-    if(loadFullscreen) {
+    if (loadFullscreen)
         element.appendChild(this.fullscreen.element);
-    }
 
     elementGraphics.appendChild(this.icon.element);
 
@@ -141,9 +141,9 @@ Loader.prototype.createButtonSettings = function() {
  * Finish loading
  */
 Loader.prototype.complete = function() {
-    if(!this.loadFullscreen) {
+    if (this.loadFullscreen)
         this.fullscreen.setLoaded();
-    }
+
     const onNewGame = index => {
         this.onNewGame(index);
         this.onFinish();
