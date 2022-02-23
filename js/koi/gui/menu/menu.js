@@ -36,6 +36,7 @@ Menu.prototype.LANG_QUIT = "QUIT";
 Menu.prototype.LANG_EXIT = "BACK";
 Menu.prototype.KEY_VOLUME = "volume";
 Menu.prototype.KEY_LANGUAGE = "language";
+Menu.prototype.KEY_MSAA = "msaa";
 Menu.prototype.KEY_GRASS_AUDIO = "grass-audio";
 Menu.prototype.KEY_FLASHES = "flashes";
 Menu.prototype.LANGUAGES = [
@@ -84,6 +85,7 @@ Menu.prototype.createBox = function(
     table.appendChild(this.createVolumeSlider(audioEngine));
     table.appendChild(this.createGrassAudioToggle(audioEngine));
     table.appendChild(this.createFlashToggle(externalSettings));
+    table.appendChild(this.createMSAAToggle());
     table.appendChild(this.languageChooser);
 
     element.appendChild(table);
@@ -244,7 +246,39 @@ Menu.prototype.createFlashToggle = function(externalSettings) {
     row.appendChild(this.createTD(element));
 
     return row;
-}
+};
+
+/**
+ * Create the MSAA toggle
+ * @returns {HTMLTableRowElement} The MSAA Toggle
+ */
+Menu.prototype.createMSAAToggle = function() {
+    const row = document.createElement("tr");
+    const label = document.createElement("label");
+    const element = document.createElement("input");
+
+    element.type = "checkbox";
+    element.checked = true;
+
+    if (window["localStorage"].getItem(this.KEY_MSAA))
+        element.checked = window["localStorage"].getItem(this.KEY_MSAA) === "true";
+    else
+        element.checked = true;
+
+    element.onchange = () => {
+        window["localStorage"].setItem(this.KEY_MSAA, element.checked.toString());
+
+        setTimeout(() => location.reload(), 100);
+    };
+
+    label.appendChild(document.createTextNode("MSAA"));
+    label.appendChild(element);
+
+    row.appendChild(this.createTD(label));
+    row.appendChild(this.createTD(element));
+
+    return row;
+};
 
 /**
  * Create a language chooser

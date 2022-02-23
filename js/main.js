@@ -1,7 +1,7 @@
 const searchParams = new URLSearchParams(window.location.search);
 const glParameters = {
     alpha: false,
-    antialias: true,
+    antialias: window["localStorage"].getItem(Menu.prototype.KEY_MSAA) === "true",
     premultipliedAlpha: true,
     preserveDrawingBuffer: true
 };
