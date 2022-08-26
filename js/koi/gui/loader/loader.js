@@ -174,6 +174,15 @@ Loader.prototype.complete = function() {
         this.elementButtonSettings.appendChild(this.createButtonSettings());
         this.elementButtonSettings.classList.add(this.CLASS_LOADED);
     }, this.BUTTON_DELAY * 1000);
+
+    const resumeSlot = new URLSearchParams(window.location.search).get("resume");
+
+    if (resumeSlot) {
+        const slot = Number.parseInt(resumeSlot);
+
+        if (slot === 0 || slot === 1 || slot === 2)
+            onContinue(slot);
+    }
 };
 
 /**

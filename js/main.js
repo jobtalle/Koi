@@ -10,12 +10,30 @@ const gl =
     canvas.getContext("webgl", glParameters) ||
     canvas.getContext("experimental-webgl", glParameters);
 let chosenLocale = null;
+let chosenSlot = -1;
 
 /**
  * Check if game is running within WKWebView on iOS.
  */
 
 const RUNNING_ON_WEBVIEW_IOS = (window.webkit && window.webkit.messageHandlers) ? true : false;
+
+/**
+ * Reload the currently loaded game
+ */
+const reloadGame = () => {
+    if (chosenSlot === -1)
+        return;
+
+    window.location = window.location.protocol + "//" + window.location.host + window.location.pathname + "?resume=" + chosenSlot.toString();
+};
+
+/**
+ * Reload the game into the menu
+ */
+const reloadMenu = () => {
+    window.location = window.location.protocol + "//" + window.location.host + window.location.pathname;
+};
 
 /**
  * Called when loading resources failed
@@ -144,8 +162,7 @@ if (gl &&
             chosenLocale,
             audioEngine,
             settings,
-            audio,
-            !RUNNING_ON_WEBVIEW_IOS);
+            audio);
         let lastTime = null;
         let koi = null;
         let loaded = true;
@@ -203,6 +220,7 @@ if (gl &&
          * @param {number} index Create a new game at a given slot index
          */
         const continueGame = index => {
+            chosenSlot = index;
             slot = slotNames[index];
 
             gui.cards.enableBookButton(audio);

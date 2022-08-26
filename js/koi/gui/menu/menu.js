@@ -89,9 +89,10 @@ Menu.prototype.createBox = function(
     table.appendChild(this.languageChooser);
 
     element.appendChild(table);
-    if(createFullscreenButton) {
+
+    if(createFullscreenButton)
         element.appendChild(this.createButtonFullscreen(fullscreen, audio));
-    }
+
     element.appendChild(this.buttonBack);
 
     return element;
@@ -269,8 +270,7 @@ Menu.prototype.createMSAAToggle = function() {
         window["localStorage"].setItem(this.KEY_MSAA, element.checked.toString());
 
         setTimeout(() => {
-            window.location += "?save=0";
-            // location.reload()
+            reloadGame();
         }, 100);
     };
 
@@ -308,7 +308,7 @@ Menu.prototype.createLanguageChooser = function(locale) {
     select.onchange = () => {
         window["localStorage"].setItem(this.KEY_LANGUAGE, select.value);
 
-        location.reload();
+        reloadMenu();
     };
 
     label.appendChild(document.createTextNode(language.get(this.LANG_LANGUAGE)));
@@ -346,7 +346,7 @@ Menu.prototype.createButtonMenu = function() {
 
     element.appendChild(document.createTextNode(language.get(this.LANG_MENU)));
     element.onclick = () => {
-        window.location.reload();
+        reloadMenu();
     };
 
     return element;
