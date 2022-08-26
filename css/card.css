@@ -256,6 +256,7 @@
 }
 
 #drop-target {
+    pointer-events: none;
     position: absolute;
     left: 50%;
     bottom: calc(var(--card-drop-target-raise) * var(--card-height));
