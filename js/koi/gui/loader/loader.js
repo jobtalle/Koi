@@ -180,8 +180,11 @@ Loader.prototype.complete = function() {
     if (resumeSlot) {
         const slot = Number.parseInt(resumeSlot);
 
-        if (slot === 0 || slot === 1 || slot === 2)
+        if (slot === 0 || slot === 1 || slot === 2) {
             onContinue(slot);
+
+            this.menu.show();
+        }
     }
 };
 

@@ -256,43 +256,56 @@ if (gl &&
         };
 
         window.addEventListener("mousedown", event => {
-            event.preventDefault();
+            if (koi) {
+                event.preventDefault();
 
-            koi?.touchStart(event.clientX, event.clientY, control, shift);
+                koi.touchStart(event.clientX, event.clientY, control, shift);
+            }
         });
 
         window.addEventListener("touchstart", event => {
-            event.preventDefault();
+            if (koi) {
+                event.preventDefault();
 
-            koi?.touchStart(event.changedTouches[0].clientX, event.changedTouches[0].clientY, control, shift);
+                koi.touchStart(event.changedTouches[0].clientX, event.changedTouches[0].clientY, control, shift);
+            }
         });
 
         window.addEventListener("mousemove", event => {
-            koi?.touchMove(event.clientX, event.clientY, mouseLeft);
+            if (koi) {
+                koi.touchMove(event.clientX, event.clientY, mouseLeft);
 
-            mouseLeft = false;
+                mouseLeft = false;
+            }
         });
 
         window.addEventListener("touchmove", event => {
-            event.preventDefault();
+            if (koi) {
+                event.preventDefault();
 
-            koi?.touchMove(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+                koi.touchMove(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+            }
         })
 
         window.addEventListener("mouseup", () => {
-            koi?.touchEnd();
+            if (koi)
+                koi.touchEnd();
         });
 
         window.addEventListener("touchend", event => {
-            event.preventDefault();
+            if (koi) {
+                event.preventDefault();
 
-            koi?.touchEnd();
+                koi.touchEnd();
+            }
         });
 
         window.addEventListener("mouseleave", () => {
-            koi?.mouseLeave();
+            if (koi) {
+                koi.mouseLeave();
 
-            mouseLeft = true;
+                mouseLeft = true;
+            }
         });
 
         window.onkeydown = event => {
