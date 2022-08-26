@@ -19,20 +19,20 @@ let chosenSlot = -1;
 const RUNNING_ON_WEBVIEW_IOS = (window.webkit && window.webkit.messageHandlers) ? true : false;
 
 /**
- * Reload the currently loaded game
- */
-const reloadGame = () => {
-    if (chosenSlot === -1)
-        return;
-
-    window.location = window.location.protocol + "//" + window.location.host + window.location.pathname + "?resume=" + chosenSlot.toString();
-};
-
-/**
  * Reload the game into the menu
  */
 const reloadMenu = () => {
     window.location = window.location.protocol + "//" + window.location.host + window.location.pathname;
+};
+
+/**
+ * Reload the currently loaded game
+ */
+const reloadGame = () => {
+    if (chosenSlot === -1)
+        reloadMenu();
+    else
+        window.location = window.location.protocol + "//" + window.location.host + window.location.pathname + "?resume=" + chosenSlot.toString();
 };
 
 /**
@@ -179,11 +179,11 @@ if (gl &&
         canvas.height = wrapper.clientHeight;
 
         window.onresize = () => {
-            if (canvas.width === wrapper.offsetWidth && canvas.height === wrapper.offsetHeight)
+            if (canvas.width === wrapper.clientWidth && canvas.height === wrapper.clientHeight)
                 return;
 
-            canvas.width = wrapper.offsetWidth;
-            canvas.height = wrapper.offsetHeight;
+            canvas.width = wrapper.clientWidth;
+            canvas.height = wrapper.clientHeight;
 
             systems.resize(canvas.width, canvas.height);
             gui.resize();
@@ -204,6 +204,7 @@ if (gl &&
          * @param {number} index Create a new game at a given slot index
          */
         const newSession = index => {
+            chosenSlot = index;
             slot = slotNames[index];
             session = new Session();
 
@@ -255,57 +256,44 @@ if (gl &&
             }
         };
 
-        window.addEventListener("mousedown", event => {
-            if (koi) {
-                event.preventDefault();
+        canvas.addEventListener("mousedown", event => {
+            event.preventDefault();
 
-                koi.touchStart(event.clientX, event.clientY, control, shift);
-            }
+            koi.touchStart(event.clientX, event.clientY, control, shift);
         });
 
-        window.addEventListener("touchstart", event => {
-            if (koi) {
-                event.preventDefault();
+        canvas.addEventListener("touchstart", event => {
+            event.preventDefault();
 
-                koi.touchStart(event.changedTouches[0].clientX, event.changedTouches[0].clientY, control, shift);
-            }
+            koi.touchStart(event.changedTouches[0].clientX, event.changedTouches[0].clientY, control, shift);
         });
 
-        window.addEventListener("mousemove", event => {
-            if (koi) {
-                koi.touchMove(event.clientX, event.clientY, mouseLeft);
+        canvas.addEventListener("mousemove", event => {
+            koi.touchMove(event.clientX, event.clientY, mouseLeft);
 
-                mouseLeft = false;
-            }
+            mouseLeft = false;
         });
 
-        window.addEventListener("touchmove", event => {
-            if (koi) {
-                event.preventDefault();
+        canvas.addEventListener("touchmove", event => {
+            event.preventDefault();
 
-                koi.touchMove(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
-            }
+            koi.touchMove(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
         })
 
-        window.addEventListener("mouseup", () => {
-            if (koi)
-                koi.touchEnd();
+        canvas.addEventListener("mouseup", () => {
+            koi.touchEnd();
         });
 
-        window.addEventListener("touchend", event => {
-            if (koi) {
-                event.preventDefault();
+        canvas.addEventListener("touchend", event => {
+            event.preventDefault();
 
-                koi.touchEnd();
-            }
+            koi.touchEnd();
         });
 
-        window.addEventListener("mouseleave", () => {
-            if (koi) {
-                koi.mouseLeave();
+        canvas.addEventListener("mouseleave", () => {
+            koi.mouseLeave();
 
-                mouseLeft = true;
-            }
+            mouseLeft = true;
         });
 
         window.onkeydown = event => {

@@ -65,7 +65,7 @@ Menu.prototype.LANGUAGES = [
  * @param {AudioEngine} audioEngine The audio engine
  * @param {Object} externalSettings The external settings object
  * @param {AudioBank} audio Game audio
- * @param {createFullscreenButton} If set to true, a fullscreen button will be created
+ * @param {Boolean} createFullscreenButton If set to true, a fullscreen button will be created
  * @returns {HTMLDivElement} The menu box
  */
 Menu.prototype.createBox = function(
