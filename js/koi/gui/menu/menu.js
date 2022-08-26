@@ -268,7 +268,10 @@ Menu.prototype.createMSAAToggle = function() {
     element.onchange = () => {
         window["localStorage"].setItem(this.KEY_MSAA, element.checked.toString());
 
-        setTimeout(() => location.reload(), 100);
+        setTimeout(() => {
+            window.location += "?save=0";
+            // location.reload()
+        }, 100);
     };
 
     label.appendChild(document.createTextNode("MSAA"));
