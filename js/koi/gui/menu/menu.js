@@ -112,8 +112,6 @@ Menu.prototype.addQuitOption = function(audio) {
         this.box.appendChild(quit);
 
     this.box.appendChild(this.buttonBack);
-
-    this.languageChooser.parentNode.removeChild(this.languageChooser);
 };
 
 /**
@@ -308,7 +306,7 @@ Menu.prototype.createLanguageChooser = function(locale) {
     select.onchange = () => {
         window["localStorage"].setItem(this.KEY_LANGUAGE, select.value);
 
-        reloadMenu();
+        reloadGame();
     };
 
     label.appendChild(document.createTextNode(language.get(this.LANG_LANGUAGE)));
