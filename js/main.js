@@ -237,41 +237,41 @@ if (gl &&
             }
         };
 
-        canvas.addEventListener("mousedown", event => {
+        window.addEventListener("mousedown", event => {
             event.preventDefault();
 
             koi.touchStart(event.clientX, event.clientY, control, shift);
         });
 
-        canvas.addEventListener("touchstart", event => {
+        window.addEventListener("touchstart", event => {
             event.preventDefault();
 
             koi.touchStart(event.changedTouches[0].clientX, event.changedTouches[0].clientY, control, shift);
         });
 
-        canvas.addEventListener("mousemove", event => {
+        window.addEventListener("mousemove", event => {
             koi.touchMove(event.clientX, event.clientY, mouseLeft);
 
             mouseLeft = false;
         });
 
-        canvas.addEventListener("touchmove", event => {
+        window.addEventListener("touchmove", event => {
             event.preventDefault();
 
             koi.touchMove(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
         })
 
-        canvas.addEventListener("mouseup", () => {
+        window.addEventListener("mouseup", () => {
             koi.touchEnd();
         });
 
-        canvas.addEventListener("touchend", event => {
+        window.addEventListener("touchend", event => {
             event.preventDefault();
 
             koi.touchEnd();
         });
 
-        canvas.addEventListener("mouseleave", () => {
+        window.addEventListener("mouseleave", () => {
             koi.mouseLeave();
 
             mouseLeft = true;
