@@ -40,7 +40,8 @@ Menu.prototype.KEY_MSAA = "msaa";
 Menu.prototype.KEY_GRASS_AUDIO = "grass-audio";
 Menu.prototype.KEY_FLASHES = "flashes";
 Menu.prototype.LANGUAGES = [
-    ["en", "English"],
+    ["en-imperial", "English (imperial units)"],
+    ["en-metric", "English (metric units)"],
     ["de", "Deutsch (German)"],
     ["fr", "Français (French)"],
     ["ja", "日本語 (Japanese)"],

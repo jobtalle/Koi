@@ -51,9 +51,14 @@ const makeLanguage = locale => {
     switch (locale) {
         default:
         case "en":
-            chosenLocale = "en";
+        case "en-imperial":
+            chosenLocale = "en-imperial";
 
-            return new Language("KoiTranslations/english.json");
+            return new Language("KoiTranslations/english_imperial.json");
+        case "en-metric":
+            chosenLocale = "en-metric";
+
+            return new Language("KoiTranslations/english_metric.json");
         case "nl":
             chosenLocale = "nl";
 
