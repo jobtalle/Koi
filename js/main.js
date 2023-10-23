@@ -316,6 +316,10 @@ if (gl &&
                 event.preventDefault();
         };
 
+        window.onfocus = () => {
+            alt = control = shift = false;
+        };
+
         window.onkeyup = event => {
             switch (event.key) {
                 case "Alt":
