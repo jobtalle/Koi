@@ -260,6 +260,7 @@ Menu.prototype.createMSAAToggle = function() {
     element.type = "checkbox";
     element.checked = true;
 
+    // TODO: do not use local storage
     if (window["localStorage"].getItem(this.KEY_MSAA))
         element.checked = window["localStorage"].getItem(this.KEY_MSAA) === "true";
     else

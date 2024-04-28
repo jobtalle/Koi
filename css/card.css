@@ -4,15 +4,22 @@
     --card-color-background-graphics: #7e605e;
     --card-color-drop-target: #ffffff55;
 
+    --card-scale: 1;
+
+    --card-width-default: 250px;
+    --card-height-default: 350px;
+    --card-preview-width-default: 200px;
+    --card-preview-height-default: 120px;
+
     /* Dimensions */
-    --card-width: 250px;
-    --card-height: 350px;
-    --card-preview-width: 200px;
-    --card-preview-height: 120px;
+    --card-width: calc(var(--card-width-default) * var(--card-scale));
+    --card-height: calc(var(--card-height-default) * var(--card-scale));
+    --card-preview-width: calc(var(--card-preview-width-default) * var(--card-scale));
+    --card-preview-height: calc(var(--card-preview-height-default) * var(--card-scale));
     --card-preview-margin: calc((var(--card-width) - var(--card-preview-width) - 2 * var(--card-preview-border)) * 0.5);
     --card-preview-columns: 6;
     --card-preview-rows: 10;
-    --card-preview-fps: 60;
+    --card-preview-fps: 30;
     --card-preview-border-radius: 6px;
     --card-preview-border: 2px;
     --card-border-radius: 12px;
@@ -21,15 +28,17 @@
     --card-colors-raise: 0.5;
     --card-colors-overlap: 0.25;
     --card-colors-gradient: 280%;
-    --card-info-spacing: 12px;
+    --card-info-spacing: 10px;
     --card-info-color: #d7d4c8;
     --card-info-transparant-color: rgba(215, 212, 200, 0);
     --card-info-slant: -18deg;
-    --card-info-padding-right: 6px;
+    --card-info-padding-right: 2px;
     --card-info-text-color: #0c0c0c;
-    --card-code-icon-radius: 32px;
-    --card-code-icon-margin: 8px;
+    --card-code-icon-radius: 14px;
+    --card-code-icon-margin: 2px;
     --card-code-opacity: 0.5;
+
+    --font-size: .7rem;
 }
 
 .card-shape {
@@ -46,9 +55,10 @@
     background-color: var(--card-color-background);
     position: absolute;
     user-select: none;
-    box-shadow: 0 0 var(--book-shadow-radius) var(--book-shadow-color);
+    /*box-shadow: 0 0 var(--book-shadow-radius) var(--book-shadow-color);*/
     overflow: hidden;
     -webkit-tap-highlight-color: transparent;
+    /*scale: 0.7;*/
 }
 
 .card svg {
@@ -170,7 +180,7 @@
 .card .info .property {
     margin-top: calc(var(--card-info-spacing) / 4);
     margin-bottom: calc(var(--card-info-spacing) / 4);
-    font-size: 20px;
+    font-size: var(--font-size);
     position: relative;
 }
 
@@ -261,8 +271,8 @@
     left: 50%;
     bottom: calc(var(--card-drop-target-raise) * var(--card-height));
     background-color: var(--card-color-drop-target);
-    transition: 0.1s;
-    transition-property: bottom;
+    /*transition: 0.1s;*/
+    /*transition-property: bottom;*/
 }
 
 #drop-target.hidden {

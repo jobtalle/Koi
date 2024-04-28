@@ -1,4 +1,7 @@
 const searchParams = new URLSearchParams(window.location.search);
+// const preferences = new StoragePreferencesCapacitor();
+
+// TODO: do not use localstorage
 const glParameters = {
     alpha: false,
     antialias: window["localStorage"].getItem(Menu.prototype.KEY_MSAA) === null || window["localStorage"].getItem(Menu.prototype.KEY_MSAA) === "true",
@@ -16,7 +19,16 @@ let chosenSlot = -1;
  * Check if game is running within WKWebView on iOS.
  */
 
-const RUNNING_ON_WEBVIEW_IOS = (window.webkit && window.webkit.messageHandlers) ? true : false;
+const RUNNING_ON_WEBVIEW_IOS = navigator.standalone || window["webkit"] && window["webkit"].messageHandlers;
+
+const RUNNING_CAPACITOR = typeof Capacitor !== "undefined" && Capacitor.platform !== "web";
+
+const PLATFORM_NAME = RUNNING_CAPACITOR ? Capacitor.getPlatform() : "web";
+
+const RUNNING_MOBILE = RUNNING_CAPACITOR && (Capacitor.isNative || Capacitor.platform === "web");
+
+const preferences = RUNNING_CAPACITOR ? new StoragePreferencesCapacitor() : new StorageLocal();
+
 
 /**
  * Reload the game into the menu
@@ -126,6 +138,93 @@ const makeLanguage = locale => {
     }
 };
 
+function removeStatusBar() {
+    if (!RUNNING_CAPACITOR)
+        return;
+
+    if (Capacitor.isPluginAvailable('StatusBar')) {
+        Capacitor.Plugins.StatusBar.hide();
+    } else {
+        console.error("StatusBar plugin not available");
+    }
+}
+
+function setFullScreen() {
+    if (!RUNNING_CAPACITOR)
+        return;
+
+
+    if (PLATFORM_NAME === "android") {
+        try {
+            AndroidFullScreen.immersiveMode(() => {
+                console.log("System UI visibility set");
+            }, () => {
+                console.error("Failed to set system UI visibility");
+            },
+                AndroidFullScreen.CUTOUT_MODE_NEVER);
+        } catch {
+            console.warn("AndroidFullScreen plugin not available");
+
+            removeStatusBar();
+        }
+
+    }
+}
+
+const keepAwake = async () => {
+    if (!RUNNING_CAPACITOR || !Capacitor.isPluginAvailable('KeepAwake'))
+        return;
+
+    await Capacitor.Plugins.KeepAwake.keepAwake();
+};
+
+function setupPlatform (menu, save) {
+    if (!RUNNING_CAPACITOR)
+        return;
+
+    if (PLATFORM_NAME === "android") {
+        if (Capacitor.isPluginAvailable('App')) {
+            Capacitor.Plugins.App.addListener('appStateChange', (state) => {
+                // Check isActive for app state
+            });
+
+            Capacitor.Plugins.App.addListener('appUrlOpen', (data) => {
+
+            });
+
+            Capacitor.Plugins.App.addListener("backButton", () => {
+                if (chosenSlot !== -1) {
+                    save();
+                    menu.toggle();
+                }
+            });
+        } else {
+            console.error("Capacitor 'App' plugin not available");
+        }
+
+        keepAwake().then(
+            () => {
+                console.log("Keep awake enabled");
+            }
+        );
+    }
+};
+
+function padNotch() {
+    if (!RUNNING_MOBILE)
+        return;
+
+    const elements = [
+        document.getElementById("menu"),
+        document.getElementById("loader"),
+        document.getElementById("gui"),
+        // document.getElementById("drop"),
+    ]
+}
+
+setFullScreen();
+
+// TODO: do not use localstorage
 const paramLang = window["localStorage"].getItem(Menu.prototype.KEY_LANGUAGE) || searchParams.get("lang");
 const language = paramLang ? makeLanguage(paramLang) : makeLanguage(navigator.language.substring(0, 2));
 const loader = new Loader(
@@ -134,13 +233,17 @@ const loader = new Loader(
     document.getElementById("loader-slots"),
     document.getElementById("loader-button-settings"),
     document.getElementById("wrapper"),
-    !RUNNING_ON_WEBVIEW_IOS,
-    !RUNNING_ON_WEBVIEW_IOS);
+    !RUNNING_MOBILE,
+    !RUNNING_MOBILE);
 let imperial = false;
+let menu = null;
+let storage = null;
+
 
 if (gl &&
     gl.getExtension("OES_element_index_uint") &&
     (gl.vao = gl.getExtension("OES_vertex_array_object"))) {
+
     const audioEngine = new AudioEngine(new Random());
     const audio = new AudioBank(audioEngine);
 
@@ -154,14 +257,14 @@ if (gl &&
         let session = new Session();
         let slot = null;
         const slotNames = ["session", "session2", "session3"];
-        const storage = window["require"] ? new StorageFile() : new StorageLocal();
+        storage = RUNNING_CAPACITOR ? new StorageFileCapacitor() : new StorageLocal();
         const wrapper = document.getElementById("wrapper");
         const gui = new GUI(
             document.getElementById("gui"),
             new CodeViewer(document.getElementById("code"), storage),
             audio);
         const systems = new Systems(gl, new Random(2893), wrapper.clientWidth, wrapper.clientHeight);
-        const menu = new Menu(
+        menu = new Menu(
             document.getElementById("menu"),
             loader.fullscreen,
             chosenLocale,
@@ -175,6 +278,18 @@ if (gl &&
         let alt = false;
         let control = false;
         let shift = false;
+
+
+        // testFileIO(storage);
+
+        console.log("Koi Farm");
+        console.log(
+            `
+            Environment = ${PLATFORM_NAME} 
+            Storage = ${window["require"] ? "file" : "local"} 
+            Language = ${chosenLocale} 
+            `
+        );
 
         new Drop(gui, systems, document.getElementById("drop"), canvas);
 
@@ -201,14 +316,22 @@ if (gl &&
          * Save the game state to local storage
          */
         const save = () => {
-            storage.setBuffer(slot, session.serialize(koi, gui));
+            const promise = storage.setBuffer(slot, session.serialize(koi, gui));
+
+            promise.then(() => {
+                console.log("Game saved");
+            }).catch(() => {
+                console.error("Failed to save game");
+            });
         };
+
+        setupPlatform(menu,() => save());
 
         /**
          * A function that creates a new game session
          * @param {number} index Create a new game at a given slot index
          */
-        const newSession = index => {
+        const newSession = (index, onFinish) => {
             chosenSlot = index;
             slot = slotNames[index];
             session = new Session();
@@ -219,34 +342,61 @@ if (gl &&
                 koi.free();
 
             koi = session.makeKoi(storage, systems, audio, gui, save, new TutorialBreeding(storage, gui.overlay));
+
+            onFinish();
+            // loader.finish();
+
         };
 
         /**
          * Continue an existing game
          * @param {number} index Create a new game at a given slot index
          */
-        const continueGame = index => {
+        const continueGame = (index, onFinish) => {
             chosenSlot = index;
             slot = slotNames[index];
 
             gui.cards.enableBookButton(audio);
 
             try {
-                session.deserialize(storage.getBuffer(slot));
+                const p = storage.getBuffer(slot);
 
-                koi = session.makeKoi(storage, systems, audio, gui, save);
+                p.then(buffer => {
+                    session.deserialize(buffer);
+
+                    koi = session.makeKoi(storage, systems, audio, gui, save);
+
+                    onFinish();
+                }).catch(() => {
+                    newSession(index, onFinish);
+                });
+
+                // session.deserialize();
+                //
+                // koi = session.makeKoi(storage, systems, audio, gui, save);
             } catch (error) {
-                newSession(index);
+                newSession(index, onFinish);
 
                 console.warn(error);
             }
         };
 
-        loader.setResumables([
-            storage.getBuffer(slotNames[0]) !== null,
-            storage.getBuffer(slotNames[1]) !== null,
-            storage.getBuffer(slotNames[2]) !== null
-        ]);
+        const resumablePromisses = [
+            storage.getBuffer(slotNames[0]),
+            storage.getBuffer(slotNames[1]),
+            storage.getBuffer(slotNames[2])
+        ];
+
+        Promise.all(resumablePromisses).then((values) => {
+            loader.setResumables([
+                values[0] !== null,
+                values[1] !== null,
+                values[2] !== null]);
+        }).catch(
+            (error) => {
+                console.error(error);
+            }
+        );
 
         // Trigger the animation frame loop
         lastTime = performance.now();

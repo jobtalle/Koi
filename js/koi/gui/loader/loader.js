@@ -19,9 +19,10 @@ const Loader = function(
     loadFullscreen) {
     this.element = element;
     this.icon = new LoaderIcon();
+    this.loadInfo = new LoaderLoadInfo();
     this.elementSlots = elementSlots;
     this.elementButtonSettings = elementButtonSettings;
-    this.elementDiscord = new LoaderDiscord();
+    this.elementLinks = new LoaderLinks();
     this.resumables = null;
     this.outstanding = 0;
     this.finished = 0;
@@ -37,12 +38,15 @@ const Loader = function(
 
     this.slots = null;
 
-    element.appendChild(this.elementDiscord.element);
+    // element.appendChild(this.elementWebsite.element);
+    element.appendChild(this.elementLinks.element);
 
     if (loadFullscreen)
         element.appendChild(this.fullscreen.element);
 
     elementGraphics.appendChild(this.icon.element);
+
+    elementGraphics.appendChild(this.loadInfo.element);
 
     const loop = () => {
         this.overlayCanvas.getContext("2d").clearRect(
@@ -144,16 +148,19 @@ Loader.prototype.complete = function() {
     if (this.loadFullscreen)
         this.fullscreen.setLoaded();
 
-    const onNewGame = index => {
-        this.onNewGame(index);
-        this.onFinish();
-        this.hide();
+    const onNewGame = (index) => {
+        this.onNewGame(index, () => {
+            this.onFinish();
+            this.hide();
+        });
     };
 
-    const onContinue = index => {
-        this.onContinue(index);
-        this.onFinish();
-        this.hide();
+    const onContinue = (index) => {
+        this.onContinue(index, () => {
+            this.onFinish();
+            this.hide();
+
+        });
     };
 
     this.slots = [
@@ -161,6 +168,9 @@ Loader.prototype.complete = function() {
         new LoaderSlot(1, "2", onNewGame, this.resumables[1] ? onContinue : null),
         new LoaderSlot(2, "3", onNewGame, this.resumables[2] ? onContinue : null)
     ];
+
+    // disable loading icon
+    this.loadInfo.hide();
 
     for (const slot of this.slots)
         this.elementSlots.appendChild(slot.element);
@@ -186,6 +196,11 @@ Loader.prototype.complete = function() {
             this.menu.show();
         }
     }
+};
+
+Loader.prototype.finish = function() {
+    this.onFinish();
+    this.hide();
 };
 
 /**

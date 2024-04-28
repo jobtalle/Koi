@@ -2,33 +2,32 @@
  * A storage system using the browsers local storage
  * @constructor
  */
-const StorageLocal = function() {
+const StoragePreferencesCapacitor = function() {
     StorageSystem.call(this);
+
+    if (!Capacitor.isPluginAvailable('Preferences')) {
+       throw new Error('Capacitor Preferences API is not available');
+    }
 };
 
-StorageLocal.prototype = Object.create(StorageSystem.prototype);
+StoragePreferencesCapacitor.prototype = Object.create(StorageSystem.prototype);
 
-StorageLocal.prototype.setItem = async function(key, value) {
-  return new Promise((resolve, reject) => {
-        resolve(window.localStorage.setItem(key, value));
-      }
-    );
+StoragePreferencesCapacitor.prototype.setItem = async function(key, value) {
+  return await Capacitor.Plugins.Preferences.set({
+    key: key,
+    value: JSON.stringify(value),
+  });
 };
 
-StorageLocal.prototype.getItem = async function(key) {
-    return new Promise((resolve, reject) => {
-        if (window.localStorage.getItem(key) === null)
-            resolve(null);
-        else
-            resolve(window.localStorage.getItem(key));
-    });
+StoragePreferencesCapacitor.prototype.getItem = async function(key) {
+  const item = await Capacitor.Plugins.Preferences.get({ key: key });
+  return JSON.parse(item.value);
 };
 
-StorageLocal.prototype.removeItem = async function(key){
-    return new Promise((resolve, reject) => {
-            resolve(window.localStorage.removeItem(key));
-        }
-    );
+StoragePreferencesCapacitor.prototype.removeItem = async function(key){
+  return await Capacitor.Plugins.Preferences.remove({
+    key: key,
+  });
 };
 
 /**
@@ -36,7 +35,7 @@ StorageLocal.prototype.removeItem = async function(key){
  * @param {String} key The key of the item
  * @param {String} value The value of the item
  */
-StorageLocal.prototype.set = function(key, value) {
+StoragePreferencesCapacitor.prototype.set = function(key, value) {
     return this.setItem(key, value);
 };
 
@@ -45,7 +44,7 @@ StorageLocal.prototype.set = function(key, value) {
  * @param {String} key The key of the item
  * @param {BinBuffer} value The buffer of the item
  */
-StorageLocal.prototype.setBuffer = function(key, value) {
+StoragePreferencesCapacitor.prototype.setBuffer = function(key, value) {
     return this.set(key, value.toString());
 };
 
@@ -54,7 +53,7 @@ StorageLocal.prototype.setBuffer = function(key, value) {
  * @param {String} key The key of the item
  * @returns {String|null} The value of the item, or null if it does not exist
  */
-StorageLocal.prototype.get = function(key) {
+StoragePreferencesCapacitor.prototype.get = function(key) {
     const item = this.getItem(key);
     return item;
 };
@@ -64,7 +63,7 @@ StorageLocal.prototype.get = function(key) {
  * @param {String} key The key of the buffer
  * @returns {BinBuffer|null} The buffer, or null if it does not exist
  */
-StorageLocal.prototype.getBuffer = async function(key) {
+StoragePreferencesCapacitor.prototype.getBuffer = async function(key) {
     const string = await this.get(key);
 
     if (string)
@@ -77,7 +76,7 @@ StorageLocal.prototype.getBuffer = async function(key) {
  * Remove an item
  * @param {String} key The key of the item
  */
-StorageLocal.prototype.remove = function(key) {
+StoragePreferencesCapacitor.prototype.remove = function(key) {
     this.removeItem(key);
 };
 
@@ -86,7 +85,7 @@ StorageLocal.prototype.remove = function(key) {
  * @param {Blob} blob The image blob data
  * @param {String} name The file name
  */
-StorageLocal.prototype.imageToFile = function(blob, name) {
+StoragePreferencesCapacitor.prototype.imageToFile = function(blob, name) {
     const a = document.createElement("a");
     const url = URL.createObjectURL(blob);
 

@@ -11,7 +11,14 @@ const Cards = function(element, codeViewer, audio) {
     this.audio = audio;
     this.dropTarget = this.createDropTarget();
     this.buttonBook = new CardBookButton(this.toggleBook.bind(this));
+    this.buttonLoadCard = new CardLoadButton(() => {
+        storage.loadImage();
+    });
+    this.buttonMenu = new CardMenuButton(() => {
+       menu.toggle();
+    });
     this.bookEnabled = false;
+    this.buttonsShown = false;
     this.book = new CardBook(element.clientWidth, element.clientHeight, this, audio, () => {
         if (this.koi)
             this.koi.onUnlock();
@@ -88,6 +95,19 @@ Cards.prototype.toggleBook = function() {
         this.audio.effectBookInteract.play();
     }
 };
+
+Cards.prototype.hideButtons = function() {
+    this.element.removeChild(this.buttonMenu.element);
+    this.element.removeChild(this.buttonLoadCard.element);
+    this.buttonsShown = false;
+}
+
+Cards.prototype.showButtons = function() {
+    this.element.appendChild(this.buttonMenu.element);
+    this.element.appendChild(this.buttonLoadCard.element);
+    this.buttonsShown = true;
+
+}
 
 /**
  * Enable the book button
@@ -418,6 +438,7 @@ Cards.prototype.remove = function(card, noChild = false) {
 Cards.prototype.hide = function() {
     if (this.bookVisible) {
         this.book.hide();
+        this.hideButtons();
         this.audio.effectBookInteract.play();
 
         this.hideTimer = this.HIDE_TIME;
@@ -431,7 +452,7 @@ Cards.prototype.hide = function() {
 Cards.prototype.show = function() {
     if (!this.bookVisible) {
         this.book.show();
-
+        this.showButtons();
         this.bookVisible = true;
         this.hidden = false;
     }

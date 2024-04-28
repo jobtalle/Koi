@@ -439,6 +439,7 @@ Koi.prototype.update = function() {
     if (this.tutorial && this.tutorial.update(this)) {
         if (this.tutorial instanceof TutorialBreeding) {
             this.spawner.setBehavior(new SpawnerBehaviorDefault());
+            // TODO: do something with this storage
             this.tutorial = new TutorialCards(this.storage, this.gui.overlay);
         }
         else

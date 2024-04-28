@@ -1,12 +1,18 @@
 :root {
-    --button-width: 80px;
-    --button-height: 80px;
+    --button-width: 5rem;
+    --button-height: 5rem;
+
+    --button-height-small: 3.5rem;
+    --button-width-small: 3.5rem;
+
     --load-card-button-padding: 10px;
 }
 
 button {
+    /*display: flex;*/
     width: var(--button-width);
     height: var(--button-height);
+    /*flex: 1;*/
     border: none;
     box-sizing: border-box;
     cursor: pointer;
@@ -18,17 +24,29 @@ button {
     font-size: 18pt;
     font-family: inherit;
     user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.load-card-button {
+.home-button {
     position: absolute;
-    left: 0;
+    right: 0;
     top: 0;
-    width: calc(var(--button-width) * 2);
-    background-color: var(--code-button-color);
-    box-shadow: 0 0 var(--code-shadow-radius) var(--code-shadow-color);
-    padding: 0 var(--load-card-button-padding);
-    margin-top: var(--code-button-margin);
-    margin-left: var(--code-button-margin);
-    border-radius: var(--code-button-radius);
+
+}
+
+@media (max-width: 600px) or (max-height: 600px){
+    button {
+        font-size: 14pt;
+        width: var(--button-width-small);
+        height: var(--button-height-small);
+    }
+
+    .button-page.left {
+    left: calc(var(--button-width-small) * var(--page-button-page-shift) * -1);
+}
+
+    .button-page.right {
+        right: calc(var(--button-width-small) * var(--page-button-page-shift) * -1);
+    }
+
 }

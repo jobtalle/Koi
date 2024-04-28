@@ -57,9 +57,9 @@ void main() {
 
 Bodies.prototype.SHADER_FRAGMENT = `#version 100
 uniform sampler2D atlas;
-uniform mediump vec2 shadow;
+uniform highp vec2 shadow;
 
-varying mediump vec2 iUv;
+varying highp vec2 iUv;
 
 void main() {
   gl_FragColor = texture2D(atlas, iUv);
@@ -72,7 +72,7 @@ uniform vec2 scale;
 attribute vec2 position;
 attribute vec2 uv;
 
-varying mediump vec2 iUv;
+varying highp vec2 iUv;
 
 void main() {
   iUv = uv;
@@ -84,7 +84,7 @@ void main() {
 Bodies.prototype.SHADER_SHADOWS_FRAGMENT = `#version 100
 uniform sampler2D atlas;
 
-varying mediump vec2 iUv;
+varying highp vec2 iUv;
 
 #define TRANSPARENCY 0.6
 
@@ -128,11 +128,12 @@ Bodies.prototype.render = function(
         this.buffer.render();
     }
     else {
-        this.gl.blendFuncSeparate(
-            this.gl.SRC_ALPHA,
-            this.gl.ONE_MINUS_SRC_ALPHA,
-            this.gl.ONE_MINUS_DST_ALPHA,
-            this.gl.ONE);
+        // Removing this seems to fix flickering of shadows on older android phones
+        // this.gl.blendFuncSeparate(
+        //     this.gl.SRC_ALPHA,
+        //     this.gl.ONE_MINUS_SRC_ALPHA,
+        //     this.gl.ONE_MINUS_DST_ALPHA,
+        //     this.gl.ONE);
 
         this.program.use();
 

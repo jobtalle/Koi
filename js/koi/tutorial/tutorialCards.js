@@ -5,6 +5,7 @@
  * @constructor
  */
 const TutorialCards = function(storage, overlay) {
+    // TODO: do somthing with this storage
     Tutorial.call(this, storage, overlay);
 
     this.mutations = 0;
@@ -13,6 +14,11 @@ const TutorialCards = function(storage, overlay) {
     this.unlocked = false;
     this.stored = false;
     this.highlight1 = this.highlight2 = this.highlight3 = this.highlight4 = null;
+    this.skip = false;
+
+    overlay.createSkip(() => {
+        this.skip = true;
+    });
 };
 
 TutorialCards.prototype = Object.create(Tutorial.prototype);
@@ -37,6 +43,7 @@ TutorialCards.prototype.start = function() {
     this.phase = this.PHASE_CREATE_CARD;
     this.forceMutation = false;
     this.handEnabled = true;
+
 };
 
 /**
@@ -119,17 +126,24 @@ TutorialCards.prototype.markFinished = function(koi) {
  * @returns {Boolean} True if the tutorial has finished
  */
 TutorialCards.prototype.update = function(koi) {
+    if (this.skip) {
+        this.overlay.clear();
+
+        koi.gui.cards.enableBookButton(koi.audio);
+
+        return true;
+    }
     switch (this.phase) {
         case this.PHASE_START:
-            if (this.mutations < this.MUTATIONS_REQUIRED)
-                this.phase = this.PHASE_WAITING;
-            else if (this.mutations === this.MUTATIONS_REQUIRED)
+            // if (this.mutations < this.MUTATIONS_REQUIRED)
+            //     this.phase = this.PHASE_WAITING;
+            // else if (this.mutations === this.MUTATIONS_REQUIRED)
                 this.start();
-            else {
-                koi.gui.cards.enableBookButton(koi.audio);
-
-                return true;
-            }
+            // else {
+            //     koi.gui.cards.enableBookButton(koi.audio);
+            //
+            //     return true;
+            // }
 
             break;
         case this.PHASE_CREATE_CARD:
@@ -206,7 +220,7 @@ TutorialCards.prototype.update = function(koi) {
             if (!koi.gui.cards.bookVisible || this.unlocked) {
                 this.markFinished(koi);
 
-                this.overlay.removeText();
+                this.overlay.clear();
 
                 return true;
             }

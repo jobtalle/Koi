@@ -7,7 +7,7 @@
  * @param {Function} onUnlock A function to call when a new page is unlocked
  * @constructor
  */
-const CardBook = function(width, height, cards, audio, onUnlock) {
+const CardBook = function(width, height, cards, audio, onUnlock, animate=true) {
     this.spine = this.createSpine();
     this.element = this.createElement(this.spine);
     this.width = width;
@@ -23,6 +23,7 @@ const CardBook = function(width, height, cards, audio, onUnlock) {
     this.onUnlock = onUnlock;
     this.unlocked = 0;
     this.invisibleTimeout = null;
+    this.animate = animate;
 
     this.populateSpine();
 
@@ -38,6 +39,7 @@ CardBook.prototype.CLASS_HIDDEN = "hidden";
 CardBook.prototype.CLASS_INVISIBLE = "invisible";
 CardBook.prototype.HIDE_TIME = StyleUtils.getFloat("--book-hide-time");
 CardBook.prototype.PADDING_TOP = .05;
+CardBook.prototype.PADDING_TOP_PORTRAIT = .2;
 CardBook.prototype.PADDING_PAGE = .02;
 CardBook.prototype.PADDING_CARD = .035;
 CardBook.prototype.HEIGHT = .65;
@@ -61,8 +63,8 @@ CardBook.Flip.prototype.SPEED = .3;
 CardBook.Flip.prototype.update = function() {
     this.flipPrevious = this.flip;
 
-    if ((this.flip -= this.SPEED) < -1)
-        this.flip = -1;
+    // if ((this.flip -= this.SPEED) < -1)
+    this.flip = -1;
 
     return this.flip === this.flipPrevious;
 };
@@ -282,23 +284,23 @@ CardBook.prototype.update = function() {
  * @param {Number} time The amount of time since the last update
  */
 CardBook.prototype.renderFlips = function(time) {
-    let index = this.flipDirection === -1 ? this.page + 1 : this.page;
-
-    for (const flip of this.flips) {
-        const flipAmount = flip.flipPrevious + (flip.flip - flip.flipPrevious) * time;
-
-        if (!flip.halfway && flipAmount < 0) {
-            this.pages[index].hide();
-            this.pages[index - this.flipDirection].show(this.cards);
-
-            flip.halfway = true;
-        }
-
-        this.pages[index].setFlip(flipAmount);
-        this.pages[index - this.flipDirection].setFlip(-flipAmount);
-
-        index -= 2 * this.flipDirection;
-    }
+    // let index = this.flipDirection === -1 ? this.page + 1 : this.page;
+    //
+    // for (const flip of this.flips) {
+    //     const flipAmount = flip.flipPrevious + (flip.flip - flip.flipPrevious) * time;
+    //
+    //     if (!flip.halfway && flipAmount < 0) {
+    //         this.pages[index].hide();
+    //         this.pages[index - this.flipDirection].show(this.cards);
+    //
+    //         flip.halfway = true;
+    //     }
+    //
+    //     this.pages[index].setFlip(flipAmount);
+    //     this.pages[index - this.flipDirection].setFlip(-flipAmount);
+    //
+    //     index -= 2 * this.flipDirection;
+    // }
 };
 
 /**
@@ -412,6 +414,8 @@ CardBook.prototype.removeFromBook = function(card) {
  * Fit the book and its contents to the view size
  */
 CardBook.prototype.fit = function() {
+    let scale  = 1;
+
     const pageHeight = Math.round(this.height * this.HEIGHT * (1 - 2 * this.PADDING_PAGE));
     const cardPadding = Math.round(pageHeight * this.PADDING_CARD);
     const cardHeight = Math.round((pageHeight - 3 * cardPadding) * .5);
@@ -419,14 +423,22 @@ CardBook.prototype.fit = function() {
     const pageWidth = cardWidth * 2 + cardPadding * 3;
     const bookWidth = pageWidth * 2 + Math.round(this.height * this.HEIGHT * this.PADDING_PAGE * 2);
 
-    this.element.style.width = bookWidth + "px";
-    this.element.style.height = this.height * this.HEIGHT + "px";
-    this.element.style.left = (this.width - bookWidth) * .5 + "px";
-    this.element.style.top = this.height * this.PADDING_TOP + "px";
-    this.spine.style.height = pageHeight + "px";
+    if (this.width < this.height) {
+        scale = this.width / bookWidth * .7;
+
+        this.element.style.top = this.height * this.PADDING_TOP_PORTRAIT + "px";
+    } else {
+        this.element.style.top = this.height * this.PADDING_TOP + "px";
+    }
+
+    this.element.style.width = bookWidth * scale + "px";
+    this.element.style.height = this.height * this.HEIGHT * scale + "px";
+    this.element.style.left = (this.width - bookWidth * scale) * .5 + "px";
+    // this.element.style.top = this.height * this.PADDING_TOP + "px";
+    this.spine.style.height = pageHeight * scale + "px";
 
     for (const page of this.pages)
-        page.fit(cardWidth, cardHeight, cardPadding);
+        page.fit(cardWidth * scale, cardHeight * scale, cardPadding * scale);
 };
 
 /**

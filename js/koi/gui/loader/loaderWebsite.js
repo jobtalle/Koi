@@ -1,24 +1,28 @@
 /**
- * A link to the discord server
+ * A link to the website server
  * @constructor
  */
-const LoaderDiscord = function() {
+const LoaderWebsite = function() {
     this.element = this.createElement();
+    try {
+        LoaderWebsite.prototype.URL += "&referrer=" + encodeURIComponent(PLATFORM_NAME);
+    } catch (e) {
+    }
 
     this.loadSVG();
 };
 
-LoaderDiscord.prototype.ID = "loader-discord";
-LoaderDiscord.prototype.CLASS = "loader-icon";
-LoaderDiscord.prototype.CLASS_INVISIBLE = "invisible";
-LoaderDiscord.prototype.FILE = "svg/discord-mark-white.svg";
-LoaderDiscord.prototype.FADE_IN_DELAY = 2.5;
-LoaderDiscord.prototype.URL = "https://discord.com/invite/bw3ZFe63Qg";
+LoaderWebsite.prototype.ID = "loader-website";
+LoaderWebsite.prototype.CLASS = "loader-icon";
+LoaderWebsite.prototype.CLASS_INVISIBLE = "invisible";
+LoaderWebsite.prototype.FILE = "svg/website.svg";
+LoaderWebsite.prototype.FADE_IN_DELAY = 2.5;
+LoaderWebsite.prototype.URL = "https://koifarmgame.com?source=KoiGame";
 
 /**
  * Load the SVG image
  */
-LoaderDiscord.prototype.loadSVG = function() {
+LoaderWebsite.prototype.loadSVG = function() {
     const request = new XMLHttpRequest();
 
     request.onload = () => {
@@ -31,8 +35,8 @@ LoaderDiscord.prototype.loadSVG = function() {
         this.element.onclick = () => {
             if (window["require"]) {
                 window["require"]("electron")["shell"]["openExternal"](this.URL);
-            } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openDiscordHandler) {
-                window.webkit.messageHandlers.openDiscordHandler.postMessage({discordURL: this.URL});
+            } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openWebsiteHandler) {
+                window.webkit.messageHandlers.openWebsiteHandler.postMessage({discordURL: this.URL});
             } else {
                 window.open(this.URL, "_blank");
             }
@@ -47,7 +51,7 @@ LoaderDiscord.prototype.loadSVG = function() {
  * Create the element
  * @returns {HTMLDivElement} The element
  */
-LoaderDiscord.prototype.createElement = function() {
+LoaderWebsite.prototype.createElement = function() {
     const element = document.createElement("div");
 
     element.id = this.ID;

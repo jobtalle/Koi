@@ -4,6 +4,7 @@
     --menu-box-spacing: 16px;
     --menu-button-color: var(--color-water-deep);
     --menu-button-border-radius: var(--loader-button-border-radius);
+    --menu-font-size: 1rem;
 }
 
 #menu {
@@ -41,6 +42,7 @@
 
 #menu-box h1 {
     color: var(--color-white);
+    margin: unset;
 }
 
 #menu-box button {
@@ -53,6 +55,7 @@
     padding-left: calc(2 * var(--menu-box-spacing));
     padding-right: calc(2 * var(--menu-box-spacing));
     height: 54px;
+    max-height: 5rem;
 }
 
 #menu-box button:active {
@@ -62,7 +65,7 @@
 
 #menu-box label {
     color: var(--color-white);
-    font-size: 18px;
+    font-size: var(--menu-font-size);
     margin-right: var(--menu-box-spacing);
 }
 
@@ -72,12 +75,21 @@
 
 #menu-box input[type=checkbox] {
     float: left;
+    min-width: 1rem;
+    min-height: 1rem;
 }
 
 #menu-box select {
     width: 100%;
+    min-height: 1.5rem;
 }
 
 #menu-box table {
     text-align: right;
+}
+
+@media screen and (max-width: 600px) or (max-height: 600px){
+    #menu-box button {
+        max-height: var(--button-height-small);
+    }
 }

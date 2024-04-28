@@ -49,15 +49,15 @@ void main() {
 
 Shadows.prototype.FRAGMENT_SHADER = `#version 100
 uniform sampler2D source;
-uniform mediump float meter;
-uniform mediump float shadowDepth;
+uniform highp float meter;
+uniform highp float shadowDepth;
 
-varying mediump vec2 iDepth;
-varying mediump vec2 iUv;
+varying highp vec2 iDepth;
+varying highp vec2 iUv;
 
 void main() {
-  mediump float depthFactor = iDepth.y * (0.5 - 0.5 * cos(3.141592 * sqrt(iDepth.x)));
-  mediump float depth = depthFactor * meter * shadowDepth;
+  highp float depthFactor = iDepth.y * (0.5 - 0.5 * cos(3.141592 * sqrt(iDepth.x)));
+  highp float depth = depthFactor * meter * shadowDepth;
 
   gl_FragColor = texture2D(source, iUv + vec2(depth * 0.5, depth));
 }
