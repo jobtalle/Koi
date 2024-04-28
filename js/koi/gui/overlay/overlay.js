@@ -19,6 +19,7 @@ Overlay.prototype.CLASS_HIGHLIGHT = "overlay-highlight";
 Overlay.prototype.CLASS_ARROW = "overlay-arrow";
 Overlay.prototype.CLASS_TEXT = "text";
 Overlay.prototype.CLASS_SKIP = "skip-button";
+Overlay.prototype.KEY_SKIP = "TUTORIAL_SKIP";
 Overlay.prototype.POINTER_RADIUS =
     StyleUtils.getInt("--overlay-pointer-radius") +
     StyleUtils.getInt("--overlay-pointer-border");
@@ -127,7 +128,7 @@ Overlay.prototype.createSkipElement = function() {
 
     element.className = this.CLASS_SKIP;
 
-    element.appendChild(document.createTextNode("Skip"));
+    element.appendChild(document.createTextNode(language.get(Overlay.prototype.KEY_SKIP)));
 
     return element;
 }
