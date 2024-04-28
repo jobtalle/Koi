@@ -98,13 +98,19 @@ Cards.prototype.toggleBook = function() {
 
 Cards.prototype.hideButtons = function() {
     this.element.removeChild(this.buttonMenu.element);
-    this.element.removeChild(this.buttonLoadCard.element);
+
+    if (RUNNING_CAPACITOR)
+        this.element.removeChild(this.buttonLoadCard.element);
+
     this.buttonsShown = false;
 }
 
 Cards.prototype.showButtons = function() {
     this.element.appendChild(this.buttonMenu.element);
-    this.element.appendChild(this.buttonLoadCard.element);
+
+    if (RUNNING_CAPACITOR)
+        this.element.appendChild(this.buttonLoadCard.element);
+    
     this.buttonsShown = true;
 
 }
