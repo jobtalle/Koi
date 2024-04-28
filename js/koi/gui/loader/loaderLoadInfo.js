@@ -14,7 +14,7 @@ const LoaderLoadInfo = function() {
 LoaderLoadInfo.prototype.ID = "loader-loading";
 LoaderLoadInfo.prototype.TEXT_ID = "loader-loading-text";
 LoaderLoadInfo.prototype.ICON_ID = "loader-loading-icon";
-LoaderLoadInfo.prototype.TEXT = "Loading...";
+LoaderLoadInfo.prototype.TEXT = "LOADING";
 LoaderLoadInfo.prototype.CLASS_INVISIBLE = "invisible";
 LoaderLoadInfo.prototype.FILE = "svg/butterfly.svg";
 LoaderLoadInfo.prototype.FADE_IN_DELAY = .32;
@@ -39,6 +39,13 @@ LoaderLoadInfo.prototype.loadSVG = function() {
 };
 
 /**
+ * Set the text
+ */
+LoaderLoadInfo.prototype.setText = function() {
+    this.textElement.innerText = language.get("LOADING");
+}
+
+/**
  * Create the element
  * @returns {HTMLDivElement} The element
  */
@@ -50,7 +57,7 @@ LoaderLoadInfo.prototype.createElement = function() {
     this.iconElement.id = this.ICON_ID;
     this.textElement.id = this.TEXT_ID;
 
-    this.textElement.innerText = this.TEXT;
+    // this.textElement.innerText = ;
 
     element.appendChild(this.iconElement);
     element.appendChild(this.textElement);

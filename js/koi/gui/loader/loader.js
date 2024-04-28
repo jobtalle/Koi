@@ -90,6 +90,13 @@ Loader.prototype.BUTTON_DELAY = .37;
 Loader.prototype.TRANSITION = StyleUtils.getFloat("--loader-fade-out");
 
 /**
+ * Set the loading text.
+ */
+Loader.prototype.setLoadingText = function() {
+    this.loadInfo.setText();
+}
+
+/**
  * Set the menu
  * @param {Menu} menu The menu
  */

@@ -244,6 +244,7 @@ if (gl &&
     const audio = new AudioBank(audioEngine);
 
     language.load(() => {
+        loader.setLoadingText();
         imperial = language.get("UNIT_LENGTH") === "ft";
 
         const settings = {
