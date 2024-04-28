@@ -1,7 +1,4 @@
 const searchParams = new URLSearchParams(window.location.search);
-// const preferences = new StoragePreferencesCapacitor();
-
-// TODO: do not use localstorage
 const glParameters = {
     alpha: false,
     antialias: window["localStorage"].getItem(Menu.prototype.KEY_MSAA) === null || window["localStorage"].getItem(Menu.prototype.KEY_MSAA) === "true",
@@ -19,7 +16,7 @@ let chosenSlot = -1;
  * Check if game is running within WKWebView on iOS.
  */
 
-const RUNNING_ON_WEBVIEW_IOS = navigator.standalone || window["webkit"] && window["webkit"].messageHandlers;
+const RUNNING_ON_WEBVIEW_IOS = (window.webkit && window.webkit.messageHandlers) ? true : false;
 
 const RUNNING_CAPACITOR = typeof Capacitor !== "undefined" && Capacitor.platform !== "web";
 
@@ -224,7 +221,6 @@ function padNotch() {
 
 setFullScreen();
 
-// TODO: do not use localstorage
 const paramLang = window["localStorage"].getItem(Menu.prototype.KEY_LANGUAGE) || searchParams.get("lang");
 const language = paramLang ? makeLanguage(paramLang) : makeLanguage(navigator.language.substring(0, 2));
 const loader = new Loader(
@@ -233,8 +229,8 @@ const loader = new Loader(
     document.getElementById("loader-slots"),
     document.getElementById("loader-button-settings"),
     document.getElementById("wrapper"),
-    !RUNNING_MOBILE,
-    !RUNNING_MOBILE);
+    !RUNNING_MOBILE && !RUNNING_ON_WEBVIEW_IOS,
+    !RUNNING_MOBILE && !RUNNING_ON_WEBVIEW_IOS);
 let imperial = false;
 let menu = null;
 let storage = null;
@@ -257,7 +253,7 @@ if (gl &&
         let session = new Session();
         let slot = null;
         const slotNames = ["session", "session2", "session3"];
-        storage = RUNNING_CAPACITOR ? new StorageFileCapacitor() : new StorageLocal();
+        const storage = window["require"] ? new StorageFile() : new StorageLocal();
         const wrapper = document.getElementById("wrapper");
         const gui = new GUI(
             document.getElementById("gui"),
@@ -278,18 +274,6 @@ if (gl &&
         let alt = false;
         let control = false;
         let shift = false;
-
-
-        // testFileIO(storage);
-
-        console.log("Koi Farm");
-        console.log(
-            `
-            Environment = ${PLATFORM_NAME} 
-            Storage = ${window["require"] ? "file" : "local"} 
-            Language = ${chosenLocale} 
-            `
-        );
 
         new Drop(gui, systems, document.getElementById("drop"), canvas);
 

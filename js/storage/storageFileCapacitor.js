@@ -39,8 +39,6 @@ const readFileCap = async (filename, dir, encoding=null) => {
   });
 
   return contents.data;
-
-  // console.log('secrets:', contents);
 };
 
 const deleteFileCap = async (filename, dir = directoryLibrary) => {
@@ -171,8 +169,6 @@ StorageFileCapacitor.prototype.loadImage = async function(name) {
     e.dataTransfer = {
         files: files
     }
-
-    console.log('loadImage', files);
 
     window.dispatchEvent(e);
 }
