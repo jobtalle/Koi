@@ -1,7 +1,11 @@
 :root {
     --button-width: 80px;
     --button-height: 80px;
+
     --load-card-button-padding: 10px;
+
+    --button-height-small: 3.5rem;
+    --button-width-small: 3.5rem;
 }
 
 button {
