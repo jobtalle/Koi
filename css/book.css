@@ -29,9 +29,9 @@
     background-color: var(--card-color-background);
     display: flex;
     align-items: center;
-    /*transition: var(--book-hide-time) ease;*/
-    /*transition-property: top;*/
-    /*box-shadow: 0 0 var(--book-shadow-radius) var(--book-shadow-color);*/
+    transition: var(--book-hide-time) ease;
+    transition-property: top;
+    box-shadow: 0 0 var(--book-shadow-radius) var(--book-shadow-color);
     user-select: none;
     border-radius: var(--card-border-radius);
 }
@@ -66,11 +66,6 @@
     width: 100%;
     height: 100%;
     opacity: 0;
-}
-
-#book #spine .page {
-    transform: none !important;
-    /*opacity: 0 !important;*/
 }
 
 #book #spine .page .overlay.left {
@@ -123,7 +118,7 @@
 #book #spine .page .slot .card {
     margin: 0;
     transform-origin: left top;
-    /*box-shadow: none;*/
+    box-shadow: none;
 }
 
 #cards button:active svg {
@@ -150,7 +145,7 @@
 }
 
 #button-book svg {
-    /*filter: drop-shadow(0 0 var(--page-button-shadow-radius) var(--book-shadow-color));*/
+    filter: drop-shadow(0 0 var(--page-button-shadow-radius) var(--book-shadow-color));
 }
 
 #button-book:active path.page {
@@ -181,7 +176,7 @@
 }
 
 .button-page svg {
-    /*filter: drop-shadow(0 0 var(--page-button-shadow-radius) var(--book-shadow-color));*/
+    filter: drop-shadow(0 0 var(--page-button-shadow-radius) var(--book-shadow-color));
 }
 
 .button-page path {
@@ -238,7 +233,8 @@
     }
 }
 
-@media only screen and (orientation: landscape) and (max-width: 600px), (orientation: landscape) and (max-height: 600px) {
+@media only screen and (orientation: landscape) and (max-width: 600px),
+(orientation: landscape) and (max-height: 600px) {
     #button-load-card {
         position: absolute;
         right: var(--book-button-padding);

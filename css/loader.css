@@ -15,6 +15,7 @@
     --loader-fullscreen-border: 8px;
     --loader-fullscreen-corner-size: 30%;
 }
+
 #loader {
     position: absolute;
     left: 0;

@@ -55,7 +55,6 @@
     padding-left: calc(2 * var(--menu-box-spacing));
     padding-right: calc(2 * var(--menu-box-spacing));
     height: 54px;
-    max-height: 5rem;
 }
 
 #menu-box button:active {
@@ -65,7 +64,7 @@
 
 #menu-box label {
     color: var(--color-white);
-    font-size: var(--menu-font-size);
+    font-size: 18px;
     margin-right: var(--menu-box-spacing);
 }
 

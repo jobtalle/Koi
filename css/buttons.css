@@ -1,18 +1,12 @@
 :root {
-    --button-width: 5rem;
-    --button-height: 5rem;
-
-    --button-height-small: 3.5rem;
-    --button-width-small: 3.5rem;
-
+    --button-width: 80px;
+    --button-height: 80px;
     --load-card-button-padding: 10px;
 }
 
 button {
-    /*display: flex;*/
     width: var(--button-width);
     height: var(--button-height);
-    /*flex: 1;*/
     border: none;
     box-sizing: border-box;
     cursor: pointer;
