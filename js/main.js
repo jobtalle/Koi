@@ -235,6 +235,10 @@ let imperial = false;
 let menu = null;
 let storage = null;
 
+// Set the loading text to a cached value
+preferences.get(LoaderLoadInfo.prototype.LOADING_TEXT).then((value) => {
+    loader.setLoadingText(value ? value : "Loading");
+});
 
 if (gl &&
     gl.getExtension("OES_element_index_uint") &&
@@ -244,7 +248,10 @@ if (gl &&
     const audio = new AudioBank(audioEngine);
 
     language.load(() => {
+        // Cache the loading text and set it
+        preferences.set(LoaderLoadInfo.prototype.LOADING_TEXT, language.get(LoaderLoadInfo.prototype.LOADING_TEXT));
         loader.setLoadingText();
+
         imperial = language.get("UNIT_LENGTH") === "ft";
 
         const settings = {

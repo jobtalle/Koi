@@ -18,6 +18,7 @@ LoaderLoadInfo.prototype.TEXT = "LOADING";
 LoaderLoadInfo.prototype.CLASS_INVISIBLE = "invisible";
 LoaderLoadInfo.prototype.FILE = "svg/butterfly.svg";
 LoaderLoadInfo.prototype.FADE_IN_DELAY = .32;
+LoaderLoadInfo.prototype.LOADING_TEXT = "LOADING";
 
 
 /**
@@ -40,9 +41,13 @@ LoaderLoadInfo.prototype.loadSVG = function() {
 
 /**
  * Set the text
+ * @param {String} text The text, or null to use the default text
  */
-LoaderLoadInfo.prototype.setText = function() {
-    this.textElement.innerText = language.get("LOADING");
+LoaderLoadInfo.prototype.setText = function(text = null) {
+    if (text)
+        this.textElement.innerText = text;
+    else
+        this.textElement.innerText = language.get(LoaderLoadInfo.prototype.LOADING_TEXT);
 }
 
 /**

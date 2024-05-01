@@ -91,9 +91,10 @@ Loader.prototype.TRANSITION = StyleUtils.getFloat("--loader-fade-out");
 
 /**
  * Set the loading text.
+ * @param {String} text The text to set, or null to use the default text
  */
-Loader.prototype.setLoadingText = function() {
-    this.loadInfo.setText();
+Loader.prototype.setLoadingText = function(text = null) {
+    this.loadInfo.setText(text);
 }
 
 /**
