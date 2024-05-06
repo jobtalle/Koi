@@ -27,7 +27,7 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    transition: var(--loader-fade-out);
+    transition: var(--loader-fade-out) opacity;
 }
 
 #loader canvas {
@@ -39,29 +39,56 @@
     pointer-events: none;
 }
 
-#loader #loader-discord {
+#loader-links {
     position: absolute;
-    right: 0;
+    left: 0;
     bottom: 0;
-    width: 400px;
-    height: 136px;
-    transition: var(--loader-fade-in);
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-end;
+    justify-content: flex-end;
+    width: 100%;
+    height: 4rem;
+    max-height: 100px;
+    padding: 16px;
+}
+
+#loader-links .loader-icon {
+    width: 4rem;
+    margin: auto 0;
+    transition: var(--loader-fade-in) opacity;
     transition-timing-function: ease-in;
 }
 
-#loader #loader-discord path {
+#loader-links .loader-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+#loader-links:hover .loader-bar {
+    opacity: 100%;
+}
+
+#loader #loader-discord path,
+#loader #loader-website path {
     fill: #FEFFFF;
 }
 
-#loader #loader-discord.invisible {
+#loader .loader-icon.invisible,
+#loader .loader-bar.invisible {
     opacity: 0;
 }
 
-#loader #loader-discord:hover {
+#loader #loader-discord:hover,
+#loader #loader-website:hover {
     cursor: pointer;
 }
 
-#loader #loader-discord:hover path {
+#loader #loader-website:hover path {
+    fill: #fca938;
+}
+
+#loader #loader-discord:hover path{
     fill: #778BD8;
 }
 
@@ -130,8 +157,10 @@
 #loader-graphics {
     display: flex;
     justify-content: center;
+    align-items: center;
     width: 100%;
     margin-bottom: var(--loader-logo-margin);
+    flex-direction: column;
 }
 
 #loader-slots {
@@ -139,6 +168,8 @@
     justify-content: center;
     width: 100%;
     height: 20%;
+    align-items: center;
+    align-content: center;
 }
 
 #loader-slots .loader-slot {
@@ -174,9 +205,30 @@
     margin-bottom: var(--loader-button-margin);
 }
 
+.loader-bar {
+    height: var(--loader-logo-width);
+    border-radius: 5px;
+    margin: auto 0;
+    align-self: flex-start;
+    justify-self: flex-start;
+    transition: var(--loader-fade-in) opacity;
+    transition-timing-function: ease-in;
+    cursor: pointer;
+    opacity: 0;
+}
+
+.loader-bar svg {
+    width: 100%;
+    height: 100%;
+}
+
+.loader-bar:hover {
+    filter: invert(100%);
+}
+
 #loader-icon {
     width: var(--loader-logo-width);
-    transition: var(--loader-fade-in);
+    transition: var(--loader-fade-in) opacity;
     transition-timing-function: ease-in;
 }
 
@@ -205,7 +257,7 @@
     justify-content: center;
     margin-bottom: var(--loader-button-margin);
     opacity: 0;
-    transition: var(--loader-button-fade-in);
+    transition: var(--loader-button-fade-in) opacity;
     transition-timing-function: ease-in;
 }
 
@@ -215,7 +267,7 @@
 
 .loader-button button {
     width: 100%;
-    transition: 0.5s;
+    transition: 0.5s opacity;
     background-color: var(--color-white);
     color: var(--loader-button-text-color);
     font-weight: bold;
@@ -238,4 +290,100 @@
     background-color: var(--color-white);
     color: var(--loader-button-text-color);
     transition: 0s;
+}
+
+#loader-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    transition: 0.5s opacity;
+    position: absolute;
+    top: 20px;
+}
+
+#loader-loading.invisible {
+    opacity: 0;
+    animation: none;
+}
+
+#loader-loading-text {
+    color: var(--color-white);
+    font-size: 1.5em;
+    margin-left: 5px;
+}
+
+#loader-loading-icon{
+    width: 20px;
+    animation: flutter 1s ease-in-out infinite;
+    transform-origin: top left;
+}
+
+@media only screen and (orientation: portrait) {
+    #loader-slots {
+        flex-direction: column;
+        height: unset;
+
+    }
+
+    #loader-slots .loader-slot {
+        flex-direction: row;
+        width: 60%;
+    }
+
+    #loader-slots .loader-slot h1 {
+        color: var(--color-white);
+        position: absolute;
+        left: -60px;
+        bottom: 16px;
+        top: unset;
+        width: 60px;
+        height: 60px;
+        user-select: none;
+        background-color: var(--loader-button-text-color);
+        border-top-left-radius: 60px;
+        border-bottom-left-radius: 60px;
+        display: flex;
+        justify-content: flex-end;
+        flex-direction: column;
+        margin: 0;
+        text-align: center;
+        line-height: 60px;
+        padding: 0;
+    }
+
+    #loader-slots .loader-slot button:nth-child(2) {
+        border-bottom-left-radius: 0;
+    }
+
+    #loader-slots .loader-slot button:not(:last-child) {
+        margin-right: 10px;
+    }
+
+    .loader-button {
+        width: 60%;
+    }
+}
+
+@keyframes flutter {
+  0% {
+    transform: skew(0, 0) scale(1);
+  }
+
+  20% {
+    transform: translateY(100%) skew(-10deg, -10deg) scale(1) translateY(-100%);
+  }
+
+  40% {
+    transform: translateY(100%) skew(10deg, 10deg) scale(1.1) translateY(-100%);
+  }
+
+  60% {
+    transform: translateY(100%) skew(-5deg, -5deg) scale(.9) translateY(-100%);
+  }
+
+  80% {
+    transform: translateY(100%) skew(0deg, 0deg) scale(1) translateY(-100%);
+  }
+
 }

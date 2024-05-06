@@ -7,19 +7,19 @@ const CommonShaders = {};
 CommonShaders.random = `
 uniform sampler2D noise;
 
-mediump float random2(mediump vec2 x) {
+highp float random2(highp vec2 x) {
   return texture2D(noise, x * 0.011).r;
 }
 
-mediump float random3(mediump vec3 x) {
+highp float random3(highp vec3 x) {
   return texture2D(noise, x.xy * 0.011 - x.z * 0.017).r;
 }
 `;
 
 // Cubic interpolation
 CommonShaders.cubicInterpolation = `
-mediump float interpolate(mediump float a, mediump float b, mediump float c, mediump float d, mediump float x) {
-  mediump float p = (d - c) - (a - b);
+highp float interpolate(highp float a, highp float b, highp float c, highp float d, highp float x) {
+  highp float p = (d - c) - (a - b);
 
   return x * (x * (x * p + ((a - b) - p)) + (c - a)) + b;
 }
@@ -27,7 +27,7 @@ mediump float interpolate(mediump float a, mediump float b, mediump float c, med
 
 // 2D cubic noise
 CommonShaders.cubicNoise2 = CommonShaders.random + CommonShaders.cubicInterpolation + `
-mediump float sampleX(highp vec2 at) {
+highp float sampleX(highp vec2 at) {
   highp float floored = floor(at.x);
 
   return interpolate(
@@ -38,7 +38,7 @@ mediump float sampleX(highp vec2 at) {
     at.x - floored) * 0.5 + 0.25;
 }
 
-mediump float cubicNoise(highp vec2 at) {
+highp float cubicNoise(highp vec2 at) {
   highp float floored = floor(at.y);
 
   return interpolate(
@@ -52,7 +52,7 @@ mediump float cubicNoise(highp vec2 at) {
 
 // 3D cubic noise
 CommonShaders.cubicNoise3 = CommonShaders.random + CommonShaders.cubicInterpolation + `
-mediump float sampleX(highp vec3 at) {
+highp float sampleX(highp vec3 at) {
   highp float floored = floor(at.x);
 
   return interpolate(
@@ -63,7 +63,7 @@ mediump float sampleX(highp vec3 at) {
     at.x - floored) * 0.5 + 0.25;
 }
 
-mediump float sampleY(highp vec3 at) {
+highp float sampleY(highp vec3 at) {
   highp float floored = floor(at.y);
 
   return interpolate(
@@ -74,7 +74,7 @@ mediump float sampleY(highp vec3 at) {
     at.y - floored);
 }
 
-mediump float cubicNoise(highp vec3 at) {
+highp float cubicNoise(highp vec3 at) {
   highp float floored = floor(at.z);
 
   return interpolate(
