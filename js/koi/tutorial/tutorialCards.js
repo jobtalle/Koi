@@ -5,7 +5,6 @@
  * @constructor
  */
 const TutorialCards = function(storage, overlay) {
-    // TODO: do somthing with this storage
     Tutorial.call(this, storage, overlay);
 
     this.mutations = 0;

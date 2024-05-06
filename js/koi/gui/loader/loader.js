@@ -38,7 +38,6 @@ const Loader = function(
 
     this.slots = null;
 
-    // element.appendChild(this.elementWebsite.element);
     element.appendChild(this.elementLinks.element);
 
     if (loadFullscreen)

@@ -58,8 +58,6 @@ LoaderLoadInfo.prototype.createElement = function() {
     this.iconElement.id = this.ICON_ID;
     this.textElement.id = this.TEXT_ID;
 
-    // this.textElement.innerText = ;
-
     element.appendChild(this.iconElement);
     element.appendChild(this.textElement);
 

@@ -94,32 +94,6 @@ Overlay.prototype.createHighlightElement = function() {
 
     element.className = this.CLASS_HIGHLIGHT;
 
-    const pathElement = document.createElement("svg");
-    pathElement.setAttribute("viewBox", "0 0 24 24");
-    pathElement.setAttribute("width", "24");
-    pathElement.setAttribute("height", "24");
-    // pathElement.setAttribute("fill", "none");
-    pathElement.setAttribute("stroke", "currentColor");
-
-    const path = document.createElement("path");
-    // path.setAttribute("stroke-linecap", "round");
-    // path.setAttribute("stroke-linejoin", "round");
-    // path.setAttribute("stroke-width", "2");
-    path.setAttribute("d", "M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-4.5 " +
-        "14c-.828 0-1.5-.672-1.5-1.5s.672-1.5 1.5-1.5 1.5.672 1.5 1.5-.672 1.5-1.5 1.5zm4.5 0c-.828 0-1.5-.672-1.5-1.5s.672-1.5 " +
-        "1.5-1.5 1.5.672 1.5 1.5-.672 1.5-1.5 1.5zm4.5 0c-.828 0-1.5-.672-1.5-1.5s.672-1.5 1.5-1.5 1.5.672 1.5 1.5-.672 1.5-1.5 1.5z");
-
-    pathElement.appendChild(path);
-    element.appendChild(pathElement);
-
-    element.addEventListener("click", function() {
-            menu.toggle();
-    });
-
-    element.addEventListener("touchstart", function() {
-            menu.toggle();
-    });
-
     return element;
 };
 
@@ -246,9 +220,6 @@ Overlay.prototype.createSkip = function(callback) {
         callback();
     }
 
-    // this.skipElement.addEventListener("click", () => callback);
-    // this.skipElement.addEventListener("touchstart", () => callback);
-
     this.element.appendChild(this.skipElement);
 }
 
@@ -261,7 +232,6 @@ Overlay.prototype.deleteSkip = function() {
 }
 
 Overlay.prototype.clear = function() {
-    // this.deleteHome();
     this.deletePointer();
     this.deleteArrow();
     this.removeText();
