@@ -205,18 +205,6 @@ function setupPlatform (menu, save) {
             }
         );
     }
-};
-
-function padNotch() {
-    if (!RUNNING_MOBILE)
-        return;
-
-    const elements = [
-        document.getElementById("menu"),
-        document.getElementById("loader"),
-        document.getElementById("gui"),
-        // document.getElementById("drop"),
-    ]
 }
 
 setFullScreen();
@@ -322,6 +310,7 @@ if (gl &&
         /**
          * A function that creates a new game session
          * @param {number} index Create a new game at a given slot index
+         * @param {function} onFinish A function to call when the game has been loaded
          */
         const newSession = (index, onFinish) => {
             chosenSlot = index;
@@ -336,13 +325,13 @@ if (gl &&
             koi = session.makeKoi(storage, systems, audio, gui, save, new TutorialBreeding(storage, gui.overlay));
 
             onFinish();
-            // loader.finish();
 
         };
 
         /**
          * Continue an existing game
          * @param {number} index Create a new game at a given slot index
+         * @param {function} onFinish A function to call when the game has been loaded
          */
         const continueGame = (index, onFinish) => {
             chosenSlot = index;
@@ -362,10 +351,6 @@ if (gl &&
                 }).catch(() => {
                     newSession(index, onFinish);
                 });
-
-                // session.deserialize();
-                //
-                // koi = session.makeKoi(storage, systems, audio, gui, save);
             } catch (error) {
                 newSession(index, onFinish);
 

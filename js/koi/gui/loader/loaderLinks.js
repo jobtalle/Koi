@@ -18,15 +18,11 @@ const LoaderLinks = function() {
 
     this.element.appendChild(this.elementWebsite.element);
     this.element.appendChild(this.elementDiscord.element);
-
-    // this.loadSVG();
 };
 
 LoaderLinks.prototype.ID = "loader-links";
 LoaderLinks.prototype.CLASS_INVISIBLE = "invisible";
-// LoaderLinks.prototype.FILE = "svg/website.svg";
 LoaderLinks.prototype.FADE_IN_DELAY = 2.5;
-// LoaderLinks.prototype.URL = "https://koifarmgame.com";
 
 /**
  * Load the SVG image
@@ -64,7 +60,6 @@ LoaderLinks.prototype.createElement = function() {
     const element = document.createElement("div");
 
     element.id = this.ID;
-    // element.className = this.CLASS_INVISIBLE;
 
     return element;
 };

@@ -135,15 +135,7 @@ TutorialCards.prototype.update = function(koi) {
     }
     switch (this.phase) {
         case this.PHASE_START:
-            // if (this.mutations < this.MUTATIONS_REQUIRED)
-            //     this.phase = this.PHASE_WAITING;
-            // else if (this.mutations === this.MUTATIONS_REQUIRED)
-                this.start();
-            // else {
-            //     koi.gui.cards.enableBookButton(koi.audio);
-            //
-            //     return true;
-            // }
+            this.start();
 
             break;
         case this.PHASE_CREATE_CARD:

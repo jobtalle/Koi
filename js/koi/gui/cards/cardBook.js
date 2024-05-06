@@ -63,8 +63,8 @@ CardBook.Flip.prototype.SPEED = .3;
 CardBook.Flip.prototype.update = function() {
     this.flipPrevious = this.flip;
 
-    // if ((this.flip -= this.SPEED) < -1)
-    this.flip = -1;
+    if ((this.flip -= this.SPEED) < -1)
+        this.flip = -1;
 
     return this.flip === this.flipPrevious;
 };
@@ -284,23 +284,23 @@ CardBook.prototype.update = function() {
  * @param {Number} time The amount of time since the last update
  */
 CardBook.prototype.renderFlips = function(time) {
-    // let index = this.flipDirection === -1 ? this.page + 1 : this.page;
-    //
-    // for (const flip of this.flips) {
-    //     const flipAmount = flip.flipPrevious + (flip.flip - flip.flipPrevious) * time;
-    //
-    //     if (!flip.halfway && flipAmount < 0) {
-    //         this.pages[index].hide();
-    //         this.pages[index - this.flipDirection].show(this.cards);
-    //
-    //         flip.halfway = true;
-    //     }
-    //
-    //     this.pages[index].setFlip(flipAmount);
-    //     this.pages[index - this.flipDirection].setFlip(-flipAmount);
-    //
-    //     index -= 2 * this.flipDirection;
-    // }
+    let index = this.flipDirection === -1 ? this.page + 1 : this.page;
+
+    for (const flip of this.flips) {
+        const flipAmount = flip.flipPrevious + (flip.flip - flip.flipPrevious) * time;
+
+        if (!flip.halfway && flipAmount < 0) {
+            this.pages[index].hide();
+            this.pages[index - this.flipDirection].show(this.cards);
+
+            flip.halfway = true;
+        }
+
+        this.pages[index].setFlip(flipAmount);
+        this.pages[index - this.flipDirection].setFlip(-flipAmount);
+
+        index -= 2 * this.flipDirection;
+    }
 };
 
 /**
@@ -434,7 +434,7 @@ CardBook.prototype.fit = function() {
     this.element.style.width = bookWidth * scale + "px";
     this.element.style.height = this.height * this.HEIGHT * scale + "px";
     this.element.style.left = (this.width - bookWidth * scale) * .5 + "px";
-    // this.element.style.top = this.height * this.PADDING_TOP + "px";
+    this.element.style.top = this.height * this.PADDING_TOP + "px";
     this.spine.style.height = pageHeight * scale + "px";
 
     for (const page of this.pages)

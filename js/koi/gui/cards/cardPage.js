@@ -9,7 +9,7 @@ const CardPage = function(direction, requirements) {
     this.cards = new Array(4).fill(null);
     this.element = this.createElement(direction);
     this.slots = this.createSlots(this.element);
-    // this.overlay = this.createOverlay(this.element, direction);
+    this.overlay = this.createOverlay(this.element, direction);
     this.rect = null;
     this.targets = null;
     this.direction = direction;
@@ -101,19 +101,19 @@ CardPage.prototype.hide = function() {
  * @param {Number} flip The flip amount in the range [-1, 1]
  */
 CardPage.prototype.setFlip = function(flip) {
-    // const scale = Math.sin(flip * Math.PI * .5);
-    // const skew = this.direction * this.PAGE_SKEW * (1 - Math.abs(flip));
+    const scale = Math.sin(flip * Math.PI * .5);
+    const skew = this.direction * this.PAGE_SKEW * (1 - Math.abs(flip));
 
-    // this.element.style.transform = "scaleX(" + scale.toString() + ") skewY(" + skew.toString() + "deg)";
-    // this.overlay.style.opacity = ((1 - Math.abs(scale)) * this.SHADE_OPACITY).toString();
+    this.element.style.transform = "scaleX(" + scale.toString() + ") skewY(" + skew.toString() + "deg)";
+    this.overlay.style.opacity = ((1 - Math.abs(scale)) * this.SHADE_OPACITY).toString();
 };
 
 /**
  * Remove all flip effects
  */
 CardPage.prototype.setNoFlip = function() {
-    // this.element.style.removeProperty("transform");
-    // this.overlay.style.removeProperty("opacity");
+    this.element.style.removeProperty("transform");
+    this.overlay.style.removeProperty("opacity");
 };
 
 /**

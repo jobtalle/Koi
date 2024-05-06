@@ -160,11 +160,6 @@ StorageFileCapacitor.prototype.loadImage = async function(name) {
     const files = await pickFile();
 
     const e = new CustomEvent('loadImage');
-    //
-    // const blobFiles = [];
-    // for (const f of files) {
-    //     blobFiles.push(new File([f.data], {type: f.mimeType}));
-    // }
 
     e.dataTransfer = {
         files: files

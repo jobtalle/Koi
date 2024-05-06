@@ -24,10 +24,6 @@ LoaderApple.prototype.loadSVG = function() {
     request.onload = () => {
         this.element.innerHTML = request.responseText;
 
-        // setTimeout(() => {
-        //     this.element.classList.remove(this.CLASS_INVISIBLE);
-        // }, 1000 * this.FADE_IN_DELAY);
-
         this.element.onclick = () => {
             if (window["require"]) {
                 window["require"]("electron")["shell"]["openExternal"](this.URL);
@@ -43,14 +39,6 @@ LoaderApple.prototype.loadSVG = function() {
     request.send();
 }
 
-// LoaderApple.prototype.setInvisible = function () {
-//     this.element.classList.add(this.CLASS_INVISIBLE);
-// }
-//
-// LoaderApple.prototype.setVisible = function () {
-//     this.element.classList.remove(this.CLASS_INVISIBLE);
-// }
-
 /**
  * Create the element
  * @returns {HTMLDivElement} The element
@@ -59,7 +47,6 @@ LoaderApple.prototype.createElement = function() {
     const element = document.createElement("div");
 
     element.id = this.ID;
-    // element.className = this.CLASS_INVISIBLE;
     element.classList.add(this.CLASS);
 
     return element;

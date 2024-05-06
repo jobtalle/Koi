@@ -248,15 +248,3 @@
     }
 
 }
-
-/*@media screen and (max-width: 600px), (max-height: 600px) {*/
-/*    #button-load-card {*/
-/*        right: calc(var(--button-width-small) * 2 + var(--book-button-padding));*/
-/*        top: var(--book-button-padding);*/
-/*    }*/
-
-/*    #button-home {*/
-/*        right: calc(var(--button-width-small) + var(--book-button-padding));*/
-/*        top: var(--book-button-padding);*/
-/*    }*/
-/*}*/

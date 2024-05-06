@@ -74,17 +74,6 @@
     fill: #FEFFFF;
 }
 
-/*#loader #loader-discord svg{*/
-/*    height: 100%;*/
-/*    width: auto;*/
-/*}*/
-
-/*#loader #loader-website svg {*/
-/*    !*fill: #FEFFFF;*!*/
-/*    height: 85%;*/
-/*    width: auto;*/
-/*}*/
-
 #loader .loader-icon.invisible,
 #loader .loader-bar.invisible {
     opacity: 0;
@@ -235,7 +224,6 @@
 
 .loader-bar:hover {
     filter: invert(100%);
-    /*box-shadow: 0 0 10px 0 var(--color-white);*/
 }
 
 #loader-icon {
@@ -348,7 +336,6 @@
         position: absolute;
         left: -60px;
         bottom: 16px;
-        /* top: -60px; */
         top: unset;
         width: 60px;
         height: 60px;
@@ -356,7 +343,6 @@
         background-color: var(--loader-button-text-color);
         border-top-left-radius: 60px;
         border-bottom-left-radius: 60px;
-        /*border-bottom-left-radius: 60px;*/
         display: flex;
         justify-content: flex-end;
         flex-direction: column;
@@ -378,39 +364,6 @@
         width: 60%;
     }
 }
-
-@media only screen and (orientation: landscape) {
-
-}
-
-/*  !* For Mobile Portrait View *!*/
-/*@media screen*/
-/*  and (max-device-width: 480px)*/
-/*  and (orientation: portrait){*/
-/*    html{*/
-/*     background-color: red;*/
-/*     width: 80%;*/
-/*    }*/
-/*}*/
-
-/*!* For Mobile Landscape View *!*/
-/*@media screen*/
-/*  and (max-device-width: 640px)*/
-/*  and (orientation: landscape){*/
-/*   html{*/
-/*      background-color: red;*/
-
-/*    }*/
-/*}*/
-
-/*!* For Mobile Phones Portrait or Landscape View *!*/
-/*@media screen*/
-/*  and (max-device-width: 640px){*/
-/*    html{*/
-/*      background-color: red;*/
-
-/*    }*/
-/*}*/
 
 @keyframes flutter {
   0% {

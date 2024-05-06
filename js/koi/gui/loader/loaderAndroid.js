@@ -23,10 +23,6 @@ LoaderAndroid.prototype.loadSVG = function () {
     request.onload = () => {
         this.element.innerHTML = request.responseText;
 
-        // setTimeout(() => {
-        //     this.element.classList.remove(this.CLASS_INVISIBLE);
-        // }, 1000 * this.FADE_IN_DELAY);
-
         this.element.onclick = () => {
             if (window["require"]) {
                 window["require"]("electron")["shell"]["openExternal"](this.URL);
@@ -58,7 +54,6 @@ LoaderAndroid.prototype.createElement = function () {
     const element = document.createElement("div");
 
     element.id = this.ID;
-    // element.className = this.CLASS_INVISIBLE;
     element.classList.add(this.CLASS);
 
     return element;

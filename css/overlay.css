@@ -103,12 +103,9 @@
 }
 
 .skip-button {
-    /*margin-top: var(--overlay-text-top);*/
     pointer-events: auto;
-    /*touch-action: all;*/
     width: auto;
     min-width: var(--button-width);
-
     user-select: auto;
     position: absolute;
     left: 10px;
