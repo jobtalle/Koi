@@ -146,7 +146,7 @@ Fish.prototype.serialize = function(buffer) {
  * @returns {boolean} True if it does
  */
 Fish.prototype.recognizes = function(other) {
-    return this.body.pattern.bitMask === other.body.pattern.bitMask;
+    return this.body.pattern.base.paletteIndex === other.body.pattern.base.paletteIndex;
 }
 
 /**
