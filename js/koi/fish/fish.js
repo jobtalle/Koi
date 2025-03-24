@@ -141,6 +141,15 @@ Fish.prototype.serialize = function(buffer) {
 };
 
 /**
+ * Check whether this fish recognizes another fish for schooling
+ * @param {Fish} other The other fish
+ * @returns {boolean} True if it does
+ */
+Fish.prototype.recognizes = function(other) {
+    return this.body.pattern.bitMask === other.body.pattern.bitMask;
+}
+
+/**
  * Move the fish to a given position
  * @param {Vector2} position The position to move to
  */
@@ -248,6 +257,7 @@ Fish.prototype.interact = function(other, random) {
     const squaredDistance = dx * dx + dy * dy;
 
     if (squaredDistance < this.RADIUS_ATTRACTION * this.RADIUS_ATTRACTION) {
+        const recognized = this.recognizes(other);
         const distance = Math.sqrt(squaredDistance);
 
         ++this.interactions;
@@ -256,10 +266,12 @@ Fish.prototype.interact = function(other, random) {
         this.lastInteraction = other;
         other.lastInteraction = this;
 
-        if (this.speed < other.speed)
-            this.speed += (other.speed - this.speed) * this.SPEED_CATCH_UP;
-        else if (other.speed < this.speed)
-            other.speed += (this.speed - other.speed) * this.SPEED_CATCH_UP;
+        if (recognized) {
+            if (this.speed < other.speed)
+                this.speed += (other.speed - this.speed) * this.SPEED_CATCH_UP;
+            else if (other.speed < this.speed)
+                other.speed += (this.speed - other.speed) * this.SPEED_CATCH_UP;
+        }
 
         if (distance < this.RADIUS_REPULSION) {
             const proximity = 1 - distance / this.RADIUS_REPULSION;
@@ -276,21 +288,23 @@ Fish.prototype.interact = function(other, random) {
             else if (this.turnForce !== 0 && other.turnForce === 0 && random.getFloat() < this.TURN_FOLLOW_CHANCE)
                 other.copyTurn(this);
         }
-        else if (distance < this.RADIUS_ALIGNMENT) {
-            this.velocity.x += this.speed * this.FORCE_ALIGNMENT * other.direction.x;
-            this.velocity.y += this.speed * this.FORCE_ALIGNMENT * other.direction.y;
-            other.velocity.x += other.speed * this.FORCE_ALIGNMENT * this.direction.x;
-            other.velocity.y += other.speed * this.FORCE_ALIGNMENT * this.direction.y;
-        }
-        else {
-            if (-dx * this.direction.x - dy * this.direction.y > 0) {
-                this.velocity.x -= this.speed * this.FORCE_ATTRACTION * dx / distance;
-                this.velocity.y -= this.speed * this.FORCE_ATTRACTION * dy / distance;
+        else if (recognized) {
+            if (distance < this.RADIUS_ALIGNMENT) {
+                this.velocity.x += this.speed * this.FORCE_ALIGNMENT * other.direction.x;
+                this.velocity.y += this.speed * this.FORCE_ALIGNMENT * other.direction.y;
+                other.velocity.x += other.speed * this.FORCE_ALIGNMENT * this.direction.x;
+                other.velocity.y += other.speed * this.FORCE_ALIGNMENT * this.direction.y;
             }
+            else {
+                if (-dx * this.direction.x - dy * this.direction.y > 0) {
+                    this.velocity.x -= this.speed * this.FORCE_ATTRACTION * dx / distance;
+                    this.velocity.y -= this.speed * this.FORCE_ATTRACTION * dy / distance;
+                }
 
-            if (dx * other.direction.x + dy * other.direction.y > 0) {
-                other.velocity.x += other.speed * this.FORCE_ATTRACTION * dx / distance;
-                other.velocity.y += other.speed * this.FORCE_ATTRACTION * dy / distance;
+                if (dx * other.direction.x + dy * other.direction.y > 0) {
+                    other.velocity.x += other.speed * this.FORCE_ATTRACTION * dx / distance;
+                    other.velocity.y += other.speed * this.FORCE_ATTRACTION * dy / distance;
+                }
             }
         }
     }

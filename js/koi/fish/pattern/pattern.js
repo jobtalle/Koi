@@ -12,6 +12,7 @@ const Pattern = function(base, layers, shapeBody, shapeFin) {
     this.shapeBody = shapeBody;
     this.shapeFin = shapeFin;
     this.region = null;
+    this.bitMask = this.makeBitMask();
 };
 
 /**
@@ -52,6 +53,15 @@ Pattern.deserialize = function(buffer) {
         layers,
         LayerShapeBody.deserialize(buffer),
         LayerShapeFin.deserialize(buffer));
+};
+
+Pattern.prototype.makeBitMask = function() {
+    let mask = 1 << this.base.paletteIndex;
+
+    for (const layer of this.layers)
+        mask |= 1 << layer.paletteIndex;
+
+    return mask;
 };
 
 /**
