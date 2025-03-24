@@ -58,9 +58,6 @@ Pattern.deserialize = function(buffer) {
 Pattern.prototype.makeBitMask = function() {
     let mask = 1 << this.base.paletteIndex;
 
-    for (const layer of this.layers)
-        mask |= 1 << layer.paletteIndex;
-
     return mask;
 };
 
