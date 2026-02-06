@@ -31,15 +31,15 @@ void main() {
 
 DistanceField.prototype.SHADER_FRAGMENT = `#version 100
 uniform sampler2D source;
-uniform mediump vec2 size;
-uniform mediump float range;
+uniform highp vec2 size;
+uniform highp float range;
 
-mediump float get(int dx, int dy) {
+highp float get(int dx, int dy) {
   return texture2D(source, (gl_FragCoord.xy + vec2(float(dx), float(dy))) / size).a;
 }
 
 void main() {
-  mediump float nearest = min(
+  highp float nearest = min(
     min(
       min(
         get(-1, -1),

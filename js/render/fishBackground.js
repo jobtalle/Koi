@@ -49,12 +49,12 @@ void main() {
 FishBackground.prototype.SHADER_FRAGMENT = `#version 100
 uniform lowp vec3 colorInner;
 uniform lowp vec3 colorOuter;
-uniform mediump float gradientPower;
+uniform highp float gradientPower;
 
-varying mediump vec2 iPosition;
+varying highp vec2 iPosition;
 
 void main() {
-  mediump float dist = pow(min(1.0, length(iPosition) / 0.707106), gradientPower);
+  highp float dist = pow(min(1.0, length(iPosition) / 0.707106), gradientPower);
   
   gl_FragColor = vec4(mix(colorInner, colorOuter, dist), 1.0);
 }

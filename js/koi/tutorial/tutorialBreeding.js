@@ -11,8 +11,12 @@ const TutorialBreeding = function(storage, overlay) {
     this.targetedFish = null;
     this.bred = false;
     this.mutated = false;
+    this.skip = false;
 
     overlay.setText(language.get(this.LANG_MOVE_FISH));
+    overlay.createSkip(() => {
+        this.skip = true;
+    });
 };
 
 TutorialBreeding.prototype = Object.create(Tutorial.prototype);
@@ -110,6 +114,12 @@ TutorialBreeding.prototype.pointToSmallPond = function(koi) {
  * @returns {Boolean} True if the tutorial has finished
  */
 TutorialBreeding.prototype.update = function(koi) {
+    if (this.skip) {
+        this.overlay.clear();
+
+        return true;
+    }
+
     switch (this.phase) {
         case this.PHASE_MOVE_FISH:
             if (this.targetedFish === null) {
@@ -117,7 +127,7 @@ TutorialBreeding.prototype.update = function(koi) {
                     this.pointer = this.overlay.createPointer();
             }
             else {
-                if (koi.mover.move) {
+                if (koi.mover.move ) {
                     this.overlay.deletePointer();
 
                     this.pointer = null;
@@ -143,7 +153,7 @@ TutorialBreeding.prototype.update = function(koi) {
             break;
         case this.PHASE_DROP_FISH:
             if (!koi.mover.move) {
-                if (koi.constellation.small.fish.length === 0) {
+                if (koi.constellation.small.fish.length === 0 ) {
                     this.overlay.setText(language.get(this.LANG_TO_POND_1));
 
                     this.pointToSmallPond(koi);
@@ -157,7 +167,7 @@ TutorialBreeding.prototype.update = function(koi) {
 
             break;
         case this.PHASE_TO_POND_1:
-            if (koi.constellation.small.fish.length === 1) {
+            if (koi.constellation.small.fish.length === 1 ) {
                 this.overlay.setText(language.get(this.LANG_TO_POND_2));
                 this.overlay.deleteArrow();
 

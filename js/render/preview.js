@@ -11,8 +11,9 @@ const Preview = function(gl, fishBackground) {
 };
 
 Preview.prototype = Object.create(ImageMaker.prototype);
-Preview.prototype.PREVIEW_WIDTH = StyleUtils.getInt("--card-preview-width");
-Preview.prototype.PREVIEW_HEIGHT = StyleUtils.getInt("--card-preview-height");
+Preview.prototype.PREVIEW_SCALE = StyleUtils.getFloat("--card-scale");
+Preview.prototype.PREVIEW_WIDTH = StyleUtils.getInt("--card-preview-width-default") * Preview.prototype.PREVIEW_SCALE;
+Preview.prototype.PREVIEW_HEIGHT = StyleUtils.getInt("--card-preview-height-default") * Preview.prototype.PREVIEW_SCALE;
 Preview.prototype.PREVIEW_COLUMNS = StyleUtils.getInt("--card-preview-columns");
 Preview.prototype.PREVIEW_ROWS = StyleUtils.getInt("--card-preview-rows");
 Preview.prototype.SCALE = 150;
@@ -32,6 +33,12 @@ Preview.prototype.render = function(body, atlas, bodies) {
 
     this.target.target();
     this.gl.enable(this.gl.SCISSOR_TEST);
+
+    this.gl.blendFuncSeparate(
+            this.gl.SRC_ALPHA,
+            this.gl.ONE_MINUS_SRC_ALPHA,
+            this.gl.ONE_MINUS_DST_ALPHA,
+            this.gl.ONE);
 
     for (let row = 0; row < this.PREVIEW_ROWS; ++row) for (let column = 0; column < this.PREVIEW_COLUMNS; ++column) {
         const left = column * this.PREVIEW_WIDTH;
@@ -60,6 +67,9 @@ Preview.prototype.render = function(body, atlas, bodies) {
         bodies.render(atlas, widthMeters, -heightMeters, false);
     }
 
+    this.gl.blendFunc(
+            this.gl.SRC_ALPHA,
+            this.gl.ONE_MINUS_SRC_ALPHA);
     this.gl.disable(this.gl.SCISSOR_TEST);
 
     return this.toCanvas();

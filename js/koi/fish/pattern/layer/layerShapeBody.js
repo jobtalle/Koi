@@ -37,21 +37,21 @@ void main() {
 `;
 
 LayerShapeBody.prototype.SHADER_FRAGMENT = `#version 100
-uniform mediump float centerPower;
-uniform mediump float radiusPower;
-uniform mediump float eyePosition;
-uniform mediump float shadePower;
-uniform mediump float lightPower;
-uniform mediump float ambient;
-uniform mediump vec2 size;
+uniform highp float centerPower;
+uniform highp float radiusPower;
+uniform highp float eyePosition;
+uniform highp float shadePower;
+uniform highp float lightPower;
+uniform highp float ambient;
+uniform highp vec2 size;
 uniform lowp vec3 shadeColor;
 
-varying mediump vec2 iUv;
+varying highp vec2 iUv;
 
 #define EYE_SHADE_PUPIL 0.2
 #define EYE_RADIUS_PUPIL 0.1
 
-mediump float getRadius(mediump float x) {
+highp float getRadius(highp float x) {
   return pow(cos(3.141592 * (pow(x, centerPower) - 0.5)), radiusPower);
 }
 

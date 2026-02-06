@@ -31,7 +31,7 @@ Wind.prototype.DAMPING = .98;
 Wind.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
 
-varying mediump vec2 iUv;
+varying highp vec2 iUv;
 
 void main() {
   iUv = position * 0.5 + 0.5;
@@ -43,17 +43,17 @@ void main() {
 Wind.prototype.SHADER_FRAGMENT = `#version 100
 uniform sampler2D source;
 uniform sampler2D springs;
-uniform mediump float damping;
+uniform highp float damping;
 
-varying mediump vec2 iUv;
+varying highp vec2 iUv;
 
 void main() {
   lowp vec3 previous = texture2D(source, iUv).rgb;
-  mediump float previousState = previous.r * 2.0 - 1.0;
-  mediump float previousLeft = previous.g;
-  mediump float previousRight = previous.b;
-  mediump float motion = previousRight - previousLeft;
-  mediump float state = previousState + motion * 0.4;
+  highp float previousState = previous.r * 2.0 - 1.0;
+  highp float previousLeft = previous.g;
+  highp float previousRight = previous.b;
+  highp float motion = previousRight - previousLeft;
+  highp float state = previousState + motion * 0.4;
   
   motion = (motion - state * texture2D(springs, iUv).r) * damping;
   

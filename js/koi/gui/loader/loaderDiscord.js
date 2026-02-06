@@ -9,8 +9,9 @@ const LoaderDiscord = function() {
 };
 
 LoaderDiscord.prototype.ID = "loader-discord";
+LoaderDiscord.prototype.CLASS = "loader-icon";
 LoaderDiscord.prototype.CLASS_INVISIBLE = "invisible";
-LoaderDiscord.prototype.FILE = "svg/discord.svg";
+LoaderDiscord.prototype.FILE = "svg/discord-mark-white.svg";
 LoaderDiscord.prototype.FADE_IN_DELAY = 2.5;
 LoaderDiscord.prototype.URL = "https://discord.com/invite/bw3ZFe63Qg";
 
@@ -51,6 +52,7 @@ LoaderDiscord.prototype.createElement = function() {
 
     element.id = this.ID;
     element.className = this.CLASS_INVISIBLE;
+    element.classList.add(this.CLASS);
 
     return element;
 };

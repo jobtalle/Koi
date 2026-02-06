@@ -43,6 +43,15 @@ CodeViewer.prototype.createButtonCopy = function(image, audio) {
 };
 
 /**
+ * Create a file name
+ * @returns {String} The file name.
+ */
+CodeViewer.prototype.createFileName = function() {
+    const datetimeString = new Date().toISOString().replace(/:/g, "-");
+    return `koi-${datetimeString}.png`;
+}
+
+/**
  * Create the download button
  * @param {HTMLCanvasElement} image The fish code image
  * @param {AudioBank} audio Game audio
@@ -64,7 +73,7 @@ CodeViewer.prototype.createButtonDownload = function(image, audio) {
                     window.webkit.messageHandlers.saveImage.postMessage({blob: base64data});
                 }
             } else {
-                this.storage.imageToFile(blob, this.DEFAULT_NAME)
+                this.storage.imageToFile(blob, this.createFileName())
             }
         });
 

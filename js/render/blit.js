@@ -34,7 +34,7 @@ void main() {
 Blit.prototype.SHADER_FRAGMENT = `#version 100
 uniform sampler2D source;
 
-varying mediump vec2 iUv;
+varying highp vec2 iUv;
 
 void main() {
   gl_FragColor = texture2D(source, iUv);

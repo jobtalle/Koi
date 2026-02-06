@@ -53,26 +53,27 @@ void main() {
 }
 `;
 
+// language=glsl
 LayerSpots.prototype.SHADER_FRAGMENT = `#version 100
 ` + CommonShaders.cubicNoise3 + `
 uniform lowp vec3 color;
-uniform mediump float scale;
-uniform mediump float stretch;
-uniform mediump float threshold;
-uniform mediump vec2 focus;
-uniform mediump float power;
-uniform mediump vec2 size;
+uniform highp float scale;
+uniform highp float stretch;
+uniform highp float threshold;
+uniform highp vec2 focus;
+uniform highp float power;
+uniform highp vec2 size;
 uniform highp vec3 anchor;
 uniform highp mat3 rotate;
 
-varying mediump vec2 iUv;
+varying highp vec2 iUv;
 
 #define ATTENUATION 1.5
 
 void main() {
   highp vec2 at = vec2(iUv.x * stretch - 0.5, iUv.y - 0.5) * size * scale;
-  mediump float noise = cubicNoise(anchor + vec3(at, 0.0) * rotate);
-  mediump float strength = pow(max(0.0, 1.0 - ATTENUATION * length(iUv - focus)), power);
+  highp float noise = cubicNoise(anchor + vec3(at, 0.0) * rotate);
+  highp float strength = pow(max(0.0, 1.0 - ATTENUATION * length(iUv - focus)), power);
 
   if (noise > threshold * strength)
     discard;

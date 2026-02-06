@@ -30,7 +30,7 @@ attribute float threshold;
 varying float iAlpha;
 
 void main() {
-  mediump float age = mod(window - threshold, 1.0) / windowWidth;
+  highp float age = mod(window - threshold, 1.0) / windowWidth;
   
   iAlpha = transparency * alpha * age;
   

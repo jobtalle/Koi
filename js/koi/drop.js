@@ -62,7 +62,7 @@ Drop.prototype.drop = function(event) {
             if (this.gui.cards.hand.isFull())
                 break;
 
-            this.dropFile(file, new Vector2(event.clientX, event.clientY));
+            this.dropFile(file, new Vector2(event.clientX || window.screen.width / 2, event.clientY || window.screen.height / 2));
         }
     }
 };
@@ -73,12 +73,22 @@ Drop.prototype.drop = function(event) {
  * @param {Vector2} target The position the file was dropped at
  */
 Drop.prototype.dropFile = function(file, target) {
-    if (!this.IMAGE_TYPES.includes(file.type))
+    if (file.type && !this.IMAGE_TYPES.includes(file.type) || file.mimeType && !this.IMAGE_TYPES.includes(file.mimeType)) {
+        if (Capacitor && Capacitor.Plugins && Capacitor.isPluginAvailable('Toast'))
+            Capacitor.Plugins.Toast.show({text: "Could not load koi"});
+
         return;
+    }
 
-    const reader = new FileReader();
+    if (file.data && file.data.length > 0) {
+        let base64Data;
 
-    reader.onload = event => {
+        if (file.data.startsWith('data:image')) {
+            base64Data = file.data;
+        } else {
+            base64Data = `data:${file.mimeType};base64,` + file.data;
+        }
+
         const image = new Image();
 
         image.onload = () => {
@@ -101,11 +111,49 @@ Drop.prototype.dropFile = function(file, target) {
 
                     this.gui.cards.add(card);
                 }
+                else {
+                    if (Capacitor && Capacitor.Plugins && Capacitor.isPluginAvailable('Toast'))
+                        Capacitor.Plugins.Toast.show({text: "Could not load koi"});
+                }
+            } else {
+                if (Capacitor && Capacitor.Plugins && Capacitor.isPluginAvailable('Toast'))
+                    Capacitor.Plugins.Toast.show({text: "Hand is full"});
             }
         };
 
-        image.src = event.target.result;
-    };
+        image.src = base64Data;
+    } else {
+        const reader = new FileReader();
 
-    reader.readAsDataURL(file);
+        reader.onload = event => {
+            const image = new Image();
+
+            image.onload = () => {
+                if (!this.gui.cards.hand.isFull()) {
+                    const body = new CodeReader(image).read();
+
+                    if (body) {
+                        const buffer = new BinBuffer();
+
+                        body.pattern.serialize(buffer);
+                        body.initializeSpine(new Vector2(), new Vector2(1, 0));
+
+                        const card = new Card(body, target, 0);
+
+                        card.initialize(
+                            this.systems.preview,
+                            this.systems.atlas,
+                            this.systems.bodies,
+                            this.systems.randomSource);
+
+                        this.gui.cards.add(card);
+                    }
+                }
+            };
+
+            image.src = event.target.result;
+        };
+
+        reader.readAsDataURL(file);
+    }
 };

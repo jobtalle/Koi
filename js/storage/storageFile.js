@@ -34,19 +34,19 @@ if (window["require"]) {
         "extensions": ["png"]
     };
 
-    StorageFile.prototype.set = function (key, value) {
+    StorageFile.prototype.set = async function (key, value) {
         makeDirectory();
 
         fs["writeFileSync"](url["pathToFileURL"](directory + key + this.EXTENSION), value);
     };
 
-    StorageFile.prototype.setBuffer = function(key, value) {
+    StorageFile.prototype.setBuffer = async function(key, value) {
         makeDirectory();
 
         fs["writeFileSync"](url["pathToFileURL"](directory + key + this.EXTENSION), value.toByteArray());
     };
 
-    StorageFile.prototype.get = function(key) {
+    StorageFile.prototype.get = async function(key) {
         const file = directory + key + this.EXTENSION;
         let contents = null;
 
@@ -61,7 +61,7 @@ if (window["require"]) {
         return contents;
     };
 
-    StorageFile.prototype.getBuffer = function(key) {
+    StorageFile.prototype.getBuffer = async function(key) {
         const file = directory + key + this.EXTENSION;
         let contents = null;
 
@@ -76,7 +76,7 @@ if (window["require"]) {
         return contents ? new BinBuffer(contents) : null;
     };
 
-    StorageFile.prototype.remove = function(key) {
+    StorageFile.prototype.remove = async function(key) {
         const file = directory + key + this.EXTENSION;
 
         if (fileExists(file))

@@ -8,13 +8,36 @@ const StorageLocal = function() {
 
 StorageLocal.prototype = Object.create(StorageSystem.prototype);
 
+StorageLocal.prototype.setItem = async function(key, value) {
+  return new Promise((resolve, reject) => {
+        resolve(window.localStorage.setItem(key, value));
+      }
+    );
+};
+
+StorageLocal.prototype.getItem = async function(key) {
+    return new Promise((resolve, reject) => {
+        if (window.localStorage.getItem(key) === null)
+            resolve(null);
+        else
+            resolve(window.localStorage.getItem(key));
+    });
+};
+
+StorageLocal.prototype.removeItem = async function(key){
+    return new Promise((resolve, reject) => {
+            resolve(window.localStorage.removeItem(key));
+        }
+    );
+};
+
 /**
  * Set the value of an item
  * @param {String} key The key of the item
  * @param {String} value The value of the item
  */
 StorageLocal.prototype.set = function(key, value) {
-    window["localStorage"].setItem(key, value);
+    return this.setItem(key, value);
 };
 
 /**
@@ -23,7 +46,7 @@ StorageLocal.prototype.set = function(key, value) {
  * @param {BinBuffer} value The buffer of the item
  */
 StorageLocal.prototype.setBuffer = function(key, value) {
-    this.set(key, value.toString());
+    return this.set(key, value.toString());
 };
 
 /**
@@ -32,7 +55,8 @@ StorageLocal.prototype.setBuffer = function(key, value) {
  * @returns {String|null} The value of the item, or null if it does not exist
  */
 StorageLocal.prototype.get = function(key) {
-    return window["localStorage"].getItem(key);
+    const item = this.getItem(key);
+    return item;
 };
 
 /**
@@ -40,8 +64,8 @@ StorageLocal.prototype.get = function(key) {
  * @param {String} key The key of the buffer
  * @returns {BinBuffer|null} The buffer, or null if it does not exist
  */
-StorageLocal.prototype.getBuffer = function(key) {
-    const string = this.get(key);
+StorageLocal.prototype.getBuffer = async function(key) {
+    const string = await this.get(key);
 
     if (string)
         return new BinBuffer(string);
@@ -54,7 +78,7 @@ StorageLocal.prototype.getBuffer = function(key) {
  * @param {String} key The key of the item
  */
 StorageLocal.prototype.remove = function(key) {
-    window["localStorage"].removeItem(key);
+    this.removeItem(key);
 };
 
 /**

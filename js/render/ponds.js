@@ -105,7 +105,7 @@ varying lowp vec2 iUv;
 #define WAVE_BASE 0.3
 #define WATER_HEIGHT 3.7
 
-lowp float get(mediump vec2 delta) {
+lowp float get(highp vec2 delta) {
   lowp vec2 uv = iUv + delta / waterSize;
   lowp vec2 sample = texture2D(water, uv).gr;
   
