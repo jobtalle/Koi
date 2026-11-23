@@ -27,6 +27,7 @@ LayerWeb.prototype.SAMPLER_SCALE = new SamplerPlateau(1.5, 3, 6.5, .7);
 LayerWeb.prototype.SAMPLER_THICKNESS = new SamplerPlateau(.1, .15, .3, .7);
 LayerWeb.prototype.SAMPLER_THRESHOLD = new SamplerPlateau(.3, .5, .7, .6);
 
+// language=glsl
 LayerWeb.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
 attribute vec2 uv;
@@ -40,21 +41,22 @@ void main() {
 }
 `;
 
+// language=glsl
 LayerWeb.prototype.SHADER_FRAGMENT = `#version 100
 ` + CommonShaders.cubicNoise3 + `
 uniform lowp vec3 color;
-uniform mediump float scale;
-uniform mediump float thickness;
-uniform mediump float threshold;
-uniform mediump vec2 size;
+uniform highp float scale;
+uniform highp float thickness;
+uniform highp float threshold;
+uniform highp vec2 size;
 uniform highp vec3 anchor;
 uniform highp mat3 rotate;
 
-varying mediump vec2 iUv;
+varying highp vec2 iUv;
 
 void main() {
   highp vec2 at = (iUv - 0.5) * size * scale;
-  mediump float noise = cubicNoise(anchor + vec3(at, 0.0) * rotate);
+  highp float noise = cubicNoise(anchor + vec3(at, 0.0) * rotate);
   
   if (noise < threshold - thickness * 0.5 || noise > threshold + thickness * 0.5)
     discard;

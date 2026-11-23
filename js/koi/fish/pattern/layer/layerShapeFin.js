@@ -24,11 +24,12 @@ LayerShapeFin.prototype.SAMPLER_DIPS = new SamplerPower(.25, 3, 1.5);
 LayerShapeFin.prototype.SAMPLER_DIP_POWER = new SamplerPower(.5, 2, .7);
 LayerShapeFin.prototype.SAMPLER_ROUNDNESS = new SamplerPower(.05, .25, .6);
 
+// language=glsl
 LayerShapeFin.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
 attribute vec2 uv;
 
-uniform mediump float angle;
+uniform highp float angle;
 
 varying vec2 iUv;
 varying float iBeta;
@@ -46,25 +47,26 @@ void main() {
 }
 `;
 
+// language=glsl
 LayerShapeFin.prototype.SHADER_FRAGMENT = `#version 100
-uniform mediump float angle;
-uniform mediump float inset;
-uniform mediump float dips;
-uniform mediump float dipPower;
-uniform mediump float roundness;
+uniform highp float angle;
+uniform highp float inset;
+uniform highp float dips;
+uniform highp float dipPower;
+uniform highp float roundness;
 
-varying mediump vec2 iUv;
-varying mediump float iBeta;
-varying mediump float iCutaway;
-varying mediump float iFinRadius;
+varying highp vec2 iUv;
+varying highp float iBeta;
+varying highp float iCutaway;
+varying highp float iFinRadius;
 
 #define ALPHA 0.8
 
 void main() {
-  mediump float radiusProgress = clamp((atan(iUv.y, iUv.x) - iBeta) / angle, 0.0, 1.0);
-  mediump float radiusMultiplier = 1.0 - inset + inset * pow(cos(radiusProgress * 6.283185 * dips) * 0.5 + 0.5, dipPower);
-  mediump float radius = length(iUv);
-  mediump float roundnessMultiplier = pow(sin(radiusProgress * 3.141593), roundness);
+  highp float radiusProgress = clamp((atan(iUv.y, iUv.x) - iBeta) / angle, 0.0, 1.0);
+  highp float radiusMultiplier = 1.0 - inset + inset * pow(cos(radiusProgress * 6.283185 * dips) * 0.5 + 0.5, dipPower);
+  highp float radius = length(iUv);
+  highp float roundnessMultiplier = pow(sin(radiusProgress * 3.141593), roundness);
   
   if (radius > iFinRadius * radiusMultiplier * roundnessMultiplier ||
     iUv.x < sqrt(iUv.y) * iCutaway ||

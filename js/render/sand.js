@@ -51,11 +51,11 @@ void main() {
 
 Sand.prototype.SHADER_FRAGMENT = `#version 100
 ` + CommonShaders.cubicNoise2 + `
-uniform mediump float scale;
+uniform highp float scale;
 uniform lowp vec3 colorDeep;
 uniform lowp vec3 colorShallow;
 
-varying mediump vec2 iDepth;
+varying highp vec2 iDepth;
 
 void main() {
   lowp float noise = pow(random2(gl_FragCoord.xy), 9.0);

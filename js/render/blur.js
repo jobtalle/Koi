@@ -58,8 +58,8 @@ void main() {
 
 Blur.prototype.SHADER_FRAGMENT = `#version 100
 uniform sampler2D source;
-uniform mediump vec2 targetSize;
-uniform mediump vec2 direction;
+uniform highp vec2 targetSize;
+uniform highp vec2 direction;
 
 lowp vec4 get(int delta) {
   return texture2D(source, (gl_FragCoord.xy + direction * float(delta)) / targetSize);

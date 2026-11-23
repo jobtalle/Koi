@@ -31,6 +31,17 @@ Still.prototype.render = function(body, atlas, bodies) {
 
     this.fishBackground.render(widthMeters, heightMeters);
 
+    // this.gl.blendFunc(
+        //     this.gl.SRC_ALPHA,
+        //     this.gl.ONE_MINUS_SRC_ALPHA);
+
+    this.gl.blendFuncSeparate(
+            this.gl.SRC_ALPHA,
+            this.gl.ONE_MINUS_SRC_ALPHA,
+            this.gl.ONE_MINUS_DST_ALPHA,
+            this.gl.ONE);
+
+
     body.renderLoop(
         (this.RADIUS + Math.cos(this.ANGLE) * this.RADIUS) * this.UPSCALE / this.SCALE,
         (this.RADIUS + Math.sin(this.ANGLE) * this.RADIUS) * this.UPSCALE / this.SCALE,

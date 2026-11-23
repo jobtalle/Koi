@@ -1,6 +1,11 @@
+:root {
+    --padding-top-notch: env(safe-area-inset-top);
+}
+
 body {
     margin: 0;
     font-family: Grandstander;
+    background: var(--color-shrubbery-leaf);
 }
 
 #wrapper {
@@ -34,4 +39,12 @@ body {
     top: 0;
     width: 100%;
     height: 100%;
+}
+
+/* Adjust padding for devices with a notch */
+@media only screen and (orientation: portrait) {
+    .notch-padded {
+        padding-top: max(env(safe-area-inset-top), 30px);
+        padding-bottom: env(safe-area-inset-bottom); /* iOS 11.2+ */
+    }
 }

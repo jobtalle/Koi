@@ -4,11 +4,18 @@
     --card-color-background-graphics: #7e605e;
     --card-color-drop-target: #ffffff55;
 
+    --card-scale: 1;
+
+    --card-width-default: 250px;
+    --card-height-default: 350px;
+    --card-preview-width-default: 200px;
+    --card-preview-height-default: 120px;
+
     /* Dimensions */
-    --card-width: 250px;
-    --card-height: 350px;
-    --card-preview-width: 200px;
-    --card-preview-height: 120px;
+    --card-width: calc(var(--card-width-default) * var(--card-scale));
+    --card-height: calc(var(--card-height-default) * var(--card-scale));
+    --card-preview-width: calc(var(--card-preview-width-default) * var(--card-scale));
+    --card-preview-height: calc(var(--card-preview-height-default) * var(--card-scale));
     --card-preview-margin: calc((var(--card-width) - var(--card-preview-width) - 2 * var(--card-preview-border)) * 0.5);
     --card-preview-columns: 6;
     --card-preview-rows: 10;
@@ -30,6 +37,8 @@
     --card-code-icon-radius: 32px;
     --card-code-icon-margin: 8px;
     --card-code-opacity: 0.5;
+
+    --font-size: 20px;
 }
 
 .card-shape {

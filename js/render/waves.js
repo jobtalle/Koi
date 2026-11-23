@@ -44,20 +44,20 @@ void main() {
 
 Waves.prototype.SHADER_FRAGMENT = `#version 100
 uniform sampler2D source;
-uniform mediump vec2 size;
-uniform mediump float damping;
+uniform highp vec2 size;
+uniform highp float damping;
 
-varying mediump vec2 iUv;
+varying highp vec2 iUv;
 
 void main() {
-  mediump vec2 step = 1.0 / size;
-  mediump vec3 state = texture2D(source, iUv).rgb;
-  mediump float hLeft = texture2D(source, vec2(iUv.x - step.x, iUv.y)).r;
-  mediump float hRight = texture2D(source, vec2(iUv.x + step.x, iUv.y)).r;
-  mediump float hUp = texture2D(source, vec2(iUv.x, iUv.y - step.y)).r;
-  mediump float hDown = texture2D(source, vec2(iUv.x, iUv.y + step.y)).r;
-  mediump float momentum = (state.g + state.b) * 2.0 - 1.0;
-  mediump float newHeight = (hLeft + hUp + hRight + hDown) - 2.0;
+  highp vec2 step = 1.0 / size;
+  highp vec3 state = texture2D(source, iUv).rgb;
+  highp float hLeft = texture2D(source, vec2(iUv.x - step.x, iUv.y)).r;
+  highp float hRight = texture2D(source, vec2(iUv.x + step.x, iUv.y)).r;
+  highp float hUp = texture2D(source, vec2(iUv.x, iUv.y - step.y)).r;
+  highp float hDown = texture2D(source, vec2(iUv.x, iUv.y + step.y)).r;
+  highp float momentum = (state.g + state.b) * 2.0 - 1.0;
+  highp float newHeight = (hLeft + hUp + hRight + hDown) - 2.0;
   
   gl_FragColor = vec4(
     ((newHeight - momentum) * damping) * 0.5 + 0.5,

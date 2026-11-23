@@ -4,6 +4,7 @@
     --menu-box-spacing: 16px;
     --menu-button-color: var(--color-water-deep);
     --menu-button-border-radius: var(--loader-button-border-radius);
+    --menu-font-size: 1rem;
 }
 
 #menu {
@@ -41,6 +42,7 @@
 
 #menu-box h1 {
     color: var(--color-white);
+    margin: unset;
 }
 
 #menu-box button {
@@ -72,12 +74,21 @@
 
 #menu-box input[type=checkbox] {
     float: left;
+    min-width: 1rem;
+    min-height: 1rem;
 }
 
 #menu-box select {
     width: 100%;
+    min-height: 1.5rem;
 }
 
 #menu-box table {
     text-align: right;
+}
+
+@media screen and (max-width: 600px) or (max-height: 600px){
+    #menu-box button {
+        max-height: var(--button-height-small);
+    }
 }

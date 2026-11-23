@@ -105,7 +105,7 @@
 #book #spine .page .slot {
     position: relative;
     background-color: var(--book-page-slot-color);
-    border-radius: var(--card-border-radius);
+    border-radius: calc(var(--card-border-radius) * var(--card-scale));
     overflow: hidden;
 }
 
@@ -119,6 +119,23 @@
     margin: 0;
     transform-origin: left top;
     box-shadow: none;
+}
+
+#cards button:active svg {
+    filter: drop-shadow(0 0 var(--page-button-shadow-radius) var(--book-shadow-color));
+
+}
+
+#button-load-card {
+    position: absolute;
+    right: var(--book-button-padding);
+    top: calc(var(--button-height) * 2);
+}
+
+#button-home {
+    position: absolute;
+    right: var(--book-button-padding);
+    top: var(--button-height);
 }
 
 #button-book {
@@ -186,4 +203,48 @@
 
 .button-page.right {
     right: calc(var(--button-width) * var(--page-button-page-shift) * -1);
+}
+
+@media only screen and (orientation: portrait) {
+    #button-load-card {
+        position: absolute;
+        right: calc(var(--button-width) * 2 + var(--book-button-padding));
+        top: var(--book-button-padding);
+    }
+
+    #button-home {
+        position: absolute;
+        right: calc(var(--button-width) + var(--book-button-padding));
+        top: var(--book-button-padding);
+    }
+}
+
+@media only screen and (orientation: portrait) and (max-width: 600px), (orientation: portrait) and (max-height: 600px) {
+    #button-load-card {
+        position: absolute;
+        right: calc(var(--button-width-small) * 2 + var(--book-button-padding));
+        top: var(--book-button-padding);
+    }
+
+    #button-home {
+        position: absolute;
+        right: calc(var(--button-width-small) + var(--book-button-padding));
+        top: var(--book-button-padding);
+    }
+}
+
+@media only screen and (orientation: landscape) and (max-width: 600px),
+(orientation: landscape) and (max-height: 600px) {
+    #button-load-card {
+        position: absolute;
+        right: var(--book-button-padding);
+        top: calc(var(--button-height-small) * 2);
+    }
+
+    #button-home {
+        position: absolute;
+        right: var(--book-button-padding);
+        top: var(--button-height-small);
+    }
+
 }

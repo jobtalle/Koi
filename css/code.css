@@ -52,6 +52,13 @@
     pointer-events: auto;
 }
 
+@media (max-height: 600px) {
+    #code .view canvas {
+        width: 50%;
+        height: 50%;
+    }
+}
+
 #code .view button {
     width: 50%;
     background-color: var(--code-button-color);

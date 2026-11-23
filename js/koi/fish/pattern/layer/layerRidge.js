@@ -41,7 +41,7 @@ LayerRidge.prototype.SHADER_VERTEX = `#version 100
 attribute vec2 position;
 attribute vec2 uv;
 
-varying mediump vec2 iUv;
+varying highp vec2 iUv;
 
 void main() {
   iUv = uv;
@@ -53,25 +53,25 @@ void main() {
 LayerRidge.prototype.SHADER_FRAGMENT = `#version 100
 ` + CommonShaders.cubicNoise3 + `
 uniform lowp vec3 color;
-uniform mediump float scale;
-uniform mediump float power;
-uniform mediump float threshold;
-uniform mediump float focus;
-uniform mediump float focusPower;
-uniform mediump vec2 size;
+uniform highp float scale;
+uniform highp float power;
+uniform highp float threshold;
+uniform highp float focus;
+uniform highp float focusPower;
+uniform highp vec2 size;
 uniform highp vec3 origin;
 uniform highp mat3 rotate;
 
-varying mediump vec2 iUv;
+varying highp vec2 iUv;
 
 #define RIDGE_ATTENUATION 1.4
 #define ATTENUATION 2.0
 
 void main() {
-  mediump float phaseThreshold = pow(1.0 - RIDGE_ATTENUATION * abs(iUv.y - 0.5), power);
+  highp float phaseThreshold = pow(1.0 - RIDGE_ATTENUATION * abs(iUv.y - 0.5), power);
   highp vec2 at = (iUv - vec2(0.5)) * size * scale;
-  mediump float noise = cubicNoise(origin + vec3(at, 0.0) * rotate);
-  mediump float strength = pow(max(0.0, 1.0 - ATTENUATION * abs(iUv.x - focus)), focusPower);
+  highp float noise = cubicNoise(origin + vec3(at, 0.0) * rotate);
+  highp float strength = pow(max(0.0, 1.0 - ATTENUATION * abs(iUv.x - focus)), focusPower);
   
   if (noise > phaseThreshold * strength)
     discard;
